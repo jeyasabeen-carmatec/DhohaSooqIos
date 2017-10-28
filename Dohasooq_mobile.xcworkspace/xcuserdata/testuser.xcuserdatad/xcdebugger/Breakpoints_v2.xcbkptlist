@@ -47,7 +47,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "436"
             endingLineNumber = "436"
-            landmarkName = "-BTN_minus_action:"
+            landmarkName = "-BTN_plus_action:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -63,7 +63,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "451"
             endingLineNumber = "451"
-            landmarkName = "-BTN_minus_action:"
+            landmarkName = "-BTN_plus_action:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -78,7 +78,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "476"
-            endingLineNumber = "476">
+            endingLineNumber = "476"
+            landmarkName = "-BTN_plus_action:"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

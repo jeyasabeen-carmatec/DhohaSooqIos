@@ -30,7 +30,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    _TXTVW_description.delegate = self;
+//    _TXTVW_description.delegate = self;
     json_Response_Dic = [[NSMutableDictionary alloc]init];
     
     [self.collection_images registerNib:[UINib nibWithNibName:@"product_detail_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
