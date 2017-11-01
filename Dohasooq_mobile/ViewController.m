@@ -145,15 +145,12 @@
     [_BTN_sign_up addTarget:self action:@selector(sign_up_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_login addTarget:self action:@selector(login_home) forControlEvents:UIControlEventTouchUpInside];
     
-    _TXT_username.text = @"android17@carmatec.com";
-    _TXT_password.text = @"q4@m2pX!";
+    _TXT_username.text = @"karuna@carmatec.in";
+    _TXT_password.text = @"qazplm123";
    
     
     
 }
-
-
-
 
 #pragma textfield delgates
 -(BOOL)textFieldShouldReturn:(UITextField *)textField

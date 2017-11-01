@@ -1105,7 +1105,7 @@
     
     self.segmentedControl4.backgroundColor = [UIColor clearColor];
     self.segmentedControl4.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:16]};
-    self.segmentedControl4.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0],NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:16]};
+    self.segmentedControl4.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0],NSFontAttributeName:[UIFont fontWithName:@"Roboto-Medium" size:16]};
     self.segmentedControl4.selectionIndicatorColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
     //    self.segmentedControl4.selectionIndicatorColor
     self.segmentedControl4.selectionStyle = HMSegmentedControlSelectionStyleFullWidthStripe;

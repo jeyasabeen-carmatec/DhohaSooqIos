@@ -844,7 +844,7 @@
     }
     if(section == 2)
     {
-        ceel_count = 1;
+        ceel_count = 2;
     }
     if(section == 3)
    {
@@ -899,7 +899,8 @@
     }
     if(indexPath.section == 2)
     {
-        cell.LBL_name.text = @"MERCHANT LIST";
+        NSArray *mer_arr = [NSArray arrayWithObjects:@"PRODUCT LIST",@"MERCHANT LIST", nil];
+        cell.LBL_name.text = [mer_arr objectAtIndex:indexPath.row];
     }
     if(indexPath.section == 3)
     {
@@ -1080,6 +1081,17 @@
              break;
             case 2:
                 [self swipe_left];
+                if(indexPath.row == 0)
+                {
+                    NSUserDefaults *userDflts = [NSUserDefaults standardUserDefaults];
+                    
+                    [userDflts setObject:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:0]valueForKey:@"url_key"] forKey:@"url_key_home"];
+                    NSLog(@"%@",[userDflts valueForKey:@"url_key_hotDeals"]);
+                    [self performSegueWithIdentifier:@"homw_product_list" sender:self];
+                    
+
+                }
+            else
                 [self performSegueWithIdentifier:@"merchant_segue" sender:self];
              break;
             case 3:
@@ -1257,14 +1269,8 @@
 - (IBAction)cart_action:(id)sender
 {
     
-    NSUserDefaults *userDflts = [NSUserDefaults standardUserDefaults];
-//    if(collectionView == _collection_hot_deals)
-//    {
-        [userDflts setObject:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:0]valueForKey:@"url_key"] forKey:@"url_key_home"];
-        NSLog(@"%@",[userDflts valueForKey:@"url_key_hotDeals"]);
-        [self performSegueWithIdentifier:@"homw_product_list" sender:self];
-
-   // [self performSegueWithIdentifier:@"home_to_cart" sender:self];
+   
+    [self performSegueWithIdentifier:@"home_to_cart" sender:self];
 }
 - (IBAction)wish_list_Action:(id)sender
 {

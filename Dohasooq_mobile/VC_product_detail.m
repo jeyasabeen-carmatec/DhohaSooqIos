@@ -14,11 +14,14 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 
 
-@interface VC_product_detail ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UITextFieldDelegate>
+@interface VC_product_detail ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UITextFieldDelegate,UIWebViewDelegate>
 {
     NSMutableArray *temp_arr;
     HCSStarRatingView *starRatingView;
     NSMutableDictionary *json_Response_Dic;
+    UIView *VW_overlay;
+    UIActivityIndicatorView *activityIndicatorView;
+
     //NSString *actuel_price,*avg_rating,*discount,*review_count;
     //NSString **product_description,*img_Url,*title_str,*current_price;
 }
@@ -42,63 +45,31 @@
     
     
 }
--(void)viewWillAppear:(BOOL)animated{
-#pragma _product_Detail_api_integration Method Calling
-    
-    @try
-    {
-        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/details/%@/3/1.json",SERVER_URL,[user_dflts valueForKey:@"URL_Key"]];
-        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (error) {
-                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
-                }
-                if (data) {
-                    json_Response_Dic = data;
-                    NSLog(@"%@",json_Response_Dic);
-                    NSLog(@"Color and Size :::%@ %ld",[json_Response_Dic valueForKey:@"getVariantNames"] ,[[json_Response_Dic valueForKey:@"getVariantNames"] count]);
-                     //NSLog(@"Color and  :::%@",[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1]);
-                    @try {
-                        [self.collection_images reloadData];
-                        [self set_Data_to_UIElements];
-                        [self set_data_to_ThirdView];
-                    } @catch (NSException *exception) {
-                        NSLog(@"%@",exception);
-                    }
-                    
-                    //****************Required Data****************
-                    //title_str = [[[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"title"];
-                    
-                    //current_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_price"]];
-                    
-                    //avg_rating = [NSString stringWithFormat:@"%@",[json_Response_Dic valueForKey:@"avgRating"]];
-                    
-                    //product_description = [[[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"description"];
-                    //NSLog(@"%@",product_description);
-                    
-                    //img_Url = [[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_image"];
-                    //NSLog(@"PRODUCT IMAGE IS  %@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_image"]);
-                    //                    NSLog(@"%@",actuel_price);
-                    //                    NSLog(@"%@",avg_rating);
-                    
-                    //NSLog(@"%@",title_str);
-                    
-                    
-                }
-                
-            });
-        }];
-    }
-    @catch(NSException *exception)
-    {
-        NSLog(@"The error is:%@",exception);
-        [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
-    }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    
+    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    VW_overlay.clipsToBounds = YES;
+    //    VW_overlay.layer.cornerRadius = 10.0;
+    
+    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+    activityIndicatorView.center = VW_overlay.center;
+    [VW_overlay addSubview:activityIndicatorView];
+    VW_overlay.center = self.view.center;
+    [self.view addSubview:VW_overlay];
+    
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(product_detail_API) withObject:activityIndicatorView afterDelay:0.01];
+    
+   
     
 }
+
+
 
 -(void)set_UP_VIEW
 {
@@ -679,16 +650,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 
 -(void)set_data_to_ThirdView{
     //[json_Response_Dic valueForKey:@"getVariantNames"] ,[[json_Response_Dic valueForKey:@"getVariantNames"] count]
@@ -699,6 +660,46 @@
     }
     
 }
+- (IBAction)Wish_list_action:(id)sender
+{
+    @try
+    {
+//        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+        NSString *poduct_id = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0]valueForKey:@"id"]];
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@/addToWishList/%@/%@",SERVER_URL,poduct_id,user_id];
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                }
+                if (data) {
+                    json_Response_Dic = data;
+                    if(json_Response_Dic)
+                    {
+                        VW_overlay.hidden=YES;
+                        [activityIndicatorView stopAnimating];
+                        NSLog(@"The Wishlist%@",json_Response_Dic);
+                    }
+                    
+                    
+                }
+                
+            });
+        }];
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+        [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+    }
+    
+
+
+}
 
 - (IBAction)productdetail_to_cartPage:(id)sender {
     [self performSegueWithIdentifier:@"productDetail_to_cart" sender:self];
@@ -707,4 +708,74 @@
 - (IBAction)productDetail_to_wishPage:(id)sender {
     [self performSegueWithIdentifier:@"productDetail_to_wishList" sender:self];
 }
+
+#pragma _product_Detail_api_integration Method Calling
+
+-(void)product_detail_API
+{
+    
+    @try
+    {
+        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
+        NSString *country = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"];
+        NSString *languge = [[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"];
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/details/%@/%@/%@.json",SERVER_URL,[user_dflts valueForKey:@"URL_Key"],country,languge];
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                }
+                if (data) {
+                    json_Response_Dic = data;
+                    if(json_Response_Dic)
+                    {
+                        VW_overlay.hidden=YES;
+                        [activityIndicatorView stopAnimating];
+                    NSLog(@"%@",json_Response_Dic);
+                    NSLog(@"Color and Size :::%@ %ld",[json_Response_Dic valueForKey:@"getVariantNames"] ,[[json_Response_Dic valueForKey:@"getVariantNames"] count]);
+                    //NSLog(@"Color and  :::%@",[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1]);
+                    @try {
+                        [self.collection_images reloadData];
+                        [self set_Data_to_UIElements];
+                        [self set_data_to_ThirdView];
+                    } @catch (NSException *exception) {
+                        NSLog(@"%@",exception);
+                    }
+                    }
+                    
+                    //****************Required Data****************
+                    //title_str = [[[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"title"];
+                    
+                    //current_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_price"]];
+                    
+                    //avg_rating = [NSString stringWithFormat:@"%@",[json_Response_Dic valueForKey:@"avgRating"]];
+                    
+                    //product_description = [[[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"description"];
+                    //NSLog(@"%@",product_description);
+                    
+                    //img_Url = [[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_image"];
+                    //NSLog(@"PRODUCT IMAGE IS  %@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_image"]);
+                    //                    NSLog(@"%@",actuel_price);
+                    //                    NSLog(@"%@",avg_rating);
+                    
+                    //NSLog(@"%@",title_str);
+                    
+                    
+                }
+                
+            });
+        }];
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+        [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+    }
+    
+    
+
+}
+
 @end

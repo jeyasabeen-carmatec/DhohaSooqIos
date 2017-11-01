@@ -1998,6 +1998,9 @@ UVIgMAM
                                         <state key="normal" title=" WISH LIST">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="Wish_list_action:" destination="h4H-xf-ZjH" eventType="touchUpInside" id="lmB-PF-wLh"/>
+                                        </connections>
                                     </button>
                                     <view contentMode="scaleToFill" id="avO-vR-BIj">
                                         <rect key="frame" x="157" y="14" width="2" height="30"/>
@@ -4509,7 +4512,7 @@ UVIgMAM
                                     <rect key="frame" x="0.0" y="28" width="320" height="115"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="taD-4b-262" id="lVw-RY-Xq3">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="114.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="114"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="ASIAN TOWNأسيان، تون" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="E75-U2-nGm">
@@ -4881,12 +4884,12 @@ UVIgMAM
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="YGq-OI-YXP"/>
-        <segue reference="VlJ-8X-e9R"/>
-        <segue reference="hYs-TP-0oE"/>
         <segue reference="1fc-cP-jfH"/>
         <segue reference="3iK-R0-4OO"/>
-        <segue reference="6Sn-2k-ihc"/>
+        <segue reference="YGq-OI-YXP"/>
         <segue reference="ZOK-q7-Ycd"/>
+        <segue reference="6Sn-2k-ihc"/>
+        <segue reference="1MO-TU-sXM"/>
+        <segue reference="GNZ-Ft-0Lq"/>
     </inferredMetricsTieBreakers>
 </document>

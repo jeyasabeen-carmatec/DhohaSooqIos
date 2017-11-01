@@ -18,6 +18,9 @@
     NSMutableArray *arr_product;
     NSMutableArray *productDataArray;
     CGRect frame;
+    
+    UIView *VW_overlay;
+    UIActivityIndicatorView *activityIndicatorView;
 }
 
 @end
@@ -41,41 +44,31 @@
     
     [self set_UP_VW];
     
-#pragma _product_list_api_integration Method Calling
-    
-    @try
-    {
-        /*NSUserDefaults *usd = [NSUserDefaults standardUserDefaults];
-         NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/%@/1/1.json",SERVER_URL,[usd valueForKey:@"url_key_home"]];*/
-    NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/womens-clothing/1/1.json",SERVER_URL];
-    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-    [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-         dispatch_async(dispatch_get_main_queue(), ^{
-        if (error) {
-            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
-        }
-             if (data) {
-                 NSMutableDictionary *json_DATA = data;
-                 //NSLog(@"%@",json_DATA);
-                 productDataArray = [json_DATA valueForKey:@"products"];
-                 //NSLog(@"id for products %@",[[[productDataArray objectAtIndex:0] valueForKey:@"DISTINCT Products"] valueForKey:@"id"]);
-                 
-                // NSLog(@"%@",productDataArray);
-                // NSLog(@"URL KEY IS::::%@",[[productDataArray objectAtIndex:0] valueForKey:@"url_key"]);
-                 
-                 [self.collection_product reloadData];
-             }
-        
-        });
-    }];
-    }
-    @catch(NSException *exception)
-    {
-        NSLog(@"The error is:%@",exception);
-        [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
-    }
    
 }
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    
+    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    VW_overlay.clipsToBounds = YES;
+    //    VW_overlay.layer.cornerRadius = 10.0;
+    
+    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+    activityIndicatorView.center = VW_overlay.center;
+    [VW_overlay addSubview:activityIndicatorView];
+    VW_overlay.center = self.view.center;
+    [self.view addSubview:VW_overlay];
+    
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(product_list_API) withObject:activityIndicatorView afterDelay:0.01];
+
+    
+}
+
 -(void)set_UP_VW
 {
     
@@ -435,18 +428,56 @@
 
     
 }
+#pragma _product_list_api_integration Method Calling
 
+-(void)product_list_API
+{
+    
+    @try
+    {
+        /*NSUserDefaults *usd = [NSUserDefaults standardUserDefaults];
+         NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/%@/1/1.json",SERVER_URL,[usd valueForKey:@"url_key_home"]];*/
+        NSString *country = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"];
+        NSString *languge = [[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"];
+        
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/electronics/%@/%@.json",SERVER_URL,country,languge];
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                }
+                if (data) {
+                    
+                    
+                    NSMutableDictionary *json_DATA = data;
+                    if(json_DATA)
+                    {
+                        VW_overlay.hidden = YES;
+                        [activityIndicatorView stopAnimating];
+                    //NSLog(@"%@",json_DATA);
+                    productDataArray = [json_DATA valueForKey:@"products"];
+                    //NSLog(@"id for products %@",[[[productDataArray objectAtIndex:0] valueForKey:@"DISTINCT Products"] valueForKey:@"id"]);
+                    
+                    // NSLog(@"%@",productDataArray);
+                    // NSLog(@"URL KEY IS::::%@",[[productDataArray objectAtIndex:0] valueForKey:@"url_key"]);
+                    
+                    [self.collection_product reloadData];
+                    }
+                }
+                
+            });
+        }];
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+        [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+    }
 
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
 }
-*/
+
 
 
 - (IBAction)productList_to_cartPage:(id)sender {
