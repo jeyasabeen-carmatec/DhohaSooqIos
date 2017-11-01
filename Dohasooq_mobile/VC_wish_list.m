@@ -223,6 +223,12 @@
 {
     return 147.0;
 }
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
+{
+    
+}
+
+
 #pragma button_actions
 -(void)btnfav_action
 {

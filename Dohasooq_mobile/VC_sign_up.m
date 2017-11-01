@@ -22,7 +22,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self set_UP_View];
+   
     
     
 }
@@ -43,6 +43,7 @@
     [self.view addSubview:VW_overlay];
     
     VW_overlay.hidden = YES;
+     [self set_UP_View];
 
 }
 -(void)set_UP_View

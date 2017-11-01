@@ -12,6 +12,7 @@
 #import "qtickets_cell.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 
+
 @interface Home_detail ()<UITabBarDelegate,UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource>
 {
     NSMutableArray *Movies_arr,*Events_arr,*Sports_arr,*Leisure_arr;
@@ -69,6 +70,7 @@
     
     if([_Header_name.titleLabel.text isEqualToString:@"Movies"])
     {
+        
         VW_overlay.hidden = NO;
         [activityIndicatorView startAnimating];
         [self performSelector:@selector(movie_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
@@ -109,7 +111,7 @@
    
     if ([_Header_name.titleLabel.text isEqualToString:@"Events"])
     {
-        
+    
         [self Events_view];
     }
     else if([_Header_name.titleLabel.text isEqualToString:@"Sports"])
@@ -210,6 +212,7 @@
     [[UITabBarItem appearance] setTitleTextAttributes:@{
                                                         NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0f],NSForegroundColorAttributeName:[UIColor whiteColor]
                                                         } forState:UIControlStateNormal];
+   
     
     
 }
@@ -473,9 +476,8 @@
         NSArray *nib;
         nib = [[NSBundle mainBundle] loadNibNamed:@"events_cell" owner:self options:nil];
         cell = [nib objectAtIndex:0];
-        if(indexPath.section %2 )
+        if(indexPath.section %2!=0)
         {
-                
         cell.IMG_qtickets.hidden = NO;
         }
         else
@@ -525,7 +527,7 @@
             NSArray *nib;
             nib = [[NSBundle mainBundle] loadNibNamed:@"events_cell" owner:self options:nil];
             cell = [nib objectAtIndex:0];
-            if(indexPath.section %2 )
+            if(indexPath.section %2 !=0 )
             {
                 
                 cell.IMG_qtickets.hidden = NO;
@@ -573,7 +575,7 @@
             NSArray *nib;
             nib = [[NSBundle mainBundle] loadNibNamed:@"events_cell" owner:self options:nil];
             cell = [nib objectAtIndex:0];
-            if(indexPath.section %2 )
+            if(indexPath.section %2 !=0 )
             {
                 
                 cell.IMG_qtickets.hidden = NO;
@@ -619,7 +621,7 @@
     float ht = 0;
     if(tableView == _TBL_event_list)
     {
-        if(indexPath.row %2 )
+        if(indexPath.section %2 !=0 )
         {
             ht = 310;
         }
@@ -631,7 +633,7 @@
     }
     else if(tableView == _TBL_sports_list)
     {
-        if(indexPath.row %2)
+        if(indexPath.section %2 !=0)
         {
             
             ht = 310;
@@ -642,9 +644,9 @@
             ht = 275;
         }
     }
-    else if(tableView == _TBL_lisure_list)
+    else if(tableView == _TBL_lisure_list!=0)
     {
-        if(indexPath.row %2)
+        if(indexPath.section %2 != 0)
         {
             
             ht = 310;
@@ -678,7 +680,7 @@
         [self performSegueWithIdentifier:@"Event_WebVIEW" sender:self];
         }
         
-                else
+        else
         {
         VW_overlay.hidden = NO;
         [activityIndicatorView startAnimating];
@@ -692,10 +694,68 @@
         }
 
         }
-    if(tableView == _TBL_sports_list)
+   else  if(tableView == _TBL_sports_list)
     {
-        [self performSegueWithIdentifier:@"Home_sports_detail" sender:self];
+        @try
+        {
+        NSMutableDictionary *sports_dtl = [Sports_arr objectAtIndex:indexPath.section];
+        NSLog(@"the detail of sports is:%@",sports_dtl);
+        NSString *show_browser = [NSString stringWithFormat:@"%@",[sports_dtl valueForKey:@"_showBrowser"]];
+        [[NSUserDefaults standardUserDefaults] setObject:sports_dtl forKey:@"event_detail"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        
+        
+        if([show_browser intValue] == 1)
+        {
+            [self performSegueWithIdentifier:@"sports_webview" sender:self];
+        }
+        
+        else
+        {
+            VW_overlay.hidden = NO;
+            [activityIndicatorView startAnimating];
+            [self performSelector:@selector(sports_detail) withObject:activityIndicatorView afterDelay:0.01];
+        }
+        }
+    
+        @catch (NSException *exception)
+        {
+            NSLog(@"%@",exception);
+        }
     }
+   else  if(tableView == _TBL_lisure_list)
+   {
+       @try
+       {
+           NSMutableDictionary *leisure = [Leisure_arr objectAtIndex:indexPath.section];
+           NSLog(@"the detail of sports is:%@",leisure);
+           NSString *show_browser = [NSString stringWithFormat:@"%@",[leisure valueForKey:@"_showBrowser"]];
+           [[NSUserDefaults standardUserDefaults] setObject:leisure forKey:@"event_detail"];
+           [[NSUserDefaults standardUserDefaults] synchronize];
+           
+           
+           
+           if([show_browser intValue] == 1)
+           {
+               [self performSegueWithIdentifier:@"leisure_webview" sender:self];
+           }
+           
+           else
+           {
+               VW_overlay.hidden = NO;
+               [activityIndicatorView startAnimating];
+               [self performSelector:@selector(event_detail) withObject:activityIndicatorView afterDelay:0.01];
+           }
+       }
+       
+       @catch (NSException *exception)
+       {
+           NSLog(@"%@",exception);
+       }
+   }
+
+    
     
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -711,10 +771,16 @@
     return view;
 }
 #pragma didselct Actions
+-(void)sports_detail
+{
+    [self performSegueWithIdentifier:@"Home_sports_detail" sender:self];
+    VW_overlay.hidden = YES;
+    [activityIndicatorView stopAnimating];
+}
 -(void)event_detail
 {
     
-    [self performSegueWithIdentifier:@"Event_detail_segue" sender:self];
+    [self performSegueWithIdentifier:@"leisure_detail_segue" sender:self];
     VW_overlay.hidden = YES;
     [activityIndicatorView stopAnimating];
     
@@ -793,6 +859,9 @@
         {
             cell.LBL_language.text = text;
         }
+        [cell.BTN_book_now setTag:indexPath.row];
+        [cell.BTN_book_now addTarget:self action:@selector(Book_now_action:) forControlEvents:UIControlEventTouchUpInside];
+
        return cell;
     }
 
@@ -852,6 +921,9 @@
          {
              cell.LBL_language.text = text;
          }
+         [cell.BTN_book_now setTag:indexPath.row];
+         [cell.BTN_book_now addTarget:self action:@selector(Book_now_action:) forControlEvents:UIControlEventTouchUpInside];
+
 
      }
     
@@ -911,6 +983,8 @@
             {
                 cell.LBL_language.text = text;
             }
+            [cell.BTN_book_now setTag:indexPath.row];
+            [cell.BTN_book_now addTarget:self action:@selector(Book_now_action:) forControlEvents:UIControlEventTouchUpInside];
             return cell;
         }
         
@@ -1016,11 +1090,8 @@
     {
         NSLog(@"mydata");
     }
-    else{
-
-    [self performSegueWithIdentifier:@"Movies_Booking" sender:self];
-    }
 }
+
 #pragma segment craetion
 #pragma segment methods
 -(void) addSEgmentedControl
@@ -1030,7 +1101,7 @@
     frame.size.width = self.navigationController.navigationBar.frame.size.width;
     self.segmentedControl4.frame = frame;
     
-    self.segmentedControl4.sectionTitles = @[@"  Now Showing  ", @"  Coming Soon  ",];
+    self.segmentedControl4.sectionTitles = @[@"Now Showing", @"    Coming Soon  ",];
     
     self.segmentedControl4.backgroundColor = [UIColor clearColor];
     self.segmentedControl4.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:16]};
@@ -1077,6 +1148,14 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+-(void)Book_now_action:(UIButton *)sender
+{
+    [[NSUserDefaults standardUserDefaults] setObject:[Movies_arr objectAtIndex:sender.tag] forKey:@"Movie_detail"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self performSegueWithIdentifier:@"Movies_Booking" sender:self];
+    
+ 
+}
 #pragma API call
 -(void)movie_API_CALL
 {
@@ -1089,6 +1168,7 @@
         
      temp_dict = [xmlDoc valueForKey:@"Movies"];
     NSMutableArray *tmp_arr = [temp_dict valueForKey:@"movie"];
+//NSLog(@"Response dictionary: %@", tmp_arr);
     NSArray *old_arr = tmp_arr;//[json_RESULT mutableCopy];
         
         NSMutableArray *new_arr = [[NSMutableArray alloc]init];

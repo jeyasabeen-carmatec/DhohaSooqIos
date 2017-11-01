@@ -93,6 +93,7 @@
             </view>
             <size key="customSize" width="196" height="284"/>
             <connections>
+                <outlet property="BTN_book_now" destination="izu-6G-gGR" id="v9F-P6-3aO"/>
                 <outlet property="IMG_banner" destination="3hI-YX-FQm" id="709-W3-Dkv"/>
                 <outlet property="LBL_censor" destination="9zi-8P-Gb4" id="lfy-4n-hrM"/>
                 <outlet property="LBL_duration" destination="Bsd-9V-QFO" id="bK5-GG-2tc"/>

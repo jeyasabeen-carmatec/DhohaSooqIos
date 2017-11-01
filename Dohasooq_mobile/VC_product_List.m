@@ -45,7 +45,9 @@
     
     @try
     {
-    NSString *urlGetuser =[NSString stringWithFormat:@"%@%@",SERVER_URL,Product_List_Url];
+        /*NSUserDefaults *usd = [NSUserDefaults standardUserDefaults];
+         NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/%@/1/1.json",SERVER_URL,[usd valueForKey:@"url_key_home"]];*/
+    NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/womens-clothing/1/1.json",SERVER_URL];
     urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
     [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
          dispatch_async(dispatch_get_main_queue(), ^{
@@ -56,8 +58,10 @@
                  NSMutableDictionary *json_DATA = data;
                  //NSLog(@"%@",json_DATA);
                  productDataArray = [json_DATA valueForKey:@"products"];
+                 //NSLog(@"id for products %@",[[[productDataArray objectAtIndex:0] valueForKey:@"DISTINCT Products"] valueForKey:@"id"]);
                  
-                 //NSLog(@"%@",productDataArray);
+                // NSLog(@"%@",productDataArray);
+                // NSLog(@"URL KEY IS::::%@",[[productDataArray objectAtIndex:0] valueForKey:@"url_key"]);
                  
                  [self.collection_product reloadData];
              }
@@ -287,6 +291,9 @@
 }
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSUserDefaults *userDflts = [NSUserDefaults standardUserDefaults];
+    [userDflts setObject:[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"url_key"] forKey:@"URL_Key"];
+    //[userDflts setInteger:[[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"DISTINCT Products"] valueForKey:@"id"] integerValue]forKey:@"product_Id"];
     [self performSegueWithIdentifier:@"product_list_detail" sender:self];
 }
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView

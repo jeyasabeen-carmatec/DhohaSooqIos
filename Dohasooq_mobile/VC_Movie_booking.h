@@ -14,6 +14,13 @@
 
 // Movie Detail
 @property(nonatomic,weak) IBOutlet UIView *VW_dtl_movie;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_movie_name;
+@property(nonatomic,weak) IBOutlet UILabel *lbl_duration;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_rating;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_censor;
+
+
+
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_movie;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_language;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_trailer_watch;

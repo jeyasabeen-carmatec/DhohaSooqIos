@@ -11,6 +11,8 @@
 #import "product_detail_cell.h"
 #import "HCSStarRatingView.h"
 #import "HttpClient.h"
+#import <SDWebImage/UIImageView+WebCache.h>
+
 
 @interface VC_product_detail ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UITextFieldDelegate>
 {
@@ -30,18 +32,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-//    _TXTVW_description.delegate = self;
+    NSLog(@"%@", NSStringFromCGRect(self.BTN_s.frame));
+    _TXTVW_description.delegate = self;
     json_Response_Dic = [[NSMutableDictionary alloc]init];
     
     [self.collection_images registerNib:[UINib nibWithNibName:@"product_detail_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
 
     [self set_UP_VIEW];
     
-   #pragma _product_Detail_api_integration Method Calling
+    
+}
+-(void)viewWillAppear:(BOOL)animated{
+#pragma _product_Detail_api_integration Method Calling
     
     @try
     {
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@%@",SERVER_URL,Product_Detail_Url];
+        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/details/%@/3/1.json",SERVER_URL,[user_dflts valueForKey:@"URL_Key"]];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -50,8 +57,18 @@
                 }
                 if (data) {
                     json_Response_Dic = data;
-                    //NSLog(@"%@",json_Response_Dic);
-                 //****************Required Data****************
+                    NSLog(@"%@",json_Response_Dic);
+                    NSLog(@"Color and Size :::%@ %ld",[json_Response_Dic valueForKey:@"getVariantNames"] ,[[json_Response_Dic valueForKey:@"getVariantNames"] count]);
+                     //NSLog(@"Color and  :::%@",[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1]);
+                    @try {
+                        [self.collection_images reloadData];
+                        [self set_Data_to_UIElements];
+                        [self set_data_to_ThirdView];
+                    } @catch (NSException *exception) {
+                        NSLog(@"%@",exception);
+                    }
+                    
+                    //****************Required Data****************
                     //title_str = [[[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"title"];
                     
                     //current_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_price"]];
@@ -60,14 +77,14 @@
                     
                     //product_description = [[[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"description"];
                     //NSLog(@"%@",product_description);
-
+                    
                     //img_Url = [[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_image"];
-                   // NSLog(@"%@",img_Url);
-//                    NSLog(@"%@",actuel_price);
-//                    NSLog(@"%@",avg_rating);
+                    //NSLog(@"PRODUCT IMAGE IS  %@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_image"]);
+                    //                    NSLog(@"%@",actuel_price);
+                    //                    NSLog(@"%@",avg_rating);
                     
                     //NSLog(@"%@",title_str);
-                    [self set_Data_to_UIElements];
+                    
                     
                 }
                 
@@ -79,6 +96,7 @@
         NSLog(@"The error is:%@",exception);
         [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
     }
+
     
 }
 
@@ -318,7 +336,7 @@
     _BTN_play.layer.cornerRadius = self.BTN_play.frame.size.width / 2;
     _BTN_play.layer.masksToBounds = YES;
     
-    self.custom_story_page_controller.numberOfPages = temp_arr.count;
+    self.custom_story_page_controller.numberOfPages = [[json_Response_Dic valueForKey:@"products"] count];
     UIImage *newImage = [_IMG_cart.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIGraphicsBeginImageContextWithOptions(_IMG_cart.image.size, NO, newImage.scale);
     [[UIColor whiteColor] set];
@@ -471,14 +489,26 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     
-        return temp_arr.count;
+        //return temp_arr.count;
+    
+    return [[json_Response_Dic valueForKey:@"products"] count];
     
 }
     - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
     {
         
         product_detail_cell *img_cell = (product_detail_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_image" forIndexPath:indexPath];
-                img_cell.img.image = [UIImage imageNamed:[temp_arr objectAtIndex:indexPath.row]];
+        
+    #pragma Webimage URl Cachee
+        
+        NSString *img_url = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:indexPath.row] valueForKey:@"product_image"]];
+        [img_cell.img sd_setImageWithURL:[NSURL URLWithString:img_url]
+                             placeholderImage:[UIImage imageNamed:@"logo.png"]
+                                      options:SDWebImageRefreshCached];
+        
+        
+        
+            //img_cell.img.image = [UIImage imageNamed:[temp_arr objectAtIndex:indexPath.row]];
         img_cell.img.contentMode = UIViewContentModeScaleAspectFit;
             
         
@@ -658,6 +688,17 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+
+-(void)set_data_to_ThirdView{
+    //[json_Response_Dic valueForKey:@"getVariantNames"] ,[[json_Response_Dic valueForKey:@"getVariantNames"] count]
+    for (int i=0; i<[[json_Response_Dic valueForKey:@"getVariantNames"] count]; i++) {
+        NSLog(@"%@",[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:i]);
+        //NSLog(@"%@")
+        
+    }
+    
+}
 
 - (IBAction)productdetail_to_cartPage:(id)sender {
     [self performSegueWithIdentifier:@"productDetail_to_cart" sender:self];
