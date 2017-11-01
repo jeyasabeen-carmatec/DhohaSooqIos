@@ -42,12 +42,46 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Dohasooq_mobile/Event_detail.m"
-            timestampString = "530861204.339619"
+            timestampString = "531065980.306648"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "436"
-            endingLineNumber = "436"
-            landmarkName = "-BTN_plus_action:"
+            startingLineNumber = "565"
+            endingLineNumber = "565"
+            landmarkName = "-BTN_book_action"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.AddressBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            symbolName = "*0x108003a4d">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  usesParentBreakpointCondition = "Yes"
+                  offsetFromSymbolStart = "0">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Dohasooq_mobile/VC_sign_up.m"
+            timestampString = "531135318.409666"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
+            landmarkName = "-set_UP_View"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -57,13 +91,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dohasooq_mobile/Event_detail.m"
-            timestampString = "530861134.793796"
+            filePath = "Dohasooq_mobile/VC_Movie_booking.m"
+            timestampString = "531203132.327539"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "451"
-            endingLineNumber = "451"
-            landmarkName = "-BTN_plus_action:"
+            startingLineNumber = "461"
+            endingLineNumber = "461"
+            landmarkName = "-collectionView:cellForItemAtIndexPath:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -73,13 +107,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dohasooq_mobile/Event_detail.m"
-            timestampString = "530861160.283458"
+            filePath = "Dohasooq_mobile/VC_home.m"
+            timestampString = "531206741.317173"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "476"
-            endingLineNumber = "476"
-            landmarkName = "-BTN_plus_action:"
+            startingLineNumber = "321"
+            endingLineNumber = "321"
+            landmarkName = "-set_up_VIEW"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
