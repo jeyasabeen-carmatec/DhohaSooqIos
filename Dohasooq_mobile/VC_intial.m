@@ -148,13 +148,18 @@
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSUserDefaults *usd = [NSUserDefaults standardUserDefaults];
     if(tableView == _TBL_list_coutry)
     {
         _TBL_list_coutry.hidden = YES;
-        NSLog(@"%@",country_arr);
+        //NSLog(@"%@",country_arr);
         _TXT_country.text = [[country_arr objectAtIndex:indexPath.row] valueForKey:@"name"];
         country_ID = [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:indexPath.row] valueForKey:@"id"]];
         _TXT_language.text = @"";
+        
+        [usd setInteger:[[[country_arr objectAtIndex:indexPath.row]valueForKey:@"id" ] integerValue] forKey:@"country_id"];
+        //NSLog(@"Country id:::%@",[usd valueForKey:@"country_id"]);
+        
         [self language_api_call];
         
     }
@@ -163,6 +168,10 @@
         _TBL_list_lang.hidden = YES;
         //_TXT_username.text = [];
         _TXT_language.text = [[lang_arr objectAtIndex:indexPath.row]valueForKey:@"language_name"];
+        
+        [usd setInteger:[[[lang_arr objectAtIndex:indexPath.row] valueForKey:@"id"] integerValue] forKey:@"language_id"];
+        
+        //NSLog(@"Language id:::%@",[usd valueForKey:@"language_id"]);
 
         
     }
@@ -233,7 +242,7 @@
             //NSLog(@"The response Api post sighn up API %@",json_DATA);
             
             lang_arr = [json_DATA valueForKey:@"languages"];
-            NSLog(@"%@",lang_arr);
+            //NSLog(@"%@",lang_arr);
             [_TBL_list_lang reloadData];
             
             

@@ -15,7 +15,7 @@
 @interface Event_detail ()<UITableViewDelegate,UITableViewDataSource>
 {
     NSMutableDictionary *event_dtl_dict;
-    NSMutableArray *event_cost_arr,*values_arr;
+    NSMutableArray *event_cost_arr,*values_arr,*cost_arr;
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
 }
@@ -26,17 +26,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
     //[self set_UP_VIEW];
 }
 -(void)set_UP_VIEW
 {
-    values_arr = [[NSMutableArray alloc]init];
-    for(int i = 0; i <event_cost_arr.count;i++)
-    {
-        [values_arr addObject:@"0"];
-    }
+    cost_arr = [[NSMutableArray alloc]init];
+    cost_arr = [NSMutableArray arrayWithObjects:@"0",@"0",@"0", nil];
     NSLog(@"%@",values_arr);
     
     @try
@@ -111,7 +107,9 @@
     
     @try
     {
-    _LBL_data.text = [NSString stringWithFormat:@"%@",[event_dtl_dict valueForKey:@"_EDescription"]];
+        NSString *description =[NSString stringWithFormat:@"%@",[event_dtl_dict valueForKey:@"_EDescription"]];
+        //description = [description stringByReplacingOccurrencesOfString:@"" withString:<#(nonnull NSString *)#>];
+        _LBL_data.text = description;
     }
     @catch(NSException *exception)
     {
@@ -124,11 +122,24 @@
     frameset.origin.y= _LBL_author.frame.origin.y + _LBL_author.frame.size.height;
     _LBL_data.frame = frameset;
     
-    frameset = _VW_author.frame;
-    frameset.origin.y = _VW_event.frame.origin.y + _VW_event.frame.size.height;
-    frameset.size.height = _LBL_data.frame.origin.y + _LBL_data.frame.size.height;
-    frameset.size.width = _Scroll_contents.frame.size.width;
-    _VW_author.frame = frameset;
+    if(_BTN_calneder.hidden == YES)
+    {
+        frameset = _VW_author.frame;
+        frameset.origin.y = _VW_event.frame.origin.y + _VW_event.frame.size.height;
+        frameset.size.height = _LBL_data.frame.origin.y + _LBL_data.frame.size.height;
+        frameset.size.width = _Scroll_contents.frame.size.width;
+        _VW_author.frame = frameset;
+    }
+    else
+    {
+        
+        frameset = _VW_author.frame;
+        frameset.origin.y = _VW_event.frame.origin.y + _VW_event.frame.size.height;
+        frameset.size.height = _BTN_calneder.frame.origin.y + _BTN_calneder.frame.size.height;
+        frameset.size.width = _Scroll_contents.frame.size.width;
+        _VW_author.frame = frameset;
+    }
+   
     
    
     
@@ -144,18 +155,9 @@
     [self.Scroll_contents addSubview:_VW_event_dtl];
     [self.Scroll_contents addSubview:_VW_author];
     [self.Scroll_contents addSubview:_VW_Quantity];
+    [_BTN_book addTarget:self action:@selector(BTN_book_action) forControlEvents:UIControlEventTouchUpInside];
     
-    
-    @try
-    {
-        
-    }
-    @catch(NSException *excpetion)
-    {
-        NSLog(@"%@",excpetion);
-    }
-
-   // [self ATTRIBUTED_TEXT];
+       // [self ATTRIBUTED_TEXT];
     
     
 }
@@ -193,10 +195,17 @@
 #pragma Getdata
 -(void)getData
 {
-   
+    event_dtl_dict = [[NSMutableDictionary alloc]init];
     event_dtl_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"event_detail"];
+    [event_dtl_dict mutableCopy];
     event_cost_arr = [[NSMutableArray alloc]init];
-    event_cost_arr = [[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"];
+    
+    for (int i =0; i < [[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] count]; i ++) {
+        NSDictionary *tem_dictin = @{@"price":[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:i]valueForKey:@"_TicketPrice"],@"quantity":@"0",@"serve_price":[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:i]valueForKey:@"_ServiceCharge"]};
+        [event_cost_arr addObject:tem_dictin];
+        
+    }
+    
     VW_overlay.hidden = YES;
     [activityIndicatorView stopAnimating];
     [self set_UP_VIEW];
@@ -215,6 +224,7 @@
     if(section == 0)
     {
         
+    return [[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] count];
     return event_cost_arr.count;
     }
     else if(section == 1)
@@ -241,7 +251,6 @@
             nib = [[NSBundle mainBundle] loadNibNamed:@"Gender_cell" owner:self options:nil];
             gcell = [nib objectAtIndex:0];
        }
-        NSMutableDictionary *ticket_dicket =  [event_cost_arr objectAtIndex:indexPath.row];
         gcell.BTN_plus.layer.cornerRadius = gcell.BTN_plus.frame.size.width/2;
         gcell.BTN_plus.layer.masksToBounds = YES;
         
@@ -260,9 +269,9 @@
         {
             
       
-        gcell.LBL_gender_cat.text = [ticket_dicket valueForKey:@"_TicketName"];
-        gcell.LBL_price.text = [NSString stringWithFormat:@"QAR %@",[ticket_dicket valueForKey:@"_TicketPrice"]];
-        gcell.LBL_result.text = [values_arr objectAtIndex:indexPath.row];
+        gcell.LBL_gender_cat.text = [[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row]valueForKey:@"_TicketName"];
+        gcell.LBL_price.text = [NSString stringWithFormat:@"QAR %@",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row] valueForKey:@"_TicketPrice"]];
+        gcell.LBL_result.text = [[event_cost_arr objectAtIndex:indexPath.row] valueForKey:@"quantity"];
         
         }
         @catch(NSException *exception)
@@ -287,7 +296,7 @@
         @try
         {
             
-        NSString *str = @"365";//gcell.LBL_result.text;
+            NSString *str = [cost_arr objectAtIndex:0];//gcell.LBL_result.text;
             NSString *text = [NSString stringWithFormat:@"No of Tickets: %@",str];
             
             
@@ -319,9 +328,8 @@
             }
             
             
-            NSString *str1 = @"465";//gcell.LBL_price.text;
-            NSString *text1 = [NSString stringWithFormat:@"Total Price: %@",str1];
-            
+            NSString *str1 = [cost_arr objectAtIndex:1];//gcell.LBL_price.text;
+            NSString *text1 = [NSString stringWithFormat:@"Total Price:QR  %@",str1];
             
             if ([ccell.LBL_total_price respondsToSelector:@selector(setAttributedText:)]) {
                 
@@ -374,7 +382,6 @@
     return 30;
 }
 
-
 #pragma Button_Actions
 //-(void)male_plus_action
 //{
@@ -417,42 +424,177 @@
 #pragma Button Actions
 -(void)BTN_plus_action:(UIButton *)sender
 {
-     NSLog(@"%ld",(long)sender.tag);
-    int i = [[values_arr objectAtIndex:sender.tag] intValue];
-    i = i + 1;
-    NSString *add_val = [NSString stringWithFormat:@"%d",i];
-    [values_arr replaceObjectAtIndex:sender.tag withObject:add_val];
+    int i = [[[event_cost_arr objectAtIndex:sender.tag] valueForKey:@"quantity"] intValue];
+    
+    if(i < [[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag]valueForKey:@"_Availability"] intValue])
+    {
+        if(i < [[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag]valueForKey:@"_NoOfTicketsPerTransaction"] intValue])
+        {
+            i = i + 1;
+            NSString *add_val = [NSString stringWithFormat:@"%d",i];
+            NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:add_val,@"quantity",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag] valueForKey:@"_TicketPrice" ],@"price" ,nil];
+            [event_cost_arr removeObjectAtIndex:sender.tag];
+            [event_cost_arr insertObject:dict atIndex:sender.tag];
+    int count = 0;
+            int ACT_price =0;float ACT_service = 0;
+    for (int i = 0; i< event_cost_arr.count; i++)
+    {
+        count = count + [[[event_cost_arr objectAtIndex:i] valueForKey:@"quantity"] intValue];
+        int price = 0;// [[[event_cost_arr objectAtIndex:i] valueForKey:@"price"] intValue];
+        float serve_price = 0;
+        if ([[[event_cost_arr objectAtIndex:i] valueForKey:@"quantity"] intValue] !=0)
+        {
+            for (int j = 0; j < [[[event_cost_arr objectAtIndex:i] valueForKey:@"quantity"] intValue]; j++)
+            {
+//                price = price + price;
+                if([[[event_cost_arr objectAtIndex:i] valueForKey:@"quantity"] intValue]  == 0)
+                {
+                    price = 0;
+                    serve_price = 0;
+                }
+                else
+                {
+                    price = price + [[[event_cost_arr objectAtIndex:i] valueForKey:@"price"] intValue];
+                    serve_price = serve_price + [[[event_cost_arr objectAtIndex:i] valueForKey:@"serve_price"] floatValue];
+                }
+            }
+        }
+        
+        NSLog(@"The final price = %d",price);
+        ACT_price = ACT_price + price;
+        ACT_service = ACT_service + serve_price;
+        NSLog(@"the actual value is:%d",ACT_price);
+    }
+
+
+    [cost_arr replaceObjectAtIndex:0 withObject:[NSString stringWithFormat:@"%d",count]];
+    [cost_arr replaceObjectAtIndex:1 withObject:[NSString stringWithFormat:@"%d",ACT_price]];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:sender.tag inSection:0];
+    NSIndexPath *indexPath_sec = [NSIndexPath indexPathForRow:0 inSection:1];
     NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithObjects:indexPath, nil];
+    NSMutableArray *indexPath_quantity = [[NSMutableArray alloc] initWithObjects:indexPath_sec, nil];
+    NSLog(@"%@",cost_arr);
+    NSLog(@"%@",event_cost_arr);
+    
     [self.TBL_quantity beginUpdates];
     [self.TBL_quantity reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+    [self.TBL_quantity reloadRowsAtIndexPaths:indexPath_quantity withRowAnimation:UITableViewRowAnimationNone];
     [self.TBL_quantity endUpdates];
+            
+        }
+        else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"only %d Tickets per transaction",[[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag]valueForKey:@"_NoOfTicketsPerTransaction"] intValue]] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            [alert show];
+        }
+        
+    }
     
+
+
+
 }
 
 -(void)BTN_minus_action:(UIButton *)sender
 {
-    NSLog(@"%ld",(long)sender.tag);
-    int i = [[values_arr objectAtIndex:sender.tag] intValue];
-   // i = i - 1;
-    if( i == 0)
+    int i = [[[event_cost_arr objectAtIndex:sender.tag] valueForKey:@"quantity"] intValue];
+    
+            if(i == 0)
+            {
+                i =0;
+            }
+            else
+            {
+                 i = i - 1;
+            }
+           
+            NSString *add_val = [NSString stringWithFormat:@"%d",i];
+            NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:add_val,@"quantity",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag] valueForKey:@"_TicketPrice" ],@"price" ,nil];
+            [event_cost_arr removeObjectAtIndex:sender.tag];
+            [event_cost_arr insertObject:dict atIndex:sender.tag];
+    int count = 0;
+    
+    float ACT_price =0;float ACT_service = 0;
+    for (int i = 0; i< event_cost_arr.count; i++)
     {
-        i =0;
+        count = count + [[[event_cost_arr objectAtIndex:i] valueForKey:@"quantity"] intValue];
+        float price = 0;// [[[event_cost_arr objectAtIndex:i] valueForKey:@"price"] intValue];
+        float serve_price = 0;
+        if ([[[event_cost_arr objectAtIndex:i] valueForKey:@"quantity"] intValue] !=0)
+        {
+            for (int j = 0; j < [[[event_cost_arr objectAtIndex:i] valueForKey:@"quantity"] intValue]; j++)
+            {
+                //                price = price + price;
+                if([[[event_cost_arr objectAtIndex:i] valueForKey:@"quantity"] intValue]  == 0)
+                {
+                    price = 0;
+                    serve_price = 0;
+                }
+                else
+                {
+                    price = price + [[[event_cost_arr objectAtIndex:i] valueForKey:@"price"] intValue];
+                    serve_price = serve_price + [[[event_cost_arr objectAtIndex:i] valueForKey:@"serve_price"] floatValue];
+
+                }
+            }
+        }
+        
+        NSLog(@"The final price = %f",price);
+        ACT_price = ACT_price + price;
+        ACT_service = ACT_service + serve_price;
+
+        NSLog(@"the actual value is:%f",ACT_price);
+    }
+    
+    
+    [cost_arr replaceObjectAtIndex:0 withObject:[NSString stringWithFormat:@"%d",count]];
+    [cost_arr replaceObjectAtIndex:1 withObject:[NSString stringWithFormat:@"%.2f",ACT_price]];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:sender.tag inSection:0];
+    NSIndexPath *indexPath_sec = [NSIndexPath indexPathForRow:0 inSection:1];
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithObjects:indexPath, nil];
+    NSMutableArray *indexPath_quantity = [[NSMutableArray alloc] initWithObjects:indexPath_sec, nil];
+    NSLog(@"%@",cost_arr);
+    NSLog(@"%@",event_cost_arr);
+    
+    [self.TBL_quantity beginUpdates];
+    [self.TBL_quantity reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+    [self.TBL_quantity reloadRowsAtIndexPaths:indexPath_quantity withRowAnimation:UITableViewRowAnimationNone];
+    [self.TBL_quantity endUpdates];
+
+}
+-(void)BTN_book_action
+{
+    
+
+    int  i = [[cost_arr objectAtIndex:0] intValue];
+    if(i <= 0)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please selct Atleast one Ticket" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            [alert show];
     }
     else
     {
-         i = i - 1;
-    }
-    NSString *add_val = [NSString stringWithFormat:@"%d",i];
-    [values_arr replaceObjectAtIndex:sender.tag withObject:add_val];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:sender.tag inSection:0];
-    NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithObjects:indexPath, nil];
-    [self.TBL_quantity beginUpdates];
-    [self.TBL_quantity reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
-    [self.TBL_quantity endUpdates];
+        
+        [[NSUserDefaults standardUserDefaults] setObject:cost_arr forKey:@"Amount_dict"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
 
+//        [[NSUserDefaults standardUserDefaults] setValue:[cost_arr objectAtIndex:1] forKey:@"total_amount"];
+//        [[NSUserDefaults standardUserDefaults] synchronize];
+//        [[NSUserDefaults standardUserDefaults] setValue:[cost_arr objectAtIndex:2] forKey:@"service_chrge"];
+//        [[NSUserDefaults standardUserDefaults] synchronize];
+//        [[NSUserDefaults standardUserDefaults] setValue:[cost_arr objectAtIndex:0] forKey:@"number_of_persons"];
+//        [[NSUserDefaults standardUserDefaults] synchronize];
+//
+
+        [self performSegueWithIdentifier:@"event_book_user" sender:self];
+
+        
+        
+    }
+  
     
 }
+
 - (IBAction)back_action:(id)sender
 {
     [self.navigationController popViewControllerAnimated:YES];

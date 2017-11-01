@@ -27,11 +27,16 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_author;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_data;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_author;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_calneder;
+
 
 
 // Quantity VIEW
 @property(nonatomic,weak) IBOutlet UIView *VW_Quantity;
 @property(nonatomic,weak) IBOutlet UITableView *TBL_quantity;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_book;
+
+
 
 
 

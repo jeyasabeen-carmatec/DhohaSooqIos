@@ -15,5 +15,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *LBL_duration;
 @property (weak, nonatomic) IBOutlet UIImageView *IMG_banner;
 @property (weak, nonatomic) IBOutlet UILabel *LBL_rating;
+@property (weak, nonatomic) IBOutlet UIButton *BTN_book_now;
+
 
 @end
