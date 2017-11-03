@@ -34,6 +34,7 @@
 
 -(void)set_UP_VIEW
 {
+    [self wish_list_api_calling];
     arr_product = [[NSMutableArray alloc]init];
     NSDictionary *temp_dictin;
     temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
@@ -60,7 +61,7 @@
     
     CGRect set_frame = _TBL_wish_list_items.frame;
     set_frame.origin.y =  - self.navigationController.navigationBar.frame.origin.y+20;
-    set_frame.size.height = self.view.frame.size.height - set_frame.origin.y -20;
+    set_frame.size.height = self.view.frame.size.height - set_frame.origin.y;
     _TBL_wish_list_items.frame = set_frame;
     
     
@@ -208,20 +209,20 @@
         cell.BTN_minus.layer.borderWidth = 0.4f;
         cell.BTN_minus.layer.borderColor = [UIColor grayColor].CGColor;
     
-    CGSize result = [[UIScreen mainScreen] bounds].size;
-         if(result.height >= 480)
-        {
-            
-            [[cell LBL_ad_to_cart] setFont:[UIFont systemFontOfSize:10]];
-            
-            
-        }
-        else if(result.height >= 667)
-        {
-            
-             [[cell LBL_ad_to_cart] setFont:[UIFont systemFontOfSize:14]];
-            
-        }
+//    CGSize result = [[UIScreen mainScreen] bounds].size;
+//         if(result.height >= 480)
+//        {
+//            
+//            [[cell LBL_ad_to_cart] setFont:[UIFont systemFontOfSize:10]];
+//            
+//            
+//        }
+//        else if(result.height >= 667)
+//        {
+//            
+//             [[cell LBL_ad_to_cart] setFont:[UIFont systemFontOfSize:14]];
+//            
+//        }
 
         return cell;
     
@@ -266,26 +267,7 @@
     [self.navigationController popViewControllerAnimated:NO];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
-- (IBAction)wishList_to_cartPage:(id)sender {
-    [self performSegueWithIdentifier:@"wish_to_cart" sender:self];
-}
 #pragma wish_list_api_calling
-
 -(void)wish_list_api_calling{
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
@@ -308,6 +290,50 @@
         NSLog(@"%@",exception);
     }
 }
+
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+- (IBAction)wishList_to_cartPage:(id)sender {
+    [self performSegueWithIdentifier:@"wish_to_cart" sender:self];
+}
+/*#pragma wish_list_api_calling
+-(void)wish_list_api_calling{
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+    NSString *urlGetuser =[NSString stringWithFormat:@"http://192.168.0.171/dohasooq/apis/getWishList/%@/Customer.json",user_id];
+    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    @try {
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    NSLog(@"%@",[error localizedDescription]);
+                }
+                if (data) {
+                    NSLog(@"*******%@*********",data);
+                }
+                
+            });
+            
+        }];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
+}*/
 
 
     

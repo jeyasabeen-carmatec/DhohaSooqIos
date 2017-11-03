@@ -66,39 +66,6 @@
     _search_bar.layer.shadowRadius = 4.0f;
     _search_bar.layer.shadowOpacity = 1.0f;
 arr_product = [[NSMutableArray alloc]init];
-//NSDictionary *temp_dictin;
-//  temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
-//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"AL Saad Street,P.O.BOX:1117,\nDoha,Ad Dawhah,1117\nQatar",@"key1",@"3326698",@"key2",@"support@aljaberWatches.com",@"key3",@"Al Jaber Watches",@"key4",@"merchant.png",@"key5",nil];
-//[arr_product addObject:temp_dictin];
 }
 #pragma table view delegates
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -194,20 +161,16 @@ arr_product = [[NSMutableArray alloc]init];
     @try
     {
         NSError *error;
-       // NSError *err;
+    
         NSHTTPURLResponse *response = nil;
         
-//        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
-//        NSLog(@"the posted data is:%@",parameters);
         NSString *urlGetuser =[NSString stringWithFormat:@"%@Apis/merchantList/3/1.json",SERVER_URL];
-        // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
         [request setURL:urlProducts];
         [request setHTTPMethod:@"POST"];
         [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-       // [request setHTTPBody:postData];
-        //[request setAllHTTPHeaderFields:headers];
+      
         [request setHTTPShouldHandleCookies:NO];
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         if(aData)

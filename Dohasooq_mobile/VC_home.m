@@ -51,85 +51,22 @@
 
         
     
-    [self menu_set_UP];
+   // [self menu_set_UP];
 
 }
--(void)viewWillAppear:(BOOL)animated{
 
-#pragma ShopHome_api_integration Method Calling
-    
-    @try
-    {
-        
-        /**********   After passing Language Id and Country ID ************/
-        NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/home/%ld/%ld/.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]];
-        NSLog(@"%ld,%ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
-        
-        //NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/home/1/1/.json",SERVER_URL];
-        
-        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (error) {
-                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
-                }
-                if (data) {
-                    json_Response_Dic = data;
-                    @try {
-                         NSLog(@"the api_collection_product%@",json_Response_Dic);
-                        [self set_up_VIEW];
-                        [_collection_images reloadData];
-                        [_collection_features reloadData];
-                        [_collection_hot_deals reloadData];
-                        [_collection_best_deals reloadData];
-                    } @catch (NSException *exception) {
-                        NSLog(@"%@",exception);
-                    }
-                   
+-(void)viewWillAppear:(BOOL)animated
+{
+ [self API_call_total];
+ [self brands_API_call];
 
-
-                    //NSLog(@"Deal ::::%@",[json_Response_Dic valueForKey:@"deal"]);
-                    //NSLog(@"Deal Widget 1::::%@",[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"]);
-//                    NSLog(@"count %ld",[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count]);
-                    //NSLog(@"ProductDescriptions::::%@",[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] valueForKey:@"ProductDescriptions"]);
-                    //title
-                    
-                    //NSLog(@"title is::::%@",[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:0]valueForKey:@"ProductDescriptions"] valueForKey:@"title"]);
-                    
-                    
-                    //NSLog(@"title::::%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] valueForKey:@"ProductDescriptions"] valueForKey:@"title"]);
-                   
-                //NSLog(@"ProductPreference::::%@",[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:0]valueForKey:@"Widgets"]valueForKey:@"product_preference"]);
-//                NSLog(@"Product_Image::::%@",[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] valueForKey:@"product_image"]);
-                    
-//             NSLog(@"Product_Rating::::%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] valueForKey:@"product_reviews"] valueForKey:@"rating"]);
-//                NSLog(@"URL_KEY::::%@",[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] valueForKey:@"url_key"]);
-                    
-                    
-                  
-                    //NSLog(@"%@",[json_Response_Dic valueForKey:@"bannerLarge"]);
-//                    NSLog(@"Response :::%@",[json_Response_Dic valueForKey:@"bannerFashion"]);
-//                    NSLog(@"Categories::: %@",[json_Response_Dic valueForKey:@"categories"]);
-                    //NSLog(@"Banners%@",[json_Response_Dic valueForKey:@"banners"]);
-                    
-                }
-                
-            });
-        }];
-    }
-    @catch(NSException *exception)
-    {
-        NSLog(@"The error is:%@",exception);
-        [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
-    }
  [self set_up_VIEW];
 
 }
 
 -(void)menu_set_UP
 {
-    [self.TBL_menu reloadData];
+   // [self.TBL_menu reloadData];
    
  
     int statusbar_HEIGHT = [UIApplication sharedApplication].statusBarFrame.size.height;
@@ -280,7 +217,7 @@
         
     }
     brands_arr = [[NSMutableArray alloc]init];
-    brands_arr = [NSMutableArray arrayWithObjects:@"brand.png",@"brand.png",@"brand.png",@"brand.png",@"brand.png",@"brand.png",@"brand.png",@"brand.png",nil];
+//    brands_arr = [NSMutableArray arrayWithObjects:@"brand.png",@"brand.png",@"brand.png",@"brand.png",@"brand.png",@"brand.png",@"brand.png",@"brand.png",nil];
 
     temp_arr = [[NSMutableArray alloc]init];
     temp_arr = [NSMutableArray arrayWithObjects:@"featured_banner.jpg",@"banner.jpg",@"featured_banner.jpg",@"banner.jpg",nil];
@@ -344,7 +281,10 @@
     [self.Scroll_contents addSubview:_VW_second];
     
     setupframe = _collection_best_deals.frame;
-    if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count]>2)
+    
+    for(int m = 0;m<[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"]count];m++)
+    {
+    if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:m] count]>2)
     {
         setupframe.size.height =_collection_best_deals.frame.origin.y+ _collection_best_deals.frame.size.height;
         
@@ -354,12 +294,13 @@
         setupframe.size.height = 240;
         
     }
+    }
     _collection_best_deals.frame = setupframe;
 
     
     setupframe = _VW_third.frame;
     setupframe.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height;
-    setupframe.size.height = _collection_best_deals.frame.origin.y + _collection_best_deals.frame.size.height +10;
+    setupframe.size.height = _collection_best_deals.frame.origin.y + _collection_best_deals.frame.size.height - _IMG_best_deals.frame.size.height;
     setupframe.size.width = _Scroll_contents.frame.size.width;
     _VW_third.frame = setupframe;
     [self.Scroll_contents addSubview:_VW_third];
@@ -393,6 +334,7 @@
     _BTN_left.layer.masksToBounds = YES;
     _BTN_right.layer.cornerRadius = _BTN_right.frame.size.width/2;
     _BTN_right.layer.masksToBounds = YES;
+    [_collection_brands reloadData];
     
     [_BTN_right addTarget:self action:@selector(BTN_right_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_left addTarget:self action:@selector(BTN_left_action) forControlEvents:UIControlEventTouchUpInside];
@@ -403,7 +345,10 @@
 {
     [super viewDidLayoutSubviews];
     [_Scroll_contents layoutIfNeeded];
-    _Scroll_contents.contentSize = CGSizeMake(_Scroll_contents.frame.size.width,_VW_Fourth.frame.origin.y+ _VW_Fourth.frame.size.height );
+    
+    
+        _Scroll_contents.contentSize = CGSizeMake(_Scroll_contents.frame.size.width,_VW_Fourth.frame.origin.y+ _VW_Fourth.frame.size.height);
+
     
     
 }
@@ -473,17 +418,9 @@
     {
         hot_deals_cell *hotdeals_cell = (hot_deals_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_hot_deals" forIndexPath:indexPath];
 
-//        NSMutableDictionary *temp_dict = [[NSMutableDictionary alloc]init];
-//        temp_dict = [temp_hot_deals objectAtIndex:indexPath.row];
-//        hotdeals_cell.IMG_item.image = [UIImage imageNamed:[temp_dict valueForKey:@"key5"]];
-//        //hotdeals_cell.LBL_item_name.text = [temp_dict valueForKey:@"key1"];
-//    
-//       
-//        
-//        NSString *current_price = [NSString stringWithFormat:@"%@", [temp_dict valueForKey:@"key2"]];
-//        NSString *prec_price = [NSString stringWithFormat:@"%@", [temp_dict valueForKey:@"key3"]];
-//        NSString *text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
-        
+        @try
+        {
+            
         NSString *url_Img_FULL = [SERVER_URL stringByAppendingPathComponent:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_image"]];
 #pragma Webimage URl Cachee
         
@@ -494,7 +431,7 @@
         hotdeals_cell.LBL_item_name.text = [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"ProductDescriptions"] valueForKey:@"title"];
         NSString *current_price = [NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"] ];
         NSString *prec_price = [NSString stringWithFormat:@"%@", [[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_price"]];
-        NSString *text = [NSString stringWithFormat:@"QR%@ QR%@",current_price,prec_price];
+        NSString *text = [NSString stringWithFormat:@"QR %@ QR %@",current_price,prec_price];
         
         
         
@@ -536,25 +473,26 @@
         else
         {
             hotdeals_cell.LBL_price.text = text;
+            
         }
-        float discount = (([prec_price integerValue]-[current_price integerValue])/[prec_price integerValue])*100;
-        NSString *str = @"%off";
-        hotdeals_cell.LBL_discount.text= [NSString stringWithFormat:@"%.0f %@ ",discount,str];
+            int  j = [prec_price intValue]-[current_price intValue];
+            float discount = (j*100)/[prec_price intValue];
+        NSString *str = @"% off";
+        hotdeals_cell.LBL_discount.text= [NSString stringWithFormat:@"%.0f%@ ",discount,str];
+            
+        }
+        @catch(NSException *exception)
+        {
+            
+        }
         //hotdeals_cell.LBL_discount.text = [temp_dict valueForKey:@"key4"];
         return hotdeals_cell;
     }
     else if(collectionView == _collection_best_deals)
     {
         Best_deals_cell *bestdeals_cell = (Best_deals_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_best" forIndexPath:indexPath];
-        
-//        NSMutableDictionary *temp_dict = [[NSMutableDictionary alloc]init];
-//        temp_dict = [temp_hot_deals objectAtIndex:indexPath.row];
-//        bestdeals_cell.IMG_item.image = [UIImage imageNamed:[temp_dict valueForKey:@"key5"]];
-//        bestdeals_cell.LBL_best_item_name.text = [temp_dict valueForKey:@"key1"];
-//        NSString *current_price = [NSString stringWithFormat:@"%@", [temp_dict valueForKey:@"key2"]];
-//        NSString *prec_price = [NSString stringWithFormat:@"%@", [temp_dict valueForKey:@"key3"]];
-//        NSString *text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
-        NSString *url_Img_FULL = [SERVER_URL stringByAppendingPathComponent:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_image"]];
+        @try
+        {NSString *url_Img_FULL = [SERVER_URL stringByAppendingPathComponent:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_image"]];
 #pragma Webimage URl Cachee
         
         [bestdeals_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:url_Img_FULL]
@@ -564,7 +502,7 @@
         bestdeals_cell.LBL_best_item_name.text = [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"ProductDescriptions"] valueForKey:@"title"];
         NSString *current_price = [NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"] ];
         NSString *prec_price = [NSString stringWithFormat:@"%@", [[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_price"]];
-        NSString *text = [NSString stringWithFormat:@"QR%@ QR%@",current_price,prec_price];
+        NSString *text = [NSString stringWithFormat:@"QR %@ QR %@",current_price,prec_price];
         
         
         
@@ -609,9 +547,15 @@
             bestdeals_cell.LBL_best_price.text = text;
         }
 
-       float discount = (([prec_price integerValue]-[current_price integerValue])/[prec_price integerValue])*100;
-        NSString *str = @"%off";
-        bestdeals_cell.LBL_best_discount.text = [NSString stringWithFormat:@"%.0f %@",discount,str];
+            int  j = [prec_price intValue]-[current_price intValue];
+            float discount = (j*100)/[prec_price intValue];
+        NSString *str = @"% off";
+        bestdeals_cell.LBL_best_discount.text = [NSString stringWithFormat:@"%.0f%@",discount,str];
+        }
+        @catch(NSException *exception)
+        {
+            
+        }
         //bestdeals_cell.LBL_best_discount.text = [temp_dict valueForKey:@"key4"];
         return bestdeals_cell;
 
@@ -642,10 +586,23 @@
     {
         cell_brands *cell = (cell_brands *)[collectionView dequeueReusableCellWithReuseIdentifier:@"brands_cell" forIndexPath:indexPath];
        
-        cell.img.image = [UIImage imageNamed:[brands_arr objectAtIndex:indexPath.row]];
-        cell.img.layer.cornerRadius = 2.0f;
-        cell.img.layer.masksToBounds = YES;
-        return cell;
+        @try
+        {
+            NSString *img_URL = [NSString stringWithFormat:@"%@%@",IMG_URL,[[brands_arr objectAtIndex:indexPath.row] valueForKey:@"logo"]];
+            [cell.img sd_setImageWithURL:[NSURL URLWithString:img_URL]
+                                      placeholderImage:[UIImage imageNamed:@"brand.png"]
+                                               options:SDWebImageRefreshCached];
+            
+            cell.img.image = [UIImage imageNamed:[brands_arr objectAtIndex:indexPath.row]];
+            cell.img.layer.cornerRadius = 2.0f;
+            cell.img.layer.masksToBounds = YES;
+
+        }
+        @catch (NSException *exception) {
+            NSLog(@"Exception from cell item indexpath %@",exception);
+        }
+        
+               return cell;
         
         
     }
@@ -1592,6 +1549,117 @@ else
         _VW_swipe.frame = CGRectMake(0, self.navigationController.view.frame.origin.y, _menuDraw_width, self.navigationController.view.frame.size.height);
         [UIView commitAnimations];
         
+    }
+
+}
+-(void)brands_API_call
+{
+    
+    @try
+    {
+        NSError *error;
+        
+        NSHTTPURLResponse *response = nil;
+        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@brands/getFashionBrands/male/%@/%@.json",SERVER_URL,country,languge];
+        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:urlProducts];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        
+        [request setHTTPShouldHandleCookies:NO];
+        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if(aData)
+        {
+           // [activityIndicatorView stopAnimating];
+           // VW_overlay.hidden = YES;
+            brands_arr= (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            NSLog(@"The response Api form Brands%@",brands_arr);
+            
+          //  arr_product = [json_DATA valueForKey:@"Success"];
+           // [_TBL_merchants reloadData];
+            
+        }
+    }
+    
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+    }
+    
+
+}
+#pragma ShopHome_api_integration Method Calling
+
+-(void)API_call_total
+{
+    
+    @try
+    {
+        //Pages/home/" + country_val+ "/" + language_val + "/.json
+        
+        /**********   After passing Language Id and Country ID ************/
+        NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/home/%ld/%ld/.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]];
+        NSLog(@"%ld,%ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
+        
+        //NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/home/1/1/.json",SERVER_URL];
+        
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                }
+                if (data) {
+                    json_Response_Dic = data;
+                    @try {
+                        [self set_up_VIEW];
+                        [_collection_images reloadData];
+                        [_collection_features reloadData];
+                        [_collection_hot_deals reloadData];
+                        [_collection_best_deals reloadData];
+                    } @catch (NSException *exception) {
+                        NSLog(@"%@",exception);
+                    }
+                    NSLog(@"the api_collection_product%@",json_Response_Dic);
+                    
+                    
+                    //NSLog(@"Deal ::::%@",[json_Response_Dic valueForKey:@"deal"]);
+                    //NSLog(@"Deal Widget 1::::%@",[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"]);
+                    //                    NSLog(@"count %ld",[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count]);
+                    //NSLog(@"ProductDescriptions::::%@",[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] valueForKey:@"ProductDescriptions"]);
+                    //title
+                    
+                    //NSLog(@"title is::::%@",[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:0]valueForKey:@"ProductDescriptions"] valueForKey:@"title"]);
+                    
+                    
+                    //NSLog(@"title::::%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] valueForKey:@"ProductDescriptions"] valueForKey:@"title"]);
+                    
+                    //NSLog(@"ProductPreference::::%@",[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:0]valueForKey:@"Widgets"]valueForKey:@"product_preference"]);
+                    //                NSLog(@"Product_Image::::%@",[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] valueForKey:@"product_image"]);
+                    
+                    //             NSLog(@"Product_Rating::::%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] valueForKey:@"product_reviews"] valueForKey:@"rating"]);
+                    //                NSLog(@"URL_KEY::::%@",[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] valueForKey:@"url_key"]);
+                    
+                    
+                    
+                    //NSLog(@"%@",[json_Response_Dic valueForKey:@"bannerLarge"]);
+                    //                    NSLog(@"Response :::%@",[json_Response_Dic valueForKey:@"bannerFashion"]);
+                    //                    NSLog(@"Categories::: %@",[json_Response_Dic valueForKey:@"categories"]);
+                    //NSLog(@"Banners%@",[json_Response_Dic valueForKey:@"banners"]);
+                    
+                }
+                
+            });
+        }];
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+        [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
     }
 
 }

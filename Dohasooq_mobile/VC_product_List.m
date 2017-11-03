@@ -155,9 +155,9 @@
     }
     
     
-    [_BTN_filter addTarget:self action:@selector(contact_us_action) forControlEvents:UIControlEventTouchUpInside];
-    [_BTN_add_cart addTarget:self action:@selector(add_cart_animation) forControlEvents:UIControlEventTouchUpInside];
-    
+//    [_BTN_filter addTarget:self action:@selector(contact_us_action) forControlEvents:UIControlEventTouchUpInside];
+//    [_BTN_add_cart addTarget:self action:@selector(add_cart_animation) forControlEvents:UIControlEventTouchUpInside];
+//    
     
 }-(void)btnfav_action
 {
@@ -170,10 +170,14 @@
 }
 - (IBAction)back_action:(id)sender
 {
-     [self.navigationController popViewControllerAnimated:YES];
+    //[self dismissViewControllerAnimated:NO completion:nil] ;
+  //  [self.navigationController popToRootViewControllerAnimated:YES];product_list_home
+    [self performSegueWithIdentifier:@"product_list_home" sender:self];
+
 }
 
-- (IBAction)wish_list_action:(UIBarButtonItem *)sender {
+- (IBAction)wish_list_action:(UIBarButtonItem *)sender
+{
      [self performSegueWithIdentifier:@"productList_to_wishList" sender:self];
     
 }
@@ -213,8 +217,8 @@
     pro_cell.LBL_rating.text = [NSString stringWithFormat:@"%@  ",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"rating"]];
     pro_cell.LBL_current_price.text = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
     
-    NSString *current_price = [NSString stringWithFormat:@"QR%@", [[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
-    NSString *prec_price = [NSString stringWithFormat:@"QR%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
+    NSString *current_price = [NSString stringWithFormat:@"QR %@", [[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
+    NSString *prec_price = [NSString stringWithFormat:@"QR %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
     NSString *text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
     
     if ([pro_cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
@@ -260,6 +264,7 @@
     {
         pro_cell.LBL_current_price.text = text;
     }
+   
     NSString *str = @"%off";
     pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@ %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"],str];
     
@@ -442,10 +447,16 @@
     {
         /*NSUserDefaults *usd = [NSUserDefaults standardUserDefaults];
          NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/%@/1/1.json",SERVER_URL,[usd valueForKey:@"url_key_home"]];*/
+<<<<<<< HEAD
         NSString *country = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"];
         NSString *languge = [[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"];
         
         //womens-clothing
+=======
+        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+        
+>>>>>>> master
         NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/Fashion/%@/%@.json",SERVER_URL,country,languge];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {

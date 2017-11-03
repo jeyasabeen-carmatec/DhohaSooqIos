@@ -21,7 +21,7 @@
 @synthesize lbl_icon;
 
 #pragma mark - Constants
-static CGFloat const activeBorderThickness = 2;
+static CGFloat const activeBorderThickness = 1.5;
 static CGFloat const inactiveBorderThickness = 0.8;
 static CGPoint const textFieldInsets = {0, 12};
 static CGPoint const placeholderInsets = {0, 6};
@@ -118,7 +118,8 @@ static CGPoint const placeholderInsets = {0, 6};
     self.borderActiveColor = [UIColor colorWithRed:0.4157 green:0.4745 blue:0.5373 alpha:1.0];
     self.placeholderColor = [UIColor grayColor];
     self.cursorColor = [UIColor colorWithRed:0.349 green:0.3725 blue:0.4314 alpha:1.0];
-    self.textColor = [UIColor colorWithRed:0.2785 green:0.2982 blue:0.3559 alpha:1.0];
+    self.textColor = [UIColor grayColor];
+    [self setFont:[UIFont fontWithName:@"Poppins-Regular" size:19]];
     
     self.placeholderFontScale = 0.65;
     self.activePlaceholderPoint = CGPointZero;
@@ -320,7 +321,7 @@ static CGPoint const placeholderInsets = {0, 6};
 }
 
 - (UIFont *)placeholderFontFromFont:(UIFont *)font {
-    UIFont *smallerFont = [UIFont fontWithName:font.fontName size:font.pointSize*self.placeholderFontScale+2];
+    UIFont *smallerFont = [UIFont fontWithName:@"Poppins-Regular" size:font.pointSize*self.placeholderFontScale+2];
     
     return smallerFont;
 }
@@ -348,8 +349,8 @@ static CGPoint const placeholderInsets = {0, 6};
     //           break;
     //    }
     
-    self.placeholderLabel.frame = CGRectMake(originX, textRect.size.height/2.2, CGRectGetWidth(self.placeholderLabel.bounds), CGRectGetHeight(self.placeholderLabel.bounds));
-    self.activePlaceholderPoint = CGPointMake(0, self.placeholderLabel.frame.origin.y-self.placeholderLabel.frame.size.height-placeholderInsets.y);
+    self.placeholderLabel.frame = CGRectMake(originX, textRect.size.height/2.5, CGRectGetWidth(self.placeholderLabel.bounds), CGRectGetHeight(self.placeholderLabel.bounds));
+    self.activePlaceholderPoint = CGPointMake(0, self.placeholderLabel.frame.origin.y-self.placeholderLabel.frame.size.height);
 }
 
 @end
