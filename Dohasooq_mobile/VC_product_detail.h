@@ -44,6 +44,10 @@
 @property(nonatomic,weak) IBOutlet UIButton *BTN_M_color;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_XL_color;
 
+@property(nonatomic,weak) IBOutlet UICollectionView *collectionview_size;
+@property(nonatomic,weak) IBOutlet UICollectionView *collectionView_color;
+
+
 //fourth view
 @property(nonatomic,weak) IBOutlet UIView *VW_fourth;
 @property(nonatomic,retain) IBOutlet UIView *VW_segemnt;
@@ -56,8 +60,8 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_filter;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_cart;
 
-- (IBAction)productdetail_to_cartPage:(id)sender;
-- (IBAction)productDetail_to_wishPage:(id)sender;
+//- (IBAction)productdetail_to_cartPage:(id)sender;
+//- (IBAction)productDetail_to_wishPage:(id)sender;
 
 
 //@property(nonatomic,weak) IBOutlet UILabel *LBL_review;

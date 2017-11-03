@@ -11,11 +11,11 @@
 @implementation TXT_Blck_field
 
 - (CGRect)editingRectForBounds:(CGRect)bounds {
-    return CGRectMake(10, bounds.origin.y, bounds.size.width, bounds.size.height);
+    return CGRectMake(5, bounds.origin.y, bounds.size.width-5, bounds.size.height);
 }
 
 - (CGRect)textRectForBounds:(CGRect)bounds {
-    return CGRectMake(10, bounds.origin.y, bounds.size.width, bounds.size.height);
+    return CGRectMake(5, bounds.origin.y, bounds.size.width-5, bounds.size.height);
 }
 
 /*
