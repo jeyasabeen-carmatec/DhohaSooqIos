@@ -447,16 +447,11 @@
     {
         /*NSUserDefaults *usd = [NSUserDefaults standardUserDefaults];
          NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/%@/1/1.json",SERVER_URL,[usd valueForKey:@"url_key_home"]];*/
-<<<<<<< HEAD
-        NSString *country = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"];
-        NSString *languge = [[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"];
-        
-        //womens-clothing
-=======
+
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
         
->>>>>>> master
+
         NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/Fashion/%@/%@.json",SERVER_URL,country,languge];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
