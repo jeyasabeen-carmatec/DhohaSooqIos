@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+
 @interface Home_page_Qtickets : UIViewController
 @property(nonatomic,strong) NSArray *items;
 @property(nonatomic,weak)IBOutlet UITabBar *Tab_MENU;
@@ -76,11 +77,27 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_profile;
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_brands;
 
-
-
 @property(nonatomic,weak) IBOutlet UILabel *LBL_best_selling;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_fashio;
 
+//Movies Tab
+@property(nonatomic,weak) IBOutlet UICollectionView *Collection_movies;
+@property(nonatomic,weak) IBOutlet UIView *VW_line;
+@property(nonatomic,weak) IBOutlet UIView *VW_segment;
+@property(nonatomic,weak) IBOutlet UIView *VW_Movies;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_all_lang;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_all_halls;
+//events tab
+@property(nonatomic,weak) IBOutlet UITableView *TBL_event_list;
+@property(nonatomic,weak) IBOutlet UIView *VW_event;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_venues;
 
+//sports tab
+
+@property(nonatomic,weak) IBOutlet UITableView *TBL_sports_list;
+@property(nonatomic,weak) IBOutlet UIView *VW_sports;
+// Leisure Tab
+@property(nonatomic,weak) IBOutlet UITableView *TBL_lisure_list;
+@property(nonatomic,weak) IBOutlet UIView *VW_Leisure;
 
 @end

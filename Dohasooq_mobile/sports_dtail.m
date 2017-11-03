@@ -59,7 +59,7 @@
 
 }
 - (IBAction)back_action:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     
