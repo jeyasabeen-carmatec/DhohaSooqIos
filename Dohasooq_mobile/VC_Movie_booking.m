@@ -8,12 +8,19 @@
 
 #import "VC_Movie_booking.h"
 #import "cell_timings.h"
+#import "cell_title_theatre.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 
 @interface VC_Movie_booking ()<UITableViewDelegate,UITableViewDataSource,MZDayPickerDelegate, MZDayPickerDataSource,UICollectionViewDelegate,UICollectionViewDataSource>
 {
-    NSMutableArray *collection_count;
+    NSMutableArray *collection_count,*table_count;
+    NSMutableDictionary *detail_dict;
     CGRect oldframe;
     float scrollheight;
+    UIView *VW_overlay;
+     UIActivityIndicatorView *activityIndicatorView;
+    NSMutableArray *ARR_temp;
+
 }
 @property (nonatomic,strong) NSDateFormatter *dateFormatter;
 
@@ -25,13 +32,153 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self set_UP_VIEW];
+    
+   // [self set_UP_VIEW];
     
 }
--(void)set_UP_VIEW
+-(void)viewWillAppear:(BOOL)animated
+{
+    
+    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    VW_overlay.clipsToBounds = YES;
+    //    VW_overlay.layer.cornerRadius = 10.0;
+    
+    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+    activityIndicatorView.center = VW_overlay.center;
+    [VW_overlay addSubview:activityIndicatorView];
+    [self.view addSubview:VW_overlay];
+    
+    VW_overlay.hidden = YES;
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(getResponse_detail) withObject:activityIndicatorView afterDelay:0.01];
+    
+
+}
+-(void)getResponse_detail
 {
     collection_count = [[NSMutableArray alloc]init];
-    collection_count = [NSMutableArray arrayWithObjects:@"03.30",@"07.30", nil];
+    table_count = [[NSMutableArray alloc]init];
+    detail_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"];
+    NSMutableArray *att = [[NSMutableArray alloc]init];
+    NSMutableArray *dict_time = [[NSMutableArray alloc]init];
+    
+    NSLog(@"THE REPONSE DETAIL IS:%@",detail_dict);
+     ARR_temp = [[NSMutableArray alloc]init];
+    NSMutableArray *temp_arr = [[NSMutableArray alloc]init];;
+    
+    @try
+    {
+        NSArray *temp_ar = [detail_dict valueForKey:@"Theatre"];
+        for(int i = 0;i<temp_ar.count;i++)
+        {
+            
+            att = [[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"] ;
+            
+            if([att isKindOfClass:[NSDictionary class]])
+            {
+                if([[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"]  valueForKey:@"_Date"] isEqualToString:@"11/02/2017"])
+                {
+                [dict_time addObject:[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"]];
+                   [temp_arr addObject:[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i]valueForKey:@"ShowDates"]valueForKey:@"showDate"]valueForKey:@"ShowTimes"] valueForKey:@"showTime"]];
+                   
+                }
+                
+            }
+            else{
+            NSLog(@"%lu",(unsigned long)att.count);
+
+            for(int j =0;j< att.count;j++)
+            {
+                @try
+                {
+                if([[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j]  valueForKey:@"_Date"] isEqualToString:@"11/02/2017"])
+                {
+                    [collection_count addObject:[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"]];
+
+                    [ARR_temp addObject:[[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i]valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j] valueForKey:@"ShowTimes"] valueForKey:@"showTime"]];
+                   
+                }
+                }
+                
+                @catch(NSException *exception)
+                {
+                  
+
+                }
+            }
+        
+          
+                
+            }
+        }
+
+        
+    }
+    @catch(NSException *exception)
+    {
+       
+        att = [[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"]valueForKey:@"showDate"];
+       
+        if([att isKindOfClass:[NSDictionary class]])
+        {
+            if([[[[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"ShowDates"]valueForKey:@"showDate"]  valueForKey:@"_Date"] isEqualToString:@"11/02/2017"])
+            {
+                [dict_time addObject:[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"_name"]];
+                [temp_arr addObject:[[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"]valueForKey:@"showDate"]valueForKey:@"ShowTimes"] valueForKey:@"showTime"]];
+                
+            }
+        }
+            
+       
+        else{
+
+        for(int j =0; j< att.count;j++)
+        {
+            @try
+            {
+            if([[[[[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j]  valueForKey:@"_Date"] isEqualToString:@"11/02/2017"])
+            {
+            [dict_time addObject:[[detail_dict valueForKey:@"Theatre"] valueForKey:@"_name"]];
+                
+               [ARR_temp addObject:[[[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j] valueForKey:@"ShowTimes"] valueForKey:@"showTime"]];
+            }
+        }
+            @catch(NSException *exception)
+            
+            {
+                
+            }
+        }
+        
+
+    }
+    }
+    
+    [ARR_temp addObjectsFromArray:temp_arr];
+    [collection_count addObjectsFromArray:dict_time];
+    NSLog(@"the added array is:%@",ARR_temp);
+
+    
+    
+   // NSLog(@"the added array is:%@",table_count);
+    NSLog(@"the added array is:%@",collection_count);
+    
+  //  [_tbl_timings reloadData];
+    
+    
+    [self set_UP_VIEW];
+    
+    [activityIndicatorView stopAnimating];
+    VW_overlay.hidden = YES;
+     [self viewDidLayoutSubviews];
+}
+
+
+-(void)set_UP_VIEW
+{
     
     _LBL_movie_description.numberOfLines = 3;
     
@@ -40,8 +187,16 @@
     _VW_dtl_movie.frame = frameset;
     
     [self.Scroll_contents addSubview:_VW_dtl_movie];
-    _LBL_movie_description.text = @"Private European Union based bodyguard Michael Bryce is hired to protect Takashi Kurosawa, a Japanese arms dealer. All apparently goes well, until Kurosawa is shot in the head through the airplane window. Two years later, Bryce has fallen into disgrace and ekes out a living protecting drug-addicted corporate executives in London";
-    
+    @try
+    {
+    _LBL_movie_description.text = [NSString stringWithFormat:@"%@",[detail_dict valueForKey:@"_Description"]];
+    }
+   @catch(NSException *exception)
+    {
+        NSLog(@"%@",exception);
+    }
+                                   
+
     frameset = _VW_about_movie.frame;
     frameset.origin.y = _VW_dtl_movie.frame.origin.y + _VW_dtl_movie.frame.size.height;
     frameset.size.height = _BTN_view_more.frame.origin.y + _BTN_view_more.frame.size.height;
@@ -58,9 +213,23 @@
     [self.Scroll_contents addSubview:_VW_timings];
     
     scrollheight = _VW_timings.frame.origin.y + _VW_timings.frame.size.height;
-    
-    NSString *str = @"HINDI";
-    NSString *sub_str = @"2D";
+    @try
+    {
+       self.LBL_movie_name.text =  [detail_dict valueForKey:@"_name"];
+        self.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[detail_dict valueForKey:@"_IMDB_rating"]];
+      _LBL_censor.text = [detail_dict valueForKey:@"_Censor"];
+        NSString *img_url = [detail_dict valueForKey:@"_thumbnail"];
+        img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+        [self.IMG_movie sd_setImageWithURL:[NSURL URLWithString:img_url]
+                           placeholderImage:[UIImage imageNamed:@"logo.png"]
+                                    options:SDWebImageRefreshCached];
+        int time = [[detail_dict valueForKey:@"_Duration"] intValue];
+        int hours = time / 60;
+        int minutes = time % 60;
+       self.lbl_duration.text = [NSString stringWithFormat:@"%d hr %d min",hours,minutes];
+
+    NSString *str = [detail_dict valueForKey:@"_Languageid"];
+    NSString *sub_str = [detail_dict valueForKey:@"_MovieType"];
     NSString *text = [NSString stringWithFormat:@"%@      %@",str,sub_str];
     
     
@@ -91,6 +260,12 @@
     {
         _LBL_language.text = text;
     }
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"%@",exception);
+    }
+    
 
     
     _BTN_trailer_watch.layer.cornerRadius = 1.0f;
@@ -122,6 +297,7 @@
     [super viewDidLayoutSubviews];
     [_Scroll_contents layoutIfNeeded];
     _Scroll_contents.contentSize = CGSizeMake(_Scroll_contents.frame.size.width,scrollheight);
+    
     
 }
 -(void)viewmore_selcted
@@ -180,23 +356,38 @@
 #pragma Tbale view delagets
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 5;
+    return collection_count.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+    cell_title_theatre *cell = (cell_title_theatre *)[tableView dequeueReusableCellWithIdentifier:@"cell"];
+    @try
+    {
+        NSLog(@"+++++++++ %@",[[detail_dict valueForKey:@"Theatre"] valueForKey:@"_name"]);
+
+        cell.TXT_name.text = [collection_count objectAtIndex:indexPath.row];
+        [cell.collection_timings setTag:indexPath.row];
+        [cell.collection_timings reloadData];
+
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
+   
     return cell;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(collection_count.count < 3)
+
+    if([[ARR_temp valueForKey:@"Theatre_name"] count] < 3)
     {
         return 75;
     }
     else
     {
-        return 115;
+        return 160;
     }
 }
 
@@ -221,18 +412,145 @@
 
 #pragma collection view
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section;
-
 {
-    return collection_count.count;
+    NSInteger count=0;
+    
+ /*   for(int i = 0; i<ARR_temp.count;i++)
+            {
+                if(([[ARR_temp objectAtIndex:i] isKindOfClass:[NSDictionary class]]))
+                {
+                    count =[[ARR_temp objectAtIndex:i]count];
+        
+                 }
+                else
+                {
+                    for(int j=0;j<[[ARR_temp objectAtIndex:i] count];j++)
+                    {
+                        [table_count addObject:[[ARR_temp objectAtIndex:i]objectAtIndex:j]];
+                    }
+                    count = table_count.count;
+        
+            }
+            }
+
+    */
+    
+    
+    for (int i = 0; i < [ARR_temp count]; i++) {
+        if (collectionView.tag == i) {
+            if(([[ARR_temp objectAtIndex:collectionView.tag] isKindOfClass:[NSDictionary class]]))
+            {
+                count = 1;
+                
+            }
+            else
+            {
+//                for(int j=0;j<[[ARR_temp objectAtIndex:i] count];j++)
+//                {
+//                    [table_count addObject:[[ARR_temp objectAtIndex:section]objectAtIndex:j]];
+//                }
+                count = [[ARR_temp objectAtIndex:collectionView.tag] count];//table_count.count;
+                
+            }
+
+        }
+    }
+    
+    return count;
 }
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     cell_timings *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
-   
-    [cell.BTN_time setTitle:[collection_count objectAtIndex:indexPath.row] forState:UIControlStateNormal];
     
-    return cell;
+//    NSLog(@"%ld",(long)collectionView.tag);
+//    for (int i = 0; i < [ARR_temp count]; i++) {
+//    if (collectionView.tag == i)
+//    if([[ARR_temp objectAtIndex:indexPath.row] isKindOfClass:[NSDictionary class]])
+//    {
+//        [cell.BTN_time setTitle:[ARR_temp valueForKey:@"_time" ] forState:UIControlStateNormal];
+//    }
+//    else
+//    {
+//        
+//        for(int j=0;j<[[ARR_temp objectAtIndex:indexPath.row] count];j++)
+//        {
+//     
+//          [cell.BTN_time setTitle:[[[ARR_temp objectAtIndex:indexPath.row] objectAtIndex:j] valueForKey:@"_time"] forState:UIControlStateNormal];
+//        }
+//    }
+    
+//    for (int i = 0; i < [ARR_temp count]; i++) {
+//        if (collectionView.tag == i) {
+//            if(([[ARR_temp objectAtIndex:i] isKindOfClass:[NSDictionary class]]))
+//            {
+//                  [cell.BTN_time setTitle:[ARR_temp valueForKey:@"_time" ] forState:UIControlStateNormal];
+//                
+//            }
+//            else
+//            {
+//                for(int j=0;j<[[ARR_temp objectAtIndex:i] count];j++)
+//                {
+//            
+//                [cell.BTN_time setTitle:[[[ARR_temp objectAtIndex:i] objectAtIndex:j] valueForKey:@"_time"] forState:UIControlStateNormal];
+//                
+//                 }
+//            }
+//        
+//        }
+   // }
+
+    
+    
+    
+   /* @try
+    {
+        if (collectionView.tag == indexPath.row)
+        {
+        if([[ARR_temp objectAtIndex:collectionView.tag] isKindOfClass:[NSDictionary class]])
+        {
+         
+            
+            [cell.BTN_time setTitle:[ARR_temp valueForKey:@"_time" ] forState:UIControlStateNormal];
+
+           
+        }
+        else
+        {
+             [cell.BTN_time setTitle:[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"_time"] forState:UIControlStateNormal];
+        }
+        }
+
+     }
+    
+     @catch(NSException *exception)
+     {
+         
+     }*/
+      return cell;
 }
+
+
+    
+//     if([[[[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:indexPath.row] valueForKey:@"ShowDates"] valueForKey:@"showDate"] objectAtIndex:indexPath.row] valueForKey:@"ShowTimes"] valueForKey:@"showTime"]valueForKey:@"_type"] isEqualToString:@"available"])
+//     {
+//          [cell.BTN_time setTitle:[[[[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:indexPath.row] valueForKey:@"ShowDates"] valueForKey:@"showDate"] objectAtIndex:indexPath.row] valueForKey:@"ShowTimes"] valueForKey:@"showTime"] objectAtIndex:indexPath.row] valueForKey:@"_time"] forState:UIControlStateNormal];
+//     }
+//        
+//     else{
+//         NSLog(@"");
+//     }
+   // }
+
+        
+        
+//    [cell.BTN_time setTitle:[[[[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:indexPath.row] valueForKey:@"ShowDates"] valueForKey:@"showDate"] objectAtIndex:indexPath.row] valueForKey:@"ShowTimes"] valueForKey:@"showTime"] objectAtIndex:indexPath.row] valueForKey:@"_time"] forState:UIControlStateNormal];
+//    }
+//    
+//    
+
+     
+     //[[[[[[[[[collection_count objectAtIndex:0] objectAtIndex:0] valueForKey:@"ShowTimes"] valueForKey:@"showTime" ] objectAtIndex:indexPath.row] valueForKey:@"ShowTimes"] valueForKey:@"showTime"] objectAtIndex:indexPath.row] valueForKey:@"_time"]forState:UIControlStateNormal];
+    
 
 #pragma Button_Actions
 - (IBAction)back_action:(id)sender

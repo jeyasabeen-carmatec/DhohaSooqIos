@@ -33,13 +33,21 @@
             if (err) {
                 NSLog(@"eror :%@",[err localizedDescription]);
             }else{
-                if ([resposeJSon objectForKey:@"response"]) {
-                    NSError *er = [NSError errorWithDomain:[resposeJSon objectForKey:@"msg"] code:200 userInfo:nil];
-                    completionHandler(nil,er);
-                }else{
-                    completionHandler(resposeJSon,nil);
+                @try {
+                    if (resposeJSon) {
+                        completionHandler(resposeJSon,nil);
+
+                    }
+//                    if ([resposeJSon objectForKey:@"response"]) {
+//                        NSError *er = [NSError errorWithDomain:[resposeJSon objectForKey:@"msg"] code:200 userInfo:nil];
+//                        completionHandler(nil,er);
+//                    }else{
+                    //}
+
+                } @catch (NSException *exception) {
+                    NSLog(@"%@",exception);
                 }
-            }
+                            }
         }
     }];
     [dataTask resume];

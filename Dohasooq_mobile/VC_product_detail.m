@@ -11,12 +11,17 @@
 #import "product_detail_cell.h"
 #import "HCSStarRatingView.h"
 #import "HttpClient.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 
-@interface VC_product_detail ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UITextFieldDelegate>
+
+@interface VC_product_detail ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UITextFieldDelegate,UIWebViewDelegate>
 {
     NSMutableArray *temp_arr;
     HCSStarRatingView *starRatingView;
     NSMutableDictionary *json_Response_Dic;
+    UIView *VW_overlay;
+    UIActivityIndicatorView *activityIndicatorView;
+
     //NSString *actuel_price,*avg_rating,*discount,*review_count;
     //NSString **product_description,*img_Url,*title_str,*current_price;
 }
@@ -37,50 +42,32 @@
 
     [self set_UP_VIEW];
     
-   #pragma _product_Detail_api_integration Method Calling
-    
-    @try
-    {
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@%@",SERVER_URL,Product_Detail_Url];
-        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (error) {
-                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
-                }
-                if (data) {
-                    json_Response_Dic = data;
-                    //NSLog(@"%@",json_Response_Dic);
-                 //****************Required Data****************
-                    //title_str = [[[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"title"];
-                    
-                    //current_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_price"]];
-                    
-                    //avg_rating = [NSString stringWithFormat:@"%@",[json_Response_Dic valueForKey:@"avgRating"]];
-                    
-                    //product_description = [[[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"description"];
-                    //NSLog(@"%@",product_description);
-
-                    //img_Url = [[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_image"];
-                   // NSLog(@"%@",img_Url);
-//                    NSLog(@"%@",actuel_price);
-//                    NSLog(@"%@",avg_rating);
-                    
-                    //NSLog(@"%@",title_str);
-                    [self set_Data_to_UIElements];
-                    
-                }
-                
-            });
-        }];
-    }
-    @catch(NSException *exception)
-    {
-        NSLog(@"The error is:%@",exception);
-        [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
-    }
     
 }
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    
+    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    VW_overlay.clipsToBounds = YES;
+    
+    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+    activityIndicatorView.center = VW_overlay.center;
+    [VW_overlay addSubview:activityIndicatorView];
+    VW_overlay.center = self.view.center;
+    [self.view addSubview:VW_overlay];
+    
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(product_detail_API) withObject:activityIndicatorView afterDelay:0.01];
+    
+   
+    
+}
+
+
 
 -(void)set_UP_VIEW
 {
@@ -318,7 +305,7 @@
     _BTN_play.layer.cornerRadius = self.BTN_play.frame.size.width / 2;
     _BTN_play.layer.masksToBounds = YES;
     
-    self.custom_story_page_controller.numberOfPages = temp_arr.count;
+    self.custom_story_page_controller.numberOfPages = [[json_Response_Dic valueForKey:@"products"] count];
     UIImage *newImage = [_IMG_cart.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIGraphicsBeginImageContextWithOptions(_IMG_cart.image.size, NO, newImage.scale);
     [[UIColor whiteColor] set];
@@ -467,33 +454,86 @@
     s = s + 1;
     _TXT_count.text = [NSString stringWithFormat:@"%d",s];
 }
+
 #pragma collection view delagets
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
+    if (collectionView == _collection_images) {
+        //return temp_arr.count;
+        return [[json_Response_Dic valueForKey:@"products"] count];
+
+    }
+    else if(collectionView == self.collectionview_size){
+        @try {
+            return [[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:0] valueForKey:@"0"] allKeys] count];
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        }
+        
+    }
+    else {
+        @try {
+            return [[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1] valueForKey:@"0"] allKeys] count];
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        }
+        
+    }
     
-        return temp_arr.count;
     
 }
     - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
     {
         
-        product_detail_cell *img_cell = (product_detail_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_image" forIndexPath:indexPath];
-                img_cell.img.image = [UIImage imageNamed:[temp_arr objectAtIndex:indexPath.row]];
-        img_cell.img.contentMode = UIViewContentModeScaleAspectFit;
+        if (collectionView == _collection_images) {
+            product_detail_cell *img_cell = (product_detail_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_image" forIndexPath:indexPath];
             
+          #pragma Webimage URl Cachee
+            
+            NSString *img_url = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:indexPath.row] valueForKey:@"product_image"]];
+            [img_cell.img sd_setImageWithURL:[NSURL URLWithString:img_url]
+                            placeholderImage:[UIImage imageNamed:@"logo.png"]
+                                     options:SDWebImageRefreshCached];
+            
+            
+            
+            //img_cell.img.image = [UIImage imageNamed:[temp_arr objectAtIndex:indexPath.row]];
+            img_cell.img.contentMode = UIViewContentModeScaleAspectFit;
+            
+            
+            return img_cell;
+
+        }
+        else if (collectionView == _collectionview_size){
+            UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"size_cell" forIndexPath:indexPath];
+            UIButton *size_btn = (UIButton *)[cell viewWithTag:1];
+            [size_btn setTitle:[NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1] valueForKey:@"0"] valueForKey:[[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1] valueForKey:@"0"] allKeys]objectAtIndex:indexPath.row]]] forState:UIControlStateNormal];
+            return cell;
+        }
+        else{
+            UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"color_cell" forIndexPath:indexPath];
+            UIButton *btn = (UIButton*)[cell viewWithTag:1];
+            if (indexPath.row%2 != 0) {
+                btn.backgroundColor = [UIColor blueColor];
+
+            }
+            return cell;
+            
+        }
         
-        return img_cell;
-    }
+        
+        
+           }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    if (collectionView == _collection_images) {
         return CGSizeMake(_collection_images.frame.size.width ,_collection_images.frame.size.height);
+
+    }
+    else{
+        return CGSizeMake(_collectionView_color.frame.size.width/10, 25);
+    }
     
-}
-- (UIEdgeInsets)collectionView:
-(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    // return UIEdgeInsetsMake(0,8,0,8);  // top, left, bottom, right
-    return UIEdgeInsetsMake(0,0,0,0);  // top, left, bottom, right
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
@@ -623,14 +663,158 @@
     }
 
 }
-//UIWebView Delegate
+
+
+-(void)set_data_to_ThirdView{
+    //[json_Response_Dic valueForKey:@"getVariantNames"] ,[[json_Response_Dic valueForKey:@"getVariantNames"] count]
+    for (int i=0; i<[[json_Response_Dic valueForKey:@"getVariantNames"] count]; i++) {
+        NSLog(@"%@",[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:i]);
+        //NSLog(@"%@")
+        
+    }
+    
+}
+- (IBAction)Wish_list_action:(id)sender
+{
+    @try
+    {
+//        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+        NSString *poduct_id = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0]valueForKey:@"id"]];
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@/addToWishList/%@/%@",SERVER_URL,poduct_id,user_id];
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                }
+                if (data) {
+                    json_Response_Dic = data;
+                    if(json_Response_Dic)
+                    {
+                        VW_overlay.hidden=YES;
+                        [activityIndicatorView stopAnimating];
+                        NSLog(@"The Wishlist%@",json_Response_Dic);
+                    }
+                    
+                    
+                }
+                
+            });
+        }];
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+        [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+    }
+    
+
+
+}
+
+- (IBAction)productdetail_to_cartPage:(id)sender {
+    [self performSegueWithIdentifier:@"productDetail_to_cart" sender:self];
+}
+
+//- (IBAction)productDetail_to_wishPage:(id)sender {
+//    [self performSegueWithIdentifier:@"productDetail_to_wishList" sender:self];
+//}
+
+#pragma _product_Detail_api_integration Method Calling
+
+-(void)product_detail_API
+{
+    
+    @try
+    {
+        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
+        NSString *country = [user_dflts valueForKey:@"country_id"];
+        NSString *languge = [user_dflts valueForKey:@"language_id"];
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/details/%@/%@/%@.json",SERVER_URL,[user_dflts valueForKey:@"URL_Key"],country,languge];
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                }
+                if (data) {
+                    json_Response_Dic = data;
+                    if(json_Response_Dic)
+                    {
+                        VW_overlay.hidden=YES;
+                       [activityIndicatorView stopAnimating];
+                    NSLog(@"%@",json_Response_Dic);
+                        
+                    //NSLog(@"Color and  :::%@",[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1]);
+                    @try {
+                        [self.collectionview_size reloadData];
+                        [self.collectionView_color reloadData];
+                        [self.collection_images reloadData];
+                        [self set_Data_to_UIElements];
+                        [self set_data_to_ThirdView];
+                        //NSLog(@" Color %@",[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:0] valueForKey:@"0"]);
+                        NSLog(@" Color %@",[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:0] valueForKey:@"0"] allKeys]);
+                         NSLog(@"%@",[[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1] valueForKey:@"0"] allKeys]objectAtIndex:0]);
+                    } @catch (NSException *exception) {
+                        NSLog(@"%@",exception);
+                    }
+                    }
+                    
+                    
+                   
+                    //NSLog(@"%@",[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1]valueForKey:0])
+                    
+                    //****************Required Data****************
+                    //title_str = [[[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"title"];
+                    
+                    //current_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_price"]];
+                    
+                    //avg_rating = [NSString stringWithFormat:@"%@",[json_Response_Dic valueForKey:@"avgRating"]];
+                    
+                    //product_description = [[[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"description"];
+                    //NSLog(@"%@",product_description);
+                    
+                    //img_Url = [[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_image"];
+                    //NSLog(@"PRODUCT IMAGE IS  %@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_image"]);
+                    //                    NSLog(@"%@",actuel_price);
+                    //                    NSLog(@"%@",avg_rating);
+                    
+                    //NSLog(@"%@",title_str);
+                    
+                    
+                }
+                
+            });
+        }];
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+        [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+    }
+}
+
+
+#pragma UIWebView Delegate
+
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     CGRect frame = webView.frame;
     frame.size.height = 5.0f;
     webView.frame = frame;
 }
 
+- (void)webView:(UIWebView *)wv didFailLoadWithError:(NSError *)error
+{
+    [activityIndicatorView stopAnimating];
+    NSLog(@"%@",[error localizedDescription]);
+}
+
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+    
     CGSize mWebViewTextSize = [webView sizeThatFits:CGSizeMake(1.0f, 1.0f)]; // Pass about any size
     CGRect mWebViewFrame = webView.frame;
     mWebViewFrame.size.height = mWebViewTextSize.height;
@@ -649,21 +833,4 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
-- (IBAction)productdetail_to_cartPage:(id)sender {
-    [self performSegueWithIdentifier:@"productDetail_to_cart" sender:self];
-}
-
-- (IBAction)productDetail_to_wishPage:(id)sender {
-    [self performSegueWithIdentifier:@"productDetail_to_wishList" sender:self];
-}
 @end

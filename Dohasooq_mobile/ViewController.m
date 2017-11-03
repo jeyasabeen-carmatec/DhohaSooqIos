@@ -145,15 +145,12 @@
     [_BTN_sign_up addTarget:self action:@selector(sign_up_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_login addTarget:self action:@selector(login_home) forControlEvents:UIControlEventTouchUpInside];
     
-    _TXT_username.text = @"android17@carmatec.com";
-    _TXT_password.text = @"q4@m2pX!";
+    _TXT_username.text = @"karuna@carmatec.in";
+    _TXT_password.text = @"qazplm123";
    
     
     
 }
-
-
-
 
 #pragma textfield delgates
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -221,17 +218,17 @@
         [_TXT_password becomeFirstResponder];
         msg = @"Please enter Password";
     }
-    [self performSegueWithIdentifier:@"logint_to_home" sender:self];
+  //  [self performSegueWithIdentifier:@"logint_to_home" sender:self];
 
 
-//    else
-//    {
-//        [self.view endEditing:TRUE];
-//        VW_overlay.hidden = NO;
-//        [activityIndicatorView startAnimating];
-//        [self performSelector:@selector(LOGIN_up_api_integration) withObject:activityIndicatorView afterDelay:0.01];
-//        
-//    }
+    else
+    {
+        [self.view endEditing:TRUE];
+        VW_overlay.hidden = NO;
+        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(LOGIN_up_api_integration) withObject:activityIndicatorView afterDelay:0.01];
+        
+    }
     if(msg)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
