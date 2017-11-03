@@ -255,6 +255,9 @@
     
   
     setupframe = _collection_hot_deals.frame;
+    
+    for(int m = 0;m<[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"]count];m++)
+    {
     if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count]>2)
     {
         setupframe.size.height = _collection_hot_deals.frame.origin.y+_collection_hot_deals.frame.size.height;
@@ -265,6 +268,7 @@
     {
         setupframe.size.height = 240;
 
+    }
     }
     _collection_hot_deals.frame = setupframe;
     
@@ -1624,32 +1628,7 @@ else
                     }
                     NSLog(@"the api_collection_product%@",json_Response_Dic);
                     
-                    
-                    //NSLog(@"Deal ::::%@",[json_Response_Dic valueForKey:@"deal"]);
-                    //NSLog(@"Deal Widget 1::::%@",[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"]);
-                    //                    NSLog(@"count %ld",[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count]);
-                    //NSLog(@"ProductDescriptions::::%@",[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] valueForKey:@"ProductDescriptions"]);
-                    //title
-                    
-                    //NSLog(@"title is::::%@",[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:0]valueForKey:@"ProductDescriptions"] valueForKey:@"title"]);
-                    
-                    
-                    //NSLog(@"title::::%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] valueForKey:@"ProductDescriptions"] valueForKey:@"title"]);
-                    
-                    //NSLog(@"ProductPreference::::%@",[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:0]valueForKey:@"Widgets"]valueForKey:@"product_preference"]);
-                    //                NSLog(@"Product_Image::::%@",[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] valueForKey:@"product_image"]);
-                    
-                    //             NSLog(@"Product_Rating::::%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] valueForKey:@"product_reviews"] valueForKey:@"rating"]);
-                    //                NSLog(@"URL_KEY::::%@",[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] valueForKey:@"url_key"]);
-                    
-                    
-                    
-                    //NSLog(@"%@",[json_Response_Dic valueForKey:@"bannerLarge"]);
-                    //                    NSLog(@"Response :::%@",[json_Response_Dic valueForKey:@"bannerFashion"]);
-                    //                    NSLog(@"Categories::: %@",[json_Response_Dic valueForKey:@"categories"]);
-                    //NSLog(@"Banners%@",[json_Response_Dic valueForKey:@"banners"]);
-                    
-                }
+                                   }
                 
             });
         }];

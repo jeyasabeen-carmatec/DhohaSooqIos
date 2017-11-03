@@ -2717,6 +2717,11 @@ UVIgMAM
                         <outlet property="Banner_MOvies" destination="LTg-9D-Lgt" id="7MY-ke-SCi"/>
                         <outlet property="Collection_movies" destination="abU-LT-iGW" id="zZk-I8-vpR"/>
                         <outlet property="Hot_deals" destination="roP-Xp-gYS" id="t2J-XQ-pqc"/>
+                        <outlet property="IMG_best_deals" destination="td1-aE-Dqd" id="miF-Yr-aCh"/>
+                        <outlet property="IMG_best_deals_banner" destination="tpq-2x-bSw" id="8wn-Ef-CNl"/>
+                        <outlet property="IMG_fashion_banner" destination="i3K-pG-5u6" id="pEJ-o3-Rzc"/>
+                        <outlet property="IMG_hot_deals" destination="gsE-qF-OFx" id="4YU-9j-bWI"/>
+                        <outlet property="IMG_hot_deals_banner" destination="Brb-3Y-xfO" id="TAN-0s-JzH"/>
                         <outlet property="IMG_profile" destination="vHL-aY-Jl4" id="75N-YH-3PY"/>
                         <outlet property="LBL_Best_deals" destination="AVV-fW-f9r" id="6uK-zg-ebv"/>
                         <outlet property="LBL_address" destination="jac-5H-1hR" id="hs2-oF-xub"/>
@@ -3064,7 +3069,7 @@ UVIgMAM
                                     </collectionViewFlowLayout>
                                     <cells>
                                         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="brands_cell" id="UTf-td-uZA" customClass="cell_brands">
-                                            <rect key="frame" x="0.0" y="4.5" width="55" height="35"/>
+                                            <rect key="frame" x="0.0" y="4" width="55" height="35"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                                 <rect key="frame" x="0.0" y="0.0" width="55" height="35"/>
@@ -5034,7 +5039,6 @@ UVIgMAM
         <!--Navigation Controller-->
         <scene sceneID="ySN-lv-VWs">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="17f-WT-i9J" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="lxk-ST-xil" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="TWH-4U-GVn"/>
@@ -5047,6 +5051,7 @@ UVIgMAM
                         <segue destination="HYj-dz-fwV" kind="relationship" relationship="rootViewController" id="c3Y-v1-gcs"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="17f-WT-i9J" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="245" y="1230"/>
         </scene>
@@ -5094,10 +5099,10 @@ UVIgMAM
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="lT4-28-Wjm"/>
-        <segue reference="1DN-3V-nls"/>
-        <segue reference="GNZ-Ft-0Lq"/>
-        <segue reference="1MO-TU-sXM"/>
+        <segue reference="VlJ-8X-e9R"/>
         <segue reference="ANP-ln-DYB"/>
+        <segue reference="hYs-TP-0oE"/>
         <segue reference="yia-EY-vuf"/>
+        <segue reference="1fc-cP-jfH"/>
     </inferredMetricsTieBreakers>
 </document>

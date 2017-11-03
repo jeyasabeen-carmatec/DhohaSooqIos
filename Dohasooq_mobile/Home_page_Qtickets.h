@@ -57,28 +57,36 @@
 @property(nonatomic,weak) IBOutlet UIButton *BTN_right;
 
 
+@property(nonatomic,weak) IBOutlet UILabel *LBL_best_selling;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_fashio;
 
 
 
 //Second view
 @property(nonatomic,weak) IBOutlet UIView *VW_second;
+@property(nonatomic,weak) IBOutlet UIImageView *IMG_hot_deals;
+@property(nonatomic,weak) IBOutlet UIImageView *IMG_hot_deals_banner;
+
 @property(nonatomic,weak) IBOutlet UILabel *Hot_deals;
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_hot_deals;
 //Third view
+@property(nonatomic,weak) IBOutlet UIImageView *IMG_best_deals;
+@property(nonatomic,weak) IBOutlet UIImageView *IMG_best_deals_banner;
+
 @property(nonatomic,weak) IBOutlet UIView *VW_third;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_Best_deals;
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_best_deals;
 
 //Fourth  view
 @property(nonatomic,weak) IBOutlet UIView *VW_Fourth;
+@property(nonatomic,weak) IBOutlet UIImageView *IMG_fashion;
+@property(nonatomic,weak) IBOutlet UIImageView *IMG_fashion_banner;
+
 @property(nonatomic,weak) IBOutlet UILabel *LBL_fashion_categiries;
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_fashion_categirie;
 @property(nonatomic,weak) IBOutlet UIView *VW_profile;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_profile;
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_brands;
-
-@property(nonatomic,weak) IBOutlet UILabel *LBL_best_selling;
-@property(nonatomic,weak) IBOutlet UILabel *LBL_fashio;
 
 //Movies Tab
 @property(nonatomic,weak) IBOutlet UICollectionView *Collection_movies;
