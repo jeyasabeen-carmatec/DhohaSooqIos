@@ -490,6 +490,7 @@
 -(void)Book_now_action:(UIButton *)sender
 {
     [[NSUserDefaults standardUserDefaults] setObject:[Movies_arr objectAtIndex:sender.tag] forKey:@"Movie_detail"];
+    NSLog(@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"]);
     [[NSUserDefaults standardUserDefaults] synchronize];
     [self performSegueWithIdentifier:@"Movies_Booking" sender:self];
     

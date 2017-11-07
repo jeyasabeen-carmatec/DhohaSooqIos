@@ -2050,11 +2050,9 @@ UVIgMAM
                         <outlet property="VW_second" destination="LF1-Hh-ZZc" id="Wec-Ko-rRm"/>
                         <outlet property="VW_segemnt" destination="rgk-pr-OIm" id="igF-Is-khI"/>
                         <outlet property="VW_third" destination="a1M-oJ-zHn" id="R9h-DK-ULE"/>
-
                         <outlet property="collectionView_color" destination="b6F-eq-gqi" id="c3u-sK-rbK"/>
                         <outlet property="collection_images" destination="cAI-td-vdb" id="Yqh-kh-Z5l"/>
                         <outlet property="collectionview_size" destination="yDM-mk-U0y" id="xSY-7V-xHR"/>
-
                         <outlet property="custom_story_page_controller" destination="5cu-Ta-jNY" id="U3d-8N-yFN"/>
                         <segue destination="pbc-hN-8EP" kind="push" identifier="productDetail_to_cart" id="1MO-TU-sXM"/>
                         <segue destination="i9C-AL-c2e" kind="push" identifier="productDetail_to_wishList" id="GNZ-Ft-0Lq"/>
@@ -2194,32 +2192,26 @@ UVIgMAM
                                 <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                         </button>
-
                         <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" id="b6F-eq-gqi">
                             <rect key="frame" x="136" y="103" width="179" height="30"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="1" minimumInteritemSpacing="1" id="vC7-Kb-DSH">
-
                                 <size key="itemSize" width="25" height="25"/>
                                 <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                 <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                 <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                             </collectionViewFlowLayout>
                             <cells>
-
                                 <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="color_cell" id="h9P-Hf-s5x">
                                     <rect key="frame" x="0.0" y="2.5" width="25" height="25"/>
-
                                     <autoresizingMask key="autoresizingMask"/>
                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                         <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-
                                             <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="J7x-Ct-cMR">
                                                 <rect key="frame" x="1" y="0.0" width="22" height="28"/>
-
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="13"/>
@@ -2232,7 +2224,6 @@ UVIgMAM
                                 </collectionViewCell>
                             </cells>
                             <connections>
-
                                 <outlet property="dataSource" destination="h4H-xf-ZjH" id="Kd4-DG-QIQ"/>
                                 <outlet property="delegate" destination="h4H-xf-ZjH" id="uEl-Li-ThU"/>
                             </connections>
@@ -2242,25 +2233,20 @@ UVIgMAM
                             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="1" minimumInteritemSpacing="1" id="wza-2M-Tds">
-
                                 <size key="itemSize" width="25" height="25"/>
                                 <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                 <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                 <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                             </collectionViewFlowLayout>
                             <cells>
-
                                 <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="size_cell" id="bMe-8u-Hp4">
                                     <rect key="frame" x="0.0" y="2.5" width="25" height="25"/>
-
                                     <autoresizingMask key="autoresizingMask"/>
                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                         <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-
                                             <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="nKE-HZ-u9q">
-
                                                 <rect key="frame" x="0.0" y="0.0" width="22" height="28"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2274,10 +2260,8 @@ UVIgMAM
                                 </collectionViewCell>
                             </cells>
                             <connections>
-
                                 <outlet property="dataSource" destination="h4H-xf-ZjH" id="nfh-49-gLh"/>
                                 <outlet property="delegate" destination="h4H-xf-ZjH" id="s3t-at-7KL"/>
-
                             </connections>
                         </collectionView>
                     </subviews>
@@ -4731,32 +4715,31 @@ UVIgMAM
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="wdX-dL-J94">
-                                                    <size key="itemSize" width="80" height="36"/>
+                                                    <size key="itemSize" width="84" height="46"/>
                                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 </collectionViewFlowLayout>
                                                 <cells>
                                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="cell" id="I9p-EC-IVi" customClass="cell_timings">
-                                                        <rect key="frame" x="0.0" y="0.0" width="80" height="36"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="84" height="46"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                                            <rect key="frame" x="0.0" y="0.0" width="80" height="36"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="84" height="46"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
-                                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="cfY-Oj-92O">
-                                                                    <rect key="frame" x="0.0" y="4" width="80" height="29"/>
-                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Jef-m0-cfC">
+                                                                    <rect key="frame" x="0.0" y="1" width="84" height="45"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                     <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                                     <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="17"/>
-                                                                    <state key="normal" title="03:30">
-                                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                                    </state>
-                                                                </button>
+                                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
                                                             </subviews>
                                                         </view>
                                                         <connections>
-                                                            <outlet property="BTN_time" destination="cfY-Oj-92O" id="MsI-VG-fvd"/>
+                                                            <outlet property="BTN_time" destination="Jef-m0-cfC" id="nYN-fU-aM9"/>
                                                         </connections>
                                                     </collectionViewCell>
                                                 </cells>
@@ -5050,7 +5033,6 @@ UVIgMAM
         <!--Navigation Controller-->
         <scene sceneID="ySN-lv-VWs">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="17f-WT-i9J" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="lxk-ST-xil" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="TWH-4U-GVn"/>
@@ -5063,6 +5045,7 @@ UVIgMAM
                         <segue destination="HYj-dz-fwV" kind="relationship" relationship="rootViewController" id="c3Y-v1-gcs"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="17f-WT-i9J" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="245" y="1230"/>
         </scene>
