@@ -9,6 +9,8 @@
 #import "VC_movies.h"
 #import "Movies_cell.h"
 #import "qtickets_cell.h"
+#import "XMLDictionary/XMLDictionary.h"
+
 
 #import <SDWebImage/UIImageView+WebCache.h>
 

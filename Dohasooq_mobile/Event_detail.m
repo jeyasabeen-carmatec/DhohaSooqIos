@@ -9,6 +9,7 @@
 #import "Event_detail.h"
 #import "Gender_cell.h"
 #import "cost_count_cell.h"
+#import "XMLDictionary/XMLDictionary.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 
 
@@ -74,8 +75,37 @@
     {
         NSLog(@"%@",exception);
     }
+    @try
+    {
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"yyyy-MM-dd"];
+    NSDate *startDate = [df dateFromString:[event_dtl_dict valueForKey:@"_startDate"]]; // your start date
+    NSDate *endDate = [df dateFromString:[event_dtl_dict valueForKey:@"_endDate"]]; // your end date
+    NSDateComponents *dayDifference = [[NSDateComponents alloc] init];
+    
+    NSMutableArray *dates = [[NSMutableArray alloc] init];
+    NSUInteger dayOffset = 1;
+    NSDate *nextDate = startDate;
+    do {
+        [dates addObject:nextDate];
+        
+        [dayDifference setDay:dayOffset++];
+        NSDate *d = [[NSCalendar currentCalendar] dateByAddingComponents:dayDifference toDate:startDate options:0];
+        nextDate = d;
+    } while([nextDate compare:endDate] == NSOrderedAscending);
+    
+    [df setDateStyle:NSDateFormatterFullStyle];
+    for (NSDate *date in dates)
+    {
+        NSLog(@"The Dates are:%@", [df stringFromDate:date]);
+    }
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
 
-
+    
     frameset = _LBL_event_time.frame;
     frameset.origin.y = _LBL_event_date.frame.origin.y + _LBL_event_date.frame.size.height ;
     _LBL_event_time.frame = frameset;
@@ -176,7 +206,7 @@
     [VW_overlay addSubview:activityIndicatorView];
     [self.view addSubview:VW_overlay];
     
-    VW_overlay.hidden = YES;
+   
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
     [self performSelector:@selector(getData) withObject:activityIndicatorView afterDelay:0.01];
@@ -200,11 +230,30 @@
     [event_dtl_dict mutableCopy];
     event_cost_arr = [[NSMutableArray alloc]init];
     
-    for (int i =0; i < [[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] count]; i ++) {
-        NSDictionary *tem_dictin = @{@"price":[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:i]valueForKey:@"_TicketPrice"],@"quantity":@"0",@"serve_price":[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:i]valueForKey:@"_ServiceCharge"]};
+    NSArray *temp_arr = [[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"];
+    if([temp_arr isKindOfClass:[NSArray class]])
+    {
+    
+    for (int i =0; i < [[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] count]; i ++)
+    {
+        @try
+        {
+        NSDictionary *tem_dictin = @{@"price":[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:i]valueForKey:@"_TicketPrice"],@"quantity":@"0",@"serve_price":[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:i]valueForKey:@"_ServiceCharge"],@"ticket_id":[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:i]valueForKey:@"_tktpriceid"]};
         [event_cost_arr addObject:tem_dictin];
+        }
+        @catch(NSException *exception)
+        {
+          
+        }
         
     }
+    }
+     else
+     {
+         
+         NSDictionary *tem_dictin = @{@"price":[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] valueForKey:@"_TicketPrice"],@"quantity":@"0",@"serve_price":[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] valueForKey:@"_ServiceCharge"],@"ticket_id":[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] valueForKey:@"_tktpriceid"]};
+         [event_cost_arr addObject:tem_dictin];
+     }
     
     VW_overlay.hidden = YES;
     [activityIndicatorView stopAnimating];
@@ -224,7 +273,7 @@
     if(section == 0)
     {
         
-    return [[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] count];
+   // return [[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] count];
     return event_cost_arr.count;
     }
     else if(section == 1)
@@ -272,11 +321,14 @@
         gcell.LBL_gender_cat.text = [[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row]valueForKey:@"_TicketName"];
         gcell.LBL_price.text = [NSString stringWithFormat:@"QAR %@",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row] valueForKey:@"_TicketPrice"]];
         gcell.LBL_result.text = [[event_cost_arr objectAtIndex:indexPath.row] valueForKey:@"quantity"];
+            
         
         }
         @catch(NSException *exception)
         {
-            NSLog(@"%@",exception);
+            gcell.LBL_gender_cat.text = [[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] valueForKey:@"_TicketName"];
+            gcell.LBL_price.text = [NSString stringWithFormat:@"QAR %@",[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] valueForKey:@"_TicketPrice"]];
+            gcell.LBL_result.text = [[event_cost_arr objectAtIndex:indexPath.row] valueForKey:@"quantity"];
         }
         return gcell;
     }
@@ -382,57 +434,41 @@
     return 30;
 }
 
-#pragma Button_Actions
-//-(void)male_plus_action
-//{
-//    int count = [_LBL_male_COUNT.text intValue];
-//    _LBL_male_COUNT.text = [NSString stringWithFormat:@"%d",count + 1];
-//}
-//-(void)male_minus_action
-//{
-//    int count = [_LBL_male_COUNT.text intValue];
-//    if(count == 0)
-//    {
-//        _LBL_male_COUNT.text = [NSString stringWithFormat:@"%d",count];
-//
-//    }
-//    else
-//    {
-//        _LBL_male_COUNT.text = [NSString stringWithFormat:@"%d",count - 1];
-//
-//    }
-//}
-//-(void)female_plus_action
-//{
-//    int count = [_LBL_female_COUNT.text intValue];
-//    _LBL_female_COUNT.text = [NSString stringWithFormat:@"%d",count + 1];
-//}
-//-(void)female_minus_action
-//{
-//    int count = [_LBL_female_COUNT.text intValue];
-//    if(count == 0)
-//    {
-//        _LBL_female_COUNT.text = [NSString stringWithFormat:@"%d",count];
-//        
-//    }
-//    else
-//    {
-//        _LBL_female_COUNT.text = [NSString stringWithFormat:@"%d",count - 1];
-//        
-//    }
-//}
 #pragma Button Actions
 -(void)BTN_plus_action:(UIButton *)sender
 {
+    NSLog(@"THE added array is:%@",event_cost_arr);
     int i = [[[event_cost_arr objectAtIndex:sender.tag] valueForKey:@"quantity"] intValue];
-    
-    if(i < [[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag]valueForKey:@"_Availability"] intValue])
+    int availability_price,number_of_tickets;
+    @try
     {
-        if(i < [[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag]valueForKey:@"_NoOfTicketsPerTransaction"] intValue])
+    availability_price = [[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag]valueForKey:@"_Availability"] intValue];
+        number_of_tickets = [[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag]valueForKey:@"_NoOfTicketsPerTransaction"] intValue];
+        
+    }
+    @catch(NSException *exception)
+    {
+         availability_price = [[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] valueForKey:@"_Availability"] intValue];
+        number_of_tickets = [[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"]valueForKey:@"_NoOfTicketsPerTransaction"] intValue];
+
+    }
+    
+    if(i < availability_price)
+    {
+        if(i < number_of_tickets)
         {
             i = i + 1;
             NSString *add_val = [NSString stringWithFormat:@"%d",i];
-            NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:add_val,@"quantity",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag] valueForKey:@"_TicketPrice" ],@"price" ,nil];
+            NSDictionary *dict;
+            @try
+            {
+                dict = [NSDictionary dictionaryWithObjectsAndKeys:add_val,@"quantity",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag] valueForKey:@"_TicketPrice" ],@"price" ,[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag] valueForKey:@"_tktpriceid" ],@"ticket_ID",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag] valueForKey:@"_tktmasterid" ],@"ticket_master_ID",nil];
+            }
+            @catch(NSException *exception)
+            {
+            dict = [NSDictionary dictionaryWithObjectsAndKeys:add_val,@"quantity",[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] valueForKey:@"_TicketPrice" ],@"price" ,[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] valueForKey:@"_tktpriceid" ],@"ticket_ID",[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"]valueForKey:@"_tktmasterid" ],@"ticket_master_ID",nil];
+            }
+            
             [event_cost_arr removeObjectAtIndex:sender.tag];
             [event_cost_arr insertObject:dict atIndex:sender.tag];
     int count = 0;
@@ -459,13 +495,12 @@
                 }
             }
         }
-        
         NSLog(@"The final price = %d",price);
         ACT_price = ACT_price + price;
         ACT_service = ACT_service + serve_price;
         NSLog(@"the actual value is:%d",ACT_price);
     }
-
+     NSLog(@"THE added array is:%@",event_cost_arr);
 
     [cost_arr replaceObjectAtIndex:0 withObject:[NSString stringWithFormat:@"%d",count]];
     [cost_arr replaceObjectAtIndex:1 withObject:[NSString stringWithFormat:@"%d",ACT_price]];
@@ -484,7 +519,8 @@
         }
         else
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"only %d Tickets per transaction",[[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag]valueForKey:@"_NoOfTicketsPerTransaction"] intValue]] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"only %d Tickets per transaction",number_of_tickets] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
             [alert show];
         }
         
@@ -509,7 +545,17 @@
             }
            
             NSString *add_val = [NSString stringWithFormat:@"%d",i];
-            NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:add_val,@"quantity",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag] valueForKey:@"_TicketPrice" ],@"price" ,nil];
+    NSDictionary *dict;
+    @try
+    {
+        dict = [NSDictionary dictionaryWithObjectsAndKeys:add_val,@"quantity",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag] valueForKey:@"_TicketPrice" ],@"price" ,[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag] valueForKey:@"_tktpriceid" ],@"ticket_ID",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:sender.tag] valueForKey:@"_tktmasterid" ],@"ticket_master_ID",nil];
+    }
+    @catch(NSException *exception)
+    {
+        dict = [NSDictionary dictionaryWithObjectsAndKeys:add_val,@"quantity",[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] valueForKey:@"_TicketPrice" ],@"price",[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] valueForKey:@"_tktpriceid" ],@"ticket_ID",[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"]  valueForKey:@"_tktmasterid" ],@"ticket_master_ID",nil];
+    }
+    
+
             [event_cost_arr removeObjectAtIndex:sender.tag];
             [event_cost_arr insertObject:dict atIndex:sender.tag];
     int count = 0;
@@ -565,6 +611,14 @@
 -(void)BTN_book_action
 {
     
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(Book_action) withObject:activityIndicatorView afterDelay:0.01];
+    
+}
+-(void)Book_action
+{
+    
 
     int  i = [[cost_arr objectAtIndex:0] intValue];
     if(i <= 0)
@@ -575,17 +629,15 @@
     else
     {
         
+        [[NSUserDefaults standardUserDefaults] setObject:event_cost_arr forKey:@"cost_arr"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [[NSUserDefaults standardUserDefaults] setObject:event_dtl_dict forKey:@"event_dtl"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         [[NSUserDefaults standardUserDefaults] setObject:cost_arr forKey:@"Amount_dict"];
         [[NSUserDefaults standardUserDefaults] synchronize];
 
-//        [[NSUserDefaults standardUserDefaults] setValue:[cost_arr objectAtIndex:1] forKey:@"total_amount"];
-//        [[NSUserDefaults standardUserDefaults] synchronize];
-//        [[NSUserDefaults standardUserDefaults] setValue:[cost_arr objectAtIndex:2] forKey:@"service_chrge"];
-//        [[NSUserDefaults standardUserDefaults] synchronize];
-//        [[NSUserDefaults standardUserDefaults] setValue:[cost_arr objectAtIndex:0] forKey:@"number_of_persons"];
-//        [[NSUserDefaults standardUserDefaults] synchronize];
-//
-
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
         [self performSegueWithIdentifier:@"event_book_user" sender:self];
 
         

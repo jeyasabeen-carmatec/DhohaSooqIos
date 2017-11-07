@@ -18,6 +18,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
    
+    NSMutableArray  *dtl = [[NSUserDefaults standardUserDefaults] valueForKey:@"Amount_dict"];
 
    NSMutableDictionary  *event_dtl_dict = [[NSMutableDictionary alloc]init];
     
@@ -37,11 +38,8 @@
     [_LBL_event_name sizeToFit];
    
     
-    CGRect framseset = _LBL_loc_icon.frame ;
-    framseset.origin.y = _LBL_event_name.frame.origin.y+ _LBL_event_name.frame.size.height + 3;
-    _LBL_loc_icon.frame = framseset;
     
-    framseset = _LBL_location.frame ;
+    CGRect framseset = _LBL_location.frame ;
     framseset.origin.y = _LBL_event_name.frame.origin.y+ _LBL_event_name.frame.size.height + 3;
     _LBL_location.frame = framseset;
     @try
@@ -60,15 +58,14 @@
     _LBL_event_name.numberOfLines = 0;
  
     
-    framseset = _LBL_time_icon.frame ;
-    framseset.origin.y = _LBL_location.frame.origin.y+ _LBL_location.frame.size.height + 3;
-    _LBL_time_icon.frame = framseset;
-    
+       
     framseset = _LBL_time.frame ;
     framseset.origin.y = _LBL_location.frame.origin.y+ _LBL_location.frame.size.height + 3;
     _LBL_time.frame = framseset;
     @try
     {
+        
+
     _LBL_time.text = [NSString stringWithFormat:@"%@ , %@",[event_dtl_dict valueForKey:@"_startDate"],[event_dtl_dict valueForKey:@"_StartTime"]];
     }
     @catch(NSException *exception)
@@ -83,7 +80,7 @@
     _LBL_persons.frame = framseset;
     @try
     {
-    _LBL_persons.text = [NSString stringWithFormat:@"Number of persons:%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"number_of_persons"]];
+    _LBL_persons.text = [NSString stringWithFormat:@"Number of persons:%@",[dtl objectAtIndex:0]];
     }
     @catch(NSException *exception)
     {
@@ -91,7 +88,7 @@
     }
     
     framseset = _LBL_service_charges.frame ;
-    framseset.origin.y = _LBL_persons.frame.origin.y;
+    framseset.origin.y = _LBL_persons.frame.origin.y + 3;
     _LBL_service_charges.frame = framseset;
     
     framseset = _VW_contents.frame ;
@@ -105,13 +102,17 @@
     @try
     {
 
-    NSMutableArray  *dtl = [[NSUserDefaults standardUserDefaults] valueForKey:@"Amount_dict"];
     
-    NSString *str = [NSString stringWithFormat:@"%@",[dtl objectAtIndex:0]];
+    NSString *str = [NSString stringWithFormat:@"%@",[dtl objectAtIndex:1]];
     NSString *text = [NSString stringWithFormat:@"TOTAL price \n%@ QAR",str];
-        
+    _LBL_service_charges.text = text;
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"%@",exception);
+    }
     
-    if ([_LBL_service_charges respondsToSelector:@selector(setAttributedText:)]) {
+ /*   if ([_LBL_service_charges respondsToSelector:@selector(setAttributedText:)]) {
         
         NSDictionary *attribs = @{
                                   NSForegroundColorAttributeName:_LBL_service_charges.textColor,
@@ -129,7 +130,7 @@
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:15.0],NSForegroundColorAttributeName:_BTN_pay.backgroundColor}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:15.0],NSForegroundColorAttributeName:[UIColor whiteColor]}
                                     range:ename];
         }
         _LBL_service_charges.attributedText = attributedText;
@@ -142,9 +143,10 @@
     @catch(NSException *exception)
     {
         NSLog(@"%@",exception);
-    }
+    }*/
 
-
+    [_BTN_pay addTarget:self action:@selector(pay_action_checked) forControlEvents:UIControlEventTouchUpInside];
+    
     [_LBL_service_charges sizeToFit];
     _VW_contents.layer.cornerRadius = 2.0f;
     _VW_contents.layer.masksToBounds = YES;
@@ -155,6 +157,10 @@
 - (IBAction)back_action:(id)sender
 {
     [self.navigationController popViewControllerAnimated:YES];
+}
+-(void)pay_action_checked
+{
+    [self performSegueWithIdentifier:@"pay_to_options" sender:self];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

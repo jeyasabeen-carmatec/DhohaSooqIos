@@ -71,11 +71,17 @@
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                    [alert show];
+
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
                 }
                 if (data) {
                     NSMutableDictionary *json_DATA = data;
                     country_arr = [json_DATA valueForKey:@"countries"];
+                    
+                    [[NSUserDefaults standardUserDefaults] setObject:country_arr forKey:@"country_arr"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
                     [_TBL_list_coutry reloadData];
                     
                 }
@@ -87,6 +93,8 @@
     {
         NSLog(@"The error is:%@",exception);
         [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
     }
     
     
@@ -221,6 +229,7 @@
         {
             NSLog(@"The error is:%@",exception);
             [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+           
         }
         
     }
@@ -314,6 +323,8 @@
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
     }
 }
 //#pragma mark - Tap Gesture

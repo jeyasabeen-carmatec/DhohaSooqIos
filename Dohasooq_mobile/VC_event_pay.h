@@ -14,9 +14,7 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_service_charges;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_event_name;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_location;
-@property(nonatomic,weak) IBOutlet UILabel *LBL_loc_icon;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_time;
-@property(nonatomic,weak) IBOutlet UILabel *LBL_time_icon;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_persons;
 
 

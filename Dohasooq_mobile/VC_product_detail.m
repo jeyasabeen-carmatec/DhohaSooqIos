@@ -501,9 +501,9 @@
         else if (collectionView == _collectionview_size){
             UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"size_cell" forIndexPath:indexPath];
             UIButton *size_btn = (UIButton *)[cell viewWithTag:1];
-            [size_btn setTitle:[NSString stringWithFormat:@"%@",[[size_arr objectAtIndex:0] valueForKey:[NSString stringWithFormat:@"%@",[[[size_arr objectAtIndex:0] allKeys] objectAtIndex:indexPath.row]]]] forState:UIControlStateNormal];
-            
-            //[size_btn setTitle:[NSString stringWithFormat:@"%@",[[size_arr objectAtIndex:indexPath.row] valueForKey:[NSString stringWithFormat:@"%@",[[[size_arr objectAtIndex:indexPath.row] allKeys]objectAtIndex:indexPath.row]]]] forState:UIControlStateNormal];
+
+            [size_btn setTitle:[NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:0] valueForKey:@"0"] valueForKey:[[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:0] valueForKey:@"0"] allKeys]objectAtIndex:indexPath.row]]] forState:UIControlStateNormal];
+
             return cell;
         }
         else{
@@ -736,7 +736,7 @@
         NSString *country = [user_dflts valueForKey:@"country_id"];
         NSString *languge = [user_dflts valueForKey:@"language_id"];
         
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/details/%@/%@/%@.json",SERVER_URL,[user_dflts valueForKey:@"URL_Key"],country,languge];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/details/%@/%@/%@.json",SERVER_URL,[user_dflts valueForKey:@"product_list_key_sub"],country,languge];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -749,15 +749,16 @@
                     {
                         VW_overlay.hidden=YES;
                        [activityIndicatorView stopAnimating];
-                    NSLog(@"%@",json_Response_Dic);
+                   
                         
                     //NSLog(@"Color and  :::%@",[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1]);
                     @try {
+                         NSLog(@"%@",json_Response_Dic);
                         [self.collectionview_size reloadData];
                         [self.collectionView_color reloadData];
                         [self.collection_images reloadData];
                         [self set_Data_to_UIElements];
-                        [self set_data_to_ThirdView];
+
                         NSArray *size_Color_arr = [json_Response_Dic valueForKey:@"getVariantNames"];
                         color_arr=[[NSMutableArray alloc]init];
                        size_arr = [[NSMutableArray alloc]init];
@@ -774,8 +775,7 @@
                             }
                     
                         }
-//                        NSLog(@"%@",size_arr);
-//                        NSLog(@"%@",color_arr);
+
                     } @catch (NSException *exception) {
                         NSLog(@"%@",exception);
                     }

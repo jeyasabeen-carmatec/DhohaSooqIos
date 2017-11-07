@@ -86,7 +86,9 @@
             
             if([att isKindOfClass:[NSDictionary class]])
             {
+
                 if([[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"]  valueForKey:@"_Date"] isEqualToString:dateString])
+
                 {
                 [dict_time addObject:[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"]];
                    [temp_arr addObject:[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i]valueForKey:@"ShowDates"]valueForKey:@"showDate"]valueForKey:@"ShowTimes"] valueForKey:@"showTime"]];
@@ -101,7 +103,9 @@
             {
                 @try
                 {
+
                 if([[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j]  valueForKey:@"_Date"] isEqualToString:dateString])
+
                 {
                     [collection_count addObject:[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"]];
 
@@ -131,7 +135,9 @@
        
         if([att isKindOfClass:[NSDictionary class]])
         {
+
             if([[[[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"ShowDates"]valueForKey:@"showDate"]  valueForKey:@"_Date"] isEqualToString:dateString])
+
             {
                 [dict_time addObject:[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"_name"]];
                 [temp_arr addObject:[[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"]valueForKey:@"showDate"]valueForKey:@"ShowTimes"] valueForKey:@"showTime"]];
@@ -146,7 +152,9 @@
         {
             @try
             {
+
             if([[[[[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j]  valueForKey:@"_Date"] isEqualToString:dateString])
+
             {
             [dict_time addObject:[[detail_dict valueForKey:@"Theatre"] valueForKey:@"_name"]];
                 
@@ -541,6 +549,7 @@
 {
     cell_timings *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
     
+
     @try {
         
         if(([[ARR_temp objectAtIndex:collectionView.tag] isKindOfClass:[NSDictionary class]]))
@@ -579,6 +588,7 @@
         NSLog(@"%@",exception);
     }
    // [cell.BTN_time addTarget:self action:@selector(select_timing:) forControlEvents:UIControlEventTouchUpInside];
+
 //    NSLog(@"%ld",(long)collectionView.tag);
 //    for (int i = 0; i < [ARR_temp count]; i++) {
 //    if (collectionView.tag == i)
