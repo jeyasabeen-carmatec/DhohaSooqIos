@@ -284,7 +284,6 @@
         <!--ub table view-->
         <scene sceneID="P1V-iZ-9kw">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gFo-ae-3Wv" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="Lan-Ic-n35" customClass="VC_ub_table_view" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="gg7-FQ-aZq">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
@@ -331,6 +330,7 @@
                         <outlet property="TBL_sub_brnds" destination="68C-IZ-agE" id="qoe-CV-Zpc"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gFo-ae-3Wv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-3932" y="2151"/>
         </scene>
@@ -712,7 +712,7 @@
                                     </collectionViewFlowLayout>
                                     <cells>
                                         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="brands_cell" id="0vS-t8-EOi" customClass="cell_brands">
-                                            <rect key="frame" x="0.0" y="6" width="55" height="33"/>
+                                            <rect key="frame" x="0.0" y="5.5" width="55" height="33"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                                 <rect key="frame" x="0.0" y="0.0" width="55" height="33"/>
@@ -2256,13 +2256,13 @@ UVIgMAM
                             </collectionViewFlowLayout>
                             <cells>
                                 <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="color_cell" id="h9P-Hf-s5x">
-                                    <rect key="frame" x="0.0" y="3" width="25" height="25"/>
+                                    <rect key="frame" x="0.0" y="2.5" width="25" height="25"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                         <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-                                            <button opaque="NO" tag="1" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="J7x-Ct-cMR">
+                                            <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="J7x-Ct-cMR">
                                                 <rect key="frame" x="1" y="0.0" width="22" height="28"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -2292,7 +2292,7 @@ UVIgMAM
                             </collectionViewFlowLayout>
                             <cells>
                                 <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="size_cell" id="bMe-8u-Hp4">
-                                    <rect key="frame" x="0.0" y="3" width="25" height="25"/>
+                                    <rect key="frame" x="0.0" y="2.5" width="25" height="25"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                         <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
@@ -3132,7 +3132,7 @@ UVIgMAM
                                     </collectionViewFlowLayout>
                                     <cells>
                                         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="brands_cell" id="UTf-td-uZA" customClass="cell_brands">
-                                            <rect key="frame" x="0.0" y="4" width="55" height="35"/>
+                                            <rect key="frame" x="0.0" y="4.5" width="55" height="35"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                                 <rect key="frame" x="0.0" y="0.0" width="55" height="35"/>
@@ -4450,7 +4450,6 @@ UVIgMAM
         <!--payment web-->
         <scene sceneID="U4G-gb-DsF">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="nnH-no-Ly6" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="YBU-nD-B2e" customClass="VC_payment_web" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="vi2-LZ-ahp">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
@@ -4472,6 +4471,7 @@ UVIgMAM
                         <outlet property="web_pay" destination="SSv-AA-tzD" id="436-nc-1qf"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nnH-no-Ly6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1697" y="4248"/>
         </scene>
@@ -4908,7 +4908,7 @@ UVIgMAM
                                     <rect key="frame" x="0.0" y="28" width="320" height="115"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="taD-4b-262" id="lVw-RY-Xq3">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="114.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="114"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="ASIAN TOWNأسيان، تون" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="E75-U2-nGm">
@@ -4923,32 +4923,31 @@ UVIgMAM
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="wdX-dL-J94">
-                                                    <size key="itemSize" width="80" height="36"/>
+                                                    <size key="itemSize" width="84" height="46"/>
                                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 </collectionViewFlowLayout>
                                                 <cells>
                                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="cell" id="I9p-EC-IVi" customClass="cell_timings">
-                                                        <rect key="frame" x="0.0" y="0.0" width="80" height="36"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="84" height="46"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                                            <rect key="frame" x="0.0" y="0.0" width="80" height="36"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="84" height="46"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
-                                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="cfY-Oj-92O">
-                                                                    <rect key="frame" x="0.0" y="4" width="80" height="29"/>
-                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Jef-m0-cfC">
+                                                                    <rect key="frame" x="0.0" y="1" width="84" height="45"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                     <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                                     <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="17"/>
-                                                                    <state key="normal" title="03:30">
-                                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                                    </state>
-                                                                </button>
+                                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
                                                             </subviews>
                                                         </view>
                                                         <connections>
-                                                            <outlet property="BTN_time" destination="cfY-Oj-92O" id="MsI-VG-fvd"/>
+                                                            <outlet property="BTN_time" destination="Jef-m0-cfC" id="nYN-fU-aM9"/>
                                                         </connections>
                                                     </collectionViewCell>
                                                 </cells>

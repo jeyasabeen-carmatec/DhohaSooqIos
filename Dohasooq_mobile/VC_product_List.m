@@ -529,12 +529,14 @@
 
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+
         
         NSString *url_key = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"product_list_key"]];
 //        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/%@/%@/%@.json",SERVER_URL,url_key,country,languge];
       //  http://192.168.0.171/dohasooq/Apis/productList/All/0/1/1.json
         NSString *urlGetuser =[NSString stringWithFormat:@"http://192.168.0.171/dohasooq/Apis/productList/%@/0/%@/%@.json",url_key,country,languge];
         
+
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -547,33 +549,30 @@
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
                 }
                 if (data) {
-                    
                     NSMutableDictionary *json_DATA = data;
                     if(json_DATA)
                     {
-                        VW_overlay.hidden = YES;
-                        [activityIndicatorView stopAnimating];
-                   
-                    @try
-                        {
-                            NSLog(@"%@",json_DATA);
-                         productDataArray = [json_DATA valueForKey:@"products"];
-                         if(productDataArray.count == 0)
-                         {
-                             NSLog(@"the count is:");
-                         }
-                            [self.collection_product reloadData];
+                        @try {
+                            VW_overlay.hidden = YES;
+                            [activityIndicatorView stopAnimating];
+                            productDataArray = [json_DATA valueForKey:@"products"];
+                            NSLog(@"%@",productDataArray);
+                            self.LBL_product_name.text = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"URL_Key"]];
+                            NSLog(@"%ld",[productDataArray count]);
+                            self.LBL_product_count.text = [NSString stringWithFormat:@"%lu Products",(unsigned long)[productDataArray count]];
+                            //NSLog(@"%@",json_DATA);
+                            //NSLog(@"id for products %@",[[[productDataArray objectAtIndex:0] valueForKey:@"DISTINCT Products"] valueForKey:@"id"]);
                             
+                            // NSLog(@"%@",productDataArray);
+                            // NSLog(@"URL KEY IS::::%@",[[productDataArray objectAtIndex:0] valueForKey:@"url_key"]);
+                            
+                            [self.collection_product reloadData];
+                        } @catch (NSException *exception) {
+                            NSLog(@"%@",exception);
                         }
                         
+                        
 
-                    @catch(NSException *exception)
-                        {
-                            
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"NO elements Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                            [alert show];
-                        }
-                      
                     }
                     
                       

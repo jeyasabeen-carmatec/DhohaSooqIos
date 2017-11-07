@@ -22,6 +22,8 @@
     UIView *VW_overlay;
      UIActivityIndicatorView *activityIndicatorView;
     NSMutableArray *ARR_temp;
+    NSString *dateString;
+    NSDateFormatter *dateFormat;
 
 }
 @property (nonatomic,strong) NSDateFormatter *dateFormatter;
@@ -33,9 +35,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
+    dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"MM/dd/yyyy"];
+    dateString = [dateFormat stringFromDate:[NSDate date]];
+
+
    // [self set_UP_VIEW];
+    [self dateVIEW];
+
     
 }
 -(void)viewWillAppear:(BOOL)animated
@@ -56,8 +63,6 @@
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
     [self performSelector:@selector(getResponse_detail) withObject:activityIndicatorView afterDelay:0.01];
-    
-
 }
 -(void)getResponse_detail
 {
@@ -81,7 +86,9 @@
             
             if([att isKindOfClass:[NSDictionary class]])
             {
-                if([[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"]  valueForKey:@"_Date"] isEqualToString:@"11/06/2017"])
+
+                if([[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"]  valueForKey:@"_Date"] isEqualToString:dateString])
+
                 {
                 [dict_time addObject:[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"]];
                    [temp_arr addObject:[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i]valueForKey:@"ShowDates"]valueForKey:@"showDate"]valueForKey:@"ShowTimes"] valueForKey:@"showTime"]];
@@ -96,7 +103,9 @@
             {
                 @try
                 {
-                if([[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j]  valueForKey:@"_Date"] isEqualToString:@"11/06/2017"])
+
+                if([[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j]  valueForKey:@"_Date"] isEqualToString:dateString])
+
                 {
                     [collection_count addObject:[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"]];
 
@@ -126,7 +135,9 @@
        
         if([att isKindOfClass:[NSDictionary class]])
         {
-            if([[[[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"ShowDates"]valueForKey:@"showDate"]  valueForKey:@"_Date"] isEqualToString:@"11/06/2017"])
+
+            if([[[[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"ShowDates"]valueForKey:@"showDate"]  valueForKey:@"_Date"] isEqualToString:dateString])
+
             {
                 [dict_time addObject:[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"_name"]];
                 [temp_arr addObject:[[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"]valueForKey:@"showDate"]valueForKey:@"ShowTimes"] valueForKey:@"showTime"]];
@@ -141,7 +152,9 @@
         {
             @try
             {
-            if([[[[[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j]  valueForKey:@"_Date"] isEqualToString:@"11/06/2017"])
+
+            if([[[[[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j]  valueForKey:@"_Date"] isEqualToString:dateString])
+
             {
             [dict_time addObject:[[detail_dict valueForKey:@"Theatre"] valueForKey:@"_name"]];
                 
@@ -168,10 +181,10 @@
    // NSLog(@"the added array is:%@",table_count);
     NSLog(@"the added array is:%@",collection_count);
     
-  //  [_tbl_timings reloadData];
+    [_tbl_timings reloadData];
     
     
-    [self set_UP_VIEW];
+  [self set_UP_VIEW];
     
     [activityIndicatorView stopAnimating];
     VW_overlay.hidden = YES;
@@ -273,7 +286,7 @@
     _BTN_trailer_watch.layer.cornerRadius = 1.0f;
     _BTN_trailer_watch.layer.masksToBounds = YES;
     [_BTN_view_more addTarget:self action:@selector(viewmore_selcted) forControlEvents:UIControlEventTouchUpInside];
-    [self dateVIEW];
+//    [self dateVIEW];
     
 }
 -(void)dateVIEW
@@ -288,10 +301,59 @@
     [self.dateFormatter setDateFormat:@"EE"];
     
     
-    [self.dayPicker setStartDate:[NSDate dateFromDay:28 month:9 year:2013] endDate:[NSDate dateFromDay:5 month:10 year:2013]];
+//    [self.dayPicker setStartDate:[NSDate dateFromDay:28 month:9 year:2013] endDate:[NSDate dateFromDay:5 month:10 year:2013]];
+//    
+//    [self.dayPicker setCurrentDate:[NSDate dateFromDay:3 month:10 year:2013] animated:NO];
+    NSDate *sevenDays;
+    NSDateComponents *component = [[NSCalendar currentCalendar] components:NSCalendarUnitWeekday fromDate:[NSDate date]];
     
-    [self.dayPicker setCurrentDate:[NSDate dateFromDay:3 month:10 year:2013] animated:NO];
+    switch ([component weekday]) {
+            
+        case 1://Sunday
+            sevenDays = [[NSDate date] dateByAddingTimeInterval:60*60*24*3];
+            break;
+            
+        case 2://Monday
+            sevenDays = [[NSDate date] dateByAddingTimeInterval:60*60*24*2];
+            break;
+            
+        case 3://Tuesday
+            sevenDays = [[NSDate date] dateByAddingTimeInterval:60*60*24*1];
+            break;
+            
+        case 4://wednsday
+            sevenDays = [[NSDate date] dateByAddingTimeInterval:60*60*24*7];
+            break;
+            
+        case 5://Thursday
+            sevenDays = [[NSDate date] dateByAddingTimeInterval:60*60*24*6];
+            
+            
+            break;
+        case 6:  //Friday
+            sevenDays = [[NSDate date] dateByAddingTimeInterval:60*60*24*5];
+          
+            break;
 
+        case 7: //Saturday
+
+            sevenDays = [[NSDate date] dateByAddingTimeInterval:60*60*24*4];
+            break;
+        default:
+            break;
+    }
+    
+    
+    
+    
+    
+    NSDate *currentDate = [NSDate date];
+    //NSDate *sevenDays = [[NSDate date] dateByAddingTimeInterval:60*60*24*7];
+
+    
+    [self.dayPicker setStartDate:currentDate endDate:sevenDays];
+    [self.dayPicker setCurrentDate:currentDate animated:NO];
+    
 }
 
 -(void)viewDidLayoutSubviews
@@ -357,7 +419,7 @@
 }
 #pragma Tbale view delagets
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+{  // NSLog(@"%lu %@",(unsigned long)[collection_count count],collection_count);
     return collection_count.count;
 }
 
@@ -366,7 +428,6 @@
     cell_title_theatre *cell = (cell_title_theatre *)[tableView dequeueReusableCellWithIdentifier:@"cell"];
     @try
     {
-        NSLog(@"+++++++++ %@",[[detail_dict valueForKey:@"Theatre"] valueForKey:@"_name"]);
 
         cell.TXT_name.text = [collection_count objectAtIndex:indexPath.row];
         [cell.collection_timings setTag:indexPath.row];
@@ -375,22 +436,46 @@
     }
     @catch(NSException *exception)
     {
-        
+        NSLog(@"%@",exception);
     }
    
     return cell;
 }
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //NSLog(@"***********"); // you can see selected row number in your console;
+}
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    @try {
+        if([[ARR_temp objectAtIndex:indexPath.row] isKindOfClass:[NSDictionary class]] )
+        {
+            return 80;
+        }
+        
+      else if ([[ARR_temp objectAtIndex:indexPath.row] count]>8){
+            return 180;
+        }
+        else{
+            return 160;
+        }
+        //else{
+        //return 80*[[ARR_temp objectAtIndex:indexPath.row] count]/4;
+        //}
 
-    if([[ARR_temp valueForKey:@"Theatre_name"] count] < 3)
-    {
-        return 75;
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
     }
-    else
-    {
-        return 160;
-    }
+//    if([[ARR_temp valueForKey:@"Theatre_name"] count] < 3)
+//    {
+//        return 75;
+//    }
+//    else
+//    {
+//        return 160;
+    //    }
+    
 }
 
 #pragma DatePicker
@@ -402,14 +487,14 @@
 
 - (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day
 {
-    NSLog(@"Did select day %@",day.day);
-    
-   
-}
+    dateString = [dateFormat stringFromDate:day.date];
+    [self getResponse_detail];
+     NSLog(@"Did select day %@",dateString);
 
+}
 - (void)dayPicker:(MZDayPicker *)dayPicker willSelectDay:(MZDay *)day
 {
-    NSLog(@"Will select day %@",day.day);
+   NSLog(@"Did select day %@",day.date);
 }
 
 #pragma collection view
@@ -457,14 +542,53 @@
 
         }
     }
-    
+    //NSLog(@"ARR_temp %@******",ARR_temp);
     return count;
 }
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     cell_timings *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
     
-    
+
+    @try {
+        
+        if(([[ARR_temp objectAtIndex:collectionView.tag] isKindOfClass:[NSDictionary class]]))
+        {
+            
+            cell.BTN_time.text =[[ARR_temp objectAtIndex:collectionView.tag]valueForKey:@"_time"] ;
+           // [cell.BTN_time setTitle:[[ARR_temp objectAtIndex:collectionView.tag]valueForKey:@"_time"] forState:UIControlStateNormal];
+            
+            if ([[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"_type"] isEqualToString:@"available"]) {
+                [cell.BTN_time setBackgroundColor:[UIColor colorWithRed:67.0f/255.0f green:83.0f/255.0f blue:91.0f/255.0f alpha:1.0f]];
+            }
+            else{
+                [cell.BTN_time setBackgroundColor:[UIColor redColor]];
+            }
+            
+        }
+        
+        else{
+            
+            cell.BTN_time.text =[[[ARR_temp objectAtIndex:collectionView.tag] objectAtIndex:indexPath.row]valueForKey:@"_time"];
+
+            //[cell.BTN_time setTitle:[[[ARR_temp objectAtIndex:collectionView.tag] objectAtIndex:indexPath.row]valueForKey:@"_time"] forState:UIControlStateNormal];
+            
+            if ([[[[ARR_temp objectAtIndex:collectionView.tag] objectAtIndex:indexPath.row]valueForKey:@"_type"] isEqualToString:@"available"]) {
+                
+                [cell.BTN_time setBackgroundColor:[UIColor colorWithRed:67.0f/255.0f green:83.0f/255.0f blue:91.0f/255.0f alpha:1.0f]];
+            }
+            else{
+                [cell.BTN_time setBackgroundColor:[UIColor redColor]];
+            }
+        }
+        
+        
+    } @catch (NSException *exception) {
+        
+        NSLog(@"%@",exception);
+    }
+   // [cell.BTN_time addTarget:self action:@selector(select_timing:) forControlEvents:UIControlEventTouchUpInside];
+
 //    NSLog(@"%ld",(long)collectionView.tag);
 //    for (int i = 0; i < [ARR_temp count]; i++) {
 //    if (collectionView.tag == i)
@@ -545,7 +669,6 @@
    // }
 
         
-        
 //    [cell.BTN_time setTitle:[[[[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:indexPath.row] valueForKey:@"ShowDates"] valueForKey:@"showDate"] objectAtIndex:indexPath.row] valueForKey:@"ShowTimes"] valueForKey:@"showTime"] objectAtIndex:indexPath.row] valueForKey:@"_time"] forState:UIControlStateNormal];
 //    }
 //    
@@ -553,8 +676,26 @@
 
      
      //[[[[[[[[[collection_count objectAtIndex:0] objectAtIndex:0] valueForKey:@"ShowTimes"] valueForKey:@"showTime" ] objectAtIndex:indexPath.row] valueForKey:@"ShowTimes"] valueForKey:@"showTime"] objectAtIndex:indexPath.row] valueForKey:@"_time"]forState:UIControlStateNormal];
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
+    
+    @try {
+        if(([[ARR_temp objectAtIndex:collectionView.tag] isKindOfClass:[NSDictionary class]]))
+        {
 
+            NSLog(@"Selected Time Detail %@",[ARR_temp objectAtIndex:collectionView.tag]);
+        }
+        else{
+
+            NSLog(@"Selected Time Detail %@",[[ARR_temp objectAtIndex:collectionView.tag] objectAtIndex:indexPath.row]);
+           
+        }
+        
+    } @catch (NSException *exception) {
+        
+        NSLog(@"%@",exception);
+    }
+}
 #pragma Button_Actions
 - (IBAction)back_action:(id)sender
 {

@@ -851,18 +851,17 @@
     NSUserDefaults *userDflts = [NSUserDefaults standardUserDefaults];
     if(collectionView == _collection_hot_deals)
     {
-        [userDflts setObject:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"url_key"] forKey:@"url_key_home"];
-        NSLog(@"%@",[userDflts valueForKey:@"url_key_hotDeals"]);
+        [userDflts setObject:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"url_key"] forKey:@"URL_Key"];
    [self performSegueWithIdentifier:@"homw_product_list" sender:self];
     }
    else if (collectionView == _collection_best_deals)
     {
         [userDflts setObject:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"url_key"] forKey:@"url_key_home"];
-        [self performSegueWithIdentifier:@"homw_product_list" sender:self];
-        NSLog(@"%@",[userDflts valueForKey:@"url_key_home"]);
 
+        [self performSegueWithIdentifier:@"homw_product_list" sender:self];
         
     }
+
    else if(collectionView == _collection_features)
     {
         [self performSegueWithIdentifier:@"homw_product_list" sender:self];
@@ -873,6 +872,7 @@
        [self performSegueWithIdentifier:@"homw_product_list" sender:self];
        
    }
+
 
     //NSLog(@"%@",[userDflts valueForKey:@"url_key_home"]);
 

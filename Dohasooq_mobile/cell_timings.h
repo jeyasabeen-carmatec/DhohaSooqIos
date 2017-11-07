@@ -10,6 +10,6 @@
 
 @interface cell_timings : UICollectionViewCell
 
-@property(nonatomic,weak) IBOutlet UIButton *BTN_time;
+@property(nonatomic,weak) IBOutlet UILabel *BTN_time;
 
 @end

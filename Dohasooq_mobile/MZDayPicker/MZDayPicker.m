@@ -220,6 +220,7 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
         [self.delegate dayPicker:self didSelectDay:self.tableDaysData[currentIndex.row]];
     
     
+    
 }
 
 - (MZDayPickerCell *)cellForDay:(MZDay *)day
@@ -577,6 +578,10 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
     }
     
     MZDay *day = self.tableDaysData[indexPath.row];
+//    MZDay *month = self.tableDaysData[indexPath.row];
+//    MZDay *year = self.tableDaysData[indexPath.row];
+    
+    //NSLog(@"Month = %@, Year = %@",day.month,day.year);
     
     // Bug: I can't use default UITableView select row, because in some case, row's didn't selected
     // I Handled it by tap gesture recognizer
