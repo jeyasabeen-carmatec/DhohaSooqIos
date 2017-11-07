@@ -59,6 +59,7 @@
 
 @property(nonatomic,weak) IBOutlet UILabel *LBL_best_selling;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_fashio;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_log_out;
 
 
 

@@ -26,6 +26,12 @@
     // Do any additional setup after loading the view.
     [self set_UP_VIEW];
 }
+-(void)viewWillAppear:(BOOL)animated{
+    //[self wish_list_api_calling];
+    [self performSelector:@selector(wish_list_api_calling) withObject:nil afterDelay:0.01];
+
+}
+
 -(void)set_UP_VIEW
 {
     [self wish_list_api_calling];
@@ -260,8 +266,8 @@
 - (IBAction)back_action_clicked:(id)sender {
     [self.navigationController popViewControllerAnimated:NO];
 }
-#pragma wish_list_api_calling
 
+#pragma wish_list_api_calling
 -(void)wish_list_api_calling{
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
@@ -305,4 +311,32 @@
 - (IBAction)wishList_to_cartPage:(id)sender {
     [self performSegueWithIdentifier:@"wish_to_cart" sender:self];
 }
+/*#pragma wish_list_api_calling
+-(void)wish_list_api_calling{
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+    NSString *urlGetuser =[NSString stringWithFormat:@"http://192.168.0.171/dohasooq/apis/getWishList/%@/Customer.json",user_id];
+    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    @try {
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    NSLog(@"%@",[error localizedDescription]);
+                }
+                if (data) {
+                    NSLog(@"*******%@*********",data);
+                }
+                
+            });
+            
+        }];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
+}*/
+
+
+    
+
 @end
+//http://192.168.0.171/dohasooq/apis/getWishList/24/Customer.json

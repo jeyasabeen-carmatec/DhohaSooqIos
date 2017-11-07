@@ -18,7 +18,7 @@
     NSMutableArray *arr_product;
     NSMutableArray *productDataArray;
     CGRect frame;
-    
+    NSString *type_product;
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
 }
@@ -61,16 +61,18 @@
     [VW_overlay addSubview:activityIndicatorView];
     VW_overlay.center = self.view.center;
     [self.view addSubview:VW_overlay];
+    VW_overlay.hidden = YES;
     
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
     [self performSelector:@selector(product_list_API) withObject:activityIndicatorView afterDelay:0.01];
-
     
 }
 
 -(void)set_UP_VW
 {
+    
+   
     
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTitleTextAttributes:
@@ -186,21 +188,92 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return productDataArray.count;
-}
+  
+//   if([type_product isEqualToString:@"hot_deals"] || [type_product isEqualToString:@"best_deals"])
+//    {
+//    return [[productDataArray objectAtIndex:0] count];
+//             
+//     }
+//    
+        return productDataArray.count;
+    }
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     
     product_cell *pro_cell = (product_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_product" forIndexPath:indexPath];
-    
-    //Webimage URl Cachee
-    
-//    NSString *url = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_image"]];
-//    UIImage* serverImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:url]]];
-//    pro_cell.IMG_item.image = serverImage;
-    
-    #pragma Webimage URl Cachee
+    @try
+    {
+//    if([type_product isEqualToString:@"hot_deals"] || [type_product isEqualToString:@"best_deals"])
+//    {
+//        NSString *img_url = [NSString stringWithFormat:@"%@%@",IMG_URL,[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_image"]];
+//        [pro_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:img_url]
+//                             placeholderImage:[UIImage imageNamed:@"logo.png"]
+//                                      options:SDWebImageRefreshCached];
+//        
+//        
+//        pro_cell.LBL_item_name.text = [[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"ProductDescriptions"] valueForKey:@"title"];
+//        pro_cell.LBL_rating.text = [NSString stringWithFormat:@"%@  ",[[[productDataArray objectAtIndex:indexPath.row]valueForKey:@"product_reviews"]valueForKey:@"rating"]];
+//        pro_cell.LBL_current_price.text = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
+//        NSString *current_price = [NSString stringWithFormat:@"QR %@", [[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
+//        NSString *prec_price = [NSString stringWithFormat:@"QR %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
+//        NSString *text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
+//        
+//        if ([pro_cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
+//            
+//            // Define general attributes for the entire text
+//            NSDictionary *attribs = @{
+//                                      NSForegroundColorAttributeName:pro_cell.LBL_current_price.textColor,
+//                                      NSFontAttributeName:pro_cell.LBL_current_price.font
+//                                      };
+//            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
+//            
+//            
+//            
+//            NSRange ename = [text rangeOfString:current_price];
+//            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+//            {
+//                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
+//                                        range:ename];
+//            }
+//            else
+//            {
+//                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0]}
+//                                        range:ename];
+//            }
+//            
+//            NSRange cmp = [text rangeOfString:prec_price];
+//            //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
+//            
+//            
+//            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+//            {
+//                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+//                                        range:cmp];
+//            }
+//            else
+//            {
+//                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:14.0],NSStrikethroughStyleAttributeName:@(NSUnderlineStyleThick),NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
+//            }
+//            pro_cell.LBL_current_price.attributedText = attributedText;
+//            
+//        }
+//        else
+//        {
+//            pro_cell.LBL_current_price.text = text;
+//        }
+//        int  n = [[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] intValue]-[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"] intValue];
+//        float discount = (n*100)/[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] intValue];
+//        NSString *str = @"% off";
+//
+//        pro_cell.LBL_discount.text =[NSString stringWithFormat:@"%.0f%@",discount,str];
+//
+//      return pro_cell;
+   // }
+
+//    else
+//    {
+     #pragma Webimage URl Cachee
     
     NSString *img_url = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_image"]];
     [pro_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:img_url]
@@ -259,13 +332,23 @@
     {
         pro_cell.LBL_current_price.text = text;
     }
+        
    
+        
+        
+        
     NSString *str = @"%off";
     pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@ %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"],str];
     
     [pro_cell.BTN_fav setTag:indexPath.row];
     [pro_cell.BTN_fav addTarget:self action:@selector(startAnimation:) forControlEvents:UIControlEventTouchUpInside];
-    
+  //  }
+         return pro_cell;
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
     
     return pro_cell;
 }
@@ -290,9 +373,10 @@
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSUserDefaults *userDflts = [NSUserDefaults standardUserDefaults];
-    [userDflts setObject:[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"url_key"] forKey:@"URL_Key"];
+    [userDflts setObject:[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"url_key"] forKey:@"product_list_key_sub"];
     //[userDflts setInteger:[[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"DISTINCT Products"] valueForKey:@"id"] integerValue]forKey:@"product_Id"];
     [self performSegueWithIdentifier:@"product_list_detail" sender:self];
+   // }
 }
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
@@ -442,33 +526,58 @@
     {
         /*NSUserDefaults *usd = [NSUserDefaults standardUserDefaults];
          NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/%@/1/1.json",SERVER_URL,[usd valueForKey:@"url_key_home"]];*/
+
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
         
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/Fashion/%@/%@.json",SERVER_URL,country,languge];
+        NSString *url_key = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"product_list_key"]];
+//        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/%@/%@/%@.json",SERVER_URL,url_key,country,languge];
+      //  http://192.168.0.171/dohasooq/Apis/productList/All/0/1/1.json
+        NSString *urlGetuser =[NSString stringWithFormat:@"http://192.168.0.171/dohasooq/Apis/productList/%@/0/%@/%@.json",url_key,country,languge];
+        
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
+                    
+                    VW_overlay.hidden = YES;
+                    [activityIndicatorView stopAnimating];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                    [alert show];
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
                 }
                 if (data) {
-                    
                     
                     NSMutableDictionary *json_DATA = data;
                     if(json_DATA)
                     {
                         VW_overlay.hidden = YES;
                         [activityIndicatorView stopAnimating];
-                    //NSLog(@"%@",json_DATA);
-                    productDataArray = [json_DATA valueForKey:@"products"];
-                    //NSLog(@"id for products %@",[[[productDataArray objectAtIndex:0] valueForKey:@"DISTINCT Products"] valueForKey:@"id"]);
-                    
-                    // NSLog(@"%@",productDataArray);
-                    // NSLog(@"URL KEY IS::::%@",[[productDataArray objectAtIndex:0] valueForKey:@"url_key"]);
-                    
-                    [self.collection_product reloadData];
+                   
+                    @try
+                        {
+                            NSLog(@"%@",json_DATA);
+                         productDataArray = [json_DATA valueForKey:@"products"];
+                         if(productDataArray.count == 0)
+                         {
+                             NSLog(@"the count is:");
+                         }
+                            [self.collection_product reloadData];
+                            
+                        }
+                        
+
+                    @catch(NSException *exception)
+                        {
+                            
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"NO elements Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                            [alert show];
+                        }
+                      
                     }
+                    
+                      
+                   
                 }
                 
             });
@@ -478,6 +587,7 @@
     {
         NSLog(@"The error is:%@",exception);
         [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+       
     }
 
 }

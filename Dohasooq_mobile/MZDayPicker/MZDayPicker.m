@@ -599,7 +599,7 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
         cell.dayNameLabel.text = [self.dataSource dayPicker:self titleForCellDayNameLabelInDay:day];
     }
     
-    [self setShadowForCell:cell];
+ //   [self setShadowForCell:cell];
     
     if (indexPath.row == _currentIndex.row) {
         cell.containerView.backgroundColor = [UIColor clearColor];

@@ -644,7 +644,7 @@
             ht = 275;
         }
     }
-    else if(tableView == _TBL_lisure_list!=0)
+    else if(tableView == _TBL_lisure_list)
     {
         if(indexPath.section %2 != 0)
         {

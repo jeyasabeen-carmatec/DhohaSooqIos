@@ -6,7 +6,6 @@
 //  Copyright © 2017 Test User. All rights reserved.
 //
 
-
 #import "AppDelegate.h"
 
 @interface AppDelegate ()

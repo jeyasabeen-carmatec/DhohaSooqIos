@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "HttpClient.h"
 
 @interface ViewController ()<UITextFieldDelegate>
 {
@@ -267,8 +268,6 @@
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         if(aData)
         {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
             NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             NSLog(@"The response Api post sighn up API %@",json_DATA);
             NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
@@ -278,13 +277,14 @@
             if([status isEqualToString:@"1"])
             {
                 
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
-                
                 [[NSUserDefaults standardUserDefaults] setObject:[json_DATA valueForKey:@"detail"] forKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 
-                [self performSegueWithIdentifier:@"logint_to_home" sender:self];
+                [self MENU_api_call];
+
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
                 
             }
             else
@@ -316,6 +316,49 @@
     }
     
 
+}
+-(void)MENU_api_call
+{
+    
+    @try
+    {
+    NSError *error;
+    
+    NSHTTPURLResponse *response = nil;
+    NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
+//    NSString *urlGetuser =[NSString stringWithFormat:@"%@menuList/%ld/%ld.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]];
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/menuList/1/1.json",SERVER_URL];
+
+    NSLog(@"%ld,%ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
+    
+        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:urlProducts];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        
+        [request setHTTPShouldHandleCookies:NO];
+        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if(aData)
+        {
+            
+           
+            NSMutableArray *json_DATA = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            
+                        [[NSUserDefaults standardUserDefaults] setObject:json_DATA forKey:@"menu_detail"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                        [self performSegueWithIdentifier:@"logint_to_home" sender:self];
+                        NSLog(@"the api_collection_product%@",json_DATA);
+            [activityIndicatorView stopAnimating];
+            VW_overlay.hidden = YES;
+        }
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"%@",exception);
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning {

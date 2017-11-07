@@ -19,14 +19,13 @@
 #import "menu_cell.h"
 #import "events_cell.h"
 #import "UIImageView+WebCache.h"
-#import "XMLDictionary.h"
-#import "VC_home.h"
+#import "XMLDictionary/XMLDictionary.h"
 #import "HMSegmentedControl.h"
 //#import "VC_events.h"
 //#import "VC_sports.h"
 //#import "VC_leisure.h"
 //#import "VC_movies.h"
-
+#import "VC_home.h"
 #import "Movies_cell.h"
 #import "qtickets_cell.h"
 #import "events_cell.h"
@@ -48,7 +47,7 @@
     UIActivityIndicatorView *activityIndicatorView;
     VC_home *home;
     NSMutableDictionary *json_Response_Dic;
-
+    float scroll_ht;
     NSMutableArray *Movies_arr,*Events_arr,*Sports_arr,*Leisure_arr;
 
     NSDictionary *temp_dicts;
@@ -80,6 +79,10 @@
     Leisure_arr = [[NSMutableArray alloc] init];
     Sports_arr = [[NSMutableArray alloc] init];
 
+    [self movie_API_CALL];
+    [self Events_API_CALL];
+    [self Sports_API_call];
+    [self Leisure_API_call];
     
     [self.Collection_movies registerNib:[UINib nibWithNibName:@"Movies_cell" bundle:nil]  forCellWithReuseIdentifier:@"movie_cell"];
     
@@ -124,17 +127,13 @@
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
     [self performSelector:@selector(API_call_total) withObject:activityIndicatorView afterDelay:0.01];
-
-    
+    [self set_up_VIEW];
     [self menu_set_UP];
     [self tab_BAR_set_UP];
-    [self movie_API_CALL];
     [self addSEgmentedControl];
-    [self Events_API_CALL];
-    [self Sports_API_call];
-    [self Leisure_API_call];
+   
     
-    [self set_up_VIEW];
+    
    // self.Tab_MENU.selectedItem = nil;
 }
 -(void)Events_view
@@ -201,8 +200,14 @@
     
     home.view.frame = CGRectMake(0, _Tab_MENU.frame.origin.y + _Tab_MENU.frame.size.height, self.Scroll_contents.frame.size.width,self.Scroll_contents.frame.size.height-20 );
     self.Scroll_contents.hidden =YES;
-    
     [self.view addSubview:home.view];
+    
+    CGRect frameset = home.VW_second.frame;
+    frameset.size.height = home.collection_hot_deals.frame.origin.y + home.collection_hot_deals.frame.size.height - _Tab_MENU.frame.size.height -20;
+    home.VW_second.frame = frameset;
+    
+    
+    
 
 }
 
@@ -614,7 +619,10 @@
     
     self.items=[temp valueForKey:@"Items"];
     ARR_category = [[NSMutableArray alloc]init];
-    [ARR_category addObjectsFromArray:self.items];
+    ARR_category = [[[NSUserDefaults standardUserDefaults] valueForKey:@"menu_detail"] mutableCopy];
+    
+    
+    //[ARR_category addObjectsFromArray:self.items];
     
     
     j = ARR_category.count;
@@ -630,19 +638,22 @@
     SwipeRIGHT.direction = UISwipeGestureRecognizerDirectionRight;
     //    [self.view addGestureRecognizer:SwipeRIGHT];
     [_overlayView addGestureRecognizer:SwipeRIGHT];
+    [_BTN_log_out addTarget:self action:@selector( BTN_log_out) forControlEvents:UIControlEventTouchUpInside];
     
 }
 
 -(void)set_up_VIEW
 {
-    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+//    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+//    self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
     
     
     [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTitleTextAttributes:
      @{NSForegroundColorAttributeName:[UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:1.0],
        NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:20.0f]
        } forState:UIControlStateNormal];
+    _BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
+                 @selector(btnfav_action)];
     
     
     _LBL_best_selling.text = @"BEST SELLING\nPRODUCTS";
@@ -682,33 +693,37 @@
     setupframe.size.width = _Scroll_contents.frame.size.width;
     _VW_First.frame = setupframe;
     [self.Scroll_contents addSubview:_VW_First];
-    setupframe = _collection_hot_deals.frame;
-    
-    for(int m = 0;m<[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"]count];m++)
+    if([[json_Response_Dic valueForKey:@"deal"] count] < 1)
     {
-        if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count]>2)
-        {
-            setupframe.size.height = _collection_hot_deals.frame.origin.y+_collection_hot_deals.frame.size.height;
-            
-            
-        }
-        else
-        {
-            setupframe.size.height = 240;
-            
-        }
+        scroll_ht = _VW_First.frame.origin.y + _VW_First.frame.size.height;
     }
-    _collection_hot_deals.frame = setupframe;
-    
-    
-    
-    
-    setupframe = _VW_second.frame;
-    setupframe.origin.y = _VW_First.frame.origin.y + _VW_First.frame.size.height;
-    setupframe.size.height = _collection_hot_deals.frame.origin.y + _collection_hot_deals.frame.size.height + 10;
-    setupframe.size.width = _Scroll_contents.frame.size.width;
-    _VW_second.frame = setupframe;
-    [self.Scroll_contents addSubview:_VW_second];
+    else
+    {
+        setupframe = _collection_hot_deals.frame;
+        
+        for(int m = 0;m<[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"]count];m++)
+        {
+            if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count]>2)
+            {
+                setupframe.size.height = _collection_hot_deals.frame.origin.y+_collection_hot_deals.frame.size.height;
+                
+            }
+            else
+            {
+                setupframe.size.height = 240;
+                
+            }
+        }
+        _collection_hot_deals.frame = setupframe;
+        
+        setupframe = _VW_second.frame;
+        setupframe.origin.y = _VW_First.frame.origin.y + _VW_First.frame.size.height;
+        setupframe.size.height = _collection_hot_deals.frame.origin.y + _collection_hot_deals.frame.size.height;
+        setupframe.size.width = _Scroll_contents.frame.size.width;
+        _VW_second.frame = setupframe;
+        
+        [self.Scroll_contents addSubview:_VW_second];
+    }
     
     setupframe = _collection_best_deals.frame;
     
@@ -719,39 +734,119 @@
             setupframe.size.height =_collection_best_deals.frame.origin.y+ _collection_best_deals.frame.size.height;
             
         }
+        else if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] count] < 1)
+        {
+            
+            setupframe.size.height = 0;
+        }
         else
         {
             setupframe.size.height = 240;
             
         }
-    }
-    _collection_best_deals.frame = setupframe;
-    
-    
-    setupframe = _VW_third.frame;
-    setupframe.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height;
-    setupframe.size.height = _collection_best_deals.frame.origin.y + _collection_best_deals.frame.size.height - _IMG_best_deals.frame.size.height;
-    setupframe.size.width = _Scroll_contents.frame.size.width;
-    _VW_third.frame = setupframe;
-    [self.Scroll_contents addSubview:_VW_third];
-    
-    
-    setupframe = _collection_fashion_categirie.frame;
-    if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count]>2)
-    {
-        setupframe.size.height = _collection_fashion_categirie.frame.origin.y+_collection_fashion_categirie.frame.size.height;
         
         
-    }
-    else
-    {      setupframe.size.height =240;
+        _collection_best_deals.frame = setupframe;
         
+        if(_collection_best_deals.frame.size.height == 0)
+        {
+            _VW_third.hidden = YES;
+        }
+        
+        else if(_VW_second.hidden == YES)
+        {
+            setupframe = _VW_third.frame;
+            setupframe.origin.y = _VW_First.frame.origin.y + _VW_First.frame.size.height +10;
+            setupframe.size.height = _collection_best_deals.frame.origin.y + _collection_best_deals.frame.size.height ;
+            setupframe.size.width = _Scroll_contents.frame.size.width;
+            _VW_third.frame = setupframe;
+            [self.Scroll_contents addSubview:_VW_third];
+            
+        }
+        else
+        {
+            setupframe = _VW_third.frame;
+            setupframe.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height +10;
+            setupframe.size.height = _collection_best_deals.frame.origin.y + _collection_best_deals.frame.size.height ;
+            setupframe.size.width = _Scroll_contents.frame.size.width;
+            _VW_third.frame = setupframe;
+            [self.Scroll_contents addSubview:_VW_third];
+            
+            
+        }
+        
+        setupframe = _collection_fashion_categirie.frame;
+        if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count]>2)
+        {
+            setupframe.size.height = _collection_fashion_categirie.frame.origin.y+_collection_fashion_categirie.frame.size.height;
+            
+            
+        }
+        else if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count] < 1)
+        {
+            
+            setupframe.size.height = 0;
+        }
+        else
+        {      setupframe.size.height =240;
+            
+        }
+        _collection_fashion_categirie.frame = setupframe;
+        
+        if(_collection_fashion_categirie.frame.size.height == 0)
+        {
+            _VW_Fourth.hidden = YES;
+            
+            
+        }
+        else if(_VW_second.hidden == YES && _VW_third.hidden == YES)
+        {
+            setupframe = _VW_Fourth.frame;
+            setupframe.origin.y = _VW_First.frame.origin.y + _VW_First.frame.size.height +10;
+            setupframe.size.height = _collection_fashion_categirie.frame.origin.y + _collection_fashion_categirie.frame.size.height ;
+            setupframe.size.width = _Scroll_contents.frame.size.width;
+            _VW_Fourth.frame = setupframe;
+            [self.Scroll_contents addSubview:_VW_Fourth];
+            
+        }
+        else if(_VW_third.hidden == YES)
+        {
+            setupframe = _VW_Fourth.frame;
+            setupframe.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height +10;
+            setupframe.size.height = _collection_fashion_categirie.frame.origin.y + _collection_fashion_categirie.frame.size.height ;
+            setupframe.size.width = _Scroll_contents.frame.size.width;
+            _VW_Fourth.frame = setupframe;
+            [self.Scroll_contents addSubview:_VW_Fourth];
+            
+            
+            
+        }
+        else
+        {
+            setupframe = _VW_Fourth.frame;
+            setupframe.origin.y = _VW_third.frame.origin.y + _VW_third.frame.size.height +10;
+            setupframe.size.height = _collection_fashion_categirie.frame.origin.y + _collection_fashion_categirie.frame.size.height;
+            setupframe.size.width = _Scroll_contents.frame.size.width;
+            _VW_Fourth.frame = setupframe;
+            [self.Scroll_contents addSubview:_VW_Fourth];
+            
+            
+        }
+        if(_VW_Fourth.hidden == YES && _VW_third.hidden == YES && _VW_second.hidden == YES)
+        {
+            scroll_ht = _VW_First.frame.origin.y + _VW_First.frame.size.height;
+            
+        }
+        else if(_VW_second.hidden == YES && _VW_third.hidden == YES )
+        {
+            scroll_ht = _VW_Fourth.frame.origin.y + _VW_Fourth.frame.size.height;
+            
+        }
+        else if(_VW_third.hidden == YES && _VW_Fourth.hidden == YES)
+        {
+            scroll_ht = _VW_second.frame.origin.y + _VW_second.frame.size.height;
+        }
     }
-    _collection_fashion_categirie.frame = setupframe;
-    setupframe.size.width = _Scroll_contents.frame.size.width;
-    _VW_Fourth.frame = setupframe;
-    [self.Scroll_contents addSubview:_VW_Fourth];
-    
     
     self.page_controller_movies.numberOfPages = [temp_arr count];
     self.custom_story_page_controller.numberOfPages=[temp_arr count];
@@ -778,14 +873,19 @@
 {
     [super viewDidLayoutSubviews];
     [_Scroll_contents layoutIfNeeded];
-    _Scroll_contents.contentSize = CGSizeMake(_Scroll_contents.frame.size.width,_VW_Fourth.frame.origin.y+ _VW_Fourth.frame.size.height );
     
-    
+    _Scroll_contents.contentSize = CGSizeMake(_Scroll_contents.frame.size.width,scroll_ht);
+
+
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    if(collectionView == _collection_images)
+     if(collectionView == _collection_showing_movies)
+    {
+        return temp_arr.count;
+    }
+    else if(collectionView == _collection_images)
     {
         // return temp_arr.count;
         return [[json_Response_Dic valueForKey:@"banners"] count];
@@ -1462,9 +1562,9 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(collectionView == _collection_hot_deals)
+    if(collectionView == _collection_hot_deals ||collectionView == _collection_best_deals)
     {
-        [self performSegueWithIdentifier:@"homw_product_list" sender:self];
+        [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
     }
     else if(collectionView == _Collection_movies)
     {
@@ -1556,7 +1656,7 @@
     
     if(indexPath.section == 0)
     {
-    NSString *Title= [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"Name"];
+    NSString *Title= [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"name"];
         
     return [self createCellWithTitle:Title image:[[ARR_category objectAtIndex:indexPath.row] valueForKey:@"Image name"] indexPath:indexPath];
         
@@ -1789,58 +1889,30 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    
+    if(tableView == _TBL_menu)
+    {
     switch (indexPath.section)
     {
-        case 0:
-            if(indexPath.row)
-            {
-                NSMutableDictionary *dic=[ARR_category objectAtIndex:indexPath.row];
-                
-                NSLog(@"Selected dict = %@",dic);
-                
-                if([dic valueForKey:@"SubItems"])
-                {
-                    NSArray *arr=[dic valueForKey:@"SubItems"];
-                    BOOL isTableExpanded=NO;
-                    
-                    for(NSDictionary *subitems in arr )
-                    {
-                        NSInteger index=[ARR_category indexOfObjectIdenticalTo:subitems];
-                        isTableExpanded=(index>0 && index!=NSIntegerMax);
-                        if(isTableExpanded) break;
-                    }
-                    
-                    if(isTableExpanded)
-                    {
-                        [self CollapseRows:arr];
-                    }
-                    else
-                    {
-                        NSUInteger count=indexPath.row+1;
-                        NSMutableArray *arrCells=[NSMutableArray array];
-                        for(NSDictionary *dInner in arr )
-                        {
-                            [arrCells addObject:[NSIndexPath indexPathForRow:count inSection:0]];
-                            [ARR_category insertObject:dInner atIndex:count++];
-                            
-                            NSLog(@"Inserted dictin %@",dInner);
-                        }
-                        [self.TBL_menu insertRowsAtIndexPaths:arrCells withRowAnimation:UITableViewRowAnimationLeft];
-                    }
-                }
-            }
+       case 0:
+        {
+             NSString *name = [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"name"];
+             [[NSUserDefaults standardUserDefaults] setValue:name forKey:@"item_name"];
+             [[NSUserDefaults standardUserDefaults] synchronize];
+             [[NSUserDefaults standardUserDefaults] setObject:[ARR_category objectAtIndex:indexPath.row] forKey:@"product_sub_list"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            NSString *list_key = [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"url_key"];
+            [[NSUserDefaults standardUserDefaults] setValue:list_key forKey:@"product_list_key"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+
+           
+           // [self performSegueWithIdentifier:@"qt_home_sub_brands" sender:self];
+
             
-            
-            break;
+            [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
+             [self swipe_left];
+             break;
+        }
         case 1:
-            [self swipe_left];
-            if(indexPath.row == 1)
-            {
-                [self performSegueWithIdentifier:@"login_forgot_pwd" sender:self];
-            }
-            break;
-        case 2:
             [self swipe_left];
             if(indexPath.row == 0)
             {
@@ -1850,10 +1922,22 @@
                 self.VW_sports.hidden =YES;
                 self.Scroll_contents.hidden = NO;
                 
-            }else
-            {
-            [self performSegueWithIdentifier:@"merchant_segue" sender:self];
             }
+
+            if(indexPath.row == 2)
+            {
+                [self performSegueWithIdentifier:@"login_forgot_pwd" sender:self];
+            }
+            else{
+                NSLog(@"ACCount selected");
+            }
+            break;
+        case 2:
+            [self swipe_left];
+            
+            [self performSegueWithIdentifier:@"merchant_segue" sender:self];
+            
+                        
             break;
         case 3:
             if(indexPath.section == 3)
@@ -1921,11 +2005,12 @@
         default:
             break;
     }
+    }
     if(tableView == _TBL_event_list)
     {
         @try
         {
-            NSMutableDictionary *event_dtl = [Events_arr objectAtIndex:indexPath.section];
+            NSDictionary *event_dtl = [Events_arr objectAtIndex:indexPath.section];
             NSLog(@"the detail of event is:%@",event_dtl);
             NSString *show_browser = [NSString stringWithFormat:@"%@",[event_dtl valueForKey:@"_showBrowser"]];
             [[NSUserDefaults standardUserDefaults] setObject:event_dtl forKey:@"event_detail"];
@@ -1956,7 +2041,7 @@
     {
         @try
         {
-            NSMutableDictionary *sports_dtl = [Sports_arr objectAtIndex:indexPath.section];
+            NSDictionary *sports_dtl = [Sports_arr objectAtIndex:indexPath.section];
             NSLog(@"the detail of sports is:%@",sports_dtl);
             NSString *show_browser = [NSString stringWithFormat:@"%@",[sports_dtl valueForKey:@"_showBrowser"]];
             [[NSUserDefaults standardUserDefaults] setObject:sports_dtl forKey:@"event_detail"];
@@ -1986,7 +2071,7 @@
     {
         @try
         {
-            NSMutableDictionary *leisure = [Leisure_arr objectAtIndex:indexPath.section];
+            NSDictionary *leisure = [Leisure_arr objectAtIndex:indexPath.section];
             NSLog(@"the detail of sports is:%@",leisure);
             NSString *show_browser = [NSString stringWithFormat:@"%@",[leisure valueForKey:@"_showBrowser"]];
             [[NSUserDefaults standardUserDefaults] setObject:leisure forKey:@"event_detail"];
@@ -2054,6 +2139,7 @@
             
             ht = 275;
         }
+         return ht;
     }
     else if(tableView == _TBL_sports_list)
     {
@@ -2062,13 +2148,15 @@
             
             ht = 310;
         }
+        
         else
         {
             
             ht = 275;
         }
+         return ht;
     }
-    else if(tableView == _TBL_lisure_list!=0)
+    else if(tableView == _TBL_lisure_list)
     {
         if(indexPath.section %2 != 0)
         {
@@ -2080,10 +2168,11 @@
             
             ht = 275;
         }
+        return ht;
         
     }
     
-    return ht;
+    return tableView.rowHeight;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -2094,18 +2183,57 @@
     
     return 4;
      }
-    return 0;
+    return 32;
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if(_TBL_event_list||_TBL_lisure_list||_TBL_sports_list)
+        UIView *tempView=[[UIView alloc]initWithFrame:CGRectMake(0,0,320,244)];
+    
+    NSString *str;
+    if(tableView == _TBL_menu)
     {
-    UIView *view = [UIView new];
-    [view setBackgroundColor:[UIColor clearColor]];
-    return view;
+        UILabel *tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,-7,320,30)];
+
+       // tempLabel.backgroundColor = [UIColor whiteColor];
+        tempLabel.textColor = [UIColor grayColor]; //here you can change the text color of header.
+        tempLabel.font = [UIFont fontWithName:@"Poppins-Regular" size:14];
+
+        tempView.backgroundColor=[UIColor whiteColor];
+
+        if(section == 0)
+        {
+            str =@"ALL CATEGORIES";
+        }
+        if(section == 1)
+        {
+            str = @"ACCOUNT INFO";
+        }
+        if(section == 2)
+        {
+            str = @"MERCHANT LIST";
+        }
+        if(section == 3)
+        {
+            str = @"LANGUAGE";
+        }
+        if(section == 4)
+        {
+            str = @"QUICK LINKS";
+        }
+        tempLabel.text =str;
+        [tempView addSubview:tempLabel];
+         return tempView;
     }
-    return nil;
+    else
+    {
+        UILabel *tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,-10,320,40)];
+        tempLabel.textColor = [UIColor grayColor]; //here you can change the text color of header.
+        tempLabel.font = [UIFont fontWithName:@"Poppins-Regular" size:15];
+        [tempView addSubview:tempLabel];
+        return tempView;
+    
+   }
 }
 #pragma didselct Actions
 -(void)sports_detail
@@ -2406,7 +2534,7 @@
     for(NSDictionary *dInner in ar )
     {
         NSUInteger indexToRemove=[ARR_category indexOfObjectIdenticalTo:dInner];
-        NSArray *arInner=[dInner valueForKey:@"SubItems"];
+        NSArray *arInner=[dInner valueForKey:@"child_categories"];
         if(arInner && [arInner count]>0)
         {
             [self CollapseRows:arInner];
@@ -2450,7 +2578,7 @@
     
     NSDictionary *d1=[ARR_category objectAtIndex:indexPath.row] ;
     
-    if([d1 valueForKey:@"SubItems"])
+    if([d1 valueForKey:@"child_categories"])
     {
         cell.btnExpand.alpha = 1.0;
         [cell.btnExpand addTarget:self action:@selector(showSubItems:) forControlEvents:UIControlEventTouchUpInside];
@@ -2483,8 +2611,8 @@
     
     
     NSDictionary *d=[ARR_category objectAtIndex:indexPath.row] ;
-    NSArray *arr=[d valueForKey:@"SubItems"];
-    if([d valueForKey:@"SubItems"])
+    NSArray *arr=[d valueForKey:@"child_categories"];
+    if([d valueForKey:@"child_categories"])
     {
         BOOL isTableExpanded=NO;
         for(NSDictionary *subitems in arr )
@@ -2590,53 +2718,6 @@
         
     }
     
-}
--(void)Events_API_CALL
-{
-    @try
-    {
-        NSURL *URL = [[NSURL alloc] initWithString:@"https://api.q-tickets.com/V2.0/getalleventsdetailsbycountry?Country=Qatar"];
-        NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
-        NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
-        
-        NSDictionary *temp_dict = [xmlDoc valueForKey:@"EventDetails"];
-        NSMutableArray *tmp_arr = [temp_dict valueForKey:@"eventdetail"];
-        
-        for(int dictconut = 0; dictconut< tmp_arr.count;dictconut++)
-        {
-            NSMutableDictionary *temp_dict = [tmp_arr objectAtIndex:dictconut];
-            int category = [[temp_dict valueForKey:@"_CategoryId"] intValue];
-            if(category == 12)
-            {
-                [Leisure_arr addObject:temp_dict];
-            }
-            else if(category == 8)
-            {
-                [Sports_arr addObject:temp_dict];
-            }
-            
-        }
-        
-        [[NSUserDefaults standardUserDefaults] setObject:tmp_arr forKey:@"Events_arr"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        [[NSUserDefaults standardUserDefaults] setObject:Sports_arr forKey:@"Sports_arr"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        [[NSUserDefaults standardUserDefaults] setObject:Leisure_arr forKey:@"leisure_arr"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-
-        
-        
-        
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
-      //  [self performSegueWithIdentifier:@"Home_to_detail" sender:self];
-
-        
-    }
-    @catch(NSException *exception)
-    {
-        NSLog(@"%@",exception);
-    }
 }
 
 -(void) addSEgmentedControl
@@ -2795,6 +2876,54 @@
     }
     
 }
+-(void)Events_API_CALL
+{
+    @try
+    {
+        NSURL *URL = [[NSURL alloc] initWithString:@"https://api.q-tickets.com/V2.0/getalleventsdetailsbycountry?Country=Qatar"];
+        NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
+        NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
+        
+        NSDictionary *temp_dict = [xmlDoc valueForKey:@"EventDetails"];
+        NSMutableArray *tmp_arr = [temp_dict valueForKey:@"eventdetail"];
+        
+        for(int dictconut = 0; dictconut< tmp_arr.count;dictconut++)
+        {
+            NSMutableDictionary *temp_dict = [tmp_arr objectAtIndex:dictconut];
+            int category = [[temp_dict valueForKey:@"_CategoryId"] intValue];
+            if(category == 12)
+            {
+                [Leisure_arr addObject:temp_dict];
+            }
+            else if(category == 8)
+            {
+                [Sports_arr addObject:temp_dict];
+            }
+            
+        }
+        
+        [[NSUserDefaults standardUserDefaults] setObject:tmp_arr forKey:@"Events_arr"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [[NSUserDefaults standardUserDefaults] setObject:Sports_arr forKey:@"Sports_arr"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [[NSUserDefaults standardUserDefaults] setObject:Leisure_arr forKey:@"leisure_arr"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        
+        
+        
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
+        //  [self performSegueWithIdentifier:@"Home_to_detail" sender:self];
+        
+        
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"%@",exception);
+    }
+}
+
 -(void)Event_API_CALL
 {
     VW_overlay.hidden = YES;
@@ -2814,6 +2943,7 @@
 {
     VW_overlay.hidden = YES;
     [activityIndicatorView stopAnimating];
+    
     Leisure_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"leisure_arr"];
     [_TBL_lisure_list reloadData];
 }
@@ -2877,7 +3007,10 @@
     
 }
 
-
+-(void)BTN_log_out
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 /*
 #pragma mark - Navigation

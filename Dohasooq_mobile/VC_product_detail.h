@@ -34,7 +34,9 @@
 //third view
 @property(nonatomic,weak) IBOutlet UIView *VW_third;
 @property(nonatomic,weak) IBOutlet UITextField *TXT_count;
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionview_size;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_minus;
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView_color;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_plus;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_s;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_m;
@@ -43,9 +45,6 @@
 @property(nonatomic,weak) IBOutlet UIButton *BTN_S_color;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_M_color;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_XL_color;
-
-@property(nonatomic,weak) IBOutlet UICollectionView *collectionview_size;
-@property(nonatomic,weak) IBOutlet UICollectionView *collectionView_color;
 
 
 //fourth view

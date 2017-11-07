@@ -26,6 +26,7 @@
     NSInteger i,lang_count;
     int tag;
     NSMutableDictionary *json_Response_Dic;
+    float scroll_ht;
     
 }
 //@property(nonatomic, readonly) NSArray<__kindof UICollectionViewCell *> *visibleCells;
@@ -54,10 +55,12 @@
    // [self menu_set_UP];
 
 }
+
 -(void)viewWillAppear:(BOOL)animated
 {
  [self API_call_total];
  [self brands_API_call];
+
  [self set_up_VIEW];
 
 }
@@ -196,8 +199,8 @@
        NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:20.0f]
        } forState:UIControlStateNormal];
     
-//        _BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
-//                    @selector(btnfav_action)];
+        _BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
+                    @selector(btnfav_action)];
 
     _LBL_best_selling.text = @"BEST SELLING\nPRODUCTS";
     _LBL_fashio.text = @"FASHION\nACCSESORIES";
@@ -254,6 +257,13 @@
     
     
   
+   
+    if([[json_Response_Dic valueForKey:@"deal"] count] < 1)
+    {
+        scroll_ht = _VW_First.frame.origin.y + _VW_First.frame.size.height;
+    }
+    else
+    {
     setupframe = _collection_hot_deals.frame;
     
     for(int m = 0;m<[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"]count];m++)
@@ -262,7 +272,6 @@
     {
         setupframe.size.height = _collection_hot_deals.frame.origin.y+_collection_hot_deals.frame.size.height;
 
- 
     }
     else
     {
@@ -272,15 +281,14 @@
     }
     _collection_hot_deals.frame = setupframe;
     
-    
-    
-    
-    setupframe = _VW_second.frame;
-    setupframe.origin.y = _VW_First.frame.origin.y + _VW_First.frame.size.height;
-    setupframe.size.height = _collection_hot_deals.frame.origin.y + _collection_hot_deals.frame.size.height + 10;
-    setupframe.size.width = _Scroll_contents.frame.size.width;
-    _VW_second.frame = setupframe;
-    [self.Scroll_contents addSubview:_VW_second];
+        setupframe = _VW_second.frame;
+        setupframe.origin.y = _VW_First.frame.origin.y + _VW_First.frame.size.height;
+        setupframe.size.height = _collection_hot_deals.frame.origin.y + _collection_hot_deals.frame.size.height;
+        setupframe.size.width = _Scroll_contents.frame.size.width;
+        _VW_second.frame = setupframe;
+
+        [self.Scroll_contents addSubview:_VW_second];
+    }
     
     setupframe = _collection_best_deals.frame;
     
@@ -291,23 +299,47 @@
         setupframe.size.height =_collection_best_deals.frame.origin.y+ _collection_best_deals.frame.size.height;
         
     }
+    else if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] count] < 1)
+    {
+        
+        setupframe.size.height = 0;
+    }
     else
     {
         setupframe.size.height = 240;
         
     }
-    }
+    
+    
     _collection_best_deals.frame = setupframe;
+    
+    if(_collection_best_deals.frame.size.height == 0)
+    {
+        _VW_third.hidden = YES;
+    }
+    
+    else if(_VW_second.hidden == YES)
+    {
+        setupframe = _VW_third.frame;
+        setupframe.origin.y = _VW_First.frame.origin.y + _VW_First.frame.size.height +10;
+        setupframe.size.height = _collection_best_deals.frame.origin.y + _collection_best_deals.frame.size.height ;
+        setupframe.size.width = _Scroll_contents.frame.size.width;
+        _VW_third.frame = setupframe;
+        [self.Scroll_contents addSubview:_VW_third];
 
-    
-    setupframe = _VW_third.frame;
-    setupframe.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height;
-    setupframe.size.height = _collection_best_deals.frame.origin.y + _collection_best_deals.frame.size.height - _IMG_best_deals.frame.size.height;
-    setupframe.size.width = _Scroll_contents.frame.size.width;
-    _VW_third.frame = setupframe;
-    [self.Scroll_contents addSubview:_VW_third];
-    
-    
+    }
+    else
+    {
+        setupframe = _VW_third.frame;
+        setupframe.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height +10;
+        setupframe.size.height = _collection_best_deals.frame.origin.y + _collection_best_deals.frame.size.height ;
+        setupframe.size.width = _Scroll_contents.frame.size.width;
+        _VW_third.frame = setupframe;
+        [self.Scroll_contents addSubview:_VW_third];
+
+        
+    }
+
     setupframe = _collection_fashion_categirie.frame;
     if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count]>2)
     {
@@ -315,19 +347,72 @@
         
         
     }
+    else if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count] < 1)
+    {
+        
+        setupframe.size.height = 0;
+    }
     else
     {      setupframe.size.height =240;
         
     }
     _collection_fashion_categirie.frame = setupframe;
-
     
-    setupframe = _VW_Fourth.frame;
-    setupframe.origin.y = _VW_third.frame.origin.y + _VW_third.frame.size.height;
-    setupframe.size.height = _collection_fashion_categirie.frame.origin.y + _collection_fashion_categirie.frame.size.height + 10;
-    setupframe.size.width = _Scroll_contents.frame.size.width;
-    _VW_Fourth.frame = setupframe;
-    [self.Scroll_contents addSubview:_VW_Fourth];
+    if(_collection_fashion_categirie.frame.size.height == 0)
+    {
+        _VW_Fourth.hidden = YES;
+        
+        
+    }
+    else if(_VW_second.hidden == YES && _VW_third.hidden == YES)
+    {
+        setupframe = _VW_Fourth.frame;
+        setupframe.origin.y = _VW_First.frame.origin.y + _VW_First.frame.size.height +10;
+        setupframe.size.height = _collection_fashion_categirie.frame.origin.y + _collection_fashion_categirie.frame.size.height ;
+        setupframe.size.width = _Scroll_contents.frame.size.width;
+        _VW_Fourth.frame = setupframe;
+        [self.Scroll_contents addSubview:_VW_Fourth];
+        
+    }
+    else if(_VW_third.hidden == YES)
+    {
+        setupframe = _VW_Fourth.frame;
+        setupframe.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height +10;
+        setupframe.size.height = _collection_fashion_categirie.frame.origin.y + _collection_fashion_categirie.frame.size.height ;
+        setupframe.size.width = _Scroll_contents.frame.size.width;
+        _VW_Fourth.frame = setupframe;
+        [self.Scroll_contents addSubview:_VW_Fourth];
+
+        
+        
+    }
+    else
+    {
+        setupframe = _VW_Fourth.frame;
+        setupframe.origin.y = _VW_third.frame.origin.y + _VW_third.frame.size.height +10;
+        setupframe.size.height = _collection_fashion_categirie.frame.origin.y + _collection_fashion_categirie.frame.size.height;
+        setupframe.size.width = _Scroll_contents.frame.size.width;
+        _VW_Fourth.frame = setupframe;
+        [self.Scroll_contents addSubview:_VW_Fourth];
+
+
+    }
+    if(_VW_Fourth.hidden == YES && _VW_third.hidden == YES && _VW_second.hidden == YES)
+    {
+        scroll_ht = _VW_First.frame.origin.y + _VW_First.frame.size.height;
+
+    }
+    else if(_VW_second.hidden == YES && _VW_third.hidden == YES )
+    {
+        scroll_ht = _VW_Fourth.frame.origin.y + _VW_Fourth.frame.size.height;
+
+    }
+    else if(_VW_third.hidden == YES && _VW_Fourth.hidden == YES)
+    {
+         scroll_ht = _VW_second.frame.origin.y + _VW_second.frame.size.height;
+    }
+    }
+    
 
     self.search_bar.layer.borderWidth = 0.3f;
     self.search_bar.layer.masksToBounds = [UIColor blackColor];
@@ -349,8 +434,7 @@
     [_Scroll_contents layoutIfNeeded];
     
     
-        _Scroll_contents.contentSize = CGSizeMake(_Scroll_contents.frame.size.width,_VW_Fourth.frame.origin.y+ _VW_Fourth.frame.size.height);
-
+        _Scroll_contents.contentSize = CGSizeMake(_Scroll_contents.frame.size.width,scroll_ht);
     
     
 }
@@ -771,14 +855,24 @@
         NSLog(@"%@",[userDflts valueForKey:@"url_key_hotDeals"]);
    [self performSegueWithIdentifier:@"homw_product_list" sender:self];
     }
-    if (collectionView == _collection_best_deals) {
+   else if (collectionView == _collection_best_deals)
+    {
         [userDflts setObject:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"url_key"] forKey:@"url_key_home"];
         [self performSegueWithIdentifier:@"homw_product_list" sender:self];
         NSLog(@"%@",[userDflts valueForKey:@"url_key_home"]);
 
         
     }
-    [self performSegueWithIdentifier:@"homw_product_list" sender:self];
+   else if(collectionView == _collection_features)
+    {
+        [self performSegueWithIdentifier:@"homw_product_list" sender:self];
+ 
+    }
+   else if(collectionView == _collection_images)
+   {
+       [self performSegueWithIdentifier:@"homw_product_list" sender:self];
+       
+   }
 
     //NSLog(@"%@",[userDflts valueForKey:@"url_key_home"]);
 
@@ -1227,8 +1321,6 @@
 
 - (IBAction)cart_action:(id)sender
 {
-    
-   
     [self performSegueWithIdentifier:@"home_to_cart" sender:self];
 }
 - (IBAction)wish_list_Action:(id)sender
@@ -1593,6 +1685,8 @@ else
     
 
 }
+
+
 #pragma ShopHome_api_integration Method Calling
 
 -(void)API_call_total
@@ -1613,12 +1707,17 @@ else
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                    [alert show];
+
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
                 }
                 if (data) {
                     json_Response_Dic = data;
                     @try {
+                        if(json_Response_Dic )
                         [self set_up_VIEW];
+                        
                         [_collection_images reloadData];
                         [_collection_features reloadData];
                         [_collection_hot_deals reloadData];

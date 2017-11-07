@@ -1,14 +1,14 @@
 //
-//  event_detail_web.m
+//  VC_payment_web.m
 //  Dohasooq_mobile
 //
-//  Created by Test User on 26/10/17.
+//  Created by Test User on 06/11/17.
 //  Copyright © 2017 Test User. All rights reserved.
 //
 
-#import "event_detail_web.h"
+#import "VC_payment_web.h"
 
-@interface event_detail_web ()<UIWebViewDelegate>
+@interface VC_payment_web ()<UIWebViewDelegate>
 {
     UIView *loadingView;
 }
@@ -16,10 +16,11 @@
 
 @end
 
-@implementation event_detail_web
+@implementation VC_payment_web
 
 - (void)viewDidLoad {
-    
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
     loadingView = [[UIView alloc]init];
     CGRect loadframe = loadingView.frame;
     loadframe.size.width = 100;
@@ -44,21 +45,25 @@
     [loadingView addSubview:lblLoading];
     
     [self.view addSubview:loadingView];
-    NSMutableDictionary *event_dict = [[NSMutableDictionary alloc]init];
-    event_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"event_detail"];
-    
-    NSString *urlStr = [event_dict valueForKey:@"_EventQTurlPath"];
+   @try
+    {
+     
+    NSString *urlStr = [[NSUserDefaults standardUserDefaults] valueForKey:@"payment_url"];
     NSURL *url = [[NSURL alloc]initWithString:urlStr];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
-    [self.Event_detail_web loadRequest:request];
-    self.Event_detail_web.delegate = self;
+    [self.web_pay loadRequest:request];
+     
+    }
+    @catch(NSException *exception)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+    self.web_pay.delegate = self;
     
-    
-}
-- (IBAction)back_action:(id)sender {
-//    [self dismissViewControllerAnimated:NO completion:nil];
-    [self.navigationController popViewControllerAnimated:NO];
+
 }
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     
@@ -68,6 +73,7 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     [loadingView setHidden:YES];
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
