@@ -16,7 +16,8 @@
 
 @interface VC_product_detail ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UITextFieldDelegate,UIWebViewDelegate>
 {
-    NSMutableArray *temp_arr;
+    NSMutableArray *temp_arr,*color_arr,*size_arr;
+    
     HCSStarRatingView *starRatingView;
     NSMutableDictionary *json_Response_Dic;
     UIView *VW_overlay;
@@ -325,7 +326,7 @@
    NSString  *actuel_price =@"799";
     NSString *doha_miles = @"6758";
     NSString *mils  = @"Doha Miles";
-    NSString *text = [NSString stringWithFormat:@"QR %@ QR%@ / %@ %@",[NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_price"]],actuel_price,doha_miles,mils];
+    NSString *text = [NSString stringWithFormat:@"QR %@ QR %@ / %@ %@",[NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0] valueForKey:@"product_price"]],actuel_price,doha_miles,mils];
     
     /************/
     NSDictionary *attribs = @{
@@ -333,8 +334,9 @@
                               NSFontAttributeName: _LBL_prices.font
                               };
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
-//    [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:[text rangeOfString:actuel_price]];
-    
+    //[attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:[text rangeOfString:actuel_price]];
+    [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(actuel_price.length+7, actuel_price.length)];
+    self.LBL_prices.attributedText =attributedText;
     [attributedText addAttribute:NSBaselineOffsetAttributeName value:@5 range:[text rangeOfString:actuel_price]];
     
     _LBL_prices.attributedText = attributedText;
@@ -464,19 +466,11 @@
 
     }
     else if(collectionView == self.collectionview_size){
-        @try {
-            return [[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:0] valueForKey:@"0"] allKeys] count];
-        } @catch (NSException *exception) {
-            NSLog(@"%@",exception);
-        }
         
+        return [[[size_arr lastObject] allKeys] count];
     }
     else {
-        @try {
-            return [[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1] valueForKey:@"0"] allKeys] count];
-        } @catch (NSException *exception) {
-            NSLog(@"%@",exception);
-        }
+        return [[[color_arr lastObject] allKeys] count];
         
     }
     
@@ -507,7 +501,9 @@
         else if (collectionView == _collectionview_size){
             UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"size_cell" forIndexPath:indexPath];
             UIButton *size_btn = (UIButton *)[cell viewWithTag:1];
-            [size_btn setTitle:[NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1] valueForKey:@"0"] valueForKey:[[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1] valueForKey:@"0"] allKeys]objectAtIndex:indexPath.row]]] forState:UIControlStateNormal];
+            [size_btn setTitle:[NSString stringWithFormat:@"%@",[[size_arr objectAtIndex:0] valueForKey:[NSString stringWithFormat:@"%@",[[[size_arr objectAtIndex:0] allKeys] objectAtIndex:indexPath.row]]]] forState:UIControlStateNormal];
+            
+            //[size_btn setTitle:[NSString stringWithFormat:@"%@",[[size_arr objectAtIndex:indexPath.row] valueForKey:[NSString stringWithFormat:@"%@",[[[size_arr objectAtIndex:indexPath.row] allKeys]objectAtIndex:indexPath.row]]]] forState:UIControlStateNormal];
             return cell;
         }
         else{
@@ -667,9 +663,15 @@
 
 -(void)set_data_to_ThirdView{
     //[json_Response_Dic valueForKey:@"getVariantNames"] ,[[json_Response_Dic valueForKey:@"getVariantNames"] count]
-    for (int i=0; i<[[json_Response_Dic valueForKey:@"getVariantNames"] count]; i++) {
-        NSLog(@"%@",[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:i]);
-        //NSLog(@"%@")
+    if ([[json_Response_Dic valueForKey:@"getVariantNames"] isKindOfClass:[NSArray class]]) {
+        for (int i=0; i<[[json_Response_Dic valueForKey:@"getVariantNames"] count]; i++) {
+            NSLog(@"%@",[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:i]);
+            //NSLog(@"%@")
+            
+        }
+
+    }
+    else if ([[json_Response_Dic valueForKey:@"getVariantNames"] isKindOfClass:[NSDictionary class]]){
         
     }
     
@@ -756,17 +758,33 @@
                         [self.collection_images reloadData];
                         [self set_Data_to_UIElements];
                         [self set_data_to_ThirdView];
-                        //NSLog(@" Color %@",[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:0] valueForKey:@"0"]);
-
-//                        NSLog(@" Color %@",[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:0] valueForKey:@"0"] allKeys]);
-//                         NSLog(@"%@",[[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1] valueForKey:@"0"] allKeys]objectAtIndex:0]);
-
+                        NSArray *size_Color_arr = [json_Response_Dic valueForKey:@"getVariantNames"];
+                        color_arr=[[NSMutableArray alloc]init];
+                       size_arr = [[NSMutableArray alloc]init];
+                        for (int i=0; i<size_Color_arr.count; i++) {
+                            @try {
+                                if ([[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:i] valueForKey:@"variant"] isEqualToString:@"Colour"]) {
+                                    [color_arr addObject:[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:i] valueForKey:@"0"]];
+                                }
+                                if ([[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:i] valueForKey:@"variant"] isEqualToString:@"Size"]) {
+                                    [size_arr addObject:[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:i] valueForKey:@"0"]];
+                                }
+                            } @catch (NSException *exception) {
+                                NSLog(@"%@",exception);
+                            }
+                    
+                        }
+//                        NSLog(@"%@",size_arr);
+//                        NSLog(@"%@",color_arr);
                     } @catch (NSException *exception) {
                         NSLog(@"%@",exception);
                     }
                     }
+                    /**********Required Data**************/
+                    //NSLog(@" Color %@",[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:0] valueForKey:@"0"]);
                     
-                    
+                    //                        NSLog(@" Color %@",[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:0] valueForKey:@"0"] allKeys]);
+                    //                         NSLog(@"%@",[[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1] valueForKey:@"0"] allKeys]objectAtIndex:0]);
                    
                     //NSLog(@"%@",[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:1]valueForKey:0])
                     

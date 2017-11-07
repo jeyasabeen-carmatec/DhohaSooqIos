@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1F13698181D01B6EFE99B076 /* libPods-Dohasooq_mobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C41277D23F1B32E27A37F90E /* libPods-Dohasooq_mobile.a */; };
+		7727555F1FB0517500989CB6 /* VC_Movie_booking.m in Sources */ = {isa = PBXBuildFile; fileRef = 7727555E1FB0517500989CB6 /* VC_Movie_booking.m */; };
 		77BD48CA1FA34C3B00602AF8 /* Logo1.png in Resources */ = {isa = PBXBuildFile; fileRef = 77BD48C91FA34C3B00602AF8 /* Logo1.png */; };
 		BE16DF5A1FA039D100D20D4E /* cell_timings.m in Sources */ = {isa = PBXBuildFile; fileRef = BE16DF591FA039D100D20D4E /* cell_timings.m */; };
 		BE16DF5E1FA04DF500D20D4E /* XMLDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = BE16DF5D1FA04DF500D20D4E /* XMLDictionary.m */; };
@@ -130,7 +131,6 @@
 		BE5CBED71F9DF00300268383 /* VC_about_us.m in Sources */ = {isa = PBXBuildFile; fileRef = BE5CBED61F9DF00300268383 /* VC_about_us.m */; };
 		BE5CBEDB1F9DF22B00268383 /* VC_Terms.m in Sources */ = {isa = PBXBuildFile; fileRef = BE5CBEDA1F9DF22B00268383 /* VC_Terms.m */; };
 		BE5CBEE01F9DF26900268383 /* VC_privacy_policy.m in Sources */ = {isa = PBXBuildFile; fileRef = BE5CBEDF1F9DF26900268383 /* VC_privacy_policy.m */; };
-		BE5CBEE31F9DFB4000268383 /* VC_Movie_booking.m in Sources */ = {isa = PBXBuildFile; fileRef = BE5CBEE21F9DFB4000268383 /* VC_Movie_booking.m */; };
 		BE5CBF0D1F9EE1D800268383 /* merchant_cell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE5CBF0C1F9EE1D800268383 /* merchant_cell.xib */; };
 		BE6422FB1F7CCF1800BB1E02 /* VC_order_detail.m in Sources */ = {isa = PBXBuildFile; fileRef = BE6422FA1F7CCF1800BB1E02 /* VC_order_detail.m */; };
 		BE6422FF1F7CEE1700BB1E02 /* order_cell.m in Sources */ = {isa = PBXBuildFile; fileRef = BE6422FD1F7CEE1700BB1E02 /* order_cell.m */; };
@@ -191,6 +191,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7727555D1FB0517500989CB6 /* VC_Movie_booking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VC_Movie_booking.h; sourceTree = "<group>"; };
+		7727555E1FB0517500989CB6 /* VC_Movie_booking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_Movie_booking.m; sourceTree = "<group>"; };
 		77BD48C61FA2FB3600602AF8 /* HttpClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HttpClient.h; sourceTree = "<group>"; };
 		77BD48C91FA34C3B00602AF8 /* Logo1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Logo1.png; sourceTree = "<group>"; };
 		81AB41A92C59F23F463B0423 /* Pods-Dohasooq_mobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dohasooq_mobile.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Dohasooq_mobile/Pods-Dohasooq_mobile.debug.xcconfig"; sourceTree = "<group>"; };
@@ -358,8 +360,6 @@
 		BE5CBEDA1F9DF22B00268383 /* VC_Terms.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_Terms.m; sourceTree = "<group>"; };
 		BE5CBEDE1F9DF26900268383 /* VC_privacy_policy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VC_privacy_policy.h; sourceTree = "<group>"; };
 		BE5CBEDF1F9DF26900268383 /* VC_privacy_policy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_privacy_policy.m; sourceTree = "<group>"; };
-		BE5CBEE11F9DFB4000268383 /* VC_Movie_booking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VC_Movie_booking.h; sourceTree = "<group>"; };
-		BE5CBEE21F9DFB4000268383 /* VC_Movie_booking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_Movie_booking.m; sourceTree = "<group>"; };
 		BE5CBF0C1F9EE1D800268383 /* merchant_cell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = merchant_cell.xib; sourceTree = "<group>"; };
 		BE5CBF331F9F172E00268383 /* VC_intial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VC_intial.h; sourceTree = "<group>"; };
 		BE6422F91F7CCF1800BB1E02 /* VC_order_detail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VC_order_detail.h; sourceTree = "<group>"; };
@@ -1033,8 +1033,8 @@
 			children = (
 				BE1F11701FAAE11000551645 /* VC_movies.h */,
 				BE1F11711FAAE11000551645 /* VC_movies.m */,
-				BE5CBEE11F9DFB4000268383 /* VC_Movie_booking.h */,
-				BE5CBEE21F9DFB4000268383 /* VC_Movie_booking.m */,
+				7727555D1FB0517500989CB6 /* VC_Movie_booking.h */,
+				7727555E1FB0517500989CB6 /* VC_Movie_booking.m */,
 				BE16DF581FA039D100D20D4E /* cell_timings.h */,
 				BE16DF591FA039D100D20D4E /* cell_timings.m */,
 				BEE0FB601FA708D3009C1856 /* cell_title_theatre.h */,
@@ -1578,6 +1578,7 @@
 				BEE0FB4F1FA47D4D009C1856 /* VC_event_user.m in Sources */,
 				BE1D11381F865CB9003A3954 /* pay_cell.m in Sources */,
 				BEE0FB651FA76A0B009C1856 /* sports_dtail.m in Sources */,
+				7727555F1FB0517500989CB6 /* VC_Movie_booking.m in Sources */,
 				BE7B9AE71F7BD23600715216 /* wish_list_cell.m in Sources */,
 				BE5C0BF81FA97B73005AB48B /* VC_product_List.m in Sources */,
 				BE7B9AC01F7A637700715216 /* HMSegmentedControl.m in Sources */,
@@ -1587,7 +1588,6 @@
 				BE3066071F74B920003F6C40 /* CCTextField.m in Sources */,
 				BE1F11781FAAF1C200551645 /* VC_sports.m in Sources */,
 				BE6796921F960BD3007C45EC /* menu_cell.m in Sources */,
-				BE5CBEE31F9DFB4000268383 /* VC_Movie_booking.m in Sources */,
 				BE3068FA1F78A706003F6C40 /* Best_deals_cell.m in Sources */,
 				BE5C0BFE1FA97BAC005AB48B /* VC_wish_list.m in Sources */,
 				BE5CBED71F9DF00300268383 /* VC_about_us.m in Sources */,

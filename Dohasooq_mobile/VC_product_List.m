@@ -450,9 +450,10 @@
 
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-        
+        //http://192.168.0.171/dohasooq/Apis/productList/All/0/1/1.json
 
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/catalog/Fashion/%@/%@.json",SERVER_URL,country,languge];
+//        NSString *urlGetuser =[NSString stringWithFormat:@"%@Apis/productList/%@/0/%@/%@.json",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"URL_Key"],country,languge];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@Apis/productList/All/0/%@/%@.json",SERVER_URL,country,languge];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -460,21 +461,29 @@
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
                 }
                 if (data) {
-                    
-                    
                     NSMutableDictionary *json_DATA = data;
                     if(json_DATA)
                     {
-                        VW_overlay.hidden = YES;
-                        [activityIndicatorView stopAnimating];
-                    //NSLog(@"%@",json_DATA);
-                    productDataArray = [json_DATA valueForKey:@"products"];
-                    //NSLog(@"id for products %@",[[[productDataArray objectAtIndex:0] valueForKey:@"DISTINCT Products"] valueForKey:@"id"]);
-                    
-                    // NSLog(@"%@",productDataArray);
-                    // NSLog(@"URL KEY IS::::%@",[[productDataArray objectAtIndex:0] valueForKey:@"url_key"]);
-                    
-                    [self.collection_product reloadData];
+                        @try {
+                            VW_overlay.hidden = YES;
+                            [activityIndicatorView stopAnimating];
+                            productDataArray = [json_DATA valueForKey:@"products"];
+                            NSLog(@"%@",productDataArray);
+                            self.LBL_product_name.text = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"URL_Key"]];
+                            NSLog(@"%ld",[productDataArray count]);
+                            self.LBL_product_count.text = [NSString stringWithFormat:@"%lu Products",(unsigned long)[productDataArray count]];
+                            //NSLog(@"%@",json_DATA);
+                            //NSLog(@"id for products %@",[[[productDataArray objectAtIndex:0] valueForKey:@"DISTINCT Products"] valueForKey:@"id"]);
+                            
+                            // NSLog(@"%@",productDataArray);
+                            // NSLog(@"URL KEY IS::::%@",[[productDataArray objectAtIndex:0] valueForKey:@"url_key"]);
+                            
+                            [self.collection_product reloadData];
+                        } @catch (NSException *exception) {
+                            NSLog(@"%@",exception);
+                        }
+                        
+                        
                     }
                 }
                 
