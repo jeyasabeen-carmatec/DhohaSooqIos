@@ -678,14 +678,21 @@
 }
 - (IBAction)Wish_list_action:(id)sender
 {
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(wish_list_API) withObject:activityIndicatorView afterDelay:0.01];
+    
+}
+-(void)wish_list_API
+{
     @try
     {
-//        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
+        //        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
         NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
         NSString *poduct_id = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0]valueForKey:@"id"]];
         
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@/addToWishList/%@/%@",SERVER_URL,poduct_id,user_id];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/addToWishList/%@/%@.json",SERVER_URL,poduct_id,user_id];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -698,7 +705,20 @@
                     {
                         VW_overlay.hidden=YES;
                         [activityIndicatorView stopAnimating];
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Item added successfully" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        [alert show];
                         NSLog(@"The Wishlist%@",json_Response_Dic);
+                    }
+                    else
+                    {
+                        VW_overlay.hidden=YES;
+                        [activityIndicatorView stopAnimating];
+                        
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        [alert show];
+                        NSLog(@"The Wishlist%@",json_Response_Dic);
+
+                        
                     }
                     
                     
@@ -713,10 +733,80 @@
         [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
     }
     
+    
 
-
+    
 }
+- (IBAction)add_cart_action:(id)sender
+{
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(add_cart_action) withObject:activityIndicatorView afterDelay:0.01];
+    
+}
+-(void)add_cart_action
+{
+    
+    
+    @try
+    {
+        //        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+        NSString *poduct_id = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] objectAtIndex:0]valueForKey:@"id"]];
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/addcartapi/%@/%@/1.json",SERVER_URL,user_id,poduct_id];
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                }
+                if (data) {
+                    json_Response_Dic = data;
+                    if(json_Response_Dic)
+                    {
+                        if([[json_Response_Dic valueForKey:@"success"] intValue] == 1)
+                        {
+                        VW_overlay.hidden=YES;
+                        [activityIndicatorView stopAnimating];
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_Response_Dic valueForKey:@"message"]delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        [alert show];
+                        NSLog(@"The Wishlist%@",json_Response_Dic);
+                        }
+                    }
+                    else
+                    {
+                        VW_overlay.hidden=YES;
+                        [activityIndicatorView stopAnimating];
+                        
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        [alert show];
+                        NSLog(@"The Wishlist%@",json_Response_Dic);
+                        
+                        
+                    }
+                    
+                    
+                }
+                VW_overlay.hidden=YES;
+                [activityIndicatorView stopAnimating];
 
+                
+            });
+        }];
+    }
+    @catch(NSException *exception)
+    {
+        VW_overlay.hidden=YES;
+        [activityIndicatorView stopAnimating];
+        NSLog(@"The error is:%@",exception);
+        [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+    }
+    
+
+    
+}
 - (IBAction)productdetail_to_cartPage:(id)sender {
     [self performSegueWithIdentifier:@"productDetail_to_cart" sender:self];
 }
@@ -726,7 +816,6 @@
 //}
 
 #pragma _product_Detail_api_integration Method Calling
-
 -(void)product_detail_API
 {
     
@@ -819,6 +908,10 @@
 }
 
 
+-(void)cart_count_API
+{
+    
+}
 #pragma UIWebView Delegate
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {

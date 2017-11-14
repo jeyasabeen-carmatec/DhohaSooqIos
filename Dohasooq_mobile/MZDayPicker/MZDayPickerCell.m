@@ -21,7 +21,7 @@
 //  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-//  THE SOFTWARE.
+//  THE SOFTWARE. 
 
 #import "MZDayPickerCell.h"
 
@@ -105,17 +105,19 @@
 {
     _containerView = [[UIView alloc] initWithFrame:CGRectMake(self.footerHeight, 0, self.cellSize.width, self.cellSize.height)];
     
-    _dayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.cellSize.width, self.cellSize.height)];
+    _dayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.cellSize.width, self.cellSize.height - 30)];
     _dayLabel.center = CGPointMake(_containerView.frame.size.width/2, self.cellSize.height/2.6);
     _dayLabel.textAlignment = NSTextAlignmentCenter;
-    _dayLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:self.dayLabel.font.pointSize];
+    _dayLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
     _dayLabel.backgroundColor = [UIColor clearColor];
+    _dayLabel.textColor = [UIColor whiteColor];
     
-    _dayNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.cellSize.width, self.cellSize.height)];
+    _dayNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.cellSize.height - 10, self.cellSize.width, 20)];
     _dayNameLabel.center = CGPointMake(_containerView.frame.size.width/2, self.cellSize.height/1.3);
     _dayNameLabel.textAlignment = NSTextAlignmentCenter;
-    _dayNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:self.dayNameLabel.font.pointSize];
+    _dayNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
     _dayNameLabel.backgroundColor = [UIColor clearColor];
+    _dayNameLabel.textColor = [UIColor whiteColor];
     
     [_containerView addSubview: self.dayLabel];
     [_containerView addSubview: self.dayNameLabel];

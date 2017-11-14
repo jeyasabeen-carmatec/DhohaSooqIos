@@ -164,8 +164,6 @@
     [self.view addSubview:_VW_Movies];
     
     
-    
-    
 }
 -(void)Leisure_view
 {
@@ -1656,10 +1654,9 @@
     
     if(indexPath.section == 0)
     {
+   
     NSString *Title= [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"name"];
-        
     return [self createCellWithTitle:Title image:[[ARR_category objectAtIndex:indexPath.row] valueForKey:@"Image name"] indexPath:indexPath];
-        
         
     }
     if(indexPath.section == 1)
@@ -1895,6 +1892,8 @@
     {
        case 0:
         {
+            if([ARR_category valueForKey:@"child_categories"])
+            {
              NSString *name = [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"name"];
              [[NSUserDefaults standardUserDefaults] setValue:name forKey:@"item_name"];
              [[NSUserDefaults standardUserDefaults] synchronize];
@@ -1905,11 +1904,24 @@
             [[NSUserDefaults standardUserDefaults] synchronize];
 
            
-           // [self performSegueWithIdentifier:@"qt_home_sub_brands" sender:self];
+            [self performSegueWithIdentifier:@"qt_home_sub_brands" sender:self];
 
             
-            [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
+           // [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
              [self swipe_left];
+            }
+            else
+            {
+                NSString *name = [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"name"];
+                [[NSUserDefaults standardUserDefaults] setValue:name forKey:@"item_name"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                NSString *list_key = [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"url_key"];
+                [[NSUserDefaults standardUserDefaults] setValue:list_key forKey:@"product_list_key"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                 [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
+                
+            }
              break;
         }
         case 1:
@@ -3012,6 +3024,10 @@
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+- (IBAction)filter_action:(id)sender {
+    [self performSegueWithIdentifier:@"events_filter" sender:self];
+}
+
 
 /*
 #pragma mark - Navigation

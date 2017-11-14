@@ -27,7 +27,9 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_author;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_data;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_author;
-@property(nonatomic,weak) IBOutlet UIButton *BTN_calneder;
+@property(nonatomic,weak) IBOutlet UITextField *BTN_calneder;
+@property (nonatomic, strong) UIPickerView *date_picker_view;
+
 
 
 

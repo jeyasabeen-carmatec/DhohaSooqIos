@@ -13,10 +13,10 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 
 
-@interface Event_detail ()<UITableViewDelegate,UITableViewDataSource>
+@interface Event_detail ()<UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource,UIGestureRecognizerDelegate>
 {
     NSMutableDictionary *event_dtl_dict;
-    NSMutableArray *event_cost_arr,*values_arr,*cost_arr;
+    NSMutableArray *event_cost_arr,*values_arr,*cost_arr,*dates_arr;
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
 }
@@ -33,6 +33,7 @@
 -(void)set_UP_VIEW
 {
     cost_arr = [[NSMutableArray alloc]init];
+    dates_arr = [[NSMutableArray alloc]init];
     cost_arr = [NSMutableArray arrayWithObjects:@"0",@"0",@"0", nil];
     NSLog(@"%@",values_arr);
     
@@ -61,73 +62,48 @@
     frameset.origin.y = _LBL_event_name.frame.origin.y + _LBL_event_name.frame.size.height;
     _LBL_event_address.frame = frameset;
     
-  
+    @try
+    {
+        
+        _LBL_event_date.text = [NSString stringWithFormat:@"%@ - %@",[event_dtl_dict valueForKey:@"_startDate"],[event_dtl_dict valueForKey:@"_endDate"]];
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"%@",exception);
+    }
+    
+
     frameset = _LBL_event_date.frame;
     frameset.origin.y = _LBL_event_address.frame.origin.y + _LBL_event_address.frame.size.height + 7;
     _LBL_event_date.frame = frameset;
     
+    
+    
     @try
     {
-        
-    _LBL_event_date.text = [NSString stringWithFormat:@"%@ - %@",[event_dtl_dict valueForKey:@"_startDate"],[event_dtl_dict valueForKey:@"_endDate"]];
-     }
+        _LBL_event_time.text =[NSString stringWithFormat:@"%@ - %@",[event_dtl_dict valueForKey:@"_StartTime"],[event_dtl_dict valueForKey:@"_endTime"]];
+    }
     @catch(NSException *exception)
     {
         NSLog(@"%@",exception);
     }
-    @try
-    {
-    NSDateFormatter *df = [[NSDateFormatter alloc] init];
-    [df setDateFormat:@"yyyy-MM-dd"];
-    NSDate *startDate = [df dateFromString:[event_dtl_dict valueForKey:@"_startDate"]]; // your start date
-    NSDate *endDate = [df dateFromString:[event_dtl_dict valueForKey:@"_endDate"]]; // your end date
-    NSDateComponents *dayDifference = [[NSDateComponents alloc] init];
     
-    NSMutableArray *dates = [[NSMutableArray alloc] init];
-    NSUInteger dayOffset = 1;
-    NSDate *nextDate = startDate;
-    do {
-        [dates addObject:nextDate];
-        
-        [dayDifference setDay:dayOffset++];
-        NSDate *d = [[NSCalendar currentCalendar] dateByAddingComponents:dayDifference toDate:startDate options:0];
-        nextDate = d;
-    } while([nextDate compare:endDate] == NSOrderedAscending);
-    
-    [df setDateStyle:NSDateFormatterFullStyle];
-    for (NSDate *date in dates)
-    {
-        NSLog(@"The Dates are:%@", [df stringFromDate:date]);
-    }
-    }
-    @catch(NSException *exception)
-    {
-        
-    }
-
     
     frameset = _LBL_event_time.frame;
     frameset.origin.y = _LBL_event_date.frame.origin.y + _LBL_event_date.frame.size.height ;
     _LBL_event_time.frame = frameset;
-    @try
-    {
-    _LBL_event_time.text =[NSString stringWithFormat:@"%@ - %@",[event_dtl_dict valueForKey:@"_StartTime"],[event_dtl_dict valueForKey:@"_endTime"]];
-    }
-    @catch(NSException *exception)
-    {
-        NSLog(@"%@",exception);
-    }
-
-    
-    frameset = _VW_event.frame;
-    frameset.size.height = _LBL_event_time.frame.origin.y + _LBL_event_time.frame.size.height;
-    frameset.size.width = _Scroll_contents.frame.size.width;
-    _VW_event.frame = frameset;
     
     frameset = _IMG_back_ground.frame;
     frameset.size.height = _LBL_event_time.frame.origin.y + _LBL_event_time.frame.size.height;
     frameset.size.width = _Scroll_contents.frame.size.width;
     _IMG_back_ground.frame = frameset;
+
+
+    frameset = _VW_event.frame;
+    frameset.size.height = _LBL_event_time.frame.origin.y + _LBL_event_time.frame.size.height;
+    frameset.size.width = _Scroll_contents.frame.size.width;
+    _VW_event.frame = frameset;
+    
     
     
     frameset = _VW_event_dtl.frame;
@@ -152,27 +128,74 @@
     frameset.origin.y= _LBL_author.frame.origin.y + _LBL_author.frame.size.height;
     _LBL_data.frame = frameset;
     
-    if(_BTN_calneder.hidden == YES)
+
+    @try
     {
-        frameset = _VW_author.frame;
-        frameset.origin.y = _VW_event.frame.origin.y + _VW_event.frame.size.height;
-        frameset.size.height = _LBL_data.frame.origin.y + _LBL_data.frame.size.height;
-        frameset.size.width = _Scroll_contents.frame.size.width;
-        _VW_author.frame = frameset;
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+        NSDate *date = [NSDate date];
+    [df setDateFormat:@"yyyy-MM-dd"];
+    NSDate *startDate = date; // your start date
+    NSDate *endDate = [df dateFromString:[event_dtl_dict valueForKey:@"_endDate"]]; // your end date
+    NSDateComponents *dayDifference = [[NSDateComponents alloc] init];
+    
+    NSMutableArray *dates = [[NSMutableArray alloc] init];
+    NSUInteger dayOffset = 1;
+    NSDate *nextDate = startDate;
+    do {
+        [dates addObject:nextDate];
+        
+        [dayDifference setDay:dayOffset++];
+        NSDate *d = [[NSCalendar currentCalendar] dateByAddingComponents:dayDifference toDate:startDate options:0];
+        nextDate = d;
+    } while([nextDate compare:endDate] == NSOrderedAscending);
+    
+           [df setDateFormat:@"yyyy-MM-dd"];
+        NSMutableArray *dates_array = [[NSMutableArray alloc]init];
+    for (NSDate *date in dates)
+    {
+       
+    [dates_arr addObject:[NSString stringWithFormat:@"%@",[df stringFromDate:date]]];
+
+        
     }
-    else
+        NSString *ebd_date = [df stringFromDate:endDate];
+        [dates_arr addObject:ebd_date];
+        NSLog(@"The Dates are:%@", dates_array);
+    }
+    @catch(NSException *exception)
     {
         
+        
+    }
+
+   
+    if(dates_arr.count > 2)
+    {
+        _BTN_calneder.hidden = NO;
+        
+        frameset = _BTN_calneder.frame;
+        frameset.origin.y = _LBL_data.frame.origin.y + _LBL_data.frame.size.height;
+        _BTN_calneder.frame = frameset;
+        
+        
         frameset = _VW_author.frame;
-        frameset.origin.y = _VW_event.frame.origin.y + _VW_event.frame.size.height;
-        frameset.size.height = _BTN_calneder.frame.origin.y + _BTN_calneder.frame.size.height;
+        frameset.origin.y = _VW_event_dtl.frame.origin.y + _VW_event_dtl.frame.size.height;
+        frameset.size.height = _BTN_calneder.frame.origin.y + _BTN_calneder.frame.size.height + 10;
         frameset.size.width = _Scroll_contents.frame.size.width;
         _VW_author.frame = frameset;
+         [self picker_set_UP];
     }
-   
-    
-   
-    
+ 
+    else
+    {
+    _BTN_calneder.hidden = YES;
+    frameset = _VW_author.frame;
+    frameset.origin.y = _VW_event_dtl.frame.origin.y + _VW_event_dtl.frame.size.height;
+    frameset.size.height = _LBL_data.frame.origin.y + _LBL_data.frame.size.height;
+    frameset.size.width = _Scroll_contents.frame.size.width;
+    _VW_author.frame = frameset;
+    }
+
     [_TBL_quantity reloadData];
     
     frameset = _VW_Quantity.frame;
@@ -188,9 +211,48 @@
     [_BTN_book addTarget:self action:@selector(BTN_book_action) forControlEvents:UIControlEventTouchUpInside];
     
        // [self ATTRIBUTED_TEXT];
+   
     
     
 }
+-(void)picker_set_UP
+{
+    _date_picker_view = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_array"];
+    
+    
+    _date_picker_view = [[UIPickerView alloc] init];
+    _date_picker_view.delegate = self;
+    _date_picker_view.dataSource = self;
+    
+    
+    UITapGestureRecognizer *tapToSelect = [[UITapGestureRecognizer alloc]initWithTarget:self
+                                                                                 action:@selector(tappedToSelectRow:)];
+    tapToSelect.delegate = self;
+    [_date_picker_view addGestureRecognizer:tapToSelect];
+    
+    
+    NSLog(@"%@",dates_arr);
+    
+    UIToolbar* phone_close = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
+    phone_close.barStyle = UIBarStyleBlackTranslucent;
+    [phone_close sizeToFit];
+    
+    UIButton *close=[[UIButton alloc]init];
+    close.frame=CGRectMake(phone_close.frame.size.width - 100, 0, 100, phone_close.frame.size.height);
+    [close setTitle:@"close" forState:UIControlStateNormal];
+    [close addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
+    [phone_close addSubview:close];
+    
+    _BTN_calneder.layer.borderWidth = 0.8f;
+    _BTN_calneder.layer.borderColor = [UIColor grayColor].CGColor;
+    
+    _BTN_calneder.inputAccessoryView=phone_close;
+    _BTN_calneder.inputView = _date_picker_view;
+    
+    
+}
+
+
 -(void)viewWillAppear:(BOOL)animated
 {
     
@@ -437,6 +499,7 @@
 #pragma Button Actions
 -(void)BTN_plus_action:(UIButton *)sender
 {
+    
     NSLog(@"THE added array is:%@",event_cost_arr);
     int i = [[[event_cost_arr objectAtIndex:sender.tag] valueForKey:@"quantity"] intValue];
     int availability_price,number_of_tickets;
@@ -526,7 +589,11 @@
         
     }
     
-
+    
+    else
+    {
+        
+    }
 
 
 }
@@ -654,6 +721,58 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+#pragma picker view delgates
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    
+    return 1;
+    
+}
+
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    
+    return [dates_arr count];
+    
+}
+#pragma mark - UIPickerViewDelegate
+
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    return dates_arr[row];
+    
+}
+
+// #6
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    
+    self.BTN_calneder.text = dates_arr[row];
+    NSLog(@"the text is:%@",_BTN_calneder.text);
+    
+    
+}
+-(void)countrybuttonClick
+{
+    [self.BTN_calneder resignFirstResponder];
+}
+- (IBAction)tappedToSelectRow:(UITapGestureRecognizer *)tapRecognizer
+{
+    if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
+        CGFloat rowHeight = [_date_picker_view rowSizeForComponent:0].height;
+        CGRect selectedRowFrame = CGRectInset(_date_picker_view.bounds, 0.0, (CGRectGetHeight(_date_picker_view.frame) - rowHeight) / 2.0 );
+        BOOL userTappedOnSelectedRow = (CGRectContainsPoint(selectedRowFrame, [tapRecognizer locationInView:_date_picker_view]));
+        if (userTappedOnSelectedRow) {
+            NSInteger selectedRow = [_date_picker_view selectedRowInComponent:0];
+            [self pickerView:_date_picker_view didSelectRow:selectedRow inComponent:0];
+        }
+    }
+}
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return true;
 }
 
 /*

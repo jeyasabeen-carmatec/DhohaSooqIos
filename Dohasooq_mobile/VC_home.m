@@ -864,12 +864,13 @@
 
    else if(collectionView == _collection_features)
     {
+        
         [self performSegueWithIdentifier:@"homw_product_list" sender:self];
  
     }
    else if(collectionView == _collection_images)
    {
-       [self performSegueWithIdentifier:@"homw_product_list" sender:self];
+        [self performSegueWithIdentifier:@"homw_product_list" sender:self];
        
    }
 
