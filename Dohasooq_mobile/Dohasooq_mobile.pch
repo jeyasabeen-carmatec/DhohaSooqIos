@@ -18,4 +18,6 @@
 #define IMG_URL @"http://192.168.0.171"
 #define Product_List_Url @"Pages/catalog/Electronics/1/1.json"
 #define Product_Detail_Url @"Pages/details/glamrock-gr50136/3/1.json"
+#define MERCHANT_URL @"https://codewebber.s3.amazonaws.com/"
+
 #endif /* Dohasooq_mobile_pch */

@@ -21,6 +21,8 @@
     NSString *type_product;
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
+    NSMutableDictionary *json_Response_Dic;
+
 }
 
 @end
@@ -103,7 +105,7 @@
         
     }
     
-    NSString *prodct_count = [NSString stringWithFormat:@"45656"];
+    NSString *prodct_count = [NSString stringWithFormat:@"0"];
     NSString *products = @"PRODUCTS";
     NSString *text = [NSString stringWithFormat:@"%@ %@",prodct_count,products];
     @try
@@ -341,7 +343,7 @@
     pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@ %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"],str];
     
     [pro_cell.BTN_fav setTag:indexPath.row];
-    [pro_cell.BTN_fav addTarget:self action:@selector(startAnimation:) forControlEvents:UIControlEventTouchUpInside];
+    [pro_cell.BTN_fav addTarget:self action:@selector(Wishlist_add:) forControlEvents:UIControlEventTouchUpInside];
   //  }
          return pro_cell;
     }
@@ -374,9 +376,9 @@
 {
     NSUserDefaults *userDflts = [NSUserDefaults standardUserDefaults];
     [userDflts setObject:[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"url_key"] forKey:@"product_list_key_sub"];
-    //[userDflts setInteger:[[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"DISTINCT Products"] valueForKey:@"id"] integerValue]forKey:@"product_Id"];
-    [self performSegueWithIdentifier:@"product_list_detail" sender:self];
-   // }
+   
+     [self performSegueWithIdentifier:@"product_list_detail" sender:self];
+   
 }
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
@@ -403,6 +405,70 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+-(void)Wishlist_add:(UIButton *)sender
+{
+    
+    @try
+    {
+        
+        //        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/addToWishList/%@/%@.json",SERVER_URL,[[productDataArray objectAtIndex:sender.tag] valueForKey:@"id"],user_id];
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    
+                    VW_overlay.hidden=YES;
+                    [activityIndicatorView stopAnimating];
+                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                }
+                if (data) {
+                    json_Response_Dic = data;
+                    if(json_Response_Dic)
+                    {
+                        VW_overlay.hidden=YES;
+                        [activityIndicatorView stopAnimating];
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Item added successfully" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        [alert show];
+                        NSLog(@"The Wishlist%@",json_Response_Dic);
+                    }
+                    else
+                    {
+                        VW_overlay.hidden=YES;
+                        [activityIndicatorView stopAnimating];
+                        
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        [alert show];
+                        NSLog(@"The Wishlist%@",json_Response_Dic);
+                        
+                        
+                    }
+                    
+                    
+                }
+                
+            });
+        }];
+    }
+    @catch(NSException *exception)
+    {
+        VW_overlay.hidden=YES;
+        [activityIndicatorView stopAnimating];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"already added" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+        
+        NSLog(@"The error is:%@",exception);
+        [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+    }
+    
+    VW_overlay.hidden=YES;
+    [activityIndicatorView stopAnimating];
+    
+
 }
 -(void)startAnimation:(UIButton *)sender
 {
@@ -557,7 +623,7 @@
                             [activityIndicatorView stopAnimating];
                             productDataArray = [json_DATA valueForKey:@"products"];
                             NSLog(@"%@",productDataArray);
-                            self.LBL_product_name.text = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"URL_Key"]];
+                            self.LBL_product_name.text = [NSString stringWithFormat:@"%@ - %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"item_name"],[[NSUserDefaults standardUserDefaults] valueForKey:@"sub_name"]];
                             NSLog(@"%ld",[productDataArray count]);
                             self.LBL_product_count.text = [NSString stringWithFormat:@"%lu Products",(unsigned long)[productDataArray count]];
                             //NSLog(@"%@",json_DATA);
