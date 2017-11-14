@@ -90,8 +90,8 @@
                 if([[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"]  valueForKey:@"_Date"] isEqualToString:dateString])
 
                 {
-                [dict_time addObject:[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"]];
-                   [temp_arr addObject:[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i]valueForKey:@"ShowDates"]valueForKey:@"showDate"]valueForKey:@"ShowTimes"] valueForKey:@"showTime"]];
+                    [dict_time addObject:@{@"english":[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"],@"arabic":[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i]valueForKey:@"_arabicname"]}];
+                    [temp_arr addObject:@{@"theatre":[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"],@"shows":[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i]valueForKey:@"ShowDates"]valueForKey:@"showDate"]valueForKey:@"ShowTimes"] valueForKey:@"showTime"]}];
                    
                 }
                 
@@ -107,9 +107,10 @@
                 if([[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j]  valueForKey:@"_Date"] isEqualToString:dateString])
 
                 {
-                    [collection_count addObject:[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"]];
+                    [dict_time addObject:@{@"english":[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"],@"arabic":[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i]valueForKey:@"_arabicname"]}];
 
-                    [ARR_temp addObject:[[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i]valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j] valueForKey:@"ShowTimes"] valueForKey:@"showTime"]];
+
+                    [temp_arr addObject:@{@"theatre":[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"],@"shows":[[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i]valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j] valueForKey:@"ShowTimes"] valueForKey:@"showTime"]}];
                    
                 }
                 }
@@ -139,8 +140,8 @@
             if([[[[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"ShowDates"]valueForKey:@"showDate"]  valueForKey:@"_Date"] isEqualToString:dateString])
 
             {
-                [dict_time addObject:[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"_name"]];
-                [temp_arr addObject:[[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"]valueForKey:@"showDate"]valueForKey:@"ShowTimes"] valueForKey:@"showTime"]];
+                [dict_time addObject:@{@"english":[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"_name"],@"arabic":[[detail_dict valueForKey:@"Theatre"] valueForKey:@"_arabicname"]}];
+                [temp_arr addObject:@{@"theatre":[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"_name"],@"shows":[[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"]valueForKey:@"showDate"]valueForKey:@"ShowTimes"] valueForKey:@"showTime"]}];
                 
             }
         }
@@ -156,9 +157,9 @@
             if([[[[[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j]  valueForKey:@"_Date"] isEqualToString:dateString])
 
             {
-            [dict_time addObject:[[detail_dict valueForKey:@"Theatre"] valueForKey:@"_name"]];
+                [dict_time addObject:@{@"english":[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"_name"],@"arabic":[[detail_dict valueForKey:@"Theatre"] valueForKey:@"_arabicname"]}];
                 
-               [ARR_temp addObject:[[[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j] valueForKey:@"ShowTimes"] valueForKey:@"showTime"]];
+                [temp_arr addObject:@{@"theatre":[[detail_dict valueForKey:@"Theatre"] valueForKey:@"_name"],@"shows":[[[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j] valueForKey:@"ShowTimes"] valueForKey:@"showTime"]}];
             }
         }
             @catch(NSException *exception)
@@ -221,8 +222,39 @@
     
     [self.Scroll_contents addSubview:_VW_about_movie];
     
+    if(collection_count.count > 2 && collection_count.count  < 4)
+    {
+        frameset = self.tbl_timings.frame;
+        frameset.size.height = 450;
+        self.tbl_timings.frame = frameset;
+        
+    }
+    else if(collection_count.count > 6 && collection_count.count <8)
+    {
+        frameset = self.tbl_timings.frame;
+        frameset.size.height = 700;
+        self.tbl_timings.frame = frameset;
+    }
+    else if(collection_count.count > 8 &&collection_count.count <10)
+    {
+        
+        frameset = self.tbl_timings.frame;
+        frameset.size.height = 800;
+        self.tbl_timings.frame = frameset;
+    }
+    else if(collection_count.count > 10 &&collection_count.count <15)
+    {
+        
+        frameset = self.tbl_timings.frame;
+        frameset.size.height = 1000;
+        self.tbl_timings.frame = frameset;
+    }
+
+    
+    
     frameset = self.VW_timings.frame;
     frameset.origin.y = _VW_about_movie.frame.origin.y + _VW_about_movie.frame.size.height;
+    frameset.size.height = _tbl_timings.frame.origin.y + _tbl_timings.frame.size.height;
      frameset.size.width = self.Scroll_contents.frame.size.width;
     _VW_timings.frame = frameset;
     [self.Scroll_contents addSubview:_VW_timings];
@@ -380,6 +412,8 @@
      
     frameset = _VW_timings.frame;
     frameset.origin.y = _VW_about_movie.frame.origin.y + _VW_about_movie.frame.size.height ;
+    frameset.size.height = _tbl_timings.frame.origin.y + _tbl_timings.frame.size.height;
+
     _VW_timings.frame = frameset;
     scrollheight = _VW_timings.frame.origin.y + _VW_timings.frame.size.height;
     [self viewDidLayoutSubviews];
@@ -403,6 +437,7 @@
         
         frameset = _VW_timings.frame;
         frameset.origin.y = _VW_about_movie.frame.origin.y + _VW_about_movie.frame.size.height +5;
+        frameset.size.height = _tbl_timings.frame.origin.y + _tbl_timings.frame.size.height;
         _VW_timings.frame = frameset;
         scrollheight = _VW_timings.frame.origin.y + _VW_timings.frame.size.height;
 
@@ -429,7 +464,7 @@
     @try
     {
 
-        cell.TXT_name.text = [collection_count objectAtIndex:indexPath.row];
+        cell.TXT_name.text = [NSString stringWithFormat:@"%@ %@",[[collection_count objectAtIndex:indexPath.row]valueForKey:@"english"],[[collection_count objectAtIndex:indexPath.row]valueForKey:@"arabic"]];
         [cell.collection_timings setTag:indexPath.row];
         [cell.collection_timings reloadData];
 
@@ -448,33 +483,24 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     @try {
-        if([[ARR_temp objectAtIndex:indexPath.row] isKindOfClass:[NSDictionary class]] )
+        if([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"] isKindOfClass:[NSDictionary class]] || [[[ARR_temp objectAtIndex:indexPath.row]valueForKey:@"shows"] count]<=4)
         {
             return 80;
         }
         
-      else if ([[ARR_temp objectAtIndex:indexPath.row] count]>8){
-            return 180;
+        else if ([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count]>4 && [[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count]<=8 ){
+            return 140;
         }
+        
         else{
-            return 160;
+            return 77*[[[ARR_temp objectAtIndex:indexPath.row]valueForKey:@"shows"] count]/4;
         }
-        //else{
-        //return 80*[[ARR_temp objectAtIndex:indexPath.row] count]/4;
-        //}
-
+        
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     }
-//    if([[ARR_temp valueForKey:@"Theatre_name"] count] < 3)
-//    {
-//        return 75;
-//    }
-//    else
-//    {
-//        return 160;
-    //    }
+    
     
 }
 
@@ -525,7 +551,7 @@
     
     for (int i = 0; i < [ARR_temp count]; i++) {
         if (collectionView.tag == i) {
-            if(([[ARR_temp objectAtIndex:collectionView.tag] isKindOfClass:[NSDictionary class]]))
+            if(([[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] isKindOfClass:[NSDictionary class]]))
             {
                 count = 1;
                 
@@ -536,7 +562,7 @@
 //                {
 //                    [table_count addObject:[[ARR_temp objectAtIndex:section]objectAtIndex:j]];
 //                }
-                count = [[ARR_temp objectAtIndex:collectionView.tag] count];//table_count.count;
+                count = [[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] count];//table_count.count;
                 
             }
 
@@ -551,29 +577,38 @@
     
 
     @try {
+        if (ARR_temp.count==0) {
+            cell.BTN_time.text = @"No shows Available";
+            cell.BTN_time.textColor = [UIColor redColor];
+            cell.BTN_time.backgroundColor = [UIColor clearColor];
+        }
+
         
-        if(([[ARR_temp objectAtIndex:collectionView.tag] isKindOfClass:[NSDictionary class]]))
+       else if(([[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] isKindOfClass:[NSDictionary class]]))
         {
             
-            cell.BTN_time.text =[[ARR_temp objectAtIndex:collectionView.tag]valueForKey:@"_time"] ;
+            cell.BTN_time.text =[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"]valueForKey:@"_time"] ;
            // [cell.BTN_time setTitle:[[ARR_temp objectAtIndex:collectionView.tag]valueForKey:@"_time"] forState:UIControlStateNormal];
             
-            if ([[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"_type"] isEqualToString:@"available"]) {
+            if ([[[[ARR_temp objectAtIndex:collectionView.tag]valueForKey:@"shows" ] valueForKey:@"_type"] isEqualToString:@"available"]) {
                 [cell.BTN_time setBackgroundColor:[UIColor colorWithRed:67.0f/255.0f green:83.0f/255.0f blue:91.0f/255.0f alpha:1.0f]];
+                
             }
             else{
                 [cell.BTN_time setBackgroundColor:[UIColor redColor]];
             }
             
+           
+            
         }
         
         else{
             
-            cell.BTN_time.text =[[[ARR_temp objectAtIndex:collectionView.tag] objectAtIndex:indexPath.row]valueForKey:@"_time"];
+            cell.BTN_time.text =[[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"]objectAtIndex:indexPath.row]valueForKey:@"_time"];
 
             //[cell.BTN_time setTitle:[[[ARR_temp objectAtIndex:collectionView.tag] objectAtIndex:indexPath.row]valueForKey:@"_time"] forState:UIControlStateNormal];
             
-            if ([[[[ARR_temp objectAtIndex:collectionView.tag] objectAtIndex:indexPath.row]valueForKey:@"_type"] isEqualToString:@"available"]) {
+            if ([[[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"]valueForKey:@"_type"]objectAtIndex:indexPath.row] isEqualToString:@"available"]) {
                 
                 [cell.BTN_time setBackgroundColor:[UIColor colorWithRed:67.0f/255.0f green:83.0f/255.0f blue:91.0f/255.0f alpha:1.0f]];
             }
@@ -587,72 +622,30 @@
         
         NSLog(@"%@",exception);
     }
-   // [cell.BTN_time addTarget:self action:@selector(select_timing:) forControlEvents:UIControlEventTouchUpInside];
-
-//    NSLog(@"%ld",(long)collectionView.tag);
-//    for (int i = 0; i < [ARR_temp count]; i++) {
-//    if (collectionView.tag == i)
-//    if([[ARR_temp objectAtIndex:indexPath.row] isKindOfClass:[NSDictionary class]])
-//    {
-//        [cell.BTN_time setTitle:[ARR_temp valueForKey:@"_time" ] forState:UIControlStateNormal];
-//    }
-//    else
-//    {
-//        
-//        for(int j=0;j<[[ARR_temp objectAtIndex:indexPath.row] count];j++)
-//        {
-//     
-//          [cell.BTN_time setTitle:[[[ARR_temp objectAtIndex:indexPath.row] objectAtIndex:j] valueForKey:@"_time"] forState:UIControlStateNormal];
-//        }
-//    }
+    CGSize result = [[UIScreen mainScreen] bounds].size;
     
-//    for (int i = 0; i < [ARR_temp count]; i++) {
-//        if (collectionView.tag == i) {
-//            if(([[ARR_temp objectAtIndex:i] isKindOfClass:[NSDictionary class]]))
-//            {
-//                  [cell.BTN_time setTitle:[ARR_temp valueForKey:@"_time" ] forState:UIControlStateNormal];
-//                
-//            }
-//            else
-//            {
-//                for(int j=0;j<[[ARR_temp objectAtIndex:i] count];j++)
-//                {
-//            
-//                [cell.BTN_time setTitle:[[[ARR_temp objectAtIndex:i] objectAtIndex:j] valueForKey:@"_time"] forState:UIControlStateNormal];
-//                
-//                 }
-//            }
-//        
-//        }
-   // }
-
-    
-    
-    
-   /* @try
+    if(result.height <= 480)
     {
-        if (collectionView.tag == indexPath.row)
-        {
-        if([[ARR_temp objectAtIndex:collectionView.tag] isKindOfClass:[NSDictionary class]])
-        {
-         
-            
-            [cell.BTN_time setTitle:[ARR_temp valueForKey:@"_time" ] forState:UIControlStateNormal];
+        // iPhone Classic
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:15];
+        
+        
+    }
+    else if(result.height <= 568)
+    {
+        // iPhone 5
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:13];
+        cell.BTN_time.textAlignment = NSTextAlignmentLeft;
+        
+        
+    }
+    else
+    {
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:15];
+        
+    }
 
-           
-        }
-        else
-        {
-             [cell.BTN_time setTitle:[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"_time"] forState:UIControlStateNormal];
-        }
-        }
 
-     }
-    
-     @catch(NSException *exception)
-     {
-         
-     }*/
       return cell;
 }
 
@@ -680,14 +673,43 @@
     
     
     @try {
-        if(([[ARR_temp objectAtIndex:collectionView.tag] isKindOfClass:[NSDictionary class]]))
+        if(([[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] isKindOfClass:[NSDictionary class]]))
         {
+            
+            [[NSUserDefaults standardUserDefaults] setValue:[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] valueForKey:@"_id"] forKey:@"movie_id"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [self performSegueWithIdentifier:@"booking_seat" sender:self];
+            [[NSUserDefaults standardUserDefaults] setValue:[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] valueForKey:@"_time"] forKey:@"movie_time"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [[NSUserDefaults standardUserDefaults] setValue:[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"theatre"] forKey:@"theatre"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+
 
             NSLog(@"Selected Time Detail %@",[ARR_temp objectAtIndex:collectionView.tag]);
+            
+ 
+            
         }
         else{
+            
+            NSLog(@"Selected Time Detail %@",[[[ARR_temp objectAtIndex:collectionView.tag]  valueForKey:@"shows"]objectAtIndex:indexPath.row]);
+            [[NSUserDefaults standardUserDefaults] setValue:[[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"]objectAtIndex:indexPath.row] valueForKey:@"_id"] forKey:@"movie_id"];
+             [[NSUserDefaults standardUserDefaults] synchronize];
+            [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            [[NSUserDefaults standardUserDefaults] setValue:[[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] objectAtIndex:indexPath.row] valueForKey:@"_time"] forKey:@"movie_time"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            [[NSUserDefaults standardUserDefaults] setValue:[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"theatre"] forKey:@"theatre"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
 
-            NSLog(@"Selected Time Detail %@",[[ARR_temp objectAtIndex:collectionView.tag] objectAtIndex:indexPath.row]);
+            [self performSegueWithIdentifier:@"booking_seat" sender:self];
+
+
+
            
         }
         
@@ -696,10 +718,35 @@
         NSLog(@"%@",exception);
     }
 }
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    @try {
+        
+        
+        if(([[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] isKindOfClass:[NSDictionary class]]))
+        {
+
+            return CGSizeMake(collectionView.frame.size.width/4.5, 40);
+            
+        }
+        else{
+             return CGSizeMake(collectionView.frame.size.width/4.5, 40);
+           
+            
+        }
+        
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
+    
+}
+
 #pragma Button_Actions
 - (IBAction)back_action:(id)sender
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:NO completion:nil];
+    //[self.navigationController popViewControllerAnimated:YES];
 }
 
 
@@ -707,6 +754,8 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+#pragma Theater filter 
+
 
 /*
 #pragma mark - Navigation

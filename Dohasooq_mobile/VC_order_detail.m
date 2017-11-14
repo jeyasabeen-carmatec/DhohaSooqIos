@@ -13,6 +13,9 @@
 #import "shipping_cell.h"
 #import "billing_address.h"
 #import "pay_cell.h"
+#import "HttpClient.h"
+#import <SDWebImage/UIImageView+WebCache.h>
+
 
 @interface VC_order_detail ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,UICollectionViewDataSource, UICollectionViewDelegate>
 
@@ -25,6 +28,9 @@
     BOOL isfirstTimeTransform;
     float scroll_height;
     UIView *VW_overlay;
+    UIActivityIndicatorView *activityIndicatorView;
+    NSMutableDictionary *jsonresponse_dic,*jsonresponse_dic_address;
+    
 
 }
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
@@ -38,17 +44,45 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     isfirstTimeTransform = YES;
+  
+    
+    
+}
+-(void)viewWillAppear:(BOOL)animated
+{
+    VW_overlay = [[UIView alloc]init];
+    CGRect vwframe;
+    vwframe = VW_overlay.frame;
+    vwframe.origin.y = self.navigationController.navigationBar.frame.origin.y;
+    vwframe.size.height = self.view.frame.size.height - _VW_next.frame.size.height - self.navigationController.navigationBar.frame.size.height;
+    vwframe.size.width = self.view.frame.size.width;
+    VW_overlay.frame = vwframe;
+    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]; //[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    // VW_overlay.center = self.view.center;
+    [self.view addSubview:VW_overlay];
+    VW_overlay.hidden = YES;
+    jsonresponse_dic  = [[NSMutableDictionary alloc]init];
+    jsonresponse_dic_address = [[NSMutableDictionary alloc]init];
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(order_detail_API_call) withObject:activityIndicatorView afterDelay:0.01];
+    [self Shipp_address_API];
     [self set_UP_VIEW];
     
+
 }
 -(void)set_UP_VIEW
 {
+    
+   
+
     isfirstTimeTransform = YES;
    
     _LBL_stat.tag = 0;
     
    
     temp_arr = [[NSMutableArray alloc]init];
+    arr_product = [[NSMutableArray alloc]init];
     temp_arr = [NSMutableArray arrayWithObjects:@"debit_card.png",@"credit_card.png",@"net_banking.png",@"cod.png",nil];
     i = 1,j = 0;;
    
@@ -76,19 +110,7 @@
     [self.Scroll_card addSubview:_VW_card];
     scroll_height = _VW_card.frame.origin.y + _VW_card.frame.size.height;
     
-    VW_overlay = [[UIView alloc]init];
-    CGRect vwframe;
-    vwframe = VW_overlay.frame;
-    vwframe.origin.y = self.navigationController.navigationBar.frame.origin.y;
-    vwframe.size.height = self.view.frame.size.height - _VW_next.frame.size.height - self.navigationController.navigationBar.frame.size.height;
-    vwframe.size.width = self.view.frame.size.width;
-    VW_overlay.frame = vwframe;
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]; //[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-   // VW_overlay.center = self.view.center;
-    [self.view addSubview:VW_overlay];
-    
-    VW_overlay.hidden = YES;
-
+   
     
     frame_set = _VW_summary.frame;
     frame_set.origin.y = _VW_next.frame.origin.y - _VW_summary.frame.size.height - 20;
@@ -102,40 +124,39 @@
     _BTN_apply_promo.layer.cornerRadius = 2.0f;
     _BTN_apply_promo.layer.masksToBounds = YES;
     
-    arr_product = [[NSMutableArray alloc]init];
-    NSDictionary *temp_dictin;
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
-    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
-    [arr_product addObject:temp_dictin];
+//    NSDictionary *temp_dictin;
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+//    [arr_product addObject:temp_dictin];
+//    temp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Shining Diva Fashion",@"key1",@"QR 499",@"key2",@"QR799",@"key3",@"35% off",@"key4",@"upload-2.png",@"key5",nil];
+  //  [arr_product addObject:temp_dictin];
     
     
     arr_address = [[NSMutableArray alloc]init];
@@ -200,6 +221,8 @@
     
     _TXT_second.layer.borderColor = [UIColor whiteColor].CGColor;
     _TXT_second.layer.borderWidth = 1.7f;
+    
+   
     
     NSString *qr = @"QR";
     NSString *price = @"4565";
@@ -408,14 +431,16 @@ else
 {
     if(tableView == _TBL_orders)
     {
-    return arr_product.count;
+        return [[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"]valueForKey:@"1"] count];
         
     }
     else
     {
         if(section == 0)
         {
-        return arr_address.count;
+            NSArray *keys_arr = [[jsonresponse_dic_address valueForKey:@"shipaddress"] allKeys];
+            
+        return keys_arr.count;
         }
         else
         {
@@ -434,7 +459,6 @@ else
     if(tableView == _TBL_orders)
     {
     order_cell *cell = (order_cell *)[tableView dequeueReusableCellWithIdentifier:@"order_cell"];
-    NSDictionary *temp_dict=[arr_product objectAtIndex:indexPath.row];
     
     
     if (cell == nil)
@@ -443,13 +467,26 @@ else
         nib = [[NSBundle mainBundle] loadNibNamed:@"order_cell" owner:self options:nil];
         cell = [nib objectAtIndex:0];
     }
-    temp_dict = [arr_product objectAtIndex:indexPath.row];
+ 
+        
+    arr_product = [[[jsonresponse_dic valueForKey:@"data"] valueForKey:@"pdts"] valueForKey:@"1"];
     
-    cell.IMG_item.image = [UIImage imageNamed:[temp_dict valueForKey:@"key5"]];
+    @try
+        {
+            NSString *str = [[arr_product objectAtIndex:indexPath.row] valueForKey:@"merchantId"];
+          //  str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+        NSString *img_url = [NSString stringWithFormat:@"%@Merchant%@/Medium/%@",MERCHANT_URL,str,[[arr_product objectAtIndex:indexPath.row] valueForKey:@"productimage"]];
+        [cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:img_url]
+                             placeholderImage:[UIImage imageNamed:@"logo.png"]
+                                      options:SDWebImageRefreshCached];
     
     
-    NSString *item_name =[temp_dict valueForKey:@"key1"];
-    NSString *item_seller = @"Seller : Dohasooq";
+    NSString *item_name =[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"product_name"]];
+        
+        item_name = [item_name stringByReplacingOccurrencesOfString:@"<null>" withString:@"not mentioned"];
+    NSString *item_seller =[NSString stringWithFormat:@"Seller : %@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"merchantname"]];
+        item_name = [item_name stringByReplacingOccurrencesOfString:@"<null>" withString:@"not mentioned"];
+
     NSString *name_text = [NSString stringWithFormat:@"%@\n%@",item_name,item_seller];
     cell.LBL_item_name.numberOfLines = 0;
    
@@ -494,7 +531,12 @@ else
     {
         cell.LBL_item_name.text = name_text;
     }
-
+        }
+    @catch(NSException *exception)
+    {
+                
+    }
+            
     
     
     NSString *qr = @"QR";
@@ -590,7 +632,7 @@ else
     
     
     //pro_cell.LBL_prev_price.text =  [temp_dict valueForKey:@"key3"];
-    cell.LBL_discount.text = [temp_dict valueForKey:@"key4"];
+    cell.LBL_discount.text = @"35% off";
 
     
     TXT_count = cell._TXT_count.text;
@@ -699,6 +741,7 @@ else
              return cell;
         
     }
+    
     else
     {
         
@@ -718,13 +761,43 @@ else
             cell.layer.shadowOffset = CGSizeMake(0.0, 0.0);
             cell.layer.shadowOpacity = 1.0;
             cell.layer.shadowRadius = 4.0;
-        if(indexPath.row == arr_address.count - 1 )
+            NSMutableDictionary *dict = [jsonresponse_dic_address valueForKey:@"shipaddress"];
+            NSArray *keys_arr = [dict allKeys];
+        if(indexPath.row == keys_arr.count - 1 )
         {
             cell.BTN_edit_addres.hidden = NO;
         }
-        NSMutableDictionary *dict = [arr_address objectAtIndex:indexPath.row];
-        cell.LBL_name.text = [dict valueForKey:@"key1"];
-        cell.LBL_address.text = [dict valueForKey:@"key2"];
+        
+       
+        
+            NSString *name_str =[NSString stringWithFormat:@"%@ %@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"firstname"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"lastname"]];
+            name_str = [name_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+            
+            cell.LBL_name.text = name_str;
+            NSString *country;
+            
+            
+            NSString *str = [[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"country"];
+            NSArray *country_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
+           
+            for(int code= 0;code<country_arr.count;code++)
+            {
+                NSString *c_id = [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:code]valueForKey:@"id"]];
+                if([c_id intValue] == [str intValue])
+                {
+                   country = [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:code] valueForKey:@"name"]];
+                }
+            }
+            
+            
+            country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+
+            
+            NSString *address_str = [NSString stringWithFormat:@"%@,%@\n%@ %@\n%@\n%@\nph:%@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"address1"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"address2"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"city"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"zip_code"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddreshipaddressessapiss"] valueForKey:@"state"],country,[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"phone"]];
+            
+            address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+            
+           cell.LBL_address.text = address_str;
         
         
             
@@ -741,6 +814,8 @@ else
                 nib = [[NSBundle mainBundle] loadNibNamed:@"billing_address" owner:self options:nil];
                 cell = [nib objectAtIndex:0];
             }
+            NSMutableDictionary *dict = [jsonresponse_dic_address valueForKey:@"billaddress"];
+
             cell.BTN_check.tag = 0;
             cell.TXT_first_name.delegate = self;
             cell.TXT_last_name.delegate = self;
@@ -753,7 +828,56 @@ else
             cell.TXT_email.delegate = self;
             cell.TXT_phone.delegate = self;
             
-           
+            NSString *country;
+          
+            NSArray *country_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
+            NSString *str = [[dict valueForKey:@"billingaddress"]  valueForKey:@"country"];
+   
+            for(int code= 0;code<country_arr.count;code++)
+            {
+                NSString *c_id = [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:code]valueForKey:@"id"]];
+                if([c_id intValue] == [str intValue])
+                {
+                    country = [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:code] valueForKey:@"name"]];
+                }
+            }
+            
+            
+            country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+            
+            NSString *str_fname = [[dict valueForKey:@"billingaddress"]  valueForKey:@"firstname"];
+             NSString *str_lname = [[dict valueForKey:@"billingaddress"]  valueForKey:@"lastname"];
+             NSString *str_addr1 = [[dict valueForKey:@"billingaddress"]  valueForKey:@"address1"];
+             NSString *str_addr2 = [[dict valueForKey:@"billingaddress"]  valueForKey:@"address2"];
+             NSString *str_city = [[dict valueForKey:@"billingaddress"]  valueForKey:@"city"];
+             NSString *str_zip_code = [[dict valueForKey:@"billingaddress"]  valueForKey:@"zip_code"];
+             NSString *str_phone = [[dict valueForKey:@"billingaddress"]  valueForKey:@"phone"];
+            NSString *str_country = country;
+            NSString *str_state =[NSString stringWithFormat:@"%@",[[dict valueForKey:@"billingaddress"]  valueForKey:@"state"]];
+            
+            str_fname = [str_fname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+
+            str_lname = [str_lname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            str_addr1 = [str_addr1 stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            str_addr2 = [str_addr2 stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            str_city = [str_city stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            str_zip_code = [str_zip_code stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            str_phone = [str_phone stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            str_country = [str_country stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            str_state = [str_state stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+
+
+            cell.TXT_first_name.text = str_fname;
+            cell.TXT_last_name.text = str_lname;
+            cell.TXT_address1.text = str_addr1;
+            cell.TXT_address2.text = str_addr2;
+            cell.TXT_city.text = str_city;
+            cell.TXT_state.text = str_state;
+            cell.TXT_country.text = str_country;
+            cell.TXT_zip.text = str_zip_code;
+            cell.TXT_phone.text = str_phone;
+
+            
             [cell.BTN_check addTarget:self action:@selector(BTN_check_clickd) forControlEvents:UIControlEventTouchUpInside];
             cell.LBL_stat.tag = j;
 
@@ -770,9 +894,10 @@ else
 
             return cell;
         }
-        
-        
     }
+       
+        
+    
 
     
     
@@ -794,7 +919,7 @@ else
         }
         else
         {
-            return 170;
+            return 200;
         }
         
     }
@@ -1165,4 +1290,78 @@ else
 - (IBAction)order_to_wishListPage:(id)sender {
     [self performSegueWithIdentifier:@"order_to_wish" sender:self];
 }
+
+-(void)order_detail_API_call
+{
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+    
+    NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+    NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+    NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/orderdetailsapi/%@/%@/%@.json",SERVER_URL,user_id,country,languge];
+    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    @try {
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    NSLog(@"%@",[error localizedDescription]);
+                }
+                if (data) {
+                    
+                    VW_overlay.hidden = YES;
+                    [activityIndicatorView stopAnimating];
+                    
+                    jsonresponse_dic = data;
+                    [_TBL_orders reloadData];
+                    
+                    NSLog(@"*******%@*********",data);
+                    
+                }
+                
+            });
+            
+        }];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
+
+    VW_overlay.hidden = YES;
+    [activityIndicatorView stopAnimating];
+}
+-(void)Shipp_address_API
+{
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+    
+    NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+    NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+    NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/shipaddressessapi/%@/%@/%@.json",SERVER_URL,user_id,country,languge];
+    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    @try {
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    NSLog(@"%@",[error localizedDescription]);
+                }
+                if (data) {
+                    
+                    VW_overlay.hidden = YES;
+                    [activityIndicatorView stopAnimating];
+                    
+                    jsonresponse_dic_address = data;
+                    [_TBL_address reloadData];
+                    NSLog(@"*******%@*********",data);
+                }
+                
+            });
+            
+        }];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
+    
+    VW_overlay.hidden = YES;
+    [activityIndicatorView stopAnimating];
+}
+
 @end
