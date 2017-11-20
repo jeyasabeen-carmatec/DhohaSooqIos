@@ -33,12 +33,6 @@
     
     
     
-    Movies_arr = [[NSMutableArray alloc]init];
-    Sports_arr = [[NSMutableArray alloc] init];
-    Events_arr = [[NSMutableArray alloc] init];
-    Leisure_arr = [[NSMutableArray alloc] init];
-
-    
     [_Header_name setTitle:[[NSUserDefaults standardUserDefaults] valueForKey:@"item_title"] forState:UIControlStateNormal];
     [self.Collection_movies registerNib:[UINib nibWithNibName:@"Movies_cell" bundle:nil]  forCellWithReuseIdentifier:@"movie_cell"];
 
@@ -53,6 +47,7 @@
 }
 -(void)viewWillAppear:(BOOL)animated
 {
+    
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     VW_overlay.clipsToBounds = YES;

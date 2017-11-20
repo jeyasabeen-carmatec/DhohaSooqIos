@@ -21,6 +21,7 @@
 
 
 
+
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_movie;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_language;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_trailer_watch;
@@ -37,6 +38,17 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_timings;
 @property (weak, nonatomic) IBOutlet MZDayPicker *dayPicker;
 @property(nonatomic,weak) IBOutlet UITableView *tbl_timings;
+
+//Alert
+@property(nonatomic,weak) IBOutlet UILabel *LBL_english;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_arabic;
+@property(nonatomic,weak) IBOutlet UIView *VW_alert;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_ok;
+
+
+
+
+
 
 
 

@@ -7,6 +7,7 @@
 //
 
 #import "VC_filter.h"
+#import "XMLDictionary/XMLDictionary.h"
 
 @interface VC_filter ()
 {
@@ -22,14 +23,22 @@
     // Do any additional setup after loading the view.
     [self picker_set_UP];
     
-    
-    self.LBL_slider.minimumValue = 0;
+    self.navigationController.navigationBar.hidden = NO;
+
+    self.LBL_slider.minimumValue = 1;
     self.LBL_slider.maximumValue = 3000;
     
-    self.LBL_slider.lowerValue = 0;
+    self.LBL_slider.lowerValue = 1;
     self.LBL_slider.upperValue = 3000;
     
-    self.LBL_slider.minimumRange = 0;
+    self.LBL_slider.minimumRange = 1;
+    
+    _TXT_start_date.text = @"Select start date";
+    _TXT_end_date.text = @"Select end date";
+    
+    lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
+    upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];
+
 
     
 //    _MAX_slider.minimumValue = 0;
@@ -42,7 +51,10 @@
 //    [_MAX_slider addTarget:self action:@selector(slider_changed) forControlEvents:UIControlEventAllEvents];
 //    [_MIN_slider addTarget:self action:@selector(slider_changed_min) forControlEvents:UIControlEventAllEvents];
 
-
+    
+    
+    
+    [_BTN_submit addTarget:self action:@selector(submit_ACTION) forControlEvents:UIControlEventTouchUpInside];
     
     
     
@@ -50,24 +62,24 @@
 - (IBAction)labelSliderChanged:(NMRangeSlider*)sender
 {
     lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
-    upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
-    self.LBL_max.text = [NSString stringWithFormat:@"Max QAR %d", (int)self.LBL_slider.lowerValue];
-    self.LBL_min.text = [NSString stringWithFormat:@"Min QAR %d", (int)self.LBL_slider.upperValue];
+    upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];
+    self.LBL_max.text = [NSString stringWithFormat:@"Max QAR %d", (int)self.LBL_slider.upperValue];
+    self.LBL_min.text = [NSString stringWithFormat:@"Min QAR %d", (int)self.LBL_slider.lowerValue];
 
   
 }
--(void)slider_changed
-{
-    _LBL_max.text = [NSString stringWithFormat:@"Max QAR:%.f",_MAX_slider.value];
-
-   
-
-}
--(void)slider_changed_min
-{
-    _LBL_min.text = [NSString stringWithFormat:@"Min QAR:%.f",_MIN_slider.value];
-    
-}
+//-(void)slider_changed
+//{
+//    _LBL_max.text = [NSString stringWithFormat:@"Max QAR:%.f",_MAX_slider.value];
+//
+//   
+//
+//}
+//-(void)slider_changed_min
+//{
+//    _LBL_min.text = [NSString stringWithFormat:@"Min QAR:%.f",_MIN_slider.value];
+//    
+//}
 
 -(void)picker_set_UP
 {
@@ -108,7 +120,7 @@
     _TXT_start_date.delegate = self;
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-MM-dd"];
+    [formatter setDateFormat:@"MM-dd-yyyy"];
     
     
     NSDate *min_date = [[NSDate alloc] init];
@@ -119,6 +131,13 @@
 
     _TXT_start_date.tintColor=[UIColor clearColor];
     _TXT_end_date.tintColor=[UIColor clearColor];
+    
+    _TXT_start_date.layer.borderWidth = 0.5f;
+    _TXT_end_date.layer.borderWidth = 0.5f;
+    _TXT_start_date.layer.borderColor = _LBL_max.textColor.CGColor;
+    
+    _TXT_end_date.layer.borderColor = _LBL_max.textColor.CGColor;
+
 
 }
 -(void)countrybuttonClick
@@ -134,7 +153,7 @@
     //    [_fromdate_picker setMaximumDate:[NSDate date]];
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     NSDate *eventDate = _start_picker.date;
-    [dateFormat setDateFormat:@"yyyy-MM-dd"];
+    [dateFormat setDateFormat:@"MM-dd-yyyy"];
     
     NSString *dateString = [dateFormat stringFromDate:eventDate];
     _TXT_start_date.text = [NSString stringWithFormat:@"%@",dateString];
@@ -143,7 +162,7 @@
 {
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     NSDate *eventDate = _end_picker.date;
-    [dateFormat setDateFormat:@"yyyy-MM-dd"];
+    [dateFormat setDateFormat:@"MM-dd-yyyy"];
     
     NSString *dateString = [dateFormat stringFromDate:eventDate];
     _TXT_end_date.text = [NSString stringWithFormat:@"%@",dateString];
@@ -229,10 +248,6 @@
 //}
 #pragma mark - UIGestureRecognizerDelegate
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{
-    return true;
-}
 
 - (IBAction)back_action:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
@@ -249,7 +264,7 @@
 - (IBAction)today_action:(id)sender {
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-MM-dd"];
+    [formatter setDateFormat:@"MM-dd-yyyy"];
     NSDate *min_date = [[NSDate date] init];
     NSString  *date = [NSString stringWithFormat:@"%@",[formatter stringFromDate:min_date]];
     _TXT_start_date.text = date;
@@ -259,7 +274,7 @@
 - (IBAction)tomorrow_action:(id)sender {
     NSDate *tomorrow = [NSDate dateWithTimeInterval:(24*60*60) sinceDate:[NSDate date]];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-MM-dd"];
+    [formatter setDateFormat:@"MM-dd-yyyy"];
     NSString  *date = [NSString stringWithFormat:@"%@",[formatter stringFromDate:tomorrow]];
     _TXT_start_date.text = date;
     _TXT_end_date.text = date;
@@ -281,10 +296,84 @@
         iWeekday = [[gregorian components:NSWeekdayCalendarUnit fromDate:nextFriday] weekday];
     }
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-MM-dd"];
-    NSString  *date = [NSString stringWithFormat:@"%@",[formatter stringFromDate:nextFriday]];
-    NSLog(@"%@",date);
+    [formatter setDateFormat:@"MM-dd-yyyy"];
+    NSString  *friday = [NSString stringWithFormat:@"%@",[formatter stringFromDate:nextFriday]];
+    NSLog(@"%@",friday);
+    
+    NSDate *tomorrow = [NSDate dateWithTimeInterval:(24*60*60) sinceDate:nextFriday];
+    NSDateFormatter *formatter1 = [[NSDateFormatter alloc] init];
+    [formatter1 setDateFormat:@"MM-dd-yyyy"];
+    NSString  *next_sat = [NSString stringWithFormat:@"%@",[formatter1 stringFromDate:tomorrow]];
+    _TXT_start_date.text = friday;
+    _TXT_end_date.text = next_sat;
+    
 }
+-(void)submit_ACTION
+{
+    if([_TXT_start_date.text isEqualToString:@"Select start date"])
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please select the Start date"delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+   else  if([_TXT_start_date.text isEqualToString:@"Select end date"])
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please select the End date"delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+    
+else{
+        
+    @try
+    {
+            NSString *start_date = _TXT_start_date.text;
+            start_date = [start_date stringByReplacingOccurrencesOfString:@"-" withString:@"%20"];
+            NSString *end_date = _TXT_end_date.text;
+            end_date = [end_date stringByReplacingOccurrencesOfString:@"-" withString:@"%20"];
+            
+            
+    NSString *str = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/geteventsbyfilters?minPrice=%@&maxPrice=%@&startDate=%@&endDate=%@&country=Qatar",lower,upper,start_date,end_date];
+    
+    NSURL *URL = [[NSURL alloc] initWithString:str];
+    NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
+    //NSLog(@"string: %@", xmlString);
+    NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
+   
+    NSLog(@"The Order Data is:%@",xmlDoc);
+        
+        if([[[xmlDoc valueForKey:@"EventDetails"]valueForKey:@"eventdetail"]count] > 0)
+        {
+            @try
+            {
+             [[NSUserDefaults standardUserDefaults] setObject:[[xmlDoc valueForKey:@"EventDetails"]valueForKey:@"eventdetail"] forKey:@"Events_arr"];
+               [[NSUserDefaults standardUserDefaults] synchronize];
+                [self.navigationController popViewControllerAnimated:NO];
+
+            }
+            @catch(NSException *exception)
+            {
+                [[NSUserDefaults standardUserDefaults] setObject:[[xmlDoc valueForKey:@"EventDetails"]valueForKey:@"eventdetail"] forKey:@"Events_arr"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                [self.navigationController popViewControllerAnimated:NO];
+                
+            }
+            
+
+        
+        
+        }
+     
+     }
+     @catch(NSException *exception)
+     {
+         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"connection error"delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+         [alert show];
+     }
+   
+    }
+    
+    
+}
+
 
 /*
 #pragma mark - Navigation

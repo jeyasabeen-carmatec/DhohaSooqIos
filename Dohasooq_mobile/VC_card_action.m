@@ -25,7 +25,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     _TXT_countries.inputView = [[UIView alloc]init];
-    
+    self.navigationController.navigationBar.hidden = NO;
+
     [_LBL_timer setText:@"Time :10:00"];
     currMinute=10;
     currSeconds=00;
@@ -122,8 +123,8 @@
 #pragma Button action
 -(void)cancel_action
 {
-    [self.navigationController popToRootViewControllerAnimated:NO];
-   // [self dismissViewControllerAnimated:YES completion:nil];
+   // [self.navigationController popToRootViewControllerAnimated:NO];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 -(void)pay_action
 {

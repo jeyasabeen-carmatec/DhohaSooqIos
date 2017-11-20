@@ -25,10 +25,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    NSMutableArray  *dtl = [[NSUserDefaults standardUserDefaults] valueForKey:@"movie_dtl_dict"];
     
     NSMutableDictionary  *movie_dtl_dict = [[NSMutableDictionary alloc]init];
-    NSDictionary *time_dict = [[NSUserDefaults standardUserDefaults]  valueForKey:@"movie_id"];
     
     
     movie_dtl_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"];
@@ -72,7 +70,17 @@
     _LBL_time.frame = framseset;
     @try
     {
-        _LBL_time.text = [NSString stringWithFormat:@"%@ , %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"movie_date"],[[NSUserDefaults standardUserDefaults] valueForKey:@"movie_time"]];
+        NSDateFormatter *df = [[NSDateFormatter alloc]init];
+        NSDateFormatter *df1 = [[NSDateFormatter alloc]init];
+        
+        [df1 setDateFormat:@"yyyy-MM-dd"];
+        [df setDateFormat:@"dd MMM yyyy"];
+         NSString *temp_str = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"movie_date"]];
+        NSDate *str_date = [df1 dateFromString:temp_str];
+        NSString *start_date = [df stringFromDate:str_date];
+        
+
+        _LBL_time.text = [NSString stringWithFormat:@"%@ , %@",start_date,[[NSUserDefaults standardUserDefaults] valueForKey:@"movie_time"]];
     }
     @catch(NSException *exception)
     {
@@ -132,7 +140,8 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     
-    
+    self.navigationController.navigationBar.hidden = NO;
+
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     VW_overlay.clipsToBounds = YES;
@@ -163,7 +172,11 @@
 }
 -(void)get_order_iD
 {
-    NSURL *URL = [[NSURL alloc] initWithString:@"https://api.q-tickets.com/V2.0/lock_confirm_request?Transaction_Id=MB3JEZ7L&AppSource=3&AppVersion=1.0"];
+    
+    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/lock_confirm_request?Transaction_Id=%@&AppSource=3&AppVersion=1.0",[[NSUserDefaults standardUserDefaults] valueForKey:@"TID"]];
+
+    
+    NSURL *URL = [[NSURL alloc] initWithString:str_url];
     NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
     //NSLog(@"string: %@", xmlString);
     NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];

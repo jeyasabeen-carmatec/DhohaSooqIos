@@ -67,14 +67,14 @@
             if([name isEqualToString:@"balcony"])
             {
                 
-                [self createSeatButtonWithPosition:initial_seat_x and:initial_seat_y isAvailable:false isDisabled:false :[title_arrs objectAtIndex:i-1]:[title objectAtIndex:countVAL]:[family objectAtIndex:countVAL]];
+                [self createSeatButtonWithPosition:initial_seat_x and:initial_seat_y isAvailable:false isDisabled:false :[title_arrs objectAtIndex:i -1]:[title objectAtIndex:countVAL]:[family objectAtIndex:countVAL]];
                 
                 initial_seat_x += 1;
             }
             else{
                 
                 
-                [self createSeatButtonWithPosition:initial_seat_x and:initial_seat_y isAvailable:false isDisabled:false :[title_arrs objectAtIndex:i-1]:[title objectAtIndex:countVAL -1]:[family objectAtIndex:countVAL - 1]];
+                [self createSeatButtonWithPosition:initial_seat_x and:initial_seat_y isAvailable:false isDisabled:false :[title_arrs objectAtIndex:i]:[title objectAtIndex:countVAL]:[family objectAtIndex:countVAL]];
                 
                 initial_seat_x += 1;
                 
