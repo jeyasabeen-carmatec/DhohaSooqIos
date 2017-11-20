@@ -17,6 +17,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.navigationController.navigationBar.hidden = NO;
+
    
     NSMutableArray  *dtl = [[NSUserDefaults standardUserDefaults] valueForKey:@"Amount_dict"];
 
@@ -64,9 +66,18 @@
     _LBL_time.frame = framseset;
     @try
     {
+        NSDateFormatter *df = [[NSDateFormatter alloc]init];
+        NSDateFormatter *df1 = [[NSDateFormatter alloc]init];
+        
+        [df1 setDateFormat:@"yyyy-MM-dd"];
+        [df setDateFormat:@"dd MMM yyyy"];
+        NSString *temp_str = [NSString stringWithFormat:@"%@",[event_dtl_dict valueForKey:@"_startDate"]];
+        NSDate *str_date = [df1 dateFromString:temp_str];
+        NSString *start_date = [df stringFromDate:str_date];
         
 
-    _LBL_time.text = [NSString stringWithFormat:@"%@ , %@",[event_dtl_dict valueForKey:@"_startDate"],[event_dtl_dict valueForKey:@"_StartTime"]];
+
+    _LBL_time.text = [NSString stringWithFormat:@"%@ , %@",start_date,[event_dtl_dict valueForKey:@"_StartTime"]];
     }
     @catch(NSException *exception)
     {

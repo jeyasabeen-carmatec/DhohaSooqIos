@@ -163,8 +163,9 @@ arr_product = [[NSMutableArray alloc]init];
         NSError *error;
     
         NSHTTPURLResponse *response = nil;
-        
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@Apis/merchantList/3/1.json",SERVER_URL];
+        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@Apis/merchantList/%@/%@.json",SERVER_URL,country,languge];
         NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
         [request setURL:urlProducts];

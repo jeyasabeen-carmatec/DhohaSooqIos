@@ -22,6 +22,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.navigationController.navigationBar.hidden = NO;
+
     loadingView = [[UIView alloc]init];
     CGRect loadframe = loadingView.frame;
     loadframe.size.width = 100;
