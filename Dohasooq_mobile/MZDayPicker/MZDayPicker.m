@@ -222,8 +222,7 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
     
     if ([self.delegate respondsToSelector:@selector(dayPicker:didSelectDay:)])
         [self.delegate dayPicker:self didSelectDay:self.tableDaysData[currentIndex.row]];
-    
-    
+   
     
 }
 
@@ -688,8 +687,11 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     //NSLog(@"..........................");
     
+    
 }
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+       
+
     return YES;
 }
 - (void)tableView:(UITableView *)tableView didHighlightRowAtIndexPath:(NSIndexPath *)indexPath {

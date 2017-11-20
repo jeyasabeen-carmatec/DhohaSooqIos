@@ -21,7 +21,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     _TXT_countries.inputView = [[UIView alloc]init];
-    
+    self.navigationController.navigationBar.hidden = NO;
+
    
     [self picker_set_UP];
     [_BTN_pay addTarget:self action:@selector(pay_action) forControlEvents:UIControlEventTouchUpInside];
@@ -94,6 +95,8 @@
 }
 -(void)pay_action
 {
+    @try
+    {
     NSDictionary *order_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"order_details"];
     
     
@@ -102,6 +105,16 @@
     [[NSUserDefaults standardUserDefaults]  synchronize];
     
     [self performSegueWithIdentifier:@"pay_web_identifier" sender:self];
+    }
+    @catch(NSException *exception)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"connection error"delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+        [alert show];
+
+    }
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"connection error"delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+    [alert show];
+    
 }
 
 - (IBAction)back_action:(id)sender {

@@ -11,11 +11,12 @@
 #import "cell_title_theatre.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "XMLDictionary/XMLDictionary.h"
+#import "MZDayPickerCell.h"
 
 
 @interface VC_Movie_booking ()<UITableViewDelegate,UITableViewDataSource,MZDayPickerDelegate, MZDayPickerDataSource,UICollectionViewDelegate,UICollectionViewDataSource>
 {
-    NSMutableArray *collection_count,*table_count;
+    NSMutableArray *collection_count,*table_count,*date_Arr;
     NSMutableDictionary *detail_dict;
     CGRect oldframe;
     float scrollheight;
@@ -35,18 +36,21 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"MM/dd/yyyy"];
-    dateString = [dateFormat stringFromDate:[NSDate date]];
-
-
-   // [self set_UP_VIEW];
+    
+//    CAGradientLayer *gradient = [CAGradientLayer layer];
+//    gradient.frame = CGRectMake(_tbl_timings.frame.origin.x, _tbl_timings.frame.origin.y, [UIScreen mainScreen].bounds.size.width, _tbl_timings.contentSize.height);
+//    gradient.colors = @[(id)[UIColor colorWithRed:0.55 green:0.46 blue:0.41 alpha:1.0].CGColor, (id)[UIColor colorWithRed:0.24 green:0.19 blue:0.15 alpha:1.0].CGColor];
+//    
+//    [_VW_timings.layer insertSublayer:gradient atIndex:0];
     [self dateVIEW];
+    [_BTN_trailer_watch addTarget:self action:@selector(BTN_trailer_watch) forControlEvents:UIControlEventTouchUpInside];
+
 
     
 }
 -(void)viewWillAppear:(BOOL)animated
 {
+    self.navigationController.navigationBar.hidden = NO;
     
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
@@ -58,12 +62,132 @@
     activityIndicatorView.center = VW_overlay.center;
     [VW_overlay addSubview:activityIndicatorView];
     [self.view addSubview:VW_overlay];
+    dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"MM/dd/yyyy"];
+    dateString = [dateFormat stringFromDate:[NSDate date]];
+    [self filtering_date];
+
     
     VW_overlay.hidden = YES;
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
     [self performSelector:@selector(getResponse_detail) withObject:activityIndicatorView afterDelay:0.01];
 }
+
+-(void)filtering_date{
+    date_Arr = [[NSMutableArray alloc]init];
+    detail_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"];
+    NSLog(@"%@",detail_dict);
+    NSMutableArray *att = [[NSMutableArray alloc]init];
+    ARR_temp = [[NSMutableArray alloc]init];
+    
+    @try
+    {
+        NSArray *temp_ar = [detail_dict valueForKey:@"Theatre"];
+        for(int i = 0;i<temp_ar.count;i++)
+        {
+            
+            
+            att = [[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"] ;
+            
+            if([att isKindOfClass:[NSDictionary class]])
+                
+            {   //***********************
+                [date_Arr addObject:[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"] valueForKey:@"showDate"] valueForKey:@"_Date"]];
+                //***********************
+                
+            }
+            else{
+                // NSLog(@"%lu",(unsigned long)att.count);
+                
+                for(int j =0;j< att.count;j++)
+                {
+                    @try
+                    {
+                        //************************
+                        [date_Arr addObject:[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"] valueForKey:@"showDate"] objectAtIndex:j] valueForKey:@"_Date"]];
+                        
+                    }
+                    
+                    @catch(NSException *exception)
+                    {
+                        
+                        
+                    }
+                }
+                
+            }
+        }
+        
+        
+    }
+    @catch(NSException *exception)
+    {
+        
+        [date_Arr addObject:[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"] valueForKey:@"showDate"] valueForKey:@"_Date"]];
+    }
+    
+    
+    NSMutableArray *arry_with_Dates = [NSMutableArray array];
+    
+    NSLog(@"Date Array is :::%@",date_Arr);
+    
+    NSCalendar *cal = [NSCalendar currentCalendar];
+    
+    for (int i=0; i<date_Arr.count; i++) {
+        
+        if ([[date_Arr objectAtIndex:i] isKindOfClass:[NSArray class]]) {
+            
+            for (int j=0; j<[[date_Arr objectAtIndex:i] count]; j++) {
+                NSDate *tomorrow = [cal dateByAddingUnit:NSCalendarUnitDay
+                                                   value:1
+                                                  toDate:[dateFormat dateFromString:[[date_Arr objectAtIndex:i] objectAtIndex:j]]
+                                                 options:0];
+                [arry_with_Dates addObject:tomorrow];
+                
+                // [arry_with_Dates addObject:[dateFormat dateFromString:[[date_Arr objectAtIndex:i] objectAtIndex:j]]];
+                NSLog(@"%@",arry_with_Dates);
+            }
+        }
+        else{
+            NSDate *tomorrow = [cal dateByAddingUnit:NSCalendarUnitDay
+                                               value:1
+                                              toDate:[dateFormat dateFromString:[date_Arr objectAtIndex:i]]
+                                             options:0];
+            [arry_with_Dates addObject:tomorrow];
+            
+            
+            //[arry_with_Dates addObject:[dateFormat dateFromString:[date_Arr objectAtIndex:i]]];
+            NSLog(@"%@",arry_with_Dates);
+            
+        }
+        
+    }
+    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"self"
+                                                               ascending:NO];
+    NSArray *descriptors = [NSArray arrayWithObject:descriptor];
+    NSArray *reverseOrder = [arry_with_Dates sortedArrayUsingDescriptors:descriptors];
+    NSLog(@"Date Array is :::%@",reverseOrder);
+    NSDate *endDate = [reverseOrder firstObject];
+    //[dateFormat dateFromString:[reverseOrder firstObject]];
+    NSLog(@"%@",[reverseOrder lastObject]);
+    
+    [self.dayPicker setStartDate:[reverseOrder lastObject] endDate:endDate];
+    
+    NSDate *yesterDay = [cal dateByAddingUnit:NSCalendarUnitDay
+                                        value:-1
+                                       toDate:[reverseOrder lastObject]
+                                      options:0];
+    dateString = [dateFormat stringFromDate:yesterDay];
+    NSLog(@"Tickets available from%@",[reverseOrder lastObject]);
+   
+    [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
+
+    
+}
+
 -(void)getResponse_detail
 {
     collection_count = [[NSMutableArray alloc]init];
@@ -222,35 +346,16 @@
     
     [self.Scroll_contents addSubview:_VW_about_movie];
     
-    if(collection_count.count > 2 && collection_count.count  < 4)
-    {
-        frameset = self.tbl_timings.frame;
-        frameset.size.height = 450;
-        self.tbl_timings.frame = frameset;
-        
-    }
-    else if(collection_count.count > 6 && collection_count.count <8)
-    {
-        frameset = self.tbl_timings.frame;
-        frameset.size.height = 700;
-        self.tbl_timings.frame = frameset;
-    }
-    else if(collection_count.count > 8 &&collection_count.count <10)
-    {
-        
-        frameset = self.tbl_timings.frame;
-        frameset.size.height = 800;
-        self.tbl_timings.frame = frameset;
-    }
-    else if(collection_count.count > 10 &&collection_count.count <15)
-    {
-        
-        frameset = self.tbl_timings.frame;
-        frameset.size.height = 1000;
-        self.tbl_timings.frame = frameset;
-    }
-
+    frameset = self.tbl_timings.frame;
+    frameset.size.height =  _tbl_timings.contentSize.height;
+    self.tbl_timings.frame = frameset;
     
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = CGRectMake(_VW_timings.frame.origin.x, _VW_timings.frame.origin.y, [UIScreen mainScreen].bounds.size.width, _tbl_timings.contentSize.height+_VW_about_movie.frame.size.height);
+    gradient.colors = @[(id)[UIColor colorWithRed:0.00 green:0.06 blue:0.11 alpha:1.0].CGColor, (id)[UIColor colorWithRed:0.13 green:0.16 blue:0.17 alpha:1.0].CGColor];
+    
+    [_VW_timings.layer insertSublayer:gradient atIndex:0];
+
     
     frameset = self.VW_timings.frame;
     frameset.origin.y = _VW_about_movie.frame.origin.y + _VW_about_movie.frame.size.height;
@@ -265,10 +370,10 @@
        self.LBL_movie_name.text =  [detail_dict valueForKey:@"_name"];
         self.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[detail_dict valueForKey:@"_IMDB_rating"]];
       _LBL_censor.text = [detail_dict valueForKey:@"_Censor"];
-        NSString *img_url = [detail_dict valueForKey:@"_thumbnail"];
+        NSString *img_url = [detail_dict valueForKey:@"_thumbURL"];
         img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
         [self.IMG_movie sd_setImageWithURL:[NSURL URLWithString:img_url]
-                           placeholderImage:[UIImage imageNamed:@"logo.png"]
+                           placeholderImage:[UIImage imageNamed:@"upload-8.png"]
                                     options:SDWebImageRefreshCached];
         int time = [[detail_dict valueForKey:@"_Duration"] intValue];
         int hours = time / 60;
@@ -321,6 +426,26 @@
 //    [self dateVIEW];
     
 }
+-(void)BTN_trailer_watch
+{
+    if([[detail_dict valueForKey:@"_TrailerURL"] isEqualToString:@""])
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Trailer video is not available" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+
+        
+    }
+    else
+    {
+    NSArray *str_arr = [[detail_dict valueForKey:@"_TrailerURL"] componentsSeparatedByString:@"embed/"];
+    
+    [[NSUserDefaults standardUserDefaults] setValue:[str_arr objectAtIndex:1]  forKey:@"str_url"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self performSegueWithIdentifier:@"player_View" sender:self];
+    }
+}
+
 -(void)dateVIEW
 {
     self.dayPicker.delegate = self;
@@ -331,6 +456,7 @@
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateFormat:@"EE"];
+    
     
     
 //    [self.dayPicker setStartDate:[NSDate dateFromDay:28 month:9 year:2013] endDate:[NSDate dateFromDay:5 month:10 year:2013]];
@@ -378,14 +504,14 @@
     
     
     
-    
-    NSDate *currentDate = [NSDate date];
-    //NSDate *sevenDays = [[NSDate date] dateByAddingTimeInterval:60*60*24*7];
-
-    
-    [self.dayPicker setStartDate:currentDate endDate:sevenDays];
-    [self.dayPicker setCurrentDate:currentDate animated:NO];
-    
+//    
+//    NSDate *currentDate = [NSDate date];
+//    //NSDate *sevenDays = [[NSDate date] dateByAddingTimeInterval:60*60*24*7];
+//
+//    
+//    [self.dayPicker setStartDate:currentDate endDate:sevenDays];
+//    [self.dayPicker setCurrentDate:currentDate animated:NO];
+//    
 }
 
 -(void)viewDidLayoutSubviews
@@ -489,7 +615,7 @@
         }
         
         else if ([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count]>4 && [[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count]<=8 ){
-            return 140;
+            return 180;
         }
         
         else{
@@ -507,7 +633,7 @@
 #pragma DatePicker
 - (NSString *)dayPicker:(MZDayPicker *)dayPicker titleForCellDayNameLabelInDay:(MZDay *)day
 {
-    return [self.dateFormatter stringFromDate:day.date];
+           return [self.dateFormatter stringFromDate:day.date];
 }
 
 
@@ -515,12 +641,15 @@
 {
     dateString = [dateFormat stringFromDate:day.date];
     [self getResponse_detail];
+    [self set_UP_VIEW];
      NSLog(@"Did select day %@",dateString);
+
 
 }
 - (void)dayPicker:(MZDayPicker *)dayPicker willSelectDay:(MZDay *)day
 {
    NSLog(@"Did select day %@",day.date);
+   
 }
 
 #pragma collection view
@@ -627,7 +756,7 @@
     if(result.height <= 480)
     {
         // iPhone Classic
-        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:15];
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:13];
         
         
     }
@@ -635,13 +764,13 @@
     {
         // iPhone 5
         cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:13];
-        cell.BTN_time.textAlignment = NSTextAlignmentLeft;
+      //  cell.BTN_time.textAlignment = NSTextAlignmentLeft;
         
         
     }
     else
     {
-        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:15];
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:13];
         
     }
 
@@ -678,6 +807,9 @@
             
             [[NSUserDefaults standardUserDefaults] setValue:[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] valueForKey:@"_id"] forKey:@"movie_id"];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"movie_date"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+
             [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             [self performSegueWithIdentifier:@"booking_seat" sender:self];
@@ -689,7 +821,24 @@
 
             NSLog(@"Selected Time Detail %@",[ARR_temp objectAtIndex:collectionView.tag]);
             
- 
+          //  NSArray *censor_arr = [_LBL_censor.text componentsSeparatedByString:@"-"];
+            
+//            CGRect frameset = _VW_alert.frame;
+//            frameset.size.width = 320;
+//            frameset.size.height = 300;
+//            _VW_alert.frame = frameset;
+//            _VW_alert.hidden = NO;
+//            _VW_alert.center =self.view.center;
+//            [self.view addSubview:_VW_alert];
+//            VW_overlay.hidden = YES;
+//            [_BTN_ok addTarget:self action:@selector(ok_action) forControlEvents:UIControlEventTouchUpInside];
+            
+            
+            
+//            _LBL_english.text = [NSString stringWithFormat:@"You Are trying to book a %@	Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund",str_censor,str_censor];
+//            _LBL_arabic.text =[NSString stringWithFormat:@" أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين %@",str_censor,str_censor];
+            
+            //  [self performSegueWithIdentifier:@"booking_seat" sender:self];
             
         }
         else{
@@ -697,6 +846,9 @@
             NSLog(@"Selected Time Detail %@",[[[ARR_temp objectAtIndex:collectionView.tag]  valueForKey:@"shows"]objectAtIndex:indexPath.row]);
             [[NSUserDefaults standardUserDefaults] setValue:[[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"]objectAtIndex:indexPath.row] valueForKey:@"_id"] forKey:@"movie_id"];
              [[NSUserDefaults standardUserDefaults] synchronize];
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"movie_date"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+
             [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             
@@ -705,13 +857,35 @@
             
             [[NSUserDefaults standardUserDefaults] setValue:[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"theatre"] forKey:@"theatre"];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            
+//            NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
+//            CGRect frameset = _VW_alert.frame;
+//            frameset.size.width = 320;
+//            frameset.size.height = 300;
+//            _VW_alert.frame = frameset;
+//            _VW_alert.hidden = NO;
+//            _VW_alert.center =self.view.center;
+//            [self.view addSubview:_VW_alert];
+//            VW_overlay.hidden = YES;
+//            [_BTN_ok addTarget:self action:@selector(ok_action) forControlEvents:UIControlEventTouchUpInside];
+//            
+//            _LBL_english.text = [NSString stringWithFormat:@"You Are trying to book a %@	Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund",str_censor,str_censor];
+//            _LBL_arabic.text =[NSString stringWithFormat:@" أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين %@",str_censor,str_censor];
 
-            [self performSegueWithIdentifier:@"booking_seat" sender:self];
+            
+          
 
-
-
-           
+          
         }
+        NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
+
+        NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:text_str delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+          [self performSegueWithIdentifier:@"booking_seat" sender:self];
+        
+  
         
     } @catch (NSException *exception) {
         
@@ -721,17 +895,30 @@
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     @try {
-        
+        CGSize result = [[UIScreen mainScreen] bounds].size;
         
         if(([[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] isKindOfClass:[NSDictionary class]]))
         {
+            if(result.height <= 480)
+            {
+              return CGSizeMake(collectionView.frame.size.width/3.5, 40);
+            }
+            else{
+                return CGSizeMake(collectionView.frame.size.width/4.5, 40);
+            }
 
-            return CGSizeMake(collectionView.frame.size.width/4.5, 40);
+
             
         }
+        else
+        {
+            if(result.height <= 480)
+        {
+             return CGSizeMake(collectionView.frame.size.width/3.5, 40);
+        }
         else{
-             return CGSizeMake(collectionView.frame.size.width/4.5, 40);
-           
+            return CGSizeMake(collectionView.frame.size.width/4.5, 40);
+        }
             
         }
         
@@ -743,6 +930,12 @@
 }
 
 #pragma Button_Actions
+
+-(void)ok_action
+{
+    VW_overlay.hidden = YES;
+    _VW_alert.hidden = YES;
+}
 - (IBAction)back_action:(id)sender
 {
     [self dismissViewControllerAnimated:NO completion:nil];
@@ -755,7 +948,24 @@
     // Dispose of any resources that can be recreated.
 }
 #pragma Theater filter 
-
+- (IBAction)share_action:(id)sender
+{
+    if([[detail_dict valueForKey:@"_TrailerURL"] isEqualToString:@""])
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Trailer video is not available" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+        
+        
+    }
+    else
+    {
+    NSString *trailer_URL= [detail_dict valueForKey:@"_TrailerURL"];
+    NSArray* sharedObjects=[NSArray arrayWithObjects:trailer_URL,  nil];
+    UIActivityViewController *activityViewController = [[UIActivityViewController alloc]                                                                initWithActivityItems:sharedObjects applicationActivities:nil];
+    activityViewController.popoverPresentationController.sourceView = self.view;
+    [self presentViewController:activityViewController animated:YES completion:nil];
+    }
+}
 
 /*
 #pragma mark - Navigation

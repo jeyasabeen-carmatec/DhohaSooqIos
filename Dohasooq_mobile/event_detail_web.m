@@ -19,7 +19,8 @@
 @implementation event_detail_web
 
 - (void)viewDidLoad {
-    
+    self.navigationController.navigationBar.hidden = NO;
+
     loadingView = [[UIView alloc]init];
     CGRect loadframe = loadingView.frame;
     loadframe.size.width = 100;
