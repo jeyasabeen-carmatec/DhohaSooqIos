@@ -54,6 +54,10 @@
 //Summary View
 
 @property(nonatomic,weak) IBOutlet UIView *VW_summary;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_sub_total;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_shipping_charge;
+
+
 @property(nonatomic,weak) IBOutlet UILabel *LBL_total;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_apply_promo;
 

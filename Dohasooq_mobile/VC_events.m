@@ -136,7 +136,7 @@
             img_url = [img_url stringByReplacingOccurrencesOfString:@"App" withString:@"movie"];
             
             [cell.IMG_event sd_setImageWithURL:[NSURL URLWithString:img_url]
-                              placeholderImage:[UIImage imageNamed:@"logo.png"]
+                              placeholderImage:[UIImage imageNamed:@"upload-8.png"]
                                        options:SDWebImageRefreshCached];
             
         }

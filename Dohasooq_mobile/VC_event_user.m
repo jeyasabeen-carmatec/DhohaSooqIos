@@ -24,6 +24,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    self.navigationController.navigationBar.hidden = NO;
+
     phone_code_arr = [[NSMutableArray alloc]init];
     CGRect frameset = _VW_contents.frame;
     frameset.size.height = _BTN_pay.frame.origin.y + _BTN_pay.frame.size.height;
@@ -43,20 +46,21 @@
         NSLog(@"%@",exception);
     }
     [self phone_code_view];
-    _TXT_name.layer.borderWidth = 0.8f;
-    _TXT_name.layer.borderColor = [UIColor grayColor].CGColor;
+    _TXT_name.layer.borderWidth = 0.5f;
+    _TXT_name.layer.borderColor = [UIColor lightGrayColor].CGColor;
     
-    _TXT_mail.layer.borderWidth = 0.8f;
-    _TXT_mail.layer.borderColor = [UIColor grayColor].CGColor;
-
-    _TXT_phone.layer.borderWidth = 0.8f;
-    _TXT_phone.layer.borderColor = [UIColor grayColor].CGColor;
-
-    _TXT_code.layer.borderWidth = 0.8f;
-    _TXT_code.layer.borderColor = [UIColor grayColor].CGColor;
-
-    _TXT_voucher.layer.borderWidth = 0.8f;
-    _TXT_voucher.layer.borderColor = [UIColor grayColor].CGColor;
+    _TXT_mail.layer.borderWidth = 0.5f;
+    _TXT_mail.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    
+    _TXT_phone.layer.borderWidth = 0.5f;
+    _TXT_phone.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    
+    _TXT_code.layer.borderWidth = 0.5f;
+    _TXT_code.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    
+    _TXT_voucher.layer.borderWidth = 0.5f;
+    _TXT_voucher.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    
 
     
     _BTN_apply.layer.cornerRadius = 2.0f;
@@ -494,8 +498,8 @@
 }
 -(void)get_oreder_ID
 {
-    
-    NSMutableArray *arr;NSString  *event_price_id; NSString *event_master_id;
+   @try
+    {    NSMutableArray *arr;NSString  *event_price_id; NSString *event_master_id;
     arr = [[NSMutableArray alloc]init];
     NSArray *temp_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"cost_arr"];
     NSDictionary *event_dict =[[NSUserDefaults standardUserDefaults] valueForKey:@"event_dtl"];
@@ -538,6 +542,14 @@
     [activityIndicatorView stopAnimating];
     
     [self performSegueWithIdentifier:@"user_detail_pay" sender:self];
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"connection error"delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+    [alert show];
+
 
 }
 

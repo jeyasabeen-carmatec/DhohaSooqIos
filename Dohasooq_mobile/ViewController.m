@@ -38,7 +38,6 @@
     activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
     activityIndicatorView.center = VW_overlay.center;
     [VW_overlay addSubview:activityIndicatorView];
-    VW_overlay.center = self.view.center;
     [self.view addSubview:VW_overlay];
     
     VW_overlay.hidden = YES;
@@ -357,7 +356,14 @@
     @catch(NSException *exception)
     {
         NSLog(@"%@",exception);
+        [activityIndicatorView stopAnimating];
+        VW_overlay.hidden = YES;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+
     }
+//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//    [alert show];
     
 }
 

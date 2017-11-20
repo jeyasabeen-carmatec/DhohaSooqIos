@@ -32,6 +32,8 @@
 }
 -(void)set_UP_VIEW
 {
+    self.navigationController.navigationBar.hidden = NO;
+
     cost_arr = [[NSMutableArray alloc]init];
     dates_arr = [[NSMutableArray alloc]init];
     cost_arr = [NSMutableArray arrayWithObjects:@"0",@"0",@"0", nil];
@@ -49,7 +51,7 @@
         img_url = [img_url stringByReplacingOccurrencesOfString:@"App" withString:@"movie"];
         
     [_IMG_banner sd_setImageWithURL:[NSURL URLWithString:img_url]
-                           placeholderImage:[UIImage imageNamed:@"logo.png"]
+                           placeholderImage:[UIImage imageNamed:@"upload-8.png"]
                                     options:SDWebImageRefreshCached];
 
     }
@@ -57,15 +59,31 @@
     {
         NSLog(@"%@",exception);
     }
+    CGRect frameset =_LBL_event_name.frame;
+    frameset.size.width = _VW_event_dtl.frame.size.width;
+    _LBL_event_name.frame = frameset;
 
-     CGRect frameset =_LBL_event_address.frame;
+    frameset =_LBL_event_address.frame;
     frameset.origin.y = _LBL_event_name.frame.origin.y + _LBL_event_name.frame.size.height;
+    frameset.size.width = _VW_event_dtl.frame.size.width;
     _LBL_event_address.frame = frameset;
     
     @try
     {
         
-        _LBL_event_date.text = [NSString stringWithFormat:@"%@ - %@",[event_dtl_dict valueForKey:@"_startDate"],[event_dtl_dict valueForKey:@"_endDate"]];
+        NSDateFormatter *df = [[NSDateFormatter alloc]init];
+        NSDateFormatter *df1 = [[NSDateFormatter alloc]init];
+        
+        [df1 setDateFormat:@"yyyy-MM-dd"];
+        [df setDateFormat:@"dd MMM yyyy"];
+        NSString *temp_str = [NSString stringWithFormat:@"%@",[event_dtl_dict valueForKey:@"_startDate"]];
+        NSString *end_str =[NSString stringWithFormat:@"%@",[event_dtl_dict valueForKey:@"_endDate"]];
+        NSDate *str_date = [df1 dateFromString:temp_str];
+        NSDate *en_date =[df1 dateFromString:end_str];
+        NSString *start_date = [df stringFromDate:str_date];
+        NSString *end_date = [df stringFromDate:en_date];
+
+        _LBL_event_date.text = [NSString stringWithFormat:@"%@ - %@",start_date,end_date];
     }
     @catch(NSException *exception)
     {
@@ -95,7 +113,7 @@
     
     frameset = _IMG_back_ground.frame;
     frameset.size.height = _LBL_event_time.frame.origin.y + _LBL_event_time.frame.size.height;
-    frameset.size.width = _Scroll_contents.frame.size.width;
+    frameset.size.width = _LBL_event_name.frame.size.width;
     _IMG_back_ground.frame = frameset;
 
 
@@ -113,20 +131,32 @@
     
     @try
     {
+        
+        
+        
         NSString *description =[NSString stringWithFormat:@"%@",[event_dtl_dict valueForKey:@"_EDescription"]];
-        //description = [description stringByReplacingOccurrencesOfString:@"" withString:<#(nonnull NSString *)#>];
-        _LBL_data.text = description;
+        description = [description stringByAppendingString:[NSString stringWithFormat:@"<style>body{font-family: 'Poppins-Regular'; font-size:%dpx;}</style>",17]];
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithData:[description dataUsingEncoding:NSUTF8StringEncoding]options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}documentAttributes:nil error:nil];
+        _LBL_data.attributedText = attributedString;
+       NSString *str = _LBL_data.text;
+        str = [str stringByReplacingOccurrencesOfString:@"/" withString:@"\n"];
+        _LBL_data.text = str;
+   // str = [str stringByReplacingOccurrencesOfString:@"\" withString:@"\n"];
+        
     }
     @catch(NSException *exception)
     {
         NSLog(@"%@",exception);
     }
+        frameset = _LBL_data.frame;
+        frameset.size.height = _LBL_data.frame.origin.y + _LBL_data.contentSize.height;
+        _LBL_data.frame = frameset;
     
-    [_LBL_data sizeToFit];
+    [_LBL_data layoutIfNeeded];
+     // [_LBL_data sizeToFit];
     
-    frameset = _LBL_data.frame;
-    frameset.origin.y= _LBL_author.frame.origin.y + _LBL_author.frame.size.height;
-    _LBL_data.frame = frameset;
+
+    
     
 
     @try
@@ -167,6 +197,7 @@
         
         
     }
+    
 
    
     if(dates_arr.count > 2)
@@ -197,12 +228,31 @@
     }
 
     [_TBL_quantity reloadData];
+  //  [_TBL_quantity reloadData];
+
+    
+    
+//    frameset = _BTN_book.frame;
+//    frameset.origin.y = _TBL_quantity.frame.origin.y + _TBL_quantity.frame.size.height;
+//    _BTN_book.frame = frameset;
+    frameset = _TBL_quantity.frame;
+    frameset.size.height = _TBL_quantity.frame.origin.y + _TBL_quantity.contentSize.height+50 ;
+    _TBL_quantity.frame = frameset;
+
+//    
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = CGRectMake(_VW_Quantity.frame.origin.x, _VW_Quantity.frame.origin.y, [UIScreen mainScreen].bounds.size.width, _TBL_quantity.frame.size.height -50);
+    gradient.colors = @[(id)[UIColor colorWithRed:0.24 green:0.19 blue:0.15 alpha:1.0].CGColor, (id)[UIColor colorWithRed:0.55 green:0.46 blue:0.41 alpha:1.0].CGColor];
+    [_VW_Quantity.layer insertSublayer:gradient atIndex:0];
+    
+
     
     frameset = _VW_Quantity.frame;
     frameset.origin.y = _VW_author.frame.origin.y + _VW_author.frame.size.height;
     frameset.size.width = _Scroll_contents.frame.size.width;
-    frameset.size.height = _TBL_quantity.frame.origin.y + _TBL_quantity.frame.size.height + 20;
+    frameset.size.height = _TBL_quantity.frame.origin.y + _TBL_quantity.frame.size.height;
     _VW_Quantity.frame = frameset;
+    
     
     
     [self.Scroll_contents addSubview:_VW_event_dtl];
@@ -272,7 +322,7 @@
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
     [self performSelector:@selector(getData) withObject:activityIndicatorView afterDelay:0.01];
-    
+    [self picker_set_UP];
     
 
 }
@@ -280,8 +330,15 @@
 {
     [super viewDidLayoutSubviews];
     [_Scroll_contents layoutIfNeeded];
-    _Scroll_contents.contentSize = CGSizeMake(_Scroll_contents.frame.size.width,_VW_Quantity.frame.origin.y + _VW_Quantity.frame.size.height);
-    
+    [_LBL_data layoutIfNeeded];
+//    if(event_cost_arr.count < 2)
+//    {
+        _Scroll_contents.contentSize = CGSizeMake(_Scroll_contents.frame.size.width,_VW_Quantity.frame.origin.y + _VW_Quantity.frame.size.height -50);
+
+//    }
+//    else{
+//    _Scroll_contents.contentSize = CGSizeMake(_Scroll_contents.frame.size.width,_VW_Quantity.frame.origin.y + _VW_Quantity.frame.size.height);
+//    }
 }
 
 #pragma Getdata
@@ -307,6 +364,7 @@
         {
           
         }
+      
         
     }
     }
@@ -319,7 +377,9 @@
     
     VW_overlay.hidden = YES;
     [activityIndicatorView stopAnimating];
+    [_TBL_quantity reloadData];
     [self set_UP_VIEW];
+    
     [self viewDidLayoutSubviews];
     
 }
@@ -392,6 +452,8 @@
             gcell.LBL_price.text = [NSString stringWithFormat:@"QAR %@",[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] valueForKey:@"_TicketPrice"]];
             gcell.LBL_result.text = [[event_cost_arr objectAtIndex:indexPath.row] valueForKey:@"quantity"];
         }
+        
+
         return gcell;
     }
     else
@@ -476,6 +538,7 @@
         {
             NSLog(@"%@",exception);
         }
+            
              return ccell;
         }
     
@@ -499,7 +562,9 @@
 #pragma Button Actions
 -(void)BTN_plus_action:(UIButton *)sender
 {
-    
+    @try
+    {
+        
     NSLog(@"THE added array is:%@",event_cost_arr);
     int i = [[[event_cost_arr objectAtIndex:sender.tag] valueForKey:@"quantity"] intValue];
     int availability_price,number_of_tickets;
@@ -588,19 +653,21 @@
         }
         
     }
-    
-    
-    else
+    }
+    @catch(NSException *exception)
     {
         
     }
-
+    
+    
+  
 
 }
 
 -(void)BTN_minus_action:(UIButton *)sender
 {
-    int i = [[[event_cost_arr objectAtIndex:sender.tag] valueForKey:@"quantity"] intValue];
+    @try
+    {    int i = [[[event_cost_arr objectAtIndex:sender.tag] valueForKey:@"quantity"] intValue];
     
             if(i == 0)
             {
@@ -673,6 +740,12 @@
     [self.TBL_quantity reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
     [self.TBL_quantity reloadRowsAtIndexPaths:indexPath_quantity withRowAnimation:UITableViewRowAnimationNone];
     [self.TBL_quantity endUpdates];
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
+   
 
 }
 -(void)BTN_book_action
@@ -684,14 +757,45 @@
     
 }
 -(void)Book_action
-{
-    
 
+{
     int  i = [[cost_arr objectAtIndex:0] intValue];
-    if(i <= 0)
+
+    if(_BTN_calneder.hidden == NO)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please selct Atleast one Ticket" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+    if([_BTN_calneder.text isEqualToString:@"Calendar"])
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please selct Date" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+        [alert show];
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
+
+    }
+    else if(i <= 0)
+        {
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please selct Atleast one Ticket" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
             [alert show];
+            VW_overlay.hidden = YES;
+            [activityIndicatorView stopAnimating];
+        }
+    else
+    {
+        
+        [[NSUserDefaults standardUserDefaults] setObject:event_cost_arr forKey:@"cost_arr"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [[NSUserDefaults standardUserDefaults] setObject:event_dtl_dict forKey:@"event_dtl"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [[NSUserDefaults standardUserDefaults] setObject:cost_arr forKey:@"Amount_dict"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
+        [self performSegueWithIdentifier:@"event_book_user" sender:self];
+        
+        
+        
+    }
     }
     else
     {
@@ -702,14 +806,16 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
         [[NSUserDefaults standardUserDefaults] setObject:cost_arr forKey:@"Amount_dict"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-
+        
         VW_overlay.hidden = YES;
         [activityIndicatorView stopAnimating];
         [self performSegueWithIdentifier:@"event_book_user" sender:self];
-
+        
         
         
     }
+
+    
   
     
 }
@@ -773,6 +879,24 @@
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
     return true;
+}
+- (IBAction)share_action:(id)sender
+{
+    if([[event_dtl_dict valueForKey:@"_EventUrl"] isEqualToString:@""])
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Event URL not available" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+        
+        
+    }
+    else
+    {
+        NSString *trailer_URL= [event_dtl_dict valueForKey:@"_EventUrl"];
+        NSArray* sharedObjects=[NSArray arrayWithObjects:trailer_URL,  nil];
+        UIActivityViewController *activityViewController = [[UIActivityViewController alloc]                                                                initWithActivityItems:sharedObjects applicationActivities:nil];
+        activityViewController.popoverPresentationController.sourceView = self.view;
+        [self presentViewController:activityViewController animated:YES completion:nil];
+    }
 }
 
 /*

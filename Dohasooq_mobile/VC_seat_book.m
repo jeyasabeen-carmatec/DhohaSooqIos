@@ -15,8 +15,11 @@
     int layout_height;
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
-    NSMutableArray *title_arr,*plain_arr;
+    NSMutableArray *title_arr;
     NSDictionary *xmlDoc;
+    NSMutableArray *seats_ARR;
+    int tag;
+    long count;
 
 }
 
@@ -31,10 +34,14 @@
 //    [activityIndicatorView startAnimating];
 //    [self performSelector:@selector(API_call_movie_detail) withObject:activityIndicatorView afterDelay:0.01];
     [self API_call_movie_detail];
+      seats_ARR = [[NSMutableArray alloc]init];
+    tag = 0;
    
 }
 -(void)viewWillAppear:(BOOL)animated
 {
+    self.navigationController.navigationBar.hidden = NO;
+
     
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
@@ -61,7 +68,6 @@
     {
         
         title_arr = [[NSMutableArray alloc]init];
-        plain_arr = [[NSMutableArray alloc]init];
     @try {
             
     NSURL *URL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/GetSeatLayout?showtimeid=%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"movie_id"]]];
@@ -309,26 +315,120 @@
 {
     NSLog(@"Seat at Row:%ld and Column:%ld text:%@", (long)seats.row,(long)seats.column,seats.titleLabel.text);
     int  i = seats.row;
-   if(plain_arr.count > [[[xmlDoc valueForKey:@"Classes"] valueForKey:@"_maxBooking"] intValue])
+    seats.tag = tag;
+ 
+    NSString *str;
+    
+    if(seats.layer.borderColor == [UIColor redColor].CGColor)
     {
-     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"Maximum %d for Booking",[[[xmlDoc valueForKey:@"Classes"] valueForKey:@"_maxBooking"] intValue]] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-            [alert show];
+       
+        if(seats.tag == 0)
+        {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"These seats are reserved for family audience,Please select other seats if you are booking for non-family audience.\nThe supervisor reserves the right to reject admission if you are not a family"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+          tag = 1;
+        }
 
     }
-    else
-    {
+    
+//   if(seats_ARR.count >= [[[xmlDoc valueForKey:@"Classes"] valueForKey:@"_maxBooking"] intValue])
+//    {
+//     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"Maximum %d for Booking",[[[xmlDoc valueForKey:@"Classes"] valueForKey:@"_maxBooking"] intValue]] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//            [alert show];
+//        BOOL is_availabe = NO;
+//        int placeto_remove;
+//        for (int val =0; val < [seats_ARR count]; val++) {
+//            if ([[seats_ARR objectAtIndex:val] isEqualToString:str]) {
+//                is_availabe = YES;
+//                placeto_remove = val;
+//            }
+//        }
+//        if (!is_availabe) {
+//            [seats_ARR addObject:str];
+//        }
+//        else
+//        {
+//            [seats_ARR removeObjectAtIndex:placeto_remove];
+//        }
+//
+//
+//    }
+//    else
+//    {
     @try
     {
     if([[title_arr objectAtIndex:i] isEqualToString:@""])
     {
         NSLog(@"the title is:%@",[title_arr objectAtIndex:i]);
-        [plain_arr addObject:[NSString stringWithFormat:@"%@%@",[title_arr objectAtIndex:i],seats.titleLabel.text]];
+        str =[NSString stringWithFormat:@"%@%@",[title_arr objectAtIndex:i],seats.titleLabel.text];
+        BOOL is_availabe = NO;
+        int placeto_remove;
+        for (int val =0; val < [seats_ARR count]; val++) {
+            if ([[seats_ARR objectAtIndex:val] isEqualToString:str]) {
+                is_availabe = YES;
+                placeto_remove = val;
+            }
+        }
+        if (!is_availabe) {
+            
+            if(seats_ARR.count >= [[[xmlDoc valueForKey:@"Classes"] valueForKey:@"_maxBooking"] intValue])
+                
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"Maximum %d for Booking",[[[xmlDoc valueForKey:@"Classes"] valueForKey:@"_maxBooking"] intValue]] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                seats.backgroundColor = [UIColor clearColor];
+                [seats setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                
+                
+            }
+            else
+            {
+                
+                [seats_ARR addObject:str];
+            }
 
+        }
+        else
+        {
+            [seats_ARR removeObjectAtIndex:placeto_remove];
+        }
+        
     }
     else
     {
         NSLog(@"the title is:%@",[title_arr objectAtIndex:i -1]);
-        [plain_arr addObject:[NSString stringWithFormat:@"%@%@",[title_arr objectAtIndex:i -1],seats.titleLabel.text]];
+        str =[NSString stringWithFormat:@"%@%@",[title_arr objectAtIndex:i -1],seats.titleLabel.text];
+        BOOL is_availabe = NO;
+        int placeto_remove;
+        for (int val =0; val < [seats_ARR count]; val++) {
+            if ([[seats_ARR objectAtIndex:val] isEqualToString:str]) {
+                is_availabe = YES;
+                placeto_remove = val;
+            }
+        }
+        if (!is_availabe) {
+            if(seats_ARR.count >= [[[xmlDoc valueForKey:@"Classes"] valueForKey:@"_maxBooking"] intValue])
+                
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"Maximum %d for Booking",[[[xmlDoc valueForKey:@"Classes"] valueForKey:@"_maxBooking"] intValue]] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+
+                seats.backgroundColor = [UIColor clearColor];
+                [seats setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+
+            }
+            else
+            {
+                
+                [seats_ARR addObject:str];
+            }
+
+        }
+        else
+        {
+            [seats_ARR removeObjectAtIndex:placeto_remove];
+        }
+        
 
     }
     }
@@ -337,20 +437,85 @@
         if([[title_arr objectAtIndex:i -1] isEqualToString:@""])
         {
             NSLog(@"the title is:%@",[title_arr objectAtIndex:i]);
-            [plain_arr addObject:[NSString stringWithFormat:@"%@%@",[title_arr objectAtIndex:i],seats.titleLabel.text]];
+            
+                str =[NSString stringWithFormat:@"%@%@",[title_arr objectAtIndex:i],seats.titleLabel.text];
+            BOOL is_availabe = NO;
+            int placeto_remove;
+            for (int val =0; val < [seats_ARR count]; val++) {
+                if ([[seats_ARR objectAtIndex:val] isEqualToString:str]) {
+                    is_availabe = YES;
+                    placeto_remove = val;
+                }
+            }
+            if (!is_availabe) {
+                if(seats_ARR.count >= [[[xmlDoc valueForKey:@"Classes"] valueForKey:@"_maxBooking"] intValue])
+                    
+                {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"Maximum %d for Booking",[[[xmlDoc valueForKey:@"Classes"] valueForKey:@"_maxBooking"] intValue]] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                    [alert show];
+                    
+                    seats.backgroundColor = [UIColor clearColor];
+                    [seats setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 
+                    
+                }
+                else
+                {
+
+                [seats_ARR addObject:str];
+                }
+            }
+            else
+            {
+                [seats_ARR removeObjectAtIndex:placeto_remove];
+            }
+           
+            
             
         }
         else
         {
             NSLog(@"the title is:%@",[title_arr objectAtIndex:i -1]);
-            [plain_arr addObject:[NSString stringWithFormat:@"%@%@",[title_arr objectAtIndex:i-1],seats.titleLabel.text]];
+            
+            
+            str =[NSString stringWithFormat:@"%@%@",[title_arr objectAtIndex:i-1],seats.titleLabel.text];
+            BOOL is_availabe = NO;
+            int placeto_remove;
+            for (int val =0; val < [seats_ARR count]; val++) {
+                if ([[seats_ARR objectAtIndex:val] isEqualToString:str]) {
+                    is_availabe = YES;
+                    placeto_remove = val;
+                }
+            }
+            if (!is_availabe) {
+                if(seats_ARR.count >= [[[xmlDoc valueForKey:@"Classes"] valueForKey:@"_maxBooking"] intValue])
+                    
+                {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"Maximum %d for Booking",[[[xmlDoc valueForKey:@"Classes"] valueForKey:@"_maxBooking"] intValue]] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                    [alert show];
+                    seats.backgroundColor = [UIColor clearColor];
+                    [seats setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+  
+                }
+                else
+                {
+                    
+                    [seats_ARR addObject:str];
+                }
 
+            }
+            else
+            {
+                [seats_ARR removeObjectAtIndex:placeto_remove];
+            }
+            
+
+            
         }
-
     }
-    }
-    }
+   // }
+    NSLog(@"the data:%@",seats_ARR);
+}
 
 -(void)getSelectedSeats:(NSMutableArray *)seats
 {
@@ -363,15 +528,28 @@
     }
     printf("--------- Total: %f\n",total);
     NSLog(@"the seats count is:%lu",(unsigned long)seats.count);
+    
+    
     _LBL_no_ofseats.text = [NSString stringWithFormat:@"No of Seats:%lu",(unsigned long)seats.count];
+    count = seats.count;
+    
 }
 - (IBAction)block_seat_action:(id)sender
 {
+    if(count == 0)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please select atleast one seat" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+
+    }
+    else{
+        
     
     VW_overlay.hidden = YES;
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
     [self performSelector:@selector(Book_action) withObject:activityIndicatorView afterDelay:0.01];
+    }
 
     
 }
@@ -379,7 +557,7 @@
 {
     
     
-    NSString *str = [plain_arr componentsJoinedByString:@","];
+    NSString *str = [seats_ARR componentsJoinedByString:@","];
     
     NSLog(@"%@",str);
     
@@ -403,7 +581,7 @@
         
         [[NSUserDefaults standardUserDefaults] setObject:str  forKey:@"seats"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        NSString *count = [NSString stringWithFormat:@"%lu",(unsigned long)plain_arr.count];
+        NSString *count = [NSString stringWithFormat:@"%lu",(unsigned long)seats_ARR.count];
         [[NSUserDefaults standardUserDefaults] setObject:count  forKey:@"seat_count"];
         [[NSUserDefaults standardUserDefaults] synchronize];
 

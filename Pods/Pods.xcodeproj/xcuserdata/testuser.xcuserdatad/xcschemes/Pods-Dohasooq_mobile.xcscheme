@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '664BFD1CCC981F26CF704EF3AB2FC62D'
+               BlueprintIdentifier = 'E4EB7BD69C45863A0A84F3D48C8AA879'
                BlueprintName = 'Pods-Dohasooq_mobile'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libPods-Dohasooq_mobile.a'>

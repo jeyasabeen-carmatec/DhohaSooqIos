@@ -54,20 +54,20 @@
       NSLog(@"%@",exception);
     }
     [self phone_code_view];
-    _TXT_name.layer.borderWidth = 0.8f;
-    _TXT_name.layer.borderColor = [UIColor grayColor].CGColor;
+    _TXT_name.layer.borderWidth = 0.5f;
+    _TXT_name.layer.borderColor = [UIColor lightGrayColor].CGColor;
     
-    _TXT_mail.layer.borderWidth = 0.8f;
-    _TXT_mail.layer.borderColor = [UIColor grayColor].CGColor;
+    _TXT_mail.layer.borderWidth = 0.5f;
+    _TXT_mail.layer.borderColor = [UIColor lightGrayColor].CGColor;
     
-    _TXT_phone.layer.borderWidth = 0.8f;
-    _TXT_phone.layer.borderColor = [UIColor grayColor].CGColor;
+    _TXT_phone.layer.borderWidth = 0.5f;
+    _TXT_phone.layer.borderColor = [UIColor lightGrayColor].CGColor;
     
-    _TXT_code.layer.borderWidth = 0.8f;
-    _TXT_code.layer.borderColor = [UIColor grayColor].CGColor;
+    _TXT_code.layer.borderWidth = 0.5f;
+    _TXT_code.layer.borderColor = [UIColor lightGrayColor].CGColor;
     
-    _TXT_voucher.layer.borderWidth = 0.8f;
-    _TXT_voucher.layer.borderColor = [UIColor grayColor].CGColor;
+    _TXT_voucher.layer.borderWidth = 0.5f;
+    _TXT_voucher.layer.borderColor = [UIColor lightGrayColor].CGColor;
     
     
     _BTN_apply.layer.cornerRadius = 2.0f;
@@ -81,7 +81,8 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     
-    
+    self.navigationController.navigationBar.hidden = NO;
+
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     VW_overlay.clipsToBounds = YES;
