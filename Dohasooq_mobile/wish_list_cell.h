@@ -11,7 +11,7 @@
 @interface wish_list_cell : UITableViewCell
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_item;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_item_name;
-@property(nonatomic,weak) IBOutlet UILabel *LBL_current_price;
+@property(nonatomic,weak) IBOutlet UITextView *LBL_current_price;
 //@property(nonatomic,weak) IBOutlet UILabel *LBL_prev_price;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_discount;
 @property(nonatomic,weak) IBOutlet UIImageView *BTN_close;
@@ -19,7 +19,9 @@
 @property(nonatomic,strong) IBOutlet UIButton *BTN_plus;
 @property(nonatomic,strong) IBOutlet UIButton *BTN_minus;
 @property(nonatomic,strong) IBOutlet UITextField *_TXT_count;
-@property(nonatomic,strong) IBOutlet UIButton *BTN_ADD_cart;
+//@property(nonatomic,strong) IBOutlet UIButton *BTN_ADD_cart;
+@property (weak, nonatomic) IBOutlet UIButton *Btn_add_cart;
+
 @property(nonatomic,weak) IBOutlet UILabel *LBL_ad_to_cart;
 
 

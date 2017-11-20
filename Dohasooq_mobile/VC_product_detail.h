@@ -27,7 +27,9 @@
 
 //second view
 @property(nonatomic,weak) IBOutlet UIView *VW_second;
-@property(nonatomic,weak) IBOutlet UILabel *LBL_prices;
+//@property(nonatomic,weak) IBOutlet UILabel *LBL_prices;
+@property(nonatomic,weak) IBOutlet UITextView *LBL_prices;
+
 @property(nonatomic,weak) IBOutlet UILabel *LBL_discount;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_item_name;
 

@@ -11,7 +11,9 @@
 @interface tbl_amount : UITableViewCell
 
 @property(nonatomic,weak) IBOutlet UILabel *LBL_amount;
-@property(nonatomic,weak) IBOutlet UILabel *LBL_redemption;
+//@property(nonatomic,weak) IBOutlet UILabel *LBL_redemption;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_total_amount;
+@property (weak, nonatomic) IBOutlet UILabel *redempion_lbl;
+@property (weak, nonatomic) IBOutlet UILabel *redemption_amt;
 
 @end
