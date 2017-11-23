@@ -11,6 +11,7 @@
 @interface VC_pay_last ()<UICollectionViewDelegate,UICollectionViewDataSource,UITextFieldDelegate,UIGestureRecognizerDelegate,UIPickerViewDataSource,UIPickerViewDelegate>
 {
     NSArray *country_arr;
+    NSString *str_URL;
 }
 
 @end
@@ -28,6 +29,11 @@
     [_BTN_pay addTarget:self action:@selector(pay_action) forControlEvents:UIControlEventTouchUpInside];
 
     [_BTN_cancel addTarget:self action:@selector(cancel_action) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_american_express addTarget:self action:@selector(BTN_american_express_action) forControlEvents:UIControlEventTouchUpInside];
+    
+    [_BTN_visa addTarget:self action:@selector(BTN_visa_action) forControlEvents:UIControlEventTouchUpInside];
+    
+    [_BTN_dohabank addTarget:self action:@selector(BTN_dohabank_action) forControlEvents:UIControlEventTouchUpInside];
 }
 
 -(void)picker_set_UP
@@ -58,8 +64,8 @@
     [close addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
     [phone_close addSubview:close];
     
-    _TXT_countries.layer.borderWidth = 0.8f;
-    _TXT_countries.layer.borderColor = [UIColor grayColor].CGColor;
+    _TXT_countries.layer.borderWidth = 0.5f;
+    _TXT_countries.layer.borderColor = [UIColor lightGrayColor].CGColor;
     
     _TXT_countries.inputAccessoryView=phone_close;
     _TXT_countries.inputView = _country_picker_view;
@@ -93,18 +99,62 @@
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+-(void)BTN_american_express_action
+{
+    self.BTN_american_express.layer.cornerRadius = 2.0f;
+    _BTN_american_express.layer.borderWidth = 2.0f;
+    _BTN_american_express.layer.borderColor = self.BTN_pay.backgroundColor.CGColor;
+    
+    _BTN_visa.layer.borderColor = [UIColor whiteColor].CGColor;
+    _BTN_dohabank.layer.borderColor = [UIColor whiteColor].CGColor;
+    str_URL = @"6";
+    
+    
+}
+-(void)BTN_visa_action
+{
+    self.BTN_visa.layer.cornerRadius = 2.0f;
+    _BTN_visa.layer.borderWidth = 2.0f;
+    _BTN_visa.layer.borderColor = self.BTN_pay.backgroundColor.CGColor;
+    
+    _BTN_american_express.layer.borderColor = [UIColor whiteColor].CGColor;
+    _BTN_dohabank.layer.borderColor = [UIColor whiteColor].CGColor;
+    str_URL = @"4";
+}
+-(void)BTN_dohabank_action
+{
+    self.BTN_dohabank.layer.cornerRadius = 2.0f;
+    _BTN_dohabank.layer.borderWidth = 2.0f;
+    _BTN_dohabank.layer.borderColor = self.BTN_pay.backgroundColor.CGColor;
+    
+    _BTN_visa.layer.borderColor = [UIColor whiteColor].CGColor;
+    _BTN_american_express.layer.borderColor = [UIColor whiteColor].CGColor;
+    str_URL = @"1";
+    
+}
+
 -(void)pay_action
 {
     @try
     {
+        if(str_URL.length < 1)
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please select Card" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+            
+        }
+        else
+        {
+
     NSDictionary *order_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"order_details"];
     
     
-    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/Qpayment-registration.aspx?Currency=QAR&Amount=%@&OrderName=online&OrderID=%@&nationality=Qatar&paymenttype=4",[[order_dict valueForKey:@"result"] valueForKey:@"_balanceamount"],[[order_dict valueForKey:@"result"] valueForKey:@"_orderid"]];
+    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/Qpayment-registration.aspx?Currency=QAR&Amount=%@&OrderName=online&OrderID=%@&nationality=Qatar&paymenttype=%@",[[order_dict valueForKey:@"result"] valueForKey:@"_balanceamount"],[[order_dict valueForKey:@"result"] valueForKey:@"_orderid"],str_URL];
     [[NSUserDefaults standardUserDefaults] setValue:str_url forKey:@"payment_url"];
     [[NSUserDefaults standardUserDefaults]  synchronize];
     
     [self performSegueWithIdentifier:@"pay_web_identifier" sender:self];
+        }
     }
     @catch(NSException *exception)
     {
@@ -112,9 +162,7 @@
         [alert show];
 
     }
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"connection error"delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
-    [alert show];
-    
+       
 }
 
 - (IBAction)back_action:(id)sender {

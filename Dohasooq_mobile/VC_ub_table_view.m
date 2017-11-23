@@ -48,14 +48,17 @@ UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellSty
 {
     
     [[NSUserDefaults standardUserDefaults] setValue:[[[sub_arr valueForKey:@"child_categories" ]objectAtIndex:indexPath.row] valueForKey:@"url_key"] forKey:@"product_list_key"];
+    [[NSUserDefaults standardUserDefaults]setObject:@"0" forKey:@"discount"];
+    
+    
     [[NSUserDefaults standardUserDefaults] synchronize];
     NSString *name = [[[sub_arr valueForKey:@"child_categories"]objectAtIndex:indexPath.row] valueForKey:@"name"];
     [[NSUserDefaults standardUserDefaults] setValue:name forKey:@"sub_name"];
-
-    [self performSegueWithIdentifier:@"sublist_product_list" sender:self];
-
     
-   // [self dismissViewControllerAnimated:NO completion:nil];
+    [self performSegueWithIdentifier:@"sublist_product_list" sender:self];
+    
+    
+    // [self dismissViewControllerAnimated:NO completion:nil];
 }
 - (IBAction)back_ACTIon:(id)sender {
     [self dismissViewControllerAnimated:NO completion:nil];

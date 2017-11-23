@@ -1,14 +1,14 @@
 //
-//  MovieTableViewCell.m
-//  TextField
+//  tableview_cellTableViewCell.m
+//  Dohasooq_mobile
 //
-//  Created by Carmatec on 16/11/17.
-//  Copyright © 2017 Mac. All rights reserved.
+//  Created by Test User on 22/11/17.
+//  Copyright © 2017 Test User. All rights reserved.
 //
 
-#import "MovieTableViewCell.h"
+#import "review_cell.h"
 
-@implementation MovieTableViewCell
+@implementation review_cell
 
 - (void)awakeFromNib {
     [super awakeFromNib];

@@ -74,10 +74,7 @@
     [self.collection_hot_deals registerNib:[UINib nibWithNibName:@"hot_deals_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_hot_deals"];
     [self.collection_best_deals registerNib:[UINib nibWithNibName:@"Best_deals_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_best"];
     [self.collection_fashion_categirie registerNib:[UINib nibWithNibName:@"Fashion_categorie_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_fashion"];
-    
-  
-    
-    [self.Collection_movies registerNib:[UINib nibWithNibName:@"Movies_cell" bundle:nil]  forCellWithReuseIdentifier:@"movie_cell"];
+     [self.Collection_movies registerNib:[UINib nibWithNibName:@"Movies_cell" bundle:nil]  forCellWithReuseIdentifier:@"movie_cell"];
     
     [self.Collection_movies registerNib:[UINib nibWithNibName:@"Image_qtickets" bundle:nil]  forCellWithReuseIdentifier:@"Image_qtickets"];
     [self.Collection_movies registerNib:[UINib nibWithNibName:@"upcoming_cell" bundle:nil]  forCellWithReuseIdentifier:@"upcoming_cell"];
@@ -2552,19 +2549,45 @@
 }
 #pragma Buton action
 
-- (IBAction)cart_action:(id)sender
-{
-    [self performSegueWithIdentifier:@"homeQtkt_to_cart" sender:self];
-}
+//- (IBAction)cart_action:(id)sender
+//{
+//    [self performSegueWithIdentifier:@"homeQtkt_to_cart" sender:self];
+//}
 - (IBAction)wish_list_Action:(id)sender
 {
-    [self performSegueWithIdentifier:@"HomeQ_to_wishList" sender:self];
+    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    
+    if (user_id == nil) {
+        
+        user_id =0;
+        [HttpClient createaAlertWithMsg:@"Please Login" andTitle:@""];
+        //homeQtkt_to_login
+        [self performSegueWithIdentifier:@"homeQtkt_to_login" sender:self];
+        
+    }
+    else{
+        
+        [self performSegueWithIdentifier:@"HomeQ_to_wishList" sender:self];
+    }
     
 }
 
 - (IBAction)QTickets_Home_to_CartPage:(id)sender {
-    [self performSegueWithIdentifier:@"homeQtkt_to_cart" sender:self];
-}
+    
+    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    
+    if (user_id == nil) {
+        
+        user_id =0;
+        [HttpClient createaAlertWithMsg:@"Please Login" andTitle:@""];
+        //homeQtkt_to_login
+        
+        [self performSegueWithIdentifier:@"homeQtkt_to_login" sender:self];
+        
+    }
+    else{
+        [self performSegueWithIdentifier:@"homeQtkt_to_cart" sender:self];
+    }}
 
 -(void)BTN_movies_right_action
 {

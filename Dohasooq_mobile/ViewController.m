@@ -13,7 +13,7 @@
 {
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
-   
+    
 }
 
 @end
@@ -51,93 +51,89 @@
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     self.navigationController.navigationBar.tintColor = [UIColor clearColor];
-
+    self.navigationItem.hidesBackButton = YES;
+    
+    
+    
     _VW_fields.center = self.view.center;
     
     
     @try {
         
-    NSString *need_sign = @"NEED AN ACCOUNT ?";
-    NSString *sign_UP = @"SIGN UP";
-    NSString *text = [NSString stringWithFormat:@"%@ %@",need_sign,sign_UP];
-    if ([_LBL_sign_up respondsToSelector:@selector(setAttributedText:)]) {
-        
-        // Define general attributes for the entire text
-        NSDictionary *attribs = @{
-                                  NSForegroundColorAttributeName:_LBL_sign_up.textColor,
-                                  NSFontAttributeName: _LBL_sign_up.font
-                                  };
-        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
-        
-        
-        CGSize result = [[UIScreen mainScreen] bounds].size;
-
-        NSRange ename = [text rangeOfString:need_sign];
-        
-        
-        if(result.height <= 480)
-        {
-            // iPhone Classic
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0]}
-                                    range:ename];
-        }
-        else if(result.height <= 568)
-        {
-            // iPhone 5
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0]}
-                                    range:ename];
+        NSString *need_sign = @"NEED AN ACCOUNT ?";
+        NSString *sign_UP = @"SIGN UP";
+        NSString *text = [NSString stringWithFormat:@"%@ %@",need_sign,sign_UP];
+        if ([_LBL_sign_up respondsToSelector:@selector(setAttributedText:)]) {
+            
+            // Define general attributes for the entire text
+            NSDictionary *attribs = @{
+                                      NSForegroundColorAttributeName:_LBL_sign_up.textColor,
+                                      NSFontAttributeName: _LBL_sign_up.font
+                                      };
+            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
+            
+            
+            CGSize result = [[UIScreen mainScreen] bounds].size;
+            
+            NSRange ename = [text rangeOfString:need_sign];
+            
+            
+            if(result.height <= 480)
+            {
+                // iPhone Classic
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0]}
+                                        range:ename];
+            }
+            else if(result.height <= 568)
+            {
+                // iPhone 5
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0]}
+                                        range:ename];
+            }
+            else
+            {
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0]}
+                                        range:ename];
+            }
+            
+            
+            NSRange cmp = [text rangeOfString:sign_UP];
+            
+            if(result.height <= 480)
+            {
+                // iPhone Classic
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0]}
+                                        range:cmp];
+            }
+            else if(result.height <= 568)
+            {
+                // iPhone 5
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0]}
+                                        range:cmp];
+            }
+            else
+            {
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:20.0]}
+                                        range:cmp];
+            }
+            
+            
+            
+            self.LBL_sign_up.attributedText = attributedText;
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0]}
-                                    range:ename];
+            _LBL_sign_up.text = text;
         }
-        
-
-        
-        
-        
-        
-        
-        
-        
-        NSRange cmp = [text rangeOfString:sign_UP];
-        
-        if(result.height <= 480)
-        {
-            // iPhone Classic
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0]}
-                                    range:cmp];
-        }
-        else if(result.height <= 568)
-        {
-            // iPhone 5
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0]}
-                                    range:cmp];
-        }
-        else
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:20.0]}
-                                    range:cmp];
-        }
-
-        
-        
-        self.LBL_sign_up.attributedText = attributedText;
-    }
-    else
-    {
-        _LBL_sign_up.text = text;
-    }
     }
     @catch(NSException *exception)
     {
         NSLog(@"the exception:%@",exception);
     }
     
-   // CGRect frameset = _LBL_sign_up.frame;
-  //  frameset.origin.y = _BTN_sign_up.frame.origin.y + (_BTN_sign_up.frame.size.height/2) - 3;
-   // _LBL_sign_up.frame = frameset;
+    // CGRect frameset = _LBL_sign_up.frame;
+    //  frameset.origin.y = _BTN_sign_up.frame.origin.y + (_BTN_sign_up.frame.size.height/2) - 3;
+    // _LBL_sign_up.frame = frameset;
     
     
     _BTN_sign_up.layer.cornerRadius = _BTN_sign_up.frame.size.height / 2;
@@ -147,7 +143,9 @@
     
     _TXT_username.text = @"karuna@carmatec.in";
     _TXT_password.text = @"qazplm123";
-   
+    
+    [_BTN_skip addTarget:self action:@selector(skip_action:) forControlEvents:UIControlEventTouchUpInside];
+    
     
     
 }
@@ -161,7 +159,7 @@
 }
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
-   
+    
     if(textField == _TXT_username || textField == _TXT_password)
     {
         [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
@@ -174,9 +172,9 @@
 
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
-     [UIView beginAnimations:nil context:NULL];
-            
-     self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+    [UIView beginAnimations:nil context:NULL];
+    
+    self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
     [UIView commitAnimations];
     [UIView beginAnimations:nil context:NULL];
     self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
@@ -187,11 +185,43 @@
 #pragma BUTTON ACTIONS
 - (IBAction)forgot_pwd_action:(UIButton *)sender
 {
-[self performSegueWithIdentifier:@"login_forgot_pwd" sender:self];
+    [self performSegueWithIdentifier:@"login_forgot_pwd" sender:self];
 }
 -(void)sign_up_action
 {
     [self performSegueWithIdentifier:@"sign_up_segue" sender:self];
+}
+-(void)skip_action:(UIButton*)sender{
+    /*
+     detail =     {
+     "customer_id" = 2;
+     firstname = karuna;
+     id = 27;
+     lastname = ravi;
+     phone = 534543543;
+     "profile_pic" = "/dohasooq/uploads/customers/";
+     };
+     */
+    
+    NSDictionary *parameters = @{
+                                 @"customer_id": @"",
+                                 @"firstname": @"",
+                                 @"id":@"",
+                                 @"lastname":@"",
+                                 @"phone":@"",
+                                 @"profile_pic":@""
+                                 };
+    
+    NSDictionary *user_detail = @{@"detail":parameters};
+    [[NSUserDefaults standardUserDefaults]setObject:user_detail forKey:@"userdata"];
+    
+    NSDictionary *dic = [[NSUserDefaults standardUserDefaults]valueForKey:@"userdata"];
+    NSLog(@"%@",dic);
+    NSLog(@"%@",[dic valueForKey:@"id"]);
+    
+    //NSLog(@"%@",user_detail);
+    
+    [self performSegueWithIdentifier:@"logint_to_home" sender:self];
 }
 -(void)login_home
 {
@@ -218,9 +248,9 @@
         [_TXT_password becomeFirstResponder];
         msg = @"Please enter Password";
     }
-  //  [self performSegueWithIdentifier:@"logint_to_home" sender:self];
-
-
+    //  [self performSegueWithIdentifier:@"logint_to_home" sender:self];
+    
+    
     else
     {
         [self.view endEditing:TRUE];
@@ -244,18 +274,18 @@
         NSString *email = _TXT_username.text;
         NSString *password = _TXT_password.text;
         NSDictionary *parameters = @{
-                                      @"username": email,
-                                      @"password": password
+                                     @"username": email,
+                                     @"password": password
                                      
-                                      };
+                                     };
         NSError *error;
         NSError *err;
         NSHTTPURLResponse *response = nil;
-
+        
         NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
         NSLog(@"the posted data is:%@",parameters);
         NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/login/1.json",SERVER_URL];
-       // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
         [request setURL:urlProducts];
@@ -280,7 +310,7 @@
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 
                 [self MENU_api_call];
-
+                
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 [alert show];
@@ -314,23 +344,23 @@
         NSLog(@"The error is:%@",exception);
     }
     
-
+    
 }
 -(void)MENU_api_call
 {
     
     @try
     {
-    NSError *error;
-    
-    NSHTTPURLResponse *response = nil;
-    NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
-//    NSString *urlGetuser =[NSString stringWithFormat:@"%@menuList/%ld/%ld.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]];
+        NSError *error;
+        
+        NSHTTPURLResponse *response = nil;
+        NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
+        //    NSString *urlGetuser =[NSString stringWithFormat:@"%@menuList/%ld/%ld.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]];
         
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/menuList/1/1.json",SERVER_URL];
-
-    NSLog(@"%ld,%ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
-    
+        
+        NSLog(@"%ld,%ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
+        
         NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
         [request setURL:urlProducts];
@@ -342,13 +372,15 @@
         if(aData)
         {
             
-           
+            
             NSMutableArray *json_DATA = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             
-                        [[NSUserDefaults standardUserDefaults] setObject:json_DATA forKey:@"menu_detail"];
-                        [[NSUserDefaults standardUserDefaults] synchronize];
-                        [self performSegueWithIdentifier:@"logint_to_home" sender:self];
-                        NSLog(@"the api_collection_product%@",json_DATA);
+            [[NSUserDefaults standardUserDefaults] setObject:json_DATA forKey:@"menu_detail"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            [self performSegueWithIdentifier:@"logint_to_home" sender:self];
+            
+            NSLog(@"the api_collection_product%@",json_DATA);
             [activityIndicatorView stopAnimating];
             VW_overlay.hidden = YES;
         }
@@ -360,10 +392,10 @@
         VW_overlay.hidden = YES;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
-
+        
     }
-//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-//    [alert show];
+    //    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+    //    [alert show];
     
 }
 

@@ -72,8 +72,7 @@
     {
         NSDateFormatter *df = [[NSDateFormatter alloc]init];
         NSDateFormatter *df1 = [[NSDateFormatter alloc]init];
-        
-        [df1 setDateFormat:@"yyyy-MM-dd"];
+        [df1 setDateFormat:@"MM-dd-yyyy"];
         [df setDateFormat:@"dd MMM yyyy"];
          NSString *temp_str = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"movie_date"]];
         NSDate *str_date = [df1 dateFromString:temp_str];

@@ -639,6 +639,7 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
     
     
     MZDay *day = self.tableDaysData[indexPath.row];
+   
 //    MZDay *month = self.tableDaysData[indexPath.row];
 //    MZDay *year = self.tableDaysData[indexPath.row];
     
@@ -666,9 +667,12 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
     
     
     if (indexPath.row == 0) {
+        NSIndexPath *p = indexPath;
+       // NSInteger i = p.row;
+        
 
         [self tableView:self.tableView didHighlightRowAtIndexPath:indexPath];
-
+        [self tableView:self.tableView didSelectRowAtIndexPath:p];
 
         //[cell.containerView setBackgroundColor:[UIColor colorWithRed:232.0f/255.0f green:158.0f/255.0f blue:27.0f/255.0f alpha:1.0f]];
     }

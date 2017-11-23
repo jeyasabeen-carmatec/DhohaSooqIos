@@ -71,6 +71,16 @@
         cell = [nib objectAtIndex:0];
     }
     cell.LBL_name.text = [NSString stringWithFormat:@"%@",[[arr_events objectAtIndex:indexPath.row]  valueForKey:@"name"]];
+    
+    NSString *description =[NSString stringWithFormat:@"%@",[[arr_events objectAtIndex:indexPath.row]  valueForKey:@"description"]];
+    description = [description stringByAppendingString:[NSString stringWithFormat:@"<style>body{font-family: 'Poppins-Regular'; font-size:%dpx;}</style>",17]];
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithData:[description dataUsingEncoding:NSUTF8StringEncoding]options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}documentAttributes:nil error:nil];
+    cell.LBL_description.attributedText = attributedString;
+    NSString *str = cell.LBL_description.text;
+    str = [str stringByReplacingOccurrencesOfString:@"/" withString:@"\n"];
+    cell.LBL_description.text = str;
+   // [cell.LBL_description sizeToFit];
+
     cell.LBL_description.text = [NSString stringWithFormat:@"%@",[[arr_events objectAtIndex:indexPath.row]  valueForKey:@"description"]];
     cell.LBL_category.text = [NSString stringWithFormat:@"%@",[[arr_events objectAtIndex:indexPath.row]  valueForKey:@"gen_ven"]];
     
@@ -90,6 +100,9 @@
     NSString *str = [arr objectAtIndex:0];
     if([[[arr_events objectAtIndex:indexPath.row] valueForKey:@"show_browser"] isEqualToString:@"1"])
     {
+        [[NSUserDefaults standardUserDefaults]  setValue:[[arr_events objectAtIndex:indexPath.row] valueForKey:@"id"] forKey:@"event_id"];
+        [[NSUserDefaults standardUserDefaults]  synchronize];
+        [self event_detail_api];
         [self performSegueWithIdentifier:@"search_web" sender:self];
     }
     if([[[arr_events objectAtIndex:indexPath.row] valueForKey:@"url"] isEqualToString:@"movies"])
@@ -97,6 +110,8 @@
         [[NSUserDefaults standardUserDefaults]  setValue:[[arr_events objectAtIndex:indexPath.row] valueForKey:@"id"] forKey:@"id"];
         [[NSUserDefaults standardUserDefaults]  synchronize];
         [self movie_detil_api];
+        [self performSegueWithIdentifier:@"search_movie_detail" sender:self];
+
     }
     
     else if([str isEqualToString:@"events"])
@@ -104,6 +119,8 @@
         [[NSUserDefaults standardUserDefaults]  setValue:[[arr_events objectAtIndex:indexPath.row] valueForKey:@"id"] forKey:@"event_id"];
         [[NSUserDefaults standardUserDefaults]  synchronize];
         [self event_detail_api];
+        [self performSegueWithIdentifier:@"search_events_detail" sender:self];
+
 
     }
     }
@@ -116,12 +133,12 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return UITableViewAutomaticDimension;
+    return 120;
 }
--(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 10;
-}
+//-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return 10;
+//}
 -(void)close_action
 {
    // [self dismissViewControllerAnimated:YES completion:nil];
@@ -211,7 +228,6 @@
 
     [[NSUserDefaults standardUserDefaults] setObject:[[xmlDoc valueForKey:@"Movies"] valueForKey:@"movie"] forKey:@"Movie_detail"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    [self performSegueWithIdentifier:@"search_movie_detail" sender:self];
     }
     @catch(NSException *exception)
     {
@@ -235,7 +251,6 @@
     NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
     [[NSUserDefaults standardUserDefaults] setObject:[[xmlDoc valueForKey:@"EventDetails"] valueForKey:@"eventdetail"] forKey:@"event_detail"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    [self performSegueWithIdentifier:@"search_events_detail" sender:self];
     }
     @catch(NSException *exception)
     {
