@@ -18,6 +18,7 @@
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
     int j ,i;
+    NSMutableArray *stat_arr;
 }
 
 @end
@@ -27,8 +28,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    j=0;i = 1;
+    j=0;i = 0;
     jsonresponse_dic_address = [[NSMutableDictionary alloc]init];
+    stat_arr = [[NSMutableArray alloc]init];
+    stat_arr = [NSMutableArray arrayWithObjects:@"0", nil];
 
 }
 -(void)viewWillAppear:(BOOL)animated
@@ -80,7 +83,7 @@
     }
     else if(section == 2)
     {
-        ct = 1 ;
+        ct = i ;
         
     }
     
@@ -296,7 +299,7 @@
             
             
             [cell.BTN_check addTarget:self action:@selector(BTN_check_clickd) forControlEvents:UIControlEventTouchUpInside];
-            cell.LBL_stat.tag = j;
+            cell.LBL_stat.tag = [[stat_arr objectAtIndex:0] intValue];
             
             if(cell.LBL_stat.tag == 0)
             {
@@ -383,21 +386,38 @@
 
 -(void)BTN_check_clickd
 {
-    if(j == 1)
+    if([[stat_arr objectAtIndex:0] isEqualToString:@"1"])
     {
-        j =0;
-        [self.TBL_address reloadData];
+    [stat_arr replaceObjectAtIndex:0 withObject:@"0"];
     }
-    else if(j == 0)
+    else
     {
-        j = 1;
-        [self.TBL_address reloadData];
+        [stat_arr replaceObjectAtIndex:0 withObject:@"1"];
+
     }
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:2];
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithObjects:indexPath, nil];
+    [self.TBL_address beginUpdates];
+    [self.TBL_address reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+    [self.TBL_address endUpdates];
+    
+
+    
+//    if(j == 1)
+//    {
+//        j =0;
+//       // [self.TBL_address reloadData];
+//    }
+//    else if(j == 0)
+//    {
+//        j = 1;
+//       // [self.TBL_address reloadData];
+//    }
 }
 
 -(void)BTN_edit_clickd
 {
-    i = 2;
+    i = 1;
     [self.TBL_address reloadData];
 }
 - (IBAction)back_ACTIon:(id)sender {

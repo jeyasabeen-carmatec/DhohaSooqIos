@@ -15,6 +15,11 @@
 @property(nonatomic,weak) IBOutlet UITextField *TXT_countries;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_timer;
 
+@property(nonatomic,weak) IBOutlet UIButton *BTN_american_express;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_visa;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_dohabank;
+
+
 
 @property (nonatomic, strong) UIPickerView *country_picker_view;
 @end

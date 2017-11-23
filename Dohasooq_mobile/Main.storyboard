@@ -41,8 +41,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Log in.jpg" id="PeF-Gy-Ssh">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="Log in.jpg" id="PeF-Gy-Ssh">
+                                <rect key="frame" x="0.0" y="0.0" width="321" height="480"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </imageView>
@@ -119,13 +119,13 @@
                                     <color key="titleColor" red="0.92156862750000001" green="0.92156862750000001" blue="0.92156862750000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ulS-al-JXo">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="KTH-7b-cbh">
                                 <rect key="frame" x="0.0" y="450" width="64" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
+                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="17"/>
                                 <state key="normal" title="SKIP">
-                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                             </button>
                         </subviews>
@@ -136,18 +136,18 @@
                     <connections>
                         <outlet property="BTN_login" destination="t0K-c3-RPb" id="4Nk-ke-8cM"/>
                         <outlet property="BTN_sign_up" destination="j9j-I1-G1d" id="O6s-dh-tEE"/>
-                        <outlet property="BTN_skip" destination="ulS-al-JXo" id="3NL-k3-onJ"/>
+                        <outlet property="BTN_skip" destination="KTH-7b-cbh" id="l8e-sl-Zm1"/>
                         <outlet property="LBL_sign_up" destination="hmY-nB-fWi" id="oKw-7i-vSO"/>
                         <outlet property="TXT_password" destination="qnp-No-LvW" id="21p-UP-G8Q"/>
                         <outlet property="TXT_username" destination="KmO-Le-s1E" id="M9C-7T-Gne"/>
-                        <outlet property="VW_fields" destination="aXW-ei-9dx" id="COT-pb-Xxl"/>
+                        <outlet property="VW_fields" destination="aXW-ei-9dx" id="S3h-QH-JTJ"/>
                         <segue destination="dex-Te-LY1" kind="modal" identifier="sign_up_segue" animates="NO" id="lXW-ls-ayv"/>
                         <segue destination="PfV-3j-Csm" kind="modal" identifier="logint_to_home" animates="NO" id="kyM-q2-IiE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="745" y="-169"/>
+            <point key="canvasLocation" x="731" y="-169"/>
         </scene>
         <!--myorders-->
         <scene sceneID="8Ie-mh-JFO">
@@ -874,14 +874,14 @@
                                     </collectionViewFlowLayout>
                                     <cells>
                                         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="brands_cell" id="0vS-t8-EOi" customClass="cell_brands">
-                                            <rect key="frame" x="0.0" y="5" width="55" height="33"/>
+                                            <rect key="frame" x="0.0" y="5.5" width="55" height="33"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                                 <rect key="frame" x="0.0" y="0.0" width="55" height="33"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="brand.png" id="uqn-hX-Xvh">
-                                                        <rect key="frame" x="2" y="2" width="50" height="30"/>
+                                                        <rect key="frame" x="2" y="1" width="50" height="30"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     </imageView>
@@ -1245,7 +1245,7 @@
                         <segue destination="pbc-hN-8EP" kind="push" identifier="product_list_cart" id="LS8-aj-kn5"/>
                         <segue destination="i9C-AL-c2e" kind="push" identifier="productList_to_wishList" id="ftO-4d-EKK"/>
                         <segue destination="pxu-nZ-TmL" kind="push" identifier="product_list_home" id="lT4-28-Wjm"/>
-                        <segue destination="BYZ-38-t0r" kind="push" identifier="product_list_login" id="hhS-W1-qq1"/>
+                        <segue destination="BYZ-38-t0r" kind="push" identifier="product_list_login" id="x0e-hc-baO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fbI-Wt-0sr" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1478,12 +1478,12 @@
                         <outlet property="BTN_fav" destination="PtV-BS-cNc" id="x6q-6p-480"/>
                         <outlet property="TBL_wish_list_items" destination="705-1y-myG" id="kss-bq-dwb"/>
                         <segue destination="pbc-hN-8EP" kind="push" identifier="wish_to_cart" id="fEF-9T-het"/>
-                        <segue destination="h4H-xf-ZjH" kind="push" identifier="wish_to_product_detail" id="RHB-QJ-xke"/>
+                        <segue destination="h4H-xf-ZjH" kind="push" identifier="wish_product_detail" animates="NO" id="zQC-LI-4Dc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="M5W-ZB-p4A" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1862" y="1194"/>
+            <point key="canvasLocation" x="1791" y="1191"/>
         </scene>
         <!--cart list-->
         <scene sceneID="I6z-1Z-dNJ">
@@ -2158,17 +2158,17 @@ UVIgMAM
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.75" contentMode="scaleToFill" misplaced="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="uHh-2P-nOE">
-                                <rect key="frame" x="0.0" y="64" width="320" height="415"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="uHh-2P-nOE">
+                                <rect key="frame" x="0.0" y="54" width="320" height="378"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.88627450980392153" green="0.88627450980392153" blue="0.88627450980392153" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <outlet property="delegate" destination="h4H-xf-ZjH" id="LtY-FV-Iih"/>
                                 </connections>
                             </scrollView>
-                            <view contentMode="scaleToFill" misplaced="YES" id="fFK-v2-huV">
+                            <view alpha="0.84999999999999998" contentMode="scaleToFill" misplaced="YES" id="fFK-v2-huV">
                                 <rect key="frame" x="0.0" y="430" width="320" height="50"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="aCI-qq-eso">
                                         <rect key="frame" x="11" y="14" width="136" height="29"/>
@@ -2177,6 +2177,9 @@ UVIgMAM
                                         <state key="normal" title=" WISH LIST">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="add_to_wih_list:" destination="h4H-xf-ZjH" eventType="touchUpInside" id="rzh-tj-wpd"/>
+                                        </connections>
                                     </button>
                                     <view contentMode="scaleToFill" id="avO-vR-BIj">
                                         <rect key="frame" x="157" y="14" width="2" height="30"/>
@@ -2184,7 +2187,7 @@ UVIgMAM
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
                                     <view contentMode="scaleToFill" misplaced="YES" id="4fb-B9-xOB">
-                                        <rect key="frame" x="177" y="10" width="131" height="29"/>
+                                        <rect key="frame" x="177" y="11" width="131" height="29"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="online_shopping_cart.png" id="C9e-Qo-GP1">
@@ -2193,18 +2196,21 @@ UVIgMAM
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             </imageView>
                                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="lWc-QE-Tfp">
-                                                <rect key="frame" x="33" y="6" width="92" height="25"/>
+                                                <rect key="frame" x="33" y="5" width="92" height="25"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                 <state key="normal" title="ADD TO CART">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="add_cart_action:" destination="h4H-xf-ZjH" eventType="touchUpInside" id="1eH-f3-MtL"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" red="0.2196078431372549" green="0.2196078431372549" blue="0.2196078431372549" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -2234,10 +2240,16 @@ UVIgMAM
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <inset key="imageEdgeInsets" minX="5" minY="6" maxX="5" maxY="5"/>
                                     <state key="normal" title="Button" image="online_shopping_cart.png"/>
+                                    <connections>
+                                        <action selector="productdetail_to_cartPage:" destination="h4H-xf-ZjH" eventType="touchUpInside" id="sQa-nu-ARB"/>
+                                    </connections>
                                 </button>
                             </barButtonItem>
                             <barButtonItem title="" id="1LA-tf-tJm">
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <action selector="product_detail_cart_page:" destination="h4H-xf-ZjH" id="XCR-eT-f84"/>
+                                </connections>
                             </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
@@ -2249,14 +2261,13 @@ UVIgMAM
                         <outlet property="BTN_minus" destination="NpO-1e-Kbt" id="DmS-7A-fr2"/>
                         <outlet property="BTN_play" destination="YdG-JN-pP7" id="ZFL-Xb-tul"/>
                         <outlet property="BTN_plus" destination="4T1-4A-c6y" id="4vm-E0-esj"/>
-                        <outlet property="Btn_addto_cart" destination="lWc-QE-Tfp" id="LT8-Tx-Bxy"/>
-                        <outlet property="Btn_addto_wish" destination="aCI-qq-eso" id="FGF-fE-PPB"/>
                         <outlet property="IMG_cart" destination="C9e-Qo-GP1" id="WAZ-bV-p2S"/>
                         <outlet property="LBL_discount" destination="aYR-Sx-1ur" id="sOF-hF-MDf"/>
                         <outlet property="LBL_item_name" destination="Uos-2v-C3D" id="9pN-xr-CY5"/>
-                        <outlet property="LBL_prices" destination="hZN-wP-9Kv" id="3Sy-cX-Ahf"/>
+                        <outlet property="LBL_prices" destination="hZN-wP-9Kv" id="mdl-OQ-ICE"/>
                         <outlet property="Scroll_content" destination="uHh-2P-nOE" id="HGS-Xq-9N2"/>
-                        <outlet property="TXTVW_description" destination="J2D-Kp-NOe" id="bnh-0k-4DC"/>
+                        <outlet property="TBL_reviews" destination="COb-as-uN6" id="y63-hJ-8M4"/>
+                        <outlet property="TXTVW_description" destination="1OU-MP-4vz" id="vid-ze-uF9"/>
                         <outlet property="TXT_count" destination="Qvg-jf-Cfb" id="FBA-YO-9MN"/>
                         <outlet property="VW_First" destination="Mw4-UO-Gky" id="0o4-ff-anK"/>
                         <outlet property="VW_fifth" destination="oEZ-lC-SS6" id="qTs-e5-G03"/>
@@ -2265,15 +2276,23 @@ UVIgMAM
                         <outlet property="VW_second" destination="LF1-Hh-ZZc" id="Wec-Ko-rRm"/>
                         <outlet property="VW_segemnt" destination="rgk-pr-OIm" id="igF-Is-khI"/>
                         <outlet property="VW_third" destination="a1M-oJ-zHn" id="R9h-DK-ULE"/>
-                        <outlet property="collectionView_color" destination="b6F-eq-gqi" id="c3u-sK-rbK"/>
                         <outlet property="collection_images" destination="cAI-td-vdb" id="Yqh-kh-Z5l"/>
-                        <outlet property="collectionview_size" destination="yDM-mk-U0y" id="xSY-7V-xHR"/>
+                        <outlet property="collectionview_variants" destination="Al0-hm-h5j" id="mgs-JR-l4b"/>
                         <outlet property="custom_story_page_controller" destination="5cu-Ta-jNY" id="U3d-8N-yFN"/>
                         <segue destination="pbc-hN-8EP" kind="push" identifier="productDetail_to_cart" id="1MO-TU-sXM"/>
                         <segue destination="i9C-AL-c2e" kind="push" identifier="productDetail_to_wishList" id="GNZ-Ft-0Lq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4xK-a2-gZg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="COb-as-uN6">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="203"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="h4H-xf-ZjH" id="jWh-CE-3cp"/>
+                        <outlet property="delegate" destination="h4H-xf-ZjH" id="z4c-UV-Y5E"/>
+                    </connections>
+                </tableView>
                 <view contentMode="scaleToFill" misplaced="YES" id="Y65-cf-Zyz">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
@@ -2330,15 +2349,16 @@ UVIgMAM
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" alpha="0.90000000000000002" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aYR-Sx-1ur">
                             <rect key="frame" x="10" y="92" width="304" height="30"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                             <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.84999999999999998" contentMode="scaleToFill" misplaced="YES" scrollEnabled="NO" editable="NO" text="Lorem ipsum dolor sit er " textAlignment="natural" selectable="NO" id="hZN-wP-9Kv">
-                            <rect key="frame" x="5" y="56" width="284" height="36"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.84999999999999998" contentMode="scaleToFill" misplaced="YES" scrollEnabled="NO" editable="NO" textAlignment="natural" selectable="NO" id="hZN-wP-9Kv">
+                            <rect key="frame" x="10" y="54" width="284" height="28"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences" secureTextEntry="YES"/>
                         </textView>
@@ -2346,38 +2366,27 @@ UVIgMAM
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
                 <view contentMode="scaleToFill" misplaced="YES" id="oEZ-lC-SS6">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="159"/>
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="151"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                     <subviews>
-                        <webView contentMode="scaleToFill" misplaced="YES" scalesPageToFit="YES" id="J2D-Kp-NOe">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="159"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        </webView>
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" textAlignment="natural" id="1OU-MP-4vz">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="151"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                        </textView>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>
                 <view contentMode="scaleToFill" misplaced="YES" id="a1M-oJ-zHn">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="147"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" alpha="0.80000000000000004" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Quantity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Ciw-Iv-OKE">
-                            <rect key="frame" x="10" y="14" width="92" height="30"/>
+                            <rect key="frame" x="10" y="9" width="92" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <label opaque="NO" userInteractionEnabled="NO" alpha="0.80000000000000004" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Size" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="GUH-C0-1wv">
-                            <rect key="frame" x="10" y="57" width="92" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <label opaque="NO" userInteractionEnabled="NO" alpha="0.80000000000000004" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Color" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="UDn-kZ-qZV">
-                            <rect key="frame" x="10" y="103" width="92" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -2399,83 +2408,65 @@ UVIgMAM
                         </textField>
                         <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="4T1-4A-c6y">
                             <rect key="frame" x="289" y="14" width="26" height="26"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="22"/>
                             <inset key="contentEdgeInsets" minX="0.0" minY="2" maxX="0.0" maxY="5"/>
                             <state key="normal" title="+">
                                 <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                         </button>
-                        <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" id="b6F-eq-gqi">
-                            <rect key="frame" x="136" y="103" width="179" height="30"/>
+                        <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="Al0-hm-h5j">
+                            <rect key="frame" x="10" y="47" width="294" height="100"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="1" minimumInteritemSpacing="1" id="vC7-Kb-DSH">
-                                <size key="itemSize" width="25" height="25"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="jI2-M2-zkP">
+                                <size key="itemSize" width="106" height="64"/>
                                 <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                 <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                 <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                             </collectionViewFlowLayout>
                             <cells>
-                                <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="color_cell" id="h9P-Hf-s5x">
-                                    <rect key="frame" x="0.0" y="2" width="25" height="25"/>
+                                <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="cell" id="1gc-L7-a1P" customClass="collection_variants_cell">
+                                    <rect key="frame" x="0.0" y="0.0" width="106" height="64"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                        <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="106" height="64"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-                                            <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="J7x-Ct-cMR">
-                                                <rect key="frame" x="1" y="0.0" width="22" height="28"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="13"/>
-                                                <state key="normal">
-                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                </state>
-                                            </button>
-                                        </subviews>
-                                    </view>
-                                </collectionViewCell>
-                            </cells>
-                            <connections>
-                                <outlet property="dataSource" destination="h4H-xf-ZjH" id="Kd4-DG-QIQ"/>
-                                <outlet property="delegate" destination="h4H-xf-ZjH" id="uEl-Li-ThU"/>
-                            </connections>
-                        </collectionView>
-                        <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" id="yDM-mk-U0y">
-                            <rect key="frame" x="136" y="57" width="179" height="30"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="1" minimumInteritemSpacing="1" id="wza-2M-Tds">
-                                <size key="itemSize" width="25" height="25"/>
-                                <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                            </collectionViewFlowLayout>
-                            <cells>
-                                <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="size_cell" id="bMe-8u-Hp4">
-                                    <rect key="frame" x="0.0" y="2" width="25" height="25"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                        <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <subviews>
-                                            <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="nKE-HZ-u9q">
-                                                <rect key="frame" x="0.0" y="0.0" width="22" height="28"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Mux-hN-uOk">
+                                                <rect key="frame" x="4" y="6" width="100" height="18"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="13"/>
-                                                <state key="normal" title="S">
-                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                </state>
-                                            </button>
+                                                <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" id="AZO-dc-K5Y">
+                                                <rect key="frame" x="2" y="30" width="102" height="32"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                                <color key="backgroundColor" red="0.88627450980392153" green="0.88627450980392153" blue="0.88627450980392153" alpha="1" colorSpace="calibratedRGB"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="2cS-n8-3cr">
+                                                <rect key="frame" x="86" y="39" width="15" height="15"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
+                                                <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="17"/>
+                                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                     </view>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <connections>
+                                        <outlet property="LBL_title" destination="Mux-hN-uOk" id="dcY-zN-XVU"/>
+                                        <outlet property="TXT_variant" destination="AZO-dc-K5Y" id="91V-8l-wTf"/>
+                                    </connections>
                                 </collectionViewCell>
                             </cells>
                             <connections>
-                                <outlet property="dataSource" destination="h4H-xf-ZjH" id="nfh-49-gLh"/>
-                                <outlet property="delegate" destination="h4H-xf-ZjH" id="s3t-at-7KL"/>
+                                <outlet property="dataSource" destination="h4H-xf-ZjH" id="0Gj-h5-b7Y"/>
+                                <outlet property="delegate" destination="h4H-xf-ZjH" id="vxe-IA-tCV"/>
                             </connections>
                         </collectionView>
                     </subviews>
@@ -2491,19 +2482,148 @@ UVIgMAM
                     </state>
                 </button>
             </objects>
-            <point key="canvasLocation" x="1268" y="1255"/>
+            <point key="canvasLocation" x="1207" y="1325"/>
         </scene>
-        <!--View Controller-->
+        <!--merchant detail-->
         <scene sceneID="Dbf-hF-4Fm">
             <objects>
-                <viewController id="abl-Ky-o92" sceneMemberID="viewController">
+                <viewController id="abl-Ky-o92" customClass="VC_merchant_detail" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="bmr-RR-Dix">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" id="eUL-tl-5F4">
+                                <rect key="frame" x="0.0" y="65" width="320" height="415"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" alpha="0.85000002384185791" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" id="EHm-0Q-pd5">
+                                        <rect key="frame" x="0.0" y="-64" width="320" height="186"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    </imageView>
+                                </subviews>
+                            </scrollView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <navigationItem key="navigationItem" id="eT7-Co-XX3">
+                        <leftBarButtonItems>
+                            <barButtonItem title="" style="plain" id="BHg-Y1-WhR">
+                                <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" buttonType="roundedRect" lineBreakMode="middleTruncation" id="X6a-R2-tgq">
+                                    <rect key="frame" x="16" y="7" width="20" height="30"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="28"/>
+                                    <inset key="contentEdgeInsets" minX="0.5" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                    <inset key="titleEdgeInsets" minX="0.5" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                    <state key="normal" title="">
+                                        <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="back_action:" destination="HYj-dz-fwV" eventType="touchUpInside" id="LZ4-7w-abO"/>
+                                        <action selector="back_action:" destination="mSM-eH-w1W" eventType="touchUpInside" id="Rnh-gQ-JJh"/>
+                                    </connections>
+                                </button>
+                                <connections>
+                                    <action selector="back_action:" destination="mSM-eH-w1W" id="O79-ex-cwr"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem style="plain" id="dNa-LB-Utd">
+                                <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="dL0-V1-fbd">
+                                    <rect key="frame" x="44" y="7" width="150" height="30"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
+                                    <state key="normal" title="STORE">
+                                        <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    </state>
+                                </button>
+                            </barButtonItem>
+                        </leftBarButtonItems>
+                        <barButtonItem key="rightBarButtonItem" style="plain" id="EAj-dd-8hC">
+                            <button key="customView" opaque="NO" alpha="0.84999999999999998" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="rOd-0O-yo9">
+                                <rect key="frame" x="254" y="7" width="50" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="17"/>
+                                <state key="normal" title="">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="IMG_first" destination="EHm-0Q-pd5" id="gCd-y1-qYY"/>
+                        <outlet property="LBL_address" destination="ddD-2D-I2n" id="nt3-0Z-NG6"/>
+                        <outlet property="LBL_name" destination="QEX-6f-uN3" id="Y55-Ri-4ik"/>
+                        <outlet property="LBL_phone_mail" destination="Heq-nP-Pnw" id="1Ch-Uq-Ntq"/>
+                        <outlet property="VW_first" destination="6mk-iZ-L4Q" id="fP3-5v-2Yj"/>
+                        <outlet property="VW_second" destination="Wbm-Zd-bp3" id="OS4-Wh-2uG"/>
+                        <outlet property="collection_items" destination="qeu-zl-Vav" id="jhY-rt-DtL"/>
+                        <outlet property="scroll_contets" destination="eUL-tl-5F4" id="yEe-3a-cgM"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Lq-nS-edC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <view contentMode="scaleToFill" misplaced="YES" id="Wbm-Zd-bp3">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="283"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" alpha="0.84999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Products" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TZ8-9C-jYd">
+                            <rect key="frame" x="16" y="13" width="83" height="38"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" name="Cochin-Bold" family="Cochin" pointSize="20"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <view contentMode="scaleToFill" misplaced="YES" id="0Ul-bG-AEB">
+                            <rect key="frame" x="97" y="35" width="213" height="1"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        </view>
+                        <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="qeu-zl-Vav">
+                            <rect key="frame" x="0.0" y="50" width="320" height="233"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="1qA-u7-kAu">
+                                <size key="itemSize" width="50" height="50"/>
+                                <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            </collectionViewFlowLayout>
+                            <cells/>
+                            <connections>
+                                <outlet property="dataSource" destination="abl-Ky-o92" id="f9I-ob-cTp"/>
+                                <outlet property="delegate" destination="abl-Ky-o92" id="jSD-CG-oPe"/>
+                            </connections>
+                        </collectionView>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
+                <view contentMode="scaleToFill" misplaced="YES" id="6mk-iZ-L4Q">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="ANSAR SOLUTIONS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QEX-6f-uN3">
+                            <rect key="frame" x="16" y="7" width="288" height="42"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Qatar Foundation ,Ar rayyan,Al rayyan, Qatar Muncipality" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Heq-nP-Pnw">
+                            <rect key="frame" x="16" y="119" width="288" height="58"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" name="Poppins-Light" family="Poppins" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Qatar Foundation ,Ar rayyan,Al rayyan, Qatar Muncipality" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ddD-2D-I2n">
+                            <rect key="frame" x="16" y="54" width="288" height="57"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" name="Poppins-Light" family="Poppins" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
             </objects>
             <point key="canvasLocation" x="-3783" y="988"/>
         </scene>
@@ -2571,6 +2691,7 @@ UVIgMAM
                     </navigationItem>
                     <connections>
                         <outlet property="TBL_merchants" destination="Ffx-LK-Xbr" id="Rih-36-GBv"/>
+                        <segue destination="abl-Ky-o92" kind="push" identifier="merchant_detail_segue" animates="NO" id="InF-mq-N9v"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qxj-Uc-c96" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -3022,7 +3143,7 @@ UVIgMAM
                         <segue destination="vvX-p3-YbO" kind="push" identifier="contact_us_segue" animates="NO" id="Qag-gv-rJt"/>
                         <segue destination="HDm-YP-V2b" kind="push" identifier="home_address" animates="NO" id="qk9-e5-827"/>
                         <segue destination="g9e-XC-K6p" kind="push" identifier="my_orders" animates="NO" id="yyb-s4-Uh8"/>
-                        <segue destination="BYZ-38-t0r" kind="push" identifier="homeQtkt_to_login" id="OwJ-OZ-F7P"/>
+                        <segue destination="BYZ-38-t0r" kind="push" identifier="homeQtkt_to_login" id="U1I-tg-KmK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oJZ-80-nIq" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -3689,7 +3810,7 @@ UVIgMAM
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="-4486" y="2364"/>
+            <point key="canvasLocation" x="-4618" y="2389"/>
         </scene>
         <!--search-->
         <scene sceneID="Kep-mz-lbD">
@@ -3752,7 +3873,7 @@ UVIgMAM
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UhF-Ag-ndd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-4600" y="3446"/>
+            <point key="canvasLocation" x="-4679" y="3460"/>
         </scene>
         <!--Home detail-->
         <scene sceneID="3dW-QG-qwG">
@@ -4609,7 +4730,7 @@ UVIgMAM
                             </connections>
                         </textField>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Your Phone number" textAlignment="natural" minimumFontSize="17" id="KhQ-P2-Dok" customClass="TXT_Blck_field">
-                            <rect key="frame" x="100" y="191" width="204" height="40"/>
+                            <rect key="frame" x="100" y="191" width="208" height="40"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -4646,7 +4767,7 @@ UVIgMAM
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="00z-nI-GOg">
                             <rect key="frame" x="145" y="260" width="159" height="40"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" red="0.98823529409999999" green="0.68235294120000001" blue="0.15686274510000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="17"/>
                             <state key="normal" title="Apply">
@@ -4842,37 +4963,6 @@ UVIgMAM
                                     <color key="titleColor" red="0.91764705879999997" green="0.91764705879999997" blue="0.91764705879999997" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                             </button>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="nPR-JE-fcQ">
-                                <rect key="frame" x="0.0" y="73" width="320" height="97"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="eUP-uz-LHr">
-                                    <size key="itemSize" width="152" height="72"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="dY9-Ta-Rp6">
-                                        <rect key="frame" x="0.0" y="12.5" width="152" height="72"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="152" height="72"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cod.png" id="SNF-l6-ree">
-                                                    <rect key="frame" x="1" y="0.0" width="151" height="72"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </imageView>
-                                            </subviews>
-                                        </view>
-                                    </collectionViewCell>
-                                </cells>
-                                <connections>
-                                    <outlet property="dataSource" destination="JTx-w1-EKe" id="ghP-Sv-BBK"/>
-                                    <outlet property="delegate" destination="JTx-w1-EKe" id="DU3-RA-eff"/>
-                                </connections>
-                            </collectionView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Nationality:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="nIP-r9-iGQ">
                                 <rect key="frame" x="16" y="178" width="153" height="26"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -4882,7 +4972,7 @@ UVIgMAM
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Select Your country" textAlignment="natural" minimumFontSize="17" id="rO6-ZD-SO2" customClass="TXT_Blck_field">
                                 <rect key="frame" x="16" y="215" width="282" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -4906,15 +4996,32 @@ UVIgMAM
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleAspectFit" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="j8p-XJ-DnU">
+                                <rect key="frame" x="10" y="73" width="90" height="60"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" backgroundImage="upload-11.png"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Aid-1a-6Ia">
+                                <rect key="frame" x="112" y="73" width="90" height="60"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" backgroundImage="upload-12.png"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="3kY-ij-dfT">
+                                <rect key="frame" x="214" y="73" width="90" height="60"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" backgroundImage="upload-10.png"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="U3l-zW-45k"/>
                     <connections>
+                        <outlet property="BTN_american_express" destination="j8p-XJ-DnU" id="cpe-FZ-Lwf"/>
                         <outlet property="BTN_cancel" destination="f7u-Y7-hs9" id="idh-Qm-LaK"/>
+                        <outlet property="BTN_dohabank" destination="Aid-1a-6Ia" id="J0O-hK-QNe"/>
                         <outlet property="BTN_pay" destination="HJf-oJ-fqw" id="PXr-AA-Pgi"/>
+                        <outlet property="BTN_visa" destination="3kY-ij-dfT" id="utr-0V-DyO"/>
                         <outlet property="TXT_countries" destination="rO6-ZD-SO2" id="Oma-BA-c5H"/>
-                        <outlet property="collection_pay_options" destination="nPR-JE-fcQ" id="Wyt-MK-4mp"/>
                         <segue destination="YBU-nD-B2e" kind="modal" identifier="pay_web_identifier" animates="NO" id="IxC-db-QOw"/>
                     </connections>
                 </viewController>
@@ -5466,7 +5573,7 @@ UVIgMAM
                             </connections>
                         </tableView>
                     </subviews>
-                    <color key="backgroundColor" red="0.72941176470588232" green="0.69019607843137254" blue="0.66666666666666663" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="backgroundColor" red="0.0" green="0.062745098039215685" blue="0.10588235294117647" alpha="0.92433647260273977" colorSpace="calibratedRGB"/>
                 </view>
                 <view contentMode="scaleToFill" misplaced="YES" id="jtD-bs-4r0">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="129"/>
@@ -5573,7 +5680,7 @@ UVIgMAM
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="-3729" y="3509"/>
+            <point key="canvasLocation" x="-3748" y="3509"/>
         </scene>
         <!--movies-->
         <scene sceneID="gTc-pE-OVo">
@@ -6283,37 +6390,6 @@ UVIgMAM
                                     <color key="titleColor" red="0.91764705879999997" green="0.91764705879999997" blue="0.91764705879999997" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                             </button>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="XID-30-1GM">
-                                <rect key="frame" x="0.0" y="82" width="320" height="108"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="G5n-33-4Fg">
-                                    <size key="itemSize" width="152" height="72"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="Vb7-zO-8ru">
-                                        <rect key="frame" x="0.0" y="18" width="152" height="72"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="152" height="72"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cod.png" id="8Yi-AT-ezl">
-                                                    <rect key="frame" x="1" y="0.0" width="151" height="72"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </imageView>
-                                            </subviews>
-                                        </view>
-                                    </collectionViewCell>
-                                </cells>
-                                <connections>
-                                    <outlet property="dataSource" destination="xws-tf-Ddu" id="2To-h3-qTn"/>
-                                    <outlet property="delegate" destination="xws-tf-Ddu" id="gge-t3-Exf"/>
-                                </connections>
-                            </collectionView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Nationality:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="t7S-SD-LsB">
                                 <rect key="frame" x="16" y="201" width="153" height="26"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -6323,7 +6399,7 @@ UVIgMAM
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Select Your country" textAlignment="natural" minimumFontSize="17" id="6l4-d8-5WX" customClass="TXT_Blck_field">
                                 <rect key="frame" x="16" y="235" width="282" height="35"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -6347,16 +6423,33 @@ UVIgMAM
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="iRz-go-i2X">
+                                <rect key="frame" x="10" y="106" width="90" height="60"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" backgroundImage="upload-11.png"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="pDd-l2-1kw">
+                                <rect key="frame" x="112" y="106" width="90" height="60"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" backgroundImage="upload-12.png"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="BX5-Di-olb">
+                                <rect key="frame" x="214" y="106" width="90" height="60"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" backgroundImage="upload-10.png"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="aOv-ZL-sov"/>
                     <connections>
+                        <outlet property="BTN_american_express" destination="iRz-go-i2X" id="epO-dP-AXK"/>
                         <outlet property="BTN_cancel" destination="XrM-Nd-cxP" id="YUQ-iF-0Nl"/>
+                        <outlet property="BTN_dohabank" destination="pDd-l2-1kw" id="8v6-t2-MTW"/>
                         <outlet property="BTN_pay" destination="sdU-RL-hCB" id="EjQ-Qp-SK8"/>
+                        <outlet property="BTN_visa" destination="BX5-Di-olb" id="Tyi-jX-5Wh"/>
                         <outlet property="LBL_timer" destination="GaQ-vu-tEY" id="R9J-wW-fUC"/>
                         <outlet property="TXT_countries" destination="6l4-d8-5WX" id="wR0-qA-Cij"/>
-                        <outlet property="collection_pay_options" destination="XID-30-1GM" id="oSm-ac-d7t"/>
                         <segue destination="U4B-EU-xye" kind="modal" identifier="Movie_pay_web" animates="NO" id="ex2-1s-tyg"/>
                     </connections>
                 </viewController>
@@ -6409,7 +6502,7 @@ UVIgMAM
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hRu-m1-rch" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-4104" y="3497"/>
+            <point key="canvasLocation" x="-4258" y="3497"/>
         </scene>
         <!--upcoming movies-->
         <scene sceneID="yHb-2j-5Zx">
@@ -6627,7 +6720,6 @@ UVIgMAM
         <image name="blue_bg_long.png" width="270" height="518"/>
         <image name="brand.png" width="208" height="128"/>
         <image name="clearcart.png" width="60" height="45"/>
-        <image name="cod.png" width="757" height="464"/>
         <image name="cross.png" width="64" height="64"/>
         <image name="events-2_1_30x30" width="25" height="25"/>
         <image name="filter.png" width="48" height="50"/>
@@ -6647,6 +6739,9 @@ UVIgMAM
         <image name="sports-2_30x30" width="25" height="25"/>
         <image name="square-2_30x30" width="25" height="25"/>
         <image name="uncheked_order.png" width="66" height="66"/>
+        <image name="upload-10.png" width="118" height="83"/>
+        <image name="upload-11.png" width="119" height="83"/>
+        <image name="upload-12.png" width="132" height="84"/>
         <image name="upload-3.png" width="1080" height="350"/>
         <image name="upload-4.png" width="325" height="347"/>
         <image name="upload-5.png" width="270" height="410"/>
@@ -6664,16 +6759,16 @@ UVIgMAM
         <segue reference="vMu-Y7-4Nz"/>
         <segue reference="lT4-28-Wjm"/>
         <segue reference="bQ7-XP-3ld"/>
+        <segue reference="x0e-hc-baO"/>
         <segue reference="u1i-KR-yL0"/>
-        <segue reference="ftO-4d-EKK"/>
-        <segue reference="hhS-W1-qq1"/>
-        <segue reference="LS8-aj-kn5"/>
+        <segue reference="GNZ-Ft-0Lq"/>
+        <segue reference="1MO-TU-sXM"/>
         <segue reference="1fc-cP-jfH"/>
+        <segue reference="yia-EY-vuf"/>
+        <segue reference="ANP-ln-DYB"/>
         <segue reference="pDU-cD-KDi"/>
-        <segue reference="GAW-2H-hzI"/>
-        <segue reference="z2t-AS-he8"/>
-        <segue reference="9v6-ul-yqt"/>
-        <segue reference="yd1-mH-hvX"/>
-        <segue reference="KwI-at-8nF"/>
+        <segue reference="2i6-zz-H96"/>
+        <segue reference="Ikb-sa-4zg"/>
+        <segue reference="gbe-MC-qn1"/>
     </inferredMetricsTieBreakers>
 </document>

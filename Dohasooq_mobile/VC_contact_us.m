@@ -77,7 +77,7 @@
     activityIndicatorView.center = VW_overlay.center;
     [VW_overlay addSubview:activityIndicatorView];
     [self.view addSubview:VW_overlay];
-    //[self address_API];
+    [self address_API];
     
     
         VW_overlay.hidden = NO;
@@ -193,8 +193,6 @@
 
    
 }
-#pragma mark address_API_Calling
-
 -(void)address_API
 {
     @try {
@@ -295,6 +293,7 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 /*
 #pragma mark - Navigation
 

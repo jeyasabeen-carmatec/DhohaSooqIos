@@ -37,12 +37,6 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabel" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b0l-SU-yge">
-                        <rect key="frame" x="116" y="33" width="194" height="52"/>
-                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
-                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                        <nil key="highlightedColor"/>
-                    </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VMX-LK-G7a">
                         <rect key="frame" x="116" y="89" width="194" height="21"/>
                         <constraints>
@@ -52,27 +46,34 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0JN-Xt-yQa">
+                        <rect key="frame" x="116" y="39" width="194" height="42"/>
+                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
+                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="top" secondItem="Sys-Nu-Cfj" secondAttribute="bottom" constant="8" id="2K6-mT-iPm"/>
                     <constraint firstItem="Sys-Nu-Cfj" firstAttribute="leading" secondItem="g6W-IO-VhK" secondAttribute="trailing" constant="8" id="5aJ-p4-eYh"/>
                     <constraint firstAttribute="trailingMargin" secondItem="Sys-Nu-Cfj" secondAttribute="trailing" id="8O2-aJ-2Bo"/>
-                    <constraint firstItem="VMX-LK-G7a" firstAttribute="top" secondItem="b0l-SU-yge" secondAttribute="bottom" constant="4" id="9Gw-6U-czJ"/>
                     <constraint firstAttribute="bottom" secondItem="g6W-IO-VhK" secondAttribute="bottom" constant="7.5" id="Bci-Wg-55A"/>
                     <constraint firstItem="Sys-Nu-Cfj" firstAttribute="top" secondItem="g6W-IO-VhK" secondAttribute="top" id="CP3-Qa-PT6"/>
                     <constraint firstAttribute="bottomMargin" secondItem="VMX-LK-G7a" secondAttribute="bottom" constant="0.75" id="EgV-tK-fe2"/>
-                    <constraint firstItem="b0l-SU-yge" firstAttribute="top" secondItem="Sys-Nu-Cfj" secondAttribute="bottom" constant="2" id="MdO-Lo-l6p"/>
-                    <constraint firstItem="VMX-LK-G7a" firstAttribute="trailing" secondItem="b0l-SU-yge" secondAttribute="trailing" id="Ojt-Ey-wYg"/>
+                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="leading" secondItem="g6W-IO-VhK" secondAttribute="trailing" constant="8" id="HeQ-hx-YeN"/>
+                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="trailing" secondItem="VMX-LK-G7a" secondAttribute="trailing" id="ObP-dM-0Ih"/>
+                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="centerY" secondItem="g6W-IO-VhK" secondAttribute="centerY" id="Qed-uU-4u6"/>
                     <constraint firstItem="g6W-IO-VhK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="Ywb-1c-Sxy"/>
-                    <constraint firstItem="b0l-SU-yge" firstAttribute="leading" secondItem="Sys-Nu-Cfj" secondAttribute="leading" id="ZIS-nh-VMZ"/>
-                    <constraint firstItem="VMX-LK-G7a" firstAttribute="leading" secondItem="b0l-SU-yge" secondAttribute="leading" id="aFt-1o-Nhg"/>
+                    <constraint firstItem="VMX-LK-G7a" firstAttribute="top" secondItem="0JN-Xt-yQa" secondAttribute="bottom" constant="8" id="Z4O-x3-Z8a"/>
+                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="leading" secondItem="VMX-LK-G7a" secondAttribute="leading" id="eU4-7I-Euf"/>
                     <constraint firstItem="g6W-IO-VhK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="gaw-sE-hn7"/>
-                    <constraint firstItem="b0l-SU-yge" firstAttribute="trailing" secondItem="Sys-Nu-Cfj" secondAttribute="trailing" id="xw3-XX-0ht"/>
+                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="xUV-Cj-w2r"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="IMG_banner" destination="g6W-IO-VhK" id="XAJ-ll-W6W"/>
                 <outlet property="LBL_category" destination="VMX-LK-G7a" id="Vis-bq-hhr"/>
-                <outlet property="LBL_description" destination="b0l-SU-yge" id="LU3-gd-CDX"/>
+                <outlet property="LBL_description" destination="0JN-Xt-yQa" id="zue-45-7Nn"/>
                 <outlet property="LBL_name" destination="Sys-Nu-Cfj" id="gJ9-gZ-jmV"/>
             </connections>
             <point key="canvasLocation" x="32" y="109.5"/>

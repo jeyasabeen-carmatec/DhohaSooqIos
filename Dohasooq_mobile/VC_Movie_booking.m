@@ -37,19 +37,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    CAGradientLayer *gradient = [CAGradientLayer layer];
-//    gradient.frame = CGRectMake(_tbl_timings.frame.origin.x, _tbl_timings.frame.origin.y, [UIScreen mainScreen].bounds.size.width, _tbl_timings.contentSize.height);
-//    gradient.colors = @[(id)[UIColor colorWithRed:0.55 green:0.46 blue:0.41 alpha:1.0].CGColor, (id)[UIColor colorWithRed:0.24 green:0.19 blue:0.15 alpha:1.0].CGColor];
-//    
-//    [_VW_timings.layer insertSublayer:gradient atIndex:0];
     [self dateVIEW];
     [_BTN_trailer_watch addTarget:self action:@selector(BTN_trailer_watch) forControlEvents:UIControlEventTouchUpInside];
+    
 
 
     
 }
 -(void)viewWillAppear:(BOOL)animated
 {
+    ARR_temp = [[NSMutableArray alloc]init];
     self.navigationController.navigationBar.hidden = NO;
     
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -75,6 +72,166 @@
 }
 
 -(void)filtering_date{
+  
+//    detail_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"];
+//    NSLog(@"%@",detail_dict);
+//    NSMutableArray *att = [[NSMutableArray alloc]init];
+//   
+//
+//    
+//   
+//        NSArray *temp_ar = [detail_dict valueForKey:@"Theatre"];
+//        NSInteger count;
+//        if([temp_ar isKindOfClass:[NSDictionary class]])
+//        {
+//            count = 1;
+//            
+//        }
+//        else
+//         {
+//           count = temp_ar.count;
+//         }
+//        for(int i = 0;i<count;i++)
+//        {
+//            @try
+//            {
+//            
+//            att = [[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"];
+//            
+//            if([att isKindOfClass:[NSDictionary class]])
+//                
+//            {
+//                [ARR_temp addObject:[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"] valueForKey:@"showDate"] valueForKey:@"_Date"]];
+//                
+//            }
+//            else
+//            {
+//                
+//                for(int j =0;j< [[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"] valueForKey:@"showDate"]count];j++)
+//                {
+//                    @try
+//                    {
+//                        
+//                        
+//                        
+//                        [ARR_temp addObject:[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"] valueForKey:@"showDate"] objectAtIndex:j] valueForKey:@"_Date"]];
+//                        
+//                    }
+//                    
+//                    @catch(NSException *exception)
+//                    {
+//                        
+//                    }
+//                }
+//            }
+//                
+//            }
+//        
+//    
+//    @catch(NSException *exception)
+//    {
+//        att = [[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"]valueForKey:@"showDate"] ;
+//        
+//        if([att isKindOfClass:[NSDictionary class]])
+//            
+//        {
+//            [ARR_temp addObject:[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"] valueForKey:@"showDate"] valueForKey:@"_Date"]];
+//         
+//            
+//        }
+//        else
+//        {
+//       
+//            for(int j =0;j< [[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"] valueForKey:@"showDate"]count];j++)
+//            {
+//               
+//                NSLog(@"THE for loop date filter%@",[[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"] valueForKey:@"showDate"] objectAtIndex:j] valueForKey:@"_Date"]);
+//                NSString *str = [NSString stringWithFormat:@"%@",[[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"] valueForKey:@"showDate"] objectAtIndex:j] valueForKey:@"_Date"]];
+//                [ARR_temp addObject:str];
+//                 
+//            }
+//                 
+//        }
+//                 
+//    }
+//}
+//    
+//    
+//    NSMutableArray *arry_with_Dates = [NSMutableArray array];
+//    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:ARR_temp,@"key2", nil];
+//    NSArray *arr = [dict valueForKey:@"key2"];
+//
+//    NSLog(@"Date Array is :::%lu",(unsigned long)arr.count);
+//    for(int m = 0;m<arr.count;m++)
+//    {
+//        NSLog(@"The arr is:%@",[arr objectAtIndex:m]);
+//    }
+//   // [date_Arr removeAllObjects];
+//    
+//   // [date_Arr addObject:[dict valueForKey:@"date"]];
+//    
+//    NSCalendar *cal = [NSCalendar currentCalendar];
+//    
+//    for (int i=0; i<arr.count; i++) {
+//        
+////        if ([[arr objectAtIndex:i] isKindOfClass:[NSArray class]]) {
+////            
+////            for (int j=0; j<[[date_Arr objectAtIndex:i] count]; j++) {
+////                NSDate *tomorrow = [cal dateByAddingUnit:NSCalendarUnitDay
+////                                                   value:1
+////                                                  toDate:[dateFormat dateFromString:[[arr objectAtIndex:i] objectAtIndex:j]]
+////                                                 options:0];
+////                [arry_with_Dates addObject:tomorrow];
+////                
+////                // [arry_with_Dates addObject:[dateFormat dateFromString:[[date_Arr objectAtIndex:i] objectAtIndex:j]]];
+////                NSLog(@"%@",arry_with_Dates);
+////            }
+////        }
+////        else{
+//            dateFormat = [[NSDateFormatter alloc] init];
+//            [dateFormat setDateFormat:@"MM-dd-yyyy"];
+//         
+//            NSString *str = [NSString stringWithFormat:@"%@",[arr objectAtIndex:i]];
+//            NSDate *date = [dateFormat dateFromString:str];
+//            
+//            NSDate *tomorrow = [cal dateByAddingUnit:NSCalendarUnitDay
+//                                               value:1
+//                                              toDate:date
+//                                             options:0];
+//            NSDateFormatter *df = [[NSDateFormatter alloc]init];
+//            [df setDateFormat:@"dd MMM yyyy"];
+//            NSString *strm = [df stringFromDate:tomorrow];
+//            NSDate *final = [df dateFromString:strm];
+//            [arry_with_Dates addObject:final];
+//            
+//            
+//            //[arry_with_Dates addObject:[dateFormat dateFromString:[date_Arr objectAtIndex:i]]];
+//            NSLog(@"%@",arry_with_Dates);
+//            
+//       // }
+//        
+//    }
+//    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"self"
+//                                                               ascending:NO];
+//    NSArray *descriptors = [NSArray arrayWithObject:descriptor];
+//    NSArray *reverseOrder = [arry_with_Dates sortedArrayUsingDescriptors:descriptors];
+//    NSLog(@"Date Array is :::%@",reverseOrder);
+//    NSDate *endDate = [reverseOrder firstObject];
+//    //[dateFormat dateFromString:[reverseOrder firstObject]];
+//    NSLog(@"%@",[reverseOrder lastObject]);
+//    
+//    [self.dayPicker setStartDate:[reverseOrder lastObject] endDate:endDate];
+//    
+//    NSDate *yesterDay = [cal dateByAddingUnit:NSCalendarUnitDay
+//                                        value:-1
+//                                       toDate:[reverseOrder lastObject]
+//                                      options:0];
+//    dateString = [dateFormat stringFromDate:yesterDay];
+//    NSLog(@"Tickets available from%@",[reverseOrder lastObject]);
+//   
+//    [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
+//    [[NSUserDefaults standardUserDefaults] synchronize];
+//
     date_Arr = [[NSMutableArray alloc]init];
     detail_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"];
     NSLog(@"%@",detail_dict);
@@ -179,11 +336,22 @@
                                        toDate:[reverseOrder lastObject]
                                       options:0];
     dateString = [dateFormat stringFromDate:yesterDay];
+    
     NSLog(@"Tickets available from%@",[reverseOrder lastObject]);
-   
+    NSArray *arr = [dateString componentsSeparatedByString:@"/"];
+    
+    
+    [self.dayPicker setCurrentDate:[NSDate dateFromDay:[[arr objectAtIndex:1] intValue] month:[[arr objectAtIndex:0]intValue] year:[[arr objectAtIndex:2]intValue]] animated:NO];
+    
+//    NSString *temp_s = [arr componentsJoinedByString:@"/"];
+//    NSDateFormatter *df = [[NSDateFormatter alloc]init];
+//    [df setDateFormat:@"MM/dd/yyyy"];
+//    NSDate *dat = [df dateFromString:temp_s];
+//    [df setDateFormat:@"yyyy-MM-dd"];
+//    NSString *strt = [df stringFromDate:dat];
+
     [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-
 
     
 }
@@ -203,7 +371,17 @@
     @try
     {
         NSArray *temp_ar = [detail_dict valueForKey:@"Theatre"];
-        for(int i = 0;i<temp_ar.count;i++)
+        NSInteger count;
+        if([temp_ar isKindOfClass:[NSDictionary class]])
+        {
+            count = 1;
+            
+        }
+        else
+        {
+            count = temp_ar.count;
+        }
+        for(int i = 0;i<count;i++)
         {
             
             att = [[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"] ;
@@ -216,6 +394,8 @@
                 {
                     [dict_time addObject:@{@"english":[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"],@"arabic":[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i]valueForKey:@"_arabicname"]}];
                     [temp_arr addObject:@{@"theatre":[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"],@"shows":[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i]valueForKey:@"ShowDates"]valueForKey:@"showDate"]valueForKey:@"ShowTimes"] valueForKey:@"showTime"]}];
+                   
+
                    
                 }
                 
@@ -235,6 +415,7 @@
 
 
                     [temp_arr addObject:@{@"theatre":[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"_name"],@"shows":[[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i]valueForKey:@"ShowDates"]valueForKey:@"showDate"]objectAtIndex:j] valueForKey:@"ShowTimes"] valueForKey:@"showTime"]}];
+                   
                    
                 }
                 }
@@ -261,7 +442,7 @@
         if([att isKindOfClass:[NSDictionary class]])
         {
 
-            if([[[[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"ShowDates"]valueForKey:@"showDate"]  valueForKey:@"_Date"] isEqualToString:dateString])
+            if([[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"]valueForKey:@"showDate"]  valueForKey:@"_Date"] isEqualToString:dateString])
 
             {
                 [dict_time addObject:@{@"english":[[detail_dict valueForKey:@"Theatre"]  valueForKey:@"_name"],@"arabic":[[detail_dict valueForKey:@"Theatre"] valueForKey:@"_arabicname"]}];
@@ -346,16 +527,18 @@
     
     [self.Scroll_contents addSubview:_VW_about_movie];
     
+      [_tbl_timings reloadData];
+    
     frameset = self.tbl_timings.frame;
     frameset.size.height =  _tbl_timings.contentSize.height;
     self.tbl_timings.frame = frameset;
     
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = CGRectMake(_VW_timings.frame.origin.x, _VW_timings.frame.origin.y, [UIScreen mainScreen].bounds.size.width, _tbl_timings.contentSize.height+_VW_about_movie.frame.size.height);
-    gradient.colors = @[(id)[UIColor colorWithRed:0.00 green:0.06 blue:0.11 alpha:1.0].CGColor, (id)[UIColor colorWithRed:0.13 green:0.16 blue:0.17 alpha:1.0].CGColor];
-    
-    [_VW_timings.layer insertSublayer:gradient atIndex:0];
-
+//    CAGradientLayer *gradient = [CAGradientLayer layer];
+//    gradient.frame = CGRectMake(_VW_timings.frame.origin.x, _VW_timings.frame.origin.y, [UIScreen mainScreen].bounds.size.width, _tbl_timings.contentSize.height);
+//    gradient.colors = @[(id)[UIColor colorWithRed:0.00 green:0.06 blue:0.11 alpha:1.0].CGColor, (id)[UIColor colorWithRed:0.13 green:0.16 blue:0.17 alpha:1.0].CGColor];
+//    
+//    [_VW_timings.layer insertSublayer:gradient atIndex:0];
+  
     
     frameset = self.VW_timings.frame;
     frameset.origin.y = _VW_about_movie.frame.origin.y + _VW_about_movie.frame.size.height;
@@ -640,6 +823,9 @@
 - (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day
 {
     dateString = [dateFormat stringFromDate:day.date];
+    [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
     [self getResponse_detail];
     [self set_UP_VIEW];
      NSLog(@"Did select day %@",dateString);
@@ -807,8 +993,8 @@
             
             [[NSUserDefaults standardUserDefaults] setValue:[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] valueForKey:@"_id"] forKey:@"movie_id"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"movie_date"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+//            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"movie_date"];
+//            [[NSUserDefaults standardUserDefaults] synchronize];
 
             [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
             [[NSUserDefaults standardUserDefaults] synchronize];
@@ -846,8 +1032,8 @@
             NSLog(@"Selected Time Detail %@",[[[ARR_temp objectAtIndex:collectionView.tag]  valueForKey:@"shows"]objectAtIndex:indexPath.row]);
             [[NSUserDefaults standardUserDefaults] setValue:[[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"]objectAtIndex:indexPath.row] valueForKey:@"_id"] forKey:@"movie_id"];
              [[NSUserDefaults standardUserDefaults] synchronize];
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"movie_date"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+//            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"movie_date"];
+//            [[NSUserDefaults standardUserDefaults] synchronize];
 
             [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
             [[NSUserDefaults standardUserDefaults] synchronize];

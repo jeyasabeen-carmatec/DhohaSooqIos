@@ -21,8 +21,14 @@
 
 @property(nonatomic,weak) IBOutlet UIButton *BTN_sign_up;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sign_up;
-
 @property (weak, nonatomic) IBOutlet UIButton *BTN_skip;
+
+
+
+
+
+
+
 
 
 

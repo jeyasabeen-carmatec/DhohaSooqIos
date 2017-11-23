@@ -102,7 +102,7 @@ arr_product = [[NSMutableArray alloc]init];
         temp_dict = [arr_product objectAtIndex:indexPath.row];
     
          NSString *address= [temp_dict valueForKey:@"location"];
-         address = [address stringByReplacingOccurrencesOfString:@" " withString:@"NotMentioned"];
+         address = [address stringByReplacingOccurrencesOfString:@"    " withString:@"NotMentioned"];
          cell.LBL_loction.text = address;
     
          NSString *str_phone =[temp_dict valueForKey:@"phone"];
@@ -145,6 +145,10 @@ arr_product = [[NSMutableArray alloc]init];
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     return UITableViewAutomaticDimension;
+}
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self performSegueWithIdentifier:@"merchant_detail_segue" sender:self];
 }
 
 - (IBAction)back_action:(id)sender {
