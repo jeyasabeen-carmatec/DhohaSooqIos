@@ -1343,11 +1343,41 @@
 
 - (IBAction)cart_action:(id)sender
 {
+    
+    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    
+    if (user_id == nil) {
+        
+        user_id =0;
+        [HttpClient createaAlertWithMsg:@"Please Login" andTitle:@""];
+        //product_list_login
+        
+        [self performSegueWithIdentifier:@"VC_home_to_login" sender:self];
+        
+    }
+    else{
+
     [self performSegueWithIdentifier:@"home_to_cart" sender:self];
+    }
 }
 - (IBAction)wish_list_Action:(id)sender
 {
+    
+    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    
+    if (user_id == nil) {
+        
+        user_id =0;
+        [HttpClient createaAlertWithMsg:@"Please Login" andTitle:@""];
+        //product_list_login
+        
+        [self performSegueWithIdentifier:@"VC_home_to_login" sender:self];
+        
+    }
+    else{
+
     [self performSegueWithIdentifier:@"wishlist_segue" sender:self];
+    }
     
 }
 
@@ -1668,6 +1698,8 @@
     }
     
 }
+#pragma mark brands_API_call
+
 -(void)brands_API_call
 {
     
@@ -1710,7 +1742,7 @@
 }
 
 
-#pragma ShopHome_api_integration Method Calling
+#pragma mark ShopHome_api_integration Method Calling
 
 -(void)API_call_total
 {

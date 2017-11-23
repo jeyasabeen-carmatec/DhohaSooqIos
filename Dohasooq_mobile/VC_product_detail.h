@@ -36,17 +36,11 @@
 //third view
 @property(nonatomic,weak) IBOutlet UIView *VW_third;
 @property(nonatomic,weak) IBOutlet UITextField *TXT_count;
-@property (weak, nonatomic) IBOutlet UICollectionView *collectionview_size;
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionview_variants;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_minus;
-@property (weak, nonatomic) IBOutlet UICollectionView *collectionView_color;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_plus;
-@property(nonatomic,weak) IBOutlet UIButton *BTN_s;
-@property(nonatomic,weak) IBOutlet UIButton *BTN_m;
-@property(nonatomic,weak) IBOutlet UIButton *BTN_xL;
-@property(nonatomic,weak) IBOutlet UIButton *BTN_XXL;
-@property(nonatomic,weak) IBOutlet UIButton *BTN_S_color;
-@property(nonatomic,weak) IBOutlet UIButton *BTN_M_color;
-@property(nonatomic,weak) IBOutlet UIButton *BTN_XL_color;
+@property (nonatomic, strong) UIPickerView *variant_picker;
+
 
 
 //fourth view
@@ -55,15 +49,19 @@
 
 //fifth_view
 @property(nonatomic,retain) IBOutlet UIView *VW_fifth;
-@property(nonatomic,weak) IBOutlet UILabel *LBL_description;
-@property(nonatomic,weak) IBOutlet UIWebView *TXTVW_description;
+@property(nonatomic,weak) IBOutlet UITextView *TXTVW_description;
 
 @property(nonatomic,weak) IBOutlet UIView *VW_filter;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_cart;
+@property(nonatomic,weak) IBOutlet UITableView *TBL_reviews;
 
 //- (IBAction)productdetail_to_cartPage:(id)sender;
 //- (IBAction)productDetail_to_wishPage:(id)sender;
+- (IBAction)order_to_cartPage:(id)sender;
+- (IBAction)order_to_wishListPage:(id)sender;
 
+- (IBAction)add_to_wih_list:(id)sender;
+- (IBAction)product_detail_cart_page:(id)sender;
 
 //@property(nonatomic,weak) IBOutlet UILabel *LBL_review;
 

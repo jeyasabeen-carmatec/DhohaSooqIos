@@ -51,6 +51,9 @@
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     self.navigationController.navigationBar.tintColor = [UIColor clearColor];
+    self.navigationItem.hidesBackButton = YES;
+    
+
 
     _VW_fields.center = self.view.center;
     
@@ -94,13 +97,6 @@
         }
         
 
-        
-        
-        
-        
-        
-        
-        
         NSRange cmp = [text rangeOfString:sign_UP];
         
         if(result.height <= 480)
@@ -147,6 +143,8 @@
     
     _TXT_username.text = @"karuna@carmatec.in";
     _TXT_password.text = @"qazplm123";
+    
+    [_BTN_skip addTarget:self action:@selector(skip_action:) forControlEvents:UIControlEventTouchUpInside];
    
     
     
@@ -192,6 +190,38 @@
 -(void)sign_up_action
 {
     [self performSegueWithIdentifier:@"sign_up_segue" sender:self];
+}
+-(void)skip_action:(UIButton*)sender{
+    /*
+     detail =     {
+     "customer_id" = 2;
+     firstname = karuna;
+     id = 27;
+     lastname = ravi;
+     phone = 534543543;
+     "profile_pic" = "/dohasooq/uploads/customers/";
+     };
+     */
+
+    NSDictionary *parameters = @{
+                                 @"customer_id": @"",
+                                 @"firstname": @"",
+                                 @"id":@"",
+                                 @"lastname":@"",
+                                 @"phone":@"",
+                                 @"profile_pic":@""
+                                 };
+    
+    NSDictionary *user_detail = @{@"detail":parameters};
+    [[NSUserDefaults standardUserDefaults]setObject:user_detail forKey:@"userdata"];
+    
+    NSDictionary *dic = [[NSUserDefaults standardUserDefaults]valueForKey:@"userdata"];
+    NSLog(@"%@",dic);
+    NSLog(@"%@",[dic valueForKey:@"id"]);
+    
+    //NSLog(@"%@",user_detail);
+                                  
+    [self performSegueWithIdentifier:@"logint_to_home" sender:self];
 }
 -(void)login_home
 {
@@ -347,7 +377,9 @@
             
                         [[NSUserDefaults standardUserDefaults] setObject:json_DATA forKey:@"menu_detail"];
                         [[NSUserDefaults standardUserDefaults] synchronize];
+            
                         [self performSegueWithIdentifier:@"logint_to_home" sender:self];
+            
                         NSLog(@"the api_collection_product%@",json_DATA);
             [activityIndicatorView stopAnimating];
             VW_overlay.hidden = YES;

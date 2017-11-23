@@ -229,7 +229,7 @@
         
         cell.BTN_close .userInteractionEnabled = YES;
         
-       tapGesture1 = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tapGesture_close)];
+    tapGesture1 = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tapGesture_close:)];
         
         tapGesture1.numberOfTapsRequired = 1;
         
@@ -238,7 +238,7 @@
         [cell.BTN_close addGestureRecognizer:tapGesture1];
     
  
-        [cell.Btn_add_cart addTarget:self action:@selector(btn_add_cart_action:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.Btn_add_cart addTarget:self action:@selector(btn_add_to_cart_action:) forControlEvents:UIControlEventTouchUpInside];
         [cell.BTN_plus addTarget:self action:@selector(plus_action:) forControlEvents:UIControlEventTouchUpInside];
         [cell.BTN_minus addTarget:self action:@selector(minus_action:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -292,22 +292,29 @@
 
 
     }
-    [self performSegueWithIdentifier:@"wish_product_detail" sender:self];
+    [self performSegueWithIdentifier:@"wish_to_product_detail" sender:self];
 }
 
 
 #pragma button_actions
--(void)btnfav_action
-{
-    NSLog(@"fav_clicked");
+
+
+-(void)btn_add_to_cart_action:(UIButton*)btn{
+    
+    [[NSUserDefaults standardUserDefaults]setObject:[[response_Arr objectAtIndex:btn.tag] valueForKey:@"product_price"] forKey:@"item_count"];
+    [self add_to_cart_API_calling];
+    
 }
+
 -(void)btn_cart_action:(UIBarButtonItem *)btn
 {
+    [self performSegueWithIdentifier:@"wish_to_cart" sender:self];
+
     NSLog(@"cart_clicked");
 }
--(void)tapGesture_close
+-(void)tapGesture_close:(UITapGestureRecognizer *)tapgstr
 {
-    CGPoint location = [tapGesture1 locationInView:_TBL_wish_list_items];
+    CGPoint location = [tapgstr locationInView:_TBL_wish_list_items];
     NSIndexPath *indexPath = [_TBL_wish_list_items indexPathForRowAtPoint:location];
     NSString *product_id = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.row] valueForKey:@"id"]];
     
@@ -321,14 +328,15 @@
     wish_list_cell *cell = (wish_list_cell *)[self.TBL_wish_list_items cellForRowAtIndexPath:index];
     product_count = [cell._TXT_count.text integerValue];
     if (product_count<= 0) {
-        [btn removeTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+       // [btn removeTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+        product_count = 0;
     }
     else{
         product_count = product_count-1;
         cell._TXT_count.text = [NSString stringWithFormat:@"%ld",product_count];
-        [self.TBL_wish_list_items reloadData];
-    }
-   
+           }
+    [[NSUserDefaults standardUserDefaults]setObject:[[response_Arr objectAtIndex:index.row] valueForKey:@"id"] forKey:@"product_id"];
+    [self updating_cart_List_api];
 }
 -(void)plus_action:(UIButton*)btn
 {
@@ -337,8 +345,8 @@
     product_count = [cell._TXT_count.text integerValue];
     product_count = product_count+1;
     cell._TXT_count.text = [NSString stringWithFormat:@"%ld",product_count];
-    [self.TBL_wish_list_items reloadData];
-    
+    [[NSUserDefaults standardUserDefaults]setObject:[[response_Arr objectAtIndex:index.row] valueForKey:@"id"] forKey:@"product_id"];
+    [self updating_cart_List_api];
     
 }
 - (IBAction)back_action_clicked:(id)sender {
@@ -391,7 +399,8 @@
         NSLog(@"%@",exception);
     }
 }
-#pragma add_to_cart_API_calling
+
+#pragma mark add_to_cart_API_calling
 
 -(void)add_to_cart_API_calling{
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
@@ -466,7 +475,7 @@
     }];
 }
 
-#pragma delete_from_wishList_API_calling
+#pragma mark delete_from_wishList_API_calling
 
 -(void)delete_from_wishLis{
     
@@ -479,13 +488,13 @@ http://192.168.0.171/dohasooq/apis/delFromWishList/1/24.json
     User_Id = 24
 
 */
-    
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *user_ID = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
-    
+       
     NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/delFromWishList/%@/%@.json",SERVER_URL,[[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"],user_ID];
     
     urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    NSLog(@"....%@",urlGetuser);
     @try {
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -493,14 +502,13 @@ http://192.168.0.171/dohasooq/apis/delFromWishList/1/24.json
                     NSLog(@"%@",[error localizedDescription]);
                 }
                 if (data) {
-                    NSLog(@"%@",data);
-                    
-                    
+                    NSLog(@"data:::%@",data);
                     @try {
-                        [HttpClient createaAlertWithMsg:[data valueForKey:@"message"] andTitle:@""];
                         
+                        [HttpClient createaAlertWithMsg:[data valueForKey:@"msg"] andTitle:@""];
                         [self performSelector:@selector(wish_list_api_calling) withObject:nil afterDelay:0.01];
-                    } @catch (NSException *exception) {
+                    }
+                    @catch (NSException *exception) {
                         NSLog(@"%@",exception);
                         
                     }
@@ -529,10 +537,55 @@ http://192.168.0.171/dohasooq/apis/delFromWishList/1/24.json
 - (IBAction)wishList_to_cartPage:(id)sender {
     [self performSegueWithIdentifier:@"wish_to_cart" sender:self];
 }
--(void)btn_add_cart_action:(UIButton*)cart_btn{
-    [self performSelector:@selector(add_to_cart_API_calling) withObject:nil afterDelay:0.01];
+#pragma mark updating_cart_API
+/*
+ Update cart
+ apis/updatecartapi.json
+ Parameters :
+ 
+ quantity,
+ productId,
+ customerId
+ 
+ Method : POST
+ */
 
+-(void)updating_cart_List_api{
+    
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+    
+    NSDictionary *parameters = @{@"quantity":[[NSUserDefaults standardUserDefaults] valueForKey:@"item_count"],@"productId":[[NSUserDefaults standardUserDefaults]valueForKey:@"product_id"],@"customerId":custmr_id};
+    NSLog(@"%@",parameters);
+    
+    NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/updatecartapi.json",SERVER_URL];
+    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    
+    
+    [HttpClient api_with_post_params:urlGetuser andParams:parameters completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                NSLog(@"%@",[error localizedDescription]);
+            }
+            if (data) {
+                //NSLog(@"%@",data);
+                
+                
+                @try {
+                    [HttpClient createaAlertWithMsg:[data valueForKey:@"message"] andTitle:@""];
+                } @catch (NSException *exception) {
+                    NSLog(@"exception:: %@",exception);
+                }
+                
+                
+            }
+            
+        });
+        
+    }];
 }
+
+
 
 @end
 

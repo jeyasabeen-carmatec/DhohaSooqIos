@@ -2552,18 +2552,47 @@
 }
 #pragma Buton action
 
-- (IBAction)cart_action:(id)sender
-{
-    [self performSegueWithIdentifier:@"homeQtkt_to_cart" sender:self];
-}
+//- (IBAction)cart_action:(id)sender
+//{
+//    [self performSegueWithIdentifier:@"homeQtkt_to_cart" sender:self];
+//    
+//}
 - (IBAction)wish_list_Action:(id)sender
 {
+    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    
+    if (user_id == nil) {
+        
+        user_id =0;
+        [HttpClient createaAlertWithMsg:@"Please Login" andTitle:@""];
+        //homeQtkt_to_login
+        [self performSegueWithIdentifier:@"homeQtkt_to_login" sender:self];
+        
+    }
+    else{
+        
     [self performSegueWithIdentifier:@"HomeQ_to_wishList" sender:self];
+    }
     
 }
 
 - (IBAction)QTickets_Home_to_CartPage:(id)sender {
-    [self performSegueWithIdentifier:@"homeQtkt_to_cart" sender:self];
+    
+    
+    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    
+    if (user_id == nil) {
+        
+        user_id =0;
+        [HttpClient createaAlertWithMsg:@"Please Login" andTitle:@""];
+        //homeQtkt_to_login
+        
+        [self performSegueWithIdentifier:@"homeQtkt_to_login" sender:self];
+        
+    }
+    else{
+        [self performSegueWithIdentifier:@"homeQtkt_to_cart" sender:self];
+    }
 }
 
 -(void)BTN_movies_right_action
