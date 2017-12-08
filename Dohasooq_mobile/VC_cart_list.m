@@ -31,8 +31,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
        [self set_UP_VIEW];
-    UINib *nib = [UINib nibWithNibName:@"Cart_cell" bundle:nil];
-    [_TBL_cart_items registerNib:nib forCellReuseIdentifier:@"Cart_cell"];
     [self.BTN_clear_cart addTarget:self action:@selector(clear_cart_action:) forControlEvents:UIControlEventTouchUpInside];
     
    }
@@ -141,9 +139,15 @@
 //    {
 //        _LBL_price.text = text;
 //    }
-        NSString *next = @"";
+    NSString *next = @"";
+    
     NSString *next_text = [NSString stringWithFormat:@"NEXT %@",next];
-    if ([_LBL_next respondsToSelector:@selector(setAttributedText:)]) {
+    
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        next  = @"";
+        next_text = [NSString stringWithFormat:@"%@ NEXT",next];
+    }    if ([_LBL_next respondsToSelector:@selector(setAttributedText:)]) {
         
         // Define general attributes for the entire text
         NSDictionary *attribs = @{
@@ -211,15 +215,30 @@
     
     if(indexPath.section == 0)
     {
-        Cart_cell *cell = (Cart_cell *)[tableView dequeueReusableCellWithIdentifier:@"Cart_cell"];
-
-
-    if (cell == nil)
-    {
-        NSArray *nib;
-        nib = [[NSBundle mainBundle] loadNibNamed:@"Cart_cell" owner:self options:nil];
-        cell = [nib objectAtIndex:0];
-   }
+        NSString *identifier;
+        NSInteger index;
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            
+            identifier = @"QCart_cell";
+            index = 1;
+            
+        }
+        else{
+            identifier = @"Cart_cell";
+            index = 0;
+            
+            
+        }
+        Cart_cell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+        
+        if (cell == nil)
+        {
+            NSArray *nib;
+            nib = [[NSBundle mainBundle] loadNibNamed:@"Cart_cell" owner:self options:nil];
+            cell = [nib objectAtIndex:index];
+        }
     
       
         cell.LBL_item_name.text = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"pname"]];
@@ -232,7 +251,7 @@
         
         NSString *prec_price = [NSString stringWithFormat:@"%@", [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"product_price"]];
         
-        NSString *text = [NSString stringWithFormat:@"QR %@   %@",current_price,prec_price];
+        NSString *text = [NSString stringWithFormat:@"QR %@ QR%@",current_price,prec_price];
         
         
             if ([cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
@@ -275,16 +294,16 @@
                 //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
                 if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor]}
                                             range:cmp];
                 }
                 else
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:13.0],NSForegroundColorAttributeName:[UIColor grayColor],}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:13.0],NSForegroundColorAttributeName:[UIColor blackColor],}
                                             range:cmp ];
                 }
                 @try {
-                    [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(current_price.length+6, [prec_price length])];
+                    [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(current_price.length+4, [prec_price length]+2)];
                 } @catch (NSException *exception) {
                     NSLog(@"%@",exception);
                 }
@@ -305,18 +324,20 @@
                 cell.LBL_current_price.text = text;
             }
             
-       
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            cell.LBL_current_price.textAlignment = NSTextAlignmentRight;
+        }
 
     //cell.LBL_discount.text = [temp_dict valueForKey:@"key4"];
     
-    
-//    UIImage *newImage = [cell.BTN_close.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-//    UIGraphicsBeginImageContextWithOptions(cell.BTN_close.image.size, NO, newImage.scale);
+//    UIImage *newImage = [cell.BTN_close.currentBackgroundImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+//    UIGraphicsBeginImageContextWithOptions(cell.BTN_close.currentBackgroundImage.size, NO, newImage.scale);
 //    [[UIColor darkGrayColor] set];
-//    [newImage drawInRect:CGRectMake(0, 0, cell.BTN_close.image.size.width/2, newImage.size.height/2)];
+//    [newImage drawInRect:CGRectMake(0, 0, cell.BTN_close.currentBackgroundImage.size.width/2, newImage.size.height/2)];
 //    newImage = UIGraphicsGetImageFromCurrentImageContext();
 //    UIGraphicsEndImageContext();
-//    cell.BTN_close.image = newImage;
+    //cell.BTN_close.image = newImage;
     
    // cell.BTN_close .userInteractionEnabled = YES;
     
@@ -327,7 +348,9 @@
 //    [tapGesture1 setDelegate:self];
 //    
 //    [cell.BTN_close addGestureRecognizer:tapGesture1];
-        [cell.BTN_close addTarget:self action:@selector(remove_from_cart:) forControlEvents:UIControlEventTouchUpInside];
+//        [cell.BTN_close addTarget:self action:@selector(remove_from_cart:) forControlEvents:UIControlEventTouchUpInside];
+//        [cell.BTN_close setBackgroundImage:newImage forState:UIControlStateNormal];
+//
         
     
     [cell.BTN_plus addTarget:self action:@selector(plus_action:) forControlEvents:UIControlEventTouchUpInside];
@@ -344,19 +367,38 @@
     cell.BTN_plus.layer.borderColor = [UIColor grayColor].CGColor;
     cell.BTN_minus.layer.borderWidth = 0.4f;
     cell.BTN_minus.layer.borderColor = [UIColor grayColor].CGColor;
+        
      return cell;
+        
+        
     }
     else
     {
-        tbl_amount *cell = (tbl_amount *)[tableView dequeueReusableCellWithIdentifier:@""];
-
+        //QTbl_amount
+        NSString *identifier;
+        NSInteger index;
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            
+            identifier = @"Qtbl_amount";
+            index = 1;
+            
+        }
+        else{
+            identifier = @"tbl_amount";
+            index = 0;
+            
+            
+        }
+        tbl_amount *cell = (tbl_amount *)[tableView dequeueReusableCellWithIdentifier:identifier];
         if (cell == nil)
         {
             NSArray *nib;
             nib = [[NSBundle mainBundle] loadNibNamed:@"tbl_amount" owner:self options:nil];
-            cell = [nib objectAtIndex:0];
+            cell = [nib objectAtIndex:index];
         }
-        
+    
         cell.redempion_lbl.hidden = YES;
         cell.redemption_amt.hidden = YES;
         
@@ -370,7 +412,7 @@
             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
                                     range:[text rangeOfString:total_amt]];
             
-            cell.LBL_amount.attributedText = attributedText;
+            cell.LBL_amount.text = text;
             cell.LBL_total_amount.attributedText = attributedText;
         }
         else{
@@ -415,6 +457,7 @@
                                         range:cmp ];
             }
 
+            cell.LBL_amount.text = text;
             cell.LBL_total_amount.attributedText = attributedText;
         }
         else
@@ -585,13 +628,24 @@ params.put("customerId",customerid);
             json_dict = [NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             @try {
                 [self custom_text_view_price_details];
-                NSArray *allkeysArr = [[json_dict valueForKey:@"data"] allKeys];
-                for (int i = 0; i<allkeysArr.count; i++) {
-                    [cart_array addObject:[[json_dict valueForKey:@"data"] valueForKey:[allkeysArr objectAtIndex:i]]];
+                
+                
+                if ([json_dict isKindOfClass:[NSDictionary class]]) {
+                    NSArray *allkeysArr = [[json_dict valueForKey:@"data"] allKeys];
+                    
+                    for (int i = 0; i<allkeysArr.count; i++) {
+                        
+                        [cart_array addObject:[[json_dict valueForKey:@"data"] valueForKey:[allkeysArr objectAtIndex:i]]];
+                    }
+                    VW_overlay.hidden=YES;
+                    [activityIndicatorView stopAnimating];
+                    [self.TBL_cart_items reloadData];
                 }
-                VW_overlay.hidden=YES;
-                [activityIndicatorView stopAnimating];
-                [self.TBL_cart_items reloadData];
+                else{
+                    [HttpClient createaAlertWithMsg:@"The Data is in Unknown format" andTitle:@""];
+                }
+                
+                
                 
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
@@ -652,8 +706,7 @@ params.put("customerId",customerid);
         [activityIndicatorView stopAnimating];
     }
 }
-#pragma cart_count_api
-
+#pragma mark  cart_count_api
 -(void)cart_count{
     
     NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
@@ -666,15 +719,29 @@ params.put("customerId",customerid);
             NSLog(@"%@",data);
             @try {
                 NSString *badge_value = [NSString stringWithFormat:@"%@",[data valueForKey:@"count"]];
-                //NSString *badge_value = @"11";
-                if(badge_value.length > 2)
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
                     
+                    if(badge_value.length > 2)
+                    {
+                        self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
+                        
+                    }
+                    else{
+                        self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
+                        
+                    }
                 }
                 else{
-                    self.navigationItem.rightBarButtonItem.badgeValue = badge_value ;
-                    
+                    if(badge_value.length > 2)
+                    {
+                        self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
+                        
+                    }
+                    else{
+                        self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
+                        
+                    }
                 }
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
@@ -684,10 +751,10 @@ params.put("customerId",customerid);
     }];
 }
 
-
-
-
 -(void)custom_text_view_price_details{
+    
+    
+    @try {
     NSString *qr = @"QR";
     NSString *price = [NSString stringWithFormat:@"%@",[json_dict valueForKey:@"sub_total"]];
     if ([price isEqualToString:@""]||[price isEqualToString:@"null"]||[price isEqualToString:@"<null>"]) {
@@ -752,7 +819,10 @@ params.put("customerId",customerid);
     {
         _LBL_price.text = text;
     }
-
+        
+    } @catch (NSException *exception) {
+        
+    }
 }
 #pragma delete_from_cart_API_calling
 
@@ -797,7 +867,7 @@ params.put("customerId",customerid);
     }
 
 }
-#pragma updating_cart_API
+#pragma mark updating_cart_API
 /*
  Update cart
  apis/updatecartapi.json
@@ -844,12 +914,7 @@ params.put("customerId",customerid);
     }];
 }
 
-#pragma mark Update quantity in checkout with shipcharges
-/*
- Update quantity in checkout with shipcharges
- Function Name : apis/updateqtycheckoutapi.json
- Parameters :$customerId
- Method : GET*/
+
 
 
 

@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "HoshiTextField.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+
+
 
 
 @interface ViewController : UIViewController
@@ -21,7 +25,10 @@
 
 @property(nonatomic,weak) IBOutlet UIButton *BTN_sign_up;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sign_up;
-@property (weak, nonatomic) IBOutlet UIButton *BTN_skip;
+@property (weak, nonatomic) IBOutlet UIButton  *BTN_facebook;
+@property (weak, nonatomic) IBOutlet UIButton  *BTN_Google_PLUS;
+
+
 
 
 

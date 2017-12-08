@@ -13,15 +13,15 @@
 #import "HttpClient.h"
 
 
-@interface VC_product_List ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate>
+@interface VC_product_List ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
 {
     NSMutableArray *arr_product;
     NSMutableArray *productDataArray;
     CGRect frame;
-    NSString *type_product;
+    NSString *type_product,*sort_key;
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
-    NSMutableDictionary *json_Response_Dic;
+    NSMutableDictionary *json_Response_Dic,*json_DATA,*sort_array;
 
 }
 
@@ -43,8 +43,7 @@
         [self.collection_product registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
     }
     
-    
-    [self set_UP_VW];
+    sort_array = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Best Selling",@"bestSelling",@"New Listed",@"newListed",@"high To Low",@"highToLow",@"Low To High",@"lowToHigh",@"Discount",@"discount", nil];
     
    
 }
@@ -65,6 +64,7 @@
     [self.view addSubview:VW_overlay];
     VW_overlay.hidden = YES;
     
+   
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
     
@@ -76,7 +76,8 @@
 -(void)set_UP_VW
 {
     
-   
+   VC_filter_product_list  *prod_list = [self.storyboard instantiateViewControllerWithIdentifier:@"filetr_view"];
+    prod_list.delegate =  self;
     
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTitleTextAttributes:
@@ -92,7 +93,6 @@
     
     //arr_product = [[NSMutableArray alloc]init];
     /**/
-    productDataArray = [[NSMutableArray alloc]init];
     
     
     NSString *badge_value = @"25";
@@ -107,7 +107,7 @@
         
     }
     
-    NSString *prodct_count = [NSString stringWithFormat:@"0"];
+    NSString *prodct_count = [NSString stringWithFormat:@"%lu",(unsigned long)[productDataArray count]];
     NSString *products = @"PRODUCTS";
     NSString *text = [NSString stringWithFormat:@"%@ %@",prodct_count,products];
     @try
@@ -159,7 +159,22 @@
     {
         NSLog(@"%@",exception);
     }
+    _sort_pickers = [[UIPickerView alloc] init];
+    _sort_pickers.delegate = self;
+    _sort_pickers.dataSource = self;
+    UIToolbar* conutry_close = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
+    conutry_close.barStyle = UIBarStyleBlackTranslucent;
+    [conutry_close sizeToFit];
     
+    UIButton *close=[[UIButton alloc]init];
+    close.frame=CGRectMake(conutry_close.frame.size.width - 100, 0, 100, conutry_close.frame.size.height);
+    [close setTitle:@"Done" forState:UIControlStateNormal];
+    [close addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
+    [conutry_close addSubview:close];
+    _BTN_sort.inputAccessoryView=conutry_close;
+    self.BTN_sort.inputView = _sort_pickers;
+    _BTN_sort.tintColor=[UIColor clearColor];
+
     
 //    [_BTN_filter addTarget:self action:@selector(contact_us_action) forControlEvents:UIControlEventTouchUpInside];
 //    [_BTN_add_cart addTarget:self action:@selector(add_cart_animation) forControlEvents:UIControlEventTouchUpInside];
@@ -176,16 +191,27 @@
 }
 - (IBAction)back_action:(id)sender
 {
-    //[self dismissViewControllerAnimated:NO completion:nil] ;
-  //  [self.navigationController popToRootViewControllerAnimated:YES];product_list_home
+       @try
+    {
     [self performSegueWithIdentifier:@"product_list_home" sender:self];
+
+    }
+    @catch(NSException *exception)
+    {
+
+    [self.navigationController popViewControllerAnimated:NO];
+
+    }
+    @finally
+    {
+    [self dismissViewControllerAnimated:NO completion:nil] ;
+
+    }
 
 }
 
 - (IBAction)wish_list_action:(UIBarButtonItem *)sender
 {
-    
-    
      [self performSegueWithIdentifier:@"productList_to_wishList" sender:self];
     
 }
@@ -194,15 +220,8 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-  
-//   if([type_product isEqualToString:@"hot_deals"] || [type_product isEqualToString:@"best_deals"])
-//    {
-//    return [[productDataArray objectAtIndex:0] count];
-//             
-//     }
-//    
-        return productDataArray.count;
-    }
+    return productDataArray.count;
+}
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -210,75 +229,6 @@
     product_cell *pro_cell = (product_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_product" forIndexPath:indexPath];
     @try
     {
-//    if([type_product isEqualToString:@"hot_deals"] || [type_product isEqualToString:@"best_deals"])
-//    {
-//        NSString *img_url = [NSString stringWithFormat:@"%@%@",IMG_URL,[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_image"]];
-//        [pro_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:img_url]
-//                             placeholderImage:[UIImage imageNamed:@"logo.png"]
-//                                      options:SDWebImageRefreshCached];
-//        
-//        
-//        pro_cell.LBL_item_name.text = [[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"ProductDescriptions"] valueForKey:@"title"];
-//        pro_cell.LBL_rating.text = [NSString stringWithFormat:@"%@  ",[[[productDataArray objectAtIndex:indexPath.row]valueForKey:@"product_reviews"]valueForKey:@"rating"]];
-//        pro_cell.LBL_current_price.text = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
-//        NSString *current_price = [NSString stringWithFormat:@"QR %@", [[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
-//        NSString *prec_price = [NSString stringWithFormat:@"QR %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
-//        NSString *text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
-//        
-//        if ([pro_cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
-//            
-//            // Define general attributes for the entire text
-//            NSDictionary *attribs = @{
-//                                      NSForegroundColorAttributeName:pro_cell.LBL_current_price.textColor,
-//                                      NSFontAttributeName:pro_cell.LBL_current_price.font
-//                                      };
-//            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
-//            
-//            
-//            
-//            NSRange ename = [text rangeOfString:current_price];
-//            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-//            {
-//                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-//                                        range:ename];
-//            }
-//            else
-//            {
-//                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0]}
-//                                        range:ename];
-//            }
-//            
-//            NSRange cmp = [text rangeOfString:prec_price];
-//            //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
-//            
-//            
-//            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-//            {
-//                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0],NSForegroundColorAttributeName:[UIColor grayColor]}
-//                                        range:cmp];
-//            }
-//            else
-//            {
-//                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:14.0],NSStrikethroughStyleAttributeName:@(NSUnderlineStyleThick),NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
-//            }
-//            pro_cell.LBL_current_price.attributedText = attributedText;
-//            
-//        }
-//        else
-//        {
-//            pro_cell.LBL_current_price.text = text;
-//        }
-//        int  n = [[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] intValue]-[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"] intValue];
-//        float discount = (n*100)/[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] intValue];
-//        NSString *str = @"% off";
-//
-//        pro_cell.LBL_discount.text =[NSString stringWithFormat:@"%.0f%@",discount,str];
-//
-//      return pro_cell;
-   // }
-
-//    else
-//    {
      #pragma Webimage URl Cachee
     
     NSString *img_url = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_image"]];
@@ -289,6 +239,25 @@
     
     pro_cell.LBL_item_name.text = [[productDataArray objectAtIndex:indexPath.row] valueForKey:@"title"];
            pro_cell.LBL_rating.text = [NSString stringWithFormat:@"%@  ",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"rating"]];
+        int rating = [[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"rating"] intValue];
+        if(rating <= 1)
+        {
+            pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.92 green:0.39 blue:0.25 alpha:1.0];
+        }
+        else if(rating <= 2)
+        {
+            pro_cell.LBL_rating.backgroundColor =[UIColor colorWithRed:0.96 green:0.69 blue:0.24 alpha:1.0];
+        }
+        else if(rating <= 3)
+        {
+            pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.19 green:0.56 blue:0.78 alpha:1.0];
+        }
+        else
+        {
+            pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.25 green:0.80 blue:0.51 alpha:1.0];
+        }
+        
+
     pro_cell.LBL_current_price.text = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
     
     NSString *current_price = [NSString stringWithFormat:@"QR %@", [[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
@@ -313,7 +282,7 @@
                    [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
             //NSParagraphStyleAttributeName
                 pro_cell.LBL_current_price.attributedText = attributedText;
-                 pro_cell.LBL_discount.text = @"0% off";
+            
                 
                 
             }
@@ -373,10 +342,13 @@
     [pro_cell.BTN_fav setTag:indexPath.row];//wishListStatus
         
         if ([[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"wishListStatus"] isEqualToString:@"Yes"]) {
-            
+            [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
+
             [pro_cell.BTN_fav setTitleColor:[UIColor colorWithRed:244.f/255.f green:176.f/255.f blue:77.f/255.f alpha:1] forState:UIControlStateNormal];
         }
         else{
+            [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
+
             [pro_cell.BTN_fav setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         }
         
@@ -411,8 +383,32 @@
 }
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSString *temp_str = [[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_image"];
+    NSRange range = [temp_str rangeOfString:@"/Merchant"];
+    
+    if (range.location == NSNotFound) {
+        NSLog(@"The string (testString) does not contain 'how are you doing' as a substring");
+    }
+    else {
+        NSLog(@"Found the range of the substring at (%lu, %lu)", (unsigned long)range.location, range.location + range.length);
+    }
+    NSString *lastChar = [temp_str substringFromIndex:range.location + range.length];
+    char firstLetter = [lastChar characterAtIndex:0];
+    if(!firstLetter)
+    {
+        firstLetter = '0';
+    }
+    
+    NSLog(@"THE iD:%c",firstLetter);
+    
+    
     NSUserDefaults *userDflts = [NSUserDefaults standardUserDefaults];
+    NSString *merchant_ID = [NSString stringWithFormat:@"%c",firstLetter];
     [userDflts setObject:[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"url_key"] forKey:@"product_list_key_sub"];
+    [userDflts setValue:[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"merchant_id"]  forKey:@"Mercahnt_ID"];
+    [userDflts synchronize];
+
+    
    
      [self performSegueWithIdentifier:@"product_list_detail" sender:self];
    
@@ -444,35 +440,17 @@
     // Dispose of any resources that can be recreated.
 }
 #pragma mark Add_to_wishList_API Calling
-
 -(void)Wishlist_add:(UIButton *)sender
 {
     
-    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
-    
-    if (user_id == nil) {
-        
-        user_id =0;
-        [HttpClient createaAlertWithMsg:@"Please Login" andTitle:@""];
-        //homeQtkt_to_login
-        [self performSegueWithIdentifier:@"product_list_login" sender:self];
-        
-    }
-    else{
-    
     @try
     {
-       NSString *product_id = [[productDataArray objectAtIndex:sender.tag] valueForKey:@"id"];
-        [[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];
         
-        if ([[[productDataArray objectAtIndex:sender.tag] valueForKey:@"wishListStatus"] isEqualToString:@"Yes"]) {
-            [self delete_from_wishLis];
-            [self product_list_API];
-        }
-        else{
+        //        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
         
-        
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/addToWishList/%@/%@.json",SERVER_URL,product_id,user_id];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/addToWishList/%@/%@.json",SERVER_URL,[[productDataArray objectAtIndex:sender.tag] valueForKey:@"id"],user_id];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -490,25 +468,29 @@
                         [activityIndicatorView stopAnimating];
                         NSLog(@"The Wishlist %@",json_Response_Dic);
                         
+                        NSIndexPath *index = [NSIndexPath indexPathForRow:sender.tag inSection:0];
+                        product_cell *cell = (product_cell *)[self.collection_product cellForItemAtIndexPath:index];
+                        
+                        
                         @try {
                             if ([[json_Response_Dic valueForKey:@"msg"] isEqualToString:@"add"]) {
                                 
-                                [self product_list_API];
-                                
+                                [cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
 
+                                [cell.BTN_fav setTitleColor:[UIColor colorWithRed:244.f/255.f green:176.f/255.f blue:77.f/255.f alpha:1] forState:UIControlStateNormal];
                                 [HttpClient createaAlertWithMsg:@"Item added successfully" andTitle:@""];
                                 
                                 
                             }
                             else{
                                 
-                                 [self product_list_API];                            }
+                                [cell.BTN_fav setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                            }
                             
 
                         } @catch (NSException *exception) {
                             NSLog(@"%@",exception);
-                              [self product_list_API];
-                           
+                            [cell.BTN_fav setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
                         }
                         
                     }
@@ -530,7 +512,6 @@
             });
         }];
     }
-    }
     @catch(NSException *exception)
     {
         VW_overlay.hidden=YES;
@@ -544,7 +525,6 @@
     
     VW_overlay.hidden=YES;
     [activityIndicatorView stopAnimating];
-    }
     
 
 }
@@ -685,16 +665,15 @@
     
     @try
     {
+        productDataArray = [[NSMutableArray alloc]init];
 
-        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
-        NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-         NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+
+        NSString *list_TYPE = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_list_url"];
+        NSString *urlGetuser;
+        urlGetuser =[NSString stringWithFormat:@"%@",list_TYPE];
+ 
+       
         
-        NSString *url_key = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"product_list_key"]];
-         NSString *discount = [[NSUserDefaults standardUserDefaults]valueForKey:@"discount"];
-        
-        NSString *urlGetuser =[NSString stringWithFormat:@"http://192.168.0.171/dohasooq/apis/productList/%@/%@/%@/%@/%@/Customer.json",url_key,discount,country,languge,user_id];
-         //NSString *urlGetuser = @"http://192.168.0.171/dohasooq/apis/productList/All/0/1/1/27/Customer.json";
         
 
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
@@ -712,27 +691,69 @@
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
                 }
                 if (data) {
-                    NSMutableDictionary *json_DATA = data;
+                  json_DATA = data;
                     if(json_DATA)
                     {
                         @try {
                             VW_overlay.hidden = YES;
                             [activityIndicatorView stopAnimating];
+                            @try
+                            {
+                            if([[json_DATA valueForKey:@"products"] isEqualToString:@""])
+                            {
+                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No products Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                                [alert show];
+                               // [productDataArray removeAllObjects];
+                                [_collection_product reloadData];
+                                [self set_UP_VW];
+                                
+
+                            }
+                            }
+                            @catch(NSException *exception)
+                            {
                             productDataArray = [json_DATA valueForKey:@"products"];
-                            NSLog(@"%@",productDataArray);
+                                //BOOL stat = @"YES";
+                                
+                                if([[json_DATA valueForKey:@"brands"] isKindOfClass:[NSDictionary class]])
+                                {
+                                    [[NSUserDefaults standardUserDefaults]  setObject:[json_DATA valueForKey:@"brands"] forKey:@"brands_LISTs"];
+                                    [[NSUserDefaults standardUserDefaults]synchronize];
+                                    NSLog(@"THE JSON DTA BRADS:%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"brands_LISTs"]);
+                                    
+                                 }
+                                else
+                                {
                             
-                            self.LBL_product_name.text = [NSString stringWithFormat:@"%@ - %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"item_name"],[[NSUserDefaults standardUserDefaults] valueForKey:@"sub_name"]];
-                            NSLog(@"%ld",[productDataArray count]);
-                            self.LBL_product_count.text = [NSString stringWithFormat:@"%lu Products",(unsigned long)[productDataArray count]];
+                                    NSLog(@"THE userdefaults%@",[[json_DATA valueForKey:@"brnads"]allValues]);
+                                    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"brands_LISTs"];
+                                    [[NSUserDefaults standardUserDefaults]synchronize];
+
+                               
+                                }
                             
+
+                                
+                            NSLog(@"THE respons PRODUCT LIST:%@",json_DATA);
                             
-                            //NSLog(@"%@",json_DATA);
-                            //NSLog(@"id for products %@",[[[productDataArray objectAtIndex:0] valueForKey:@"DISTINCT Products"] valueForKey:@"id"]);
-                            
-                            // NSLog(@"%@",productDataArray);
-                            // NSLog(@"URL KEY IS::::%@",[[productDataArray objectAtIndex:0] valueForKey:@"url_key"]);
-                            
+                                @try
+                                {
+                                self.LBL_product_name.text = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"displayName"] objectAtIndex:0] valueForKey:@"name"]];
+                                    
+                                }
+                                @catch(NSException *exception)
+                                {
+                                     self.LBL_product_name.text = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"displayName"]];
+                                }
+                                [[NSUserDefaults standardUserDefaults] setValue:self.LBL_product_name.text forKey:@"search_val"];
+                                  [[NSUserDefaults standardUserDefaults]synchronize];
+                                
+
+                           // }
+                           
                             [self.collection_product reloadData];
+                            [self set_UP_VW];
+                            }
                         } @catch (NSException *exception) {
                             VW_overlay.hidden = YES;
                             [activityIndicatorView stopAnimating];
@@ -761,7 +782,7 @@
 
 }
 
-#pragma mark  cart_count_api
+#pragma cart_count_api
 -(void)cart_count{
     
     NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
@@ -792,72 +813,285 @@
     }];
 }
 
-
-- (IBAction)productList_to_cartPage:(id)sender {
+- (IBAction)filter_action:(id)sender {
     
-    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    [self performSegueWithIdentifier:@"product_list_filter" sender:self];
+}
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
     
-    if (user_id == nil) {
-        
-        user_id =0;
-        [HttpClient createaAlertWithMsg:@"Please Login" andTitle:@""];
-        //homeQtkt_to_login
-        [self performSegueWithIdentifier:@"product_list_login" sender:self];
-        
-    }
-    else{
-    [self performSegueWithIdentifier:@"product_list_cart" sender:self];
-    }
 }
 
-#pragma mark delete_from_wishList_API_calling
+- (IBAction)productList_to_cartPage:(id)sender {
+    [self performSegueWithIdentifier:@"product_list_cart" sender:self];
+}
+#pragma picker_actions
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
 
--(void)delete_from_wishLis{
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    return [sort_array allValues].count;
+}
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    return [sort_array allValues][row];
+}
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    self.BTN_sort.text = [sort_array allValues][row];
+    sort_key = [sort_array allKeys][row];
+}
+-(void)countrybuttonClick
+{
+    [self.BTN_sort resignFirstResponder];
+
+    NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
     
-    /* Del WishList
-     
-     http://192.168.0.171/dohasooq/apis/delFromWishList/1/24.json
-     
-     example
-     Product_id =1
-     User_Id = 24
-     
-     */
+    NSString *country = [user_dflts valueForKey:@"country_id"];
+    NSString *languge = [user_dflts valueForKey:@"language_id"];
+    NSDictionary *dict = [user_dflts valueForKey:@"userdata"];
+    NSString *min = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"products_min"]];
+    NSString *max = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"products_max"]];
+    NSString *brands = [user_dflts valueForKey:@"brnds"];
+    NSString *discount = [user_dflts valueForKey:@"discount_val"];
+    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
     
-    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    NSString *user_ID = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+    NSString *url_str = [NSString stringWithFormat:@"%@apis/productList/%@/0/%@/%@/%@/Customer.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=%@",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"search_val"],country,languge,user_id,discount,min,max,brands,sort_key];
+    [[NSUserDefaults standardUserDefaults] setValue:url_str forKey:@"product_list_sort"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     
-    NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/delFromWishList/%@/%@.json",SERVER_URL,[[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"],user_ID];
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
     
+    [self performSelector:@selector(sort_API) withObject:nil afterDelay:0.01];
+
+
+    
+}
+
+-(void)sort_API
+{
+    @try
+    {
+        
+    
+    NSString *list_TYPE = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_list_sort"];
+    NSString *urlGetuser;
+    urlGetuser =[NSString stringWithFormat:@"%@",list_TYPE];
     urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-    @try {
-        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (error) {
-                    NSLog(@"%@",[error localizedDescription]);
-                }
-                if (data) {
-                    NSLog(@"%@",data);
-                    
-                    
-                    @try {
-                        [HttpClient createaAlertWithMsg:[data valueForKey:@"message"] andTitle:@""];
-                        [self product_list_API];
+    NSLog(@"%@",urlGetuser);
     
+    [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data1, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                
+                VW_overlay.hidden = YES;
+                [activityIndicatorView stopAnimating];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+            }
+            if (data1) {
+                NSDictionary *json_DAT;
+                json_DAT = data1;
+                if(json_DATA)
+                {
+                    @try {
+                        VW_overlay.hidden = YES;
+                        [activityIndicatorView stopAnimating];
+                        @try
+                        {
+                            if([[json_DATA valueForKey:@"products"] isEqualToString:@""])
+                            {
+                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No products Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                                [alert show];
+                                // [productDataArray removeAllObjects];
+                                [_collection_product reloadData];
+                                
+                                
+                            }
+                        }
+                        @catch(NSException *exception)
+                        {
+                            productDataArray = [json_DATA valueForKey:@"products"];
+                            //BOOL stat = @"YES";
+                            
+                            if([[json_DATA valueForKey:@"brands"] isKindOfClass:[NSDictionary class]])
+                            {
+                                [[NSUserDefaults standardUserDefaults]  setObject:[json_DATA valueForKey:@"brands"] forKey:@"brands_LISTs"];
+                                [[NSUserDefaults standardUserDefaults]synchronize];
+                                NSLog(@"THE JSON DTA BRADS:%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"brands_LISTs"]);
+                                
+                            }
+                            else
+                            {
+                                
+                                NSLog(@"THE userdefaults%@",[[json_DATA valueForKey:@"brnads"]allValues]);
+                                [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"brands_LISTs"];
+                                [[NSUserDefaults standardUserDefaults]synchronize];
+                                
+                                
+                            }
+                            
+                            
+                            
+                            NSLog(@"THE respons PRODUCT LIST:%@",json_DATA);
+                            
+                            @try
+                            {
+                                self.LBL_product_name.text = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"displayName"] objectAtIndex:0] valueForKey:@"name"]];
+                                
+                            }
+                            @catch(NSException *exception)
+                            {
+                                self.LBL_product_name.text = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"displayName"]];
+                            }
+                            [[NSUserDefaults standardUserDefaults] setValue:self.LBL_product_name.text forKey:@"search_val"];
+                            [[NSUserDefaults standardUserDefaults]synchronize];
+                            
+                            
+                            // }
+                            
+                            [self.collection_product reloadData];
+                            [self set_UP_VW];
+                        }
                     } @catch (NSException *exception) {
+                        VW_overlay.hidden = YES;
+                        [activityIndicatorView stopAnimating];
                         NSLog(@"%@",exception);
-                        
                     }
+                    
+                    
                     
                 }
                 
-            });
+                
+                
+            }
             
-        }];
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-        
-    }
+        });
+    }];
+     
+     }
+     @catch(NSException *exception)
+     {
+         
+     }
+
 }
 
+-(void)filetr_URL:(NSString *)str
+{
+    NSLog(@"Strig %@",str);
+}
+
+/*
+ 
+ -(void)filetr_URL:(NSString *)str
+ {
+ NSLog(@"Enter 2");
+ NSString *list_TYPE = str;
+ NSString *urlGetuser;
+ urlGetuser =[NSString stringWithFormat:@"%@",list_TYPE];
+ urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+ NSLog(@"%@",urlGetuser);
+ 
+ 
+ [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+ dispatch_async(dispatch_get_main_queue(), ^{
+ if (error) {
+ 
+ VW_overlay.hidden = YES;
+ [activityIndicatorView stopAnimating];
+ UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+ [alert show];
+ [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+ }
+ if (data) {
+ NSDictionary *json_DAT;
+ json_DAT = data;
+ if(json_DAT)
+ {
+ @try {
+ VW_overlay.hidden = YES;
+ [activityIndicatorView stopAnimating];
+ @try
+ {
+ if([[json_DAT valueForKey:@"products"] isEqualToString:@""])
+ {
+ UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No products Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+ [alert show];
+ // [productDataArray removeAllObjects];
+ [_collection_product reloadData];
+ 
+ 
+ }
+ }
+ @catch(NSException *exception)
+ {
+ productDataArray = [json_DAT valueForKey:@"products"];
+ //BOOL stat = @"YES";
+ 
+ if([[json_DATA valueForKey:@"brands"] isKindOfClass:[NSDictionary class]])
+ {
+ [[NSUserDefaults standardUserDefaults]  setObject:[json_DAT valueForKey:@"brands"] forKey:@"brands_LISTs"];
+ [[NSUserDefaults standardUserDefaults]synchronize];
+ NSLog(@"THE JSON DTA BRADS:%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"brands_LISTs"]);
+ 
+ }
+ else
+ {
+ 
+ NSLog(@"THE userdefaults%@",[[json_DAT valueForKey:@"brnads"]allValues]);
+ [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"brands_LISTs"];
+ [[NSUserDefaults standardUserDefaults]synchronize];
+ 
+ 
+ }
+ 
+ 
+ 
+ NSLog(@"THE respons PRODUCT LIST:%@",json_DAT);
+ 
+ @try
+ {
+ self.LBL_product_name.text = [NSString stringWithFormat:@"%@",[[[json_DAT valueForKey:@"displayName"] objectAtIndex:0] valueForKey:@"name"]];
+ 
+ }
+ @catch(NSException *exception)
+ {
+ self.LBL_product_name.text = [NSString stringWithFormat:@"%@",[json_DAT valueForKey:@"displayName"]];
+ }
+ [[NSUserDefaults standardUserDefaults] setValue:self.LBL_product_name.text forKey:@"search_val"];
+ [[NSUserDefaults standardUserDefaults]synchronize];
+ 
+ 
+ // }
+ 
+ [self.collection_product reloadData];
+ [self set_UP_VW];
+ }
+ } @catch (NSException *exception) {
+ VW_overlay.hidden = YES;
+ [activityIndicatorView stopAnimating];
+ NSLog(@"%@",exception);
+ }
+ 
+ 
+ 
+ }
+ 
+ 
+ 
+ }
+ 
+ });
+ }];
+ 
+ }
+ 
+ */
 @end

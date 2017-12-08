@@ -9,7 +9,10 @@
 #import "VC_forgot_PWD.h"
 
 @interface VC_forgot_PWD ()<UITextFieldDelegate,UIGestureRecognizerDelegate>
-
+{
+    UIView *VW_overlay;
+    UIActivityIndicatorView *activityIndicatorView;
+}
 @end
 
 @implementation VC_forgot_PWD
@@ -43,9 +46,26 @@
     [tapGesture1 setDelegate:self];
     
     [_BTN_close addGestureRecognizer:tapGesture1];
-    {
-        [self dismissViewControllerAnimated:YES completion:nil];
+    [_BTN_reset_PWD addTarget:self action:@selector(forgot_action) forControlEvents:UIControlEventTouchUpInside];
+    
     }
+-(void)viewWillAppear:(BOOL)animated
+{
+    
+    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    VW_overlay.clipsToBounds = YES;
+    //    VW_overlay.layer.cornerRadius = 10.0;
+    
+    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+    activityIndicatorView.center = VW_overlay.center;
+    [VW_overlay addSubview:activityIndicatorView];
+    [self.view addSubview:VW_overlay];
+    
+    VW_overlay.hidden = YES;
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -54,8 +74,48 @@
 }
 
 #pragma button action
+-(void)forgot_action
+{
+    
+    NSString *msg;
+    NSString *text_to_compare_email = _TXT_forgot_pwd.text;
+    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
+    if([_TXT_forgot_pwd.text isEqualToString:@""])
+    {
+        [_TXT_forgot_pwd becomeFirstResponder];
+        msg = @"Please enter Email";
+        
+    }
+    
+    else if([emailTest evaluateWithObject:text_to_compare_email] == NO)
+    {
+        [_TXT_forgot_pwd becomeFirstResponder];
+        msg = @"Please enter valid email address";
+        
+        
+    }
+    else
+    {
+        [self.view endEditing:TRUE];
+        VW_overlay.hidden = NO;
+        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(Forgot_api_integration) withObject:activityIndicatorView afterDelay:0.01];
+        
+    }
+    if(msg)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+        
+    }
+    
+    
+
+}
+
 -(void)tapGesture_close
 {
+    
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 #pragma textfield delegates
@@ -87,6 +147,89 @@
     self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
     [UIView commitAnimations];
     
+}
+#pragma API Call
+-(void)Forgot_api_integration
+{
+    @try
+    {
+        NSString *email = _TXT_forgot_pwd.text;
+        NSDictionary *parameters = @{
+                                     @"username": email
+                                     
+                                     };
+        NSError *error;
+        NSError *err;
+        NSHTTPURLResponse *response = nil;
+        
+        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
+        NSLog(@"the posted data is:%@",parameters);
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/forgotPassword/1.json",SERVER_URL];
+        // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:urlProducts];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:postData];
+        //[request setAllHTTPHeaderFields:headers];
+        [request setHTTPShouldHandleCookies:NO];
+        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if(aData)
+        {
+            NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            NSLog(@"The response Api post sighn up API %@",json_DATA);
+            NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
+            NSString *msg = [json_DATA valueForKey:@"message"];
+            
+            
+            if([status isEqualToString:@"1"])
+            {
+                
+                [[NSUserDefaults standardUserDefaults] setObject:[json_DATA valueForKey:@"detail"] forKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                [[NSUserDefaults standardUserDefaults] setObject:email forKey:@"user_email"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                
+                
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                
+            }
+            else
+            {
+                [activityIndicatorView stopAnimating];
+                VW_overlay.hidden = YES;
+                
+                if ([msg isEqualToString:@"User already exists"])
+                {
+                    msg = @"Email address already in use, Please try with different email.";
+                }
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+            }
+            
+        }
+        else
+        {
+            [activityIndicatorView stopAnimating];
+            VW_overlay.hidden = YES;
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+        }
+        
+    }
+    
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+    }
+    
+
 }
 
 /*

@@ -10,5 +10,6 @@
 
 @interface VC_myaddress : UIViewController
 @property(nonatomic,weak) IBOutlet UITableView *TBL_address;
+@property(strong,nonatomic)UIPickerView *staes_country_pickr;
 
 @end

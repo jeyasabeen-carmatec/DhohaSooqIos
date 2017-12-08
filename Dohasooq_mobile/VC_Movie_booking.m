@@ -41,7 +41,7 @@
     [_BTN_trailer_watch addTarget:self action:@selector(BTN_trailer_watch) forControlEvents:UIControlEventTouchUpInside];
     
 
-
+    detail_dict  = [[NSMutableDictionary alloc]init];
     
 }
 -(void)viewWillAppear:(BOOL)animated
@@ -62,178 +62,19 @@
     dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateFormat:@"MM/dd/yyyy"];
     dateString = [dateFormat stringFromDate:[NSDate date]];
-    [self filtering_date];
+    
 
     
     VW_overlay.hidden = YES;
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
-    [self performSelector:@selector(getResponse_detail) withObject:activityIndicatorView afterDelay:0.01];
+    [self performSelector:@selector(movie_detil_api) withObject:activityIndicatorView afterDelay:0.01];
 }
 
 -(void)filtering_date{
   
-//    detail_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"];
-//    NSLog(@"%@",detail_dict);
-//    NSMutableArray *att = [[NSMutableArray alloc]init];
-//   
-//
-//    
-//   
-//        NSArray *temp_ar = [detail_dict valueForKey:@"Theatre"];
-//        NSInteger count;
-//        if([temp_ar isKindOfClass:[NSDictionary class]])
-//        {
-//            count = 1;
-//            
-//        }
-//        else
-//         {
-//           count = temp_ar.count;
-//         }
-//        for(int i = 0;i<count;i++)
-//        {
-//            @try
-//            {
-//            
-//            att = [[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"]valueForKey:@"showDate"];
-//            
-//            if([att isKindOfClass:[NSDictionary class]])
-//                
-//            {
-//                [ARR_temp addObject:[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"] valueForKey:@"showDate"] valueForKey:@"_Date"]];
-//                
-//            }
-//            else
-//            {
-//                
-//                for(int j =0;j< [[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"] valueForKey:@"showDate"]count];j++)
-//                {
-//                    @try
-//                    {
-//                        
-//                        
-//                        
-//                        [ARR_temp addObject:[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:i] valueForKey:@"ShowDates"] valueForKey:@"showDate"] objectAtIndex:j] valueForKey:@"_Date"]];
-//                        
-//                    }
-//                    
-//                    @catch(NSException *exception)
-//                    {
-//                        
-//                    }
-//                }
-//            }
-//                
-//            }
-//        
-//    
-//    @catch(NSException *exception)
-//    {
-//        att = [[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"]valueForKey:@"showDate"] ;
-//        
-//        if([att isKindOfClass:[NSDictionary class]])
-//            
-//        {
-//            [ARR_temp addObject:[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"] valueForKey:@"showDate"] valueForKey:@"_Date"]];
-//         
-//            
-//        }
-//        else
-//        {
-//       
-//            for(int j =0;j< [[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"] valueForKey:@"showDate"]count];j++)
-//            {
-//               
-//                NSLog(@"THE for loop date filter%@",[[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"] valueForKey:@"showDate"] objectAtIndex:j] valueForKey:@"_Date"]);
-//                NSString *str = [NSString stringWithFormat:@"%@",[[[[[detail_dict valueForKey:@"Theatre"] valueForKey:@"ShowDates"] valueForKey:@"showDate"] objectAtIndex:j] valueForKey:@"_Date"]];
-//                [ARR_temp addObject:str];
-//                 
-//            }
-//                 
-//        }
-//                 
-//    }
-//}
-//    
-//    
-//    NSMutableArray *arry_with_Dates = [NSMutableArray array];
-//    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:ARR_temp,@"key2", nil];
-//    NSArray *arr = [dict valueForKey:@"key2"];
-//
-//    NSLog(@"Date Array is :::%lu",(unsigned long)arr.count);
-//    for(int m = 0;m<arr.count;m++)
-//    {
-//        NSLog(@"The arr is:%@",[arr objectAtIndex:m]);
-//    }
-//   // [date_Arr removeAllObjects];
-//    
-//   // [date_Arr addObject:[dict valueForKey:@"date"]];
-//    
-//    NSCalendar *cal = [NSCalendar currentCalendar];
-//    
-//    for (int i=0; i<arr.count; i++) {
-//        
-////        if ([[arr objectAtIndex:i] isKindOfClass:[NSArray class]]) {
-////            
-////            for (int j=0; j<[[date_Arr objectAtIndex:i] count]; j++) {
-////                NSDate *tomorrow = [cal dateByAddingUnit:NSCalendarUnitDay
-////                                                   value:1
-////                                                  toDate:[dateFormat dateFromString:[[arr objectAtIndex:i] objectAtIndex:j]]
-////                                                 options:0];
-////                [arry_with_Dates addObject:tomorrow];
-////                
-////                // [arry_with_Dates addObject:[dateFormat dateFromString:[[date_Arr objectAtIndex:i] objectAtIndex:j]]];
-////                NSLog(@"%@",arry_with_Dates);
-////            }
-////        }
-////        else{
-//            dateFormat = [[NSDateFormatter alloc] init];
-//            [dateFormat setDateFormat:@"MM-dd-yyyy"];
-//         
-//            NSString *str = [NSString stringWithFormat:@"%@",[arr objectAtIndex:i]];
-//            NSDate *date = [dateFormat dateFromString:str];
-//            
-//            NSDate *tomorrow = [cal dateByAddingUnit:NSCalendarUnitDay
-//                                               value:1
-//                                              toDate:date
-//                                             options:0];
-//            NSDateFormatter *df = [[NSDateFormatter alloc]init];
-//            [df setDateFormat:@"dd MMM yyyy"];
-//            NSString *strm = [df stringFromDate:tomorrow];
-//            NSDate *final = [df dateFromString:strm];
-//            [arry_with_Dates addObject:final];
-//            
-//            
-//            //[arry_with_Dates addObject:[dateFormat dateFromString:[date_Arr objectAtIndex:i]]];
-//            NSLog(@"%@",arry_with_Dates);
-//            
-//       // }
-//        
-//    }
-//    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"self"
-//                                                               ascending:NO];
-//    NSArray *descriptors = [NSArray arrayWithObject:descriptor];
-//    NSArray *reverseOrder = [arry_with_Dates sortedArrayUsingDescriptors:descriptors];
-//    NSLog(@"Date Array is :::%@",reverseOrder);
-//    NSDate *endDate = [reverseOrder firstObject];
-//    //[dateFormat dateFromString:[reverseOrder firstObject]];
-//    NSLog(@"%@",[reverseOrder lastObject]);
-//    
-//    [self.dayPicker setStartDate:[reverseOrder lastObject] endDate:endDate];
-//    
-//    NSDate *yesterDay = [cal dateByAddingUnit:NSCalendarUnitDay
-//                                        value:-1
-//                                       toDate:[reverseOrder lastObject]
-//                                      options:0];
-//    dateString = [dateFormat stringFromDate:yesterDay];
-//    NSLog(@"Tickets available from%@",[reverseOrder lastObject]);
-//   
-//    [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
-//    [[NSUserDefaults standardUserDefaults] synchronize];
-//
     date_Arr = [[NSMutableArray alloc]init];
-    detail_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"];
+  //  detail_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"];
     NSLog(@"%@",detail_dict);
     NSMutableArray *att = [[NSMutableArray alloc]init];
     ARR_temp = [[NSMutableArray alloc]init];
@@ -360,7 +201,7 @@
 {
     collection_count = [[NSMutableArray alloc]init];
     table_count = [[NSMutableArray alloc]init];
-    detail_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"];
+//    detail_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"];
     NSMutableArray *att = [[NSMutableArray alloc]init];
     NSMutableArray *dict_time = [[NSMutableArray alloc]init];
     
@@ -966,24 +807,6 @@
 
 
     
-//     if([[[[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:indexPath.row] valueForKey:@"ShowDates"] valueForKey:@"showDate"] objectAtIndex:indexPath.row] valueForKey:@"ShowTimes"] valueForKey:@"showTime"]valueForKey:@"_type"] isEqualToString:@"available"])
-//     {
-//          [cell.BTN_time setTitle:[[[[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:indexPath.row] valueForKey:@"ShowDates"] valueForKey:@"showDate"] objectAtIndex:indexPath.row] valueForKey:@"ShowTimes"] valueForKey:@"showTime"] objectAtIndex:indexPath.row] valueForKey:@"_time"] forState:UIControlStateNormal];
-//     }
-//        
-//     else{
-//         NSLog(@"");
-//     }
-   // }
-
-        
-//    [cell.BTN_time setTitle:[[[[[[[[[detail_dict valueForKey:@"Theatre"] objectAtIndex:indexPath.row] valueForKey:@"ShowDates"] valueForKey:@"showDate"] objectAtIndex:indexPath.row] valueForKey:@"ShowTimes"] valueForKey:@"showTime"] objectAtIndex:indexPath.row] valueForKey:@"_time"] forState:UIControlStateNormal];
-//    }
-//    
-//    
-
-     
-     //[[[[[[[[[collection_count objectAtIndex:0] objectAtIndex:0] valueForKey:@"ShowTimes"] valueForKey:@"showTime" ] objectAtIndex:indexPath.row] valueForKey:@"ShowTimes"] valueForKey:@"showTime"] objectAtIndex:indexPath.row] valueForKey:@"_time"]forState:UIControlStateNormal];
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     
@@ -1007,33 +830,12 @@
 
             NSLog(@"Selected Time Detail %@",[ARR_temp objectAtIndex:collectionView.tag]);
             
-          //  NSArray *censor_arr = [_LBL_censor.text componentsSeparatedByString:@"-"];
-            
-//            CGRect frameset = _VW_alert.frame;
-//            frameset.size.width = 320;
-//            frameset.size.height = 300;
-//            _VW_alert.frame = frameset;
-//            _VW_alert.hidden = NO;
-//            _VW_alert.center =self.view.center;
-//            [self.view addSubview:_VW_alert];
-//            VW_overlay.hidden = YES;
-//            [_BTN_ok addTarget:self action:@selector(ok_action) forControlEvents:UIControlEventTouchUpInside];
-            
-            
-            
-//            _LBL_english.text = [NSString stringWithFormat:@"You Are trying to book a %@	Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund",str_censor,str_censor];
-//            _LBL_arabic.text =[NSString stringWithFormat:@" أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين %@",str_censor,str_censor];
-            
-            //  [self performSegueWithIdentifier:@"booking_seat" sender:self];
-            
         }
         else{
             
             NSLog(@"Selected Time Detail %@",[[[ARR_temp objectAtIndex:collectionView.tag]  valueForKey:@"shows"]objectAtIndex:indexPath.row]);
             [[NSUserDefaults standardUserDefaults] setValue:[[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"]objectAtIndex:indexPath.row] valueForKey:@"_id"] forKey:@"movie_id"];
              [[NSUserDefaults standardUserDefaults] synchronize];
-//            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"movie_date"];
-//            [[NSUserDefaults standardUserDefaults] synchronize];
 
             [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
             [[NSUserDefaults standardUserDefaults] synchronize];
@@ -1043,22 +845,6 @@
             
             [[NSUserDefaults standardUserDefaults] setValue:[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"theatre"] forKey:@"theatre"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            
-//            NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
-//            CGRect frameset = _VW_alert.frame;
-//            frameset.size.width = 320;
-//            frameset.size.height = 300;
-//            _VW_alert.frame = frameset;
-//            _VW_alert.hidden = NO;
-//            _VW_alert.center =self.view.center;
-//            [self.view addSubview:_VW_alert];
-//            VW_overlay.hidden = YES;
-//            [_BTN_ok addTarget:self action:@selector(ok_action) forControlEvents:UIControlEventTouchUpInside];
-//            
-//            _LBL_english.text = [NSString stringWithFormat:@"You Are trying to book a %@	Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund",str_censor,str_censor];
-//            _LBL_arabic.text =[NSString stringWithFormat:@" أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين %@",str_censor,str_censor];
-
-            
           
 
           
@@ -1067,7 +853,7 @@
 
         NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:text_str delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
           [self performSegueWithIdentifier:@"booking_seat" sender:self];
         
@@ -1151,6 +937,36 @@
     activityViewController.popoverPresentationController.sourceView = self.view;
     [self presentViewController:activityViewController animated:YES completion:nil];
     }
+}
+-(void)movie_detil_api
+{
+    @try {
+        
+        NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V4.0/getshowstheatersbymovieid?movieid=%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"id"]];
+        
+        
+        NSURL *URL = [[NSURL alloc] initWithString:str_url];
+        NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
+        //NSLog(@"string: %@", xmlString);
+        NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
+//        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"Movie_detail"];
+//        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+//        [[NSUserDefaults standardUserDefaults] setObject:[[xmlDoc valueForKey:@"Movies"] valueForKey:@"movie"] forKey:@"Movie_detail"];
+//        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        detail_dict = [[xmlDoc valueForKey:@"Movies"] valueForKey:@"movie"] ;
+        [self filtering_date];
+        [self getResponse_detail];
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"exception");
+        
+    }
+    
+    
+    
 }
 
 /*

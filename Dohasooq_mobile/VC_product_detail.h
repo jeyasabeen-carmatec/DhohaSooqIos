@@ -18,6 +18,9 @@
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_cart;
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_fav;
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_back;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_back_modal;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_cart_list;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_wish_list;
 
 //first view
 @property(nonatomic,weak) IBOutlet UIView *VW_First;
@@ -49,7 +52,7 @@
 
 //fifth_view
 @property(nonatomic,retain) IBOutlet UIView *VW_fifth;
-@property(nonatomic,weak) IBOutlet UITextView *TXTVW_description;
+@property(nonatomic,weak) IBOutlet UILabel *TXTVW_description;
 
 @property(nonatomic,weak) IBOutlet UIView *VW_filter;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_cart;
@@ -57,8 +60,8 @@
 
 //- (IBAction)productdetail_to_cartPage:(id)sender;
 //- (IBAction)productDetail_to_wishPage:(id)sender;
-- (IBAction)order_to_cartPage:(id)sender;
-- (IBAction)order_to_wishListPage:(id)sender;
+//- (IBAction)order_to_cartPage:(id)sender;
+//- (IBAction)order_to_wishListPage:(id)sender;
 
 - (IBAction)add_to_wih_list:(id)sender;
 - (IBAction)product_detail_cart_page:(id)sender;

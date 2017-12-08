@@ -7,6 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Hoshi_Billing_ADDR.h"
+#import "billing_address.h"
+
 
 @interface VC_order_detail : UIViewController
 
@@ -56,6 +59,8 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_summary;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sub_total;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_shipping_charge;
+@property (weak, nonatomic) IBOutlet UITextField *TXT_cupon;
+
 
 
 @property(nonatomic,weak) IBOutlet UILabel *LBL_total;
@@ -63,10 +68,22 @@
 
 @property(nonatomic,weak) IBOutlet UIButton *BTN_Product_summary;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_arrow;
+@property(nonatomic,weak) IBOutlet UIView *VW_pay_cards;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_cod;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_debit_card;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_doha_bank_account;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_doha_miles;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_credit;
+
 
 // view delivery slot
 @property(nonatomic,weak) IBOutlet UIView *VW_delivery_slot;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_done;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_Date;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_Time;
+@property(strong,nonatomic)UIPickerView *pickerView;
+@property(strong,nonatomic)UIPickerView *staes_country_pickr;
+
 - (IBAction)order_to_cartPage:(id)sender;
 - (IBAction)order_to_wishListPage:(id)sender;
 

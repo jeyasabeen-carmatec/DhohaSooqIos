@@ -8,11 +8,14 @@
 
 #import "ViewController.h"
 #import "HttpClient.h"
+#import <Google/SignIn.h>
 
-@interface ViewController ()<UITextFieldDelegate>
+
+@interface ViewController ()<UITextFieldDelegate,FBSDKLoginButtonDelegate,GIDSignInUIDelegate,GIDSignInDelegate>
 {
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
+    NSDictionary *social_dictl;
     
 }
 
@@ -22,8 +25,35 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    /*************** Google SignIn ***************/
+    // Receive signed user information from AppDelegate.m
+//    [[NSNotificationCenter defaultCenter] addObserverForName:@"GoogleUserInfo" object:nil queue:nil usingBlock:^(NSNotification *note) {
+//        NSString *userId = [note.userInfo objectForKey:@"userId"];
+//        NSString *idToken = [note.userInfo objectForKey:@"idToken"];
+//        NSString *accessToken = [note.userInfo objectForKey:@"accessToken"];
+//        NSString *userName = [note.userInfo objectForKey:@"userName"];
+//        NSString *userEmail = [note.userInfo objectForKey:@"userEmail"];
+//        
+//        NSLog(@"ISUGoogleViewController ===> [1] ID : %@ | [2] idToken : %@ | [3] accessToken : %@ | [4] name : %@ | [5] email : %@",
+//              userId, idToken, accessToken, userName, userEmail);
+//        
+//          }];
+//    
+    
+    
+    // Region start
+    [GIDSignIn sharedInstance].uiDelegate = self;
+    
+    // Create google button instance
+    
+    // Uncomment to automatically sign in the user.
+    //[[GIDSignIn sharedInstance] signInSilently];
+    // Region end
     [self set_UP_View];
     
+}
+- (void)signInWillDispatch:(GIDSignIn *)signIn error:(NSError *)error {
+    [activityIndicatorView stopAnimating];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -41,6 +71,8 @@
     [self.view addSubview:VW_overlay];
     
     VW_overlay.hidden = YES;
+    [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
+
     
 }
 
@@ -56,7 +88,6 @@
     
     
     _VW_fields.center = self.view.center;
-    
     
     @try {
         
@@ -144,11 +175,14 @@
     _TXT_username.text = @"karuna@carmatec.in";
     _TXT_password.text = @"qazplm123";
     
-    [_BTN_skip addTarget:self action:@selector(skip_action:) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_facebook addTarget:self action:@selector(facebook_action:) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_Google_PLUS addTarget:self action:@selector(Google_PLUS_ACTIOn) forControlEvents:UIControlEventTouchUpInside];
+
     
     
     
 }
+
 
 #pragma textfield delgates
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -183,6 +217,71 @@
 }
 
 #pragma BUTTON ACTIONS
+-(void)Google_PLUS_ACTIOn
+{
+    
+    [GIDSignIn sharedInstance].delegate = self;
+    [GIDSignIn sharedInstance].uiDelegate = self;
+    [[GIDSignIn sharedInstance] signIn];
+}
+- (void)signIn:(GIDSignIn *)signIn presentViewController:(UIViewController *)viewController
+{
+    [self presentViewController:viewController animated:YES completion:nil];
+}
+- (void)signIn:(GIDSignIn *)signIn dismissViewController:(UIViewController *)viewController {
+  
+  [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+- (void)signIn:(GIDSignIn *)signIn didSignInForUser:(GIDGoogleUser *)user withError:(NSError *)error {
+    // Perform any operations on signed in user here.
+    
+    [[GIDSignIn sharedInstance] signOut];
+
+    NSString *userId = user.userID;                  // For client-side use only!
+    NSString *idToken = user.authentication.idToken; // Safe to send to the server
+    NSString *accessToken = user.authentication.accessToken;
+    NSString *name = user.profile.name;
+    NSString *email = user.profile.email;
+    // ...
+    NSLog(@"AppDelegate ===> [1] ID : %@ | [2] idToken : %@ | [3] accessToken : %@ | [4] name : %@ | [5] email : %@", user.userID,user.authentication.idToken, user.authentication.accessToken, user.profile.name, user.profile.email);
+    
+    
+    // Notify to ISUGoogleViewController class to regist
+    NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys:
+                          userId, @"userId",
+                          idToken, @"idToken",
+                          accessToken, @"accessToken",
+                          name, @"userName",
+                          email, @"userEmail",
+                          nil];
+    NSString *str = [dict valueForKey:@"userName"];
+    NSArray *arr = [str componentsSeparatedByString:@" "];
+    NSLog(@"The first name is:%@",[arr objectAtIndex:0]);
+    NSString *first_name = [NSString stringWithFormat:@"%@",[arr objectAtIndex:0]];
+    NSString *last_name = [NSString stringWithFormat:@"%@",[arr objectAtIndex:1]];
+    NSString *emails = [NSString stringWithFormat:@"%@",[dict valueForKey:@"userEmail"]];
+
+
+    
+    [self Google_plus_login:first_name:last_name:emails];
+    
+    
+    
+   
+    
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"GoogleUserInfo" object:[UIApplication sharedApplication].keyWindow.rootViewController userInfo:dict];
+    
+}
+
+- (void)signIn:(GIDSignIn *)signIn didDisconnectWithUser:(GIDGoogleUser *)user withError:(NSError *)error {
+    // Perform any operations when the user disconnects from app here.
+    // ...
+}
+/***************** Google Sign In ******************/
+
+
 - (IBAction)forgot_pwd_action:(UIButton *)sender
 {
     [self performSegueWithIdentifier:@"login_forgot_pwd" sender:self];
@@ -191,38 +290,286 @@
 {
     [self performSegueWithIdentifier:@"sign_up_segue" sender:self];
 }
--(void)skip_action:(UIButton*)sender{
-    /*
-     detail =     {
-     "customer_id" = 2;
-     firstname = karuna;
-     id = 27;
-     lastname = ravi;
-     phone = 534543543;
-     "profile_pic" = "/dohasooq/uploads/customers/";
-     };
-     */
+-(void)facebook_action:(UIButton*)sender{
     
-    NSDictionary *parameters = @{
-                                 @"customer_id": @"",
-                                 @"firstname": @"",
-                                 @"id":@"",
-                                 @"lastname":@"",
-                                 @"phone":@"",
-                                 @"profile_pic":@""
-                                 };
-    
-    NSDictionary *user_detail = @{@"detail":parameters};
-    [[NSUserDefaults standardUserDefaults]setObject:user_detail forKey:@"userdata"];
-    
-    NSDictionary *dic = [[NSUserDefaults standardUserDefaults]valueForKey:@"userdata"];
-    NSLog(@"%@",dic);
-    NSLog(@"%@",[dic valueForKey:@"id"]);
-    
-    //NSLog(@"%@",user_detail);
-    
-    [self performSegueWithIdentifier:@"logint_to_home" sender:self];
+    NSString *fbAccessToken = [FBSDKAccessToken currentAccessToken].tokenString;
+    NSLog(@"Token:%@",fbAccessToken);
+    if([[NSUserDefaults standardUserDefaults]  objectForKey:@"login_details"])
+    {
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:@"login_details"];
+        NSLog(@"dict ------ %@",dict);
+        
+        
+    }
+
+    FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
+   // login.loginBehavior = FBSDKLoginBehaviorWeb;
+    [login
+     logInWithReadPermissions: @[@"email",@"public_profile"]
+     fromViewController:self
+     handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+         if (error)
+         {
+             NSLog(@"Process error");
+         }
+         else if (result.isCancelled)
+         {
+             NSLog(@"Cancelled");
+             [login logOut];
+             //[FBSDKProfile setCurrentProfile:nil];
+
+         }
+         else
+         {
+              NSLog(@"RESULT - %@",result.token.userID);
+             [self getFacebookProfileInfo:result.token.userID];
+
+         }
+     }];
+
 }
+-(void)getFacebookProfileInfo:(NSString *)user_ID {
+    
+//    
+//    NSMutableDictionary* parameters = [NSMutableDictionary dictionary];
+//    [parameters setValue:@"id,name,email" forKey:@"fields"];
+//    
+//    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:parameters]
+//     startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
+//                                  id result, NSError *error) {
+//         NSLog(@"result:%@",result);
+//        // aHandler(result, error);
+//     }];
+//    
+    if([FBSDKAccessToken currentAccessToken])
+    {
+        [[[FBSDKGraphRequest alloc]initWithGraphPath:@"me" parameters:@{@"fields":@"id,name,first_name,last_name,picture,email"}] startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error)
+        {
+            if(!error)
+            {
+                NSLog(@"THE RESPOBSE - :%@",result);
+                [[NSUserDefaults standardUserDefaults] setObject:result forKey:@"login_details"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+                
+                
+                social_dictl = [[NSUserDefaults standardUserDefaults] objectForKey:@"login_details"];
+                NSLog(@"dict ------ %@",social_dictl);
+                VW_overlay.hidden = NO;
+                [activityIndicatorView startAnimating];
+                [self performSelector:@selector(Facebook_login) withObject:activityIndicatorView afterDelay:0.01];
+
+               // [self Facebook_login];
+                
+
+                
+            }
+        }];
+        
+    }
+    
+        
+}
+    - (void)  loginButton:(FBSDKLoginButton *)loginButton
+didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
+error:(NSError *)error{
+    NSLog(@"LOGGED IN TO FACEBOOK");
+   // [self fetchUserInfo];
+}
+
+-(void)Google_plus_login:(NSString *)f_name :(NSString *)l_name :(NSString *)e_mail
+{
+    
+        NSString *type = @"Google_Plus";
+        NSString *first_name = f_name;
+        NSString *last_name = l_name;
+        NSString *email = e_mail;
+
+        NSDictionary *parameters = @{
+                                     @"login_type": type,
+                                     @"email": email,
+                                     @"first_name": first_name,
+                                     @"last_name": last_name
+
+                                     };
+        
+        @try
+        {
+        NSError *error;
+        NSError *err;
+        NSHTTPURLResponse *response = nil;
+        
+        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
+        NSLog(@"the posted data is:%@",parameters);
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/login/1.json",SERVER_URL];
+        // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:urlProducts];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:postData];
+        //[request setAllHTTPHeaderFields:headers];
+        [request setHTTPShouldHandleCookies:NO];
+        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if(aData)
+        {
+            NSMutableDictionary *json_DATA = [[NSMutableDictionary alloc]init];
+            
+           json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            NSLog(@"The response Api post sighn up API %@",json_DATA);
+            NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
+            NSString *msg = [json_DATA valueForKey:@"message"];
+            
+            
+            if([status isEqualToString:@"1"])
+            {
+                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
+                [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
+                
+                 [[NSUserDefaults standardUserDefaults] setValue:dictMutable forKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+
+                
+                [self MENU_api_call];
+                
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                
+            }
+            else
+            {
+                if ([msg isEqualToString:@"User already exists"])
+                { 
+                    msg = @"Email address already in use, Please try with different email.";
+                }
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+            }
+            
+        }
+        else
+        {
+            [activityIndicatorView stopAnimating];
+            VW_overlay.hidden = YES;
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+        }
+        
+    }
+    
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+        [activityIndicatorView stopAnimating];
+        VW_overlay.hidden = YES;
+    }
+
+    
+}
+
+-(void)Facebook_login
+{
+    @try
+    {
+        NSString *type = @"Facebook";
+        NSString *first_name = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"first_name"]];
+        NSString *last_name = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"last_name"]];
+        NSString *email = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"email"]];
+        
+        NSDictionary *parameters = @{
+                                     @"login_type": type,
+                                     @"email": email,
+                                     @"first_name": first_name,
+                                     @"last_name": last_name
+                                     
+                                     };
+        NSError *error;
+        NSError *err;
+        NSHTTPURLResponse *response = nil;
+        
+        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
+        NSLog(@"the posted data is:%@",parameters);
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/login/1.json",SERVER_URL];
+        // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:urlProducts];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:postData];
+        //[request setAllHTTPHeaderFields:headers];
+        [request setHTTPShouldHandleCookies:NO];
+        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if(aData)
+        {
+            NSMutableDictionary *json_DATA = [[NSMutableDictionary alloc]init];
+            
+            json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            NSLog(@"The response Api post sighn up API %@",json_DATA);
+            NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
+            NSString *msg = [json_DATA valueForKey:@"message"];
+            
+            
+            if([status isEqualToString:@"1"])
+            {
+                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
+                [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
+                
+                [[NSUserDefaults standardUserDefaults] setValue:dictMutable forKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+
+                
+                
+                
+                
+                [self MENU_api_call];
+                
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                
+            }
+            else
+            {
+                if ([msg isEqualToString:@"User already exists"])
+                {
+                    msg = @"Email address already in use, Please try with different email.";
+                }
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+            }
+            
+        }
+        else
+        {
+            [activityIndicatorView stopAnimating];
+            VW_overlay.hidden = YES;
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+        }
+        
+    }
+    
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+        [activityIndicatorView stopAnimating];
+        VW_overlay.hidden = YES;
+    }
+    
+    
+}
+
+    
 -(void)login_home
 {
     NSString *msg;
@@ -308,6 +655,10 @@
                 
                 [[NSUserDefaults standardUserDefaults] setObject:[json_DATA valueForKey:@"detail"] forKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
+                [[NSUserDefaults standardUserDefaults]setObject:self.TXT_username.text forKey:@"email"];
+                [[NSUserDefaults standardUserDefaults] setObject:email forKey:@"user_email"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+
                 
                 [self MENU_api_call];
                 
@@ -318,6 +669,9 @@
             }
             else
             {
+                [activityIndicatorView stopAnimating];
+                VW_overlay.hidden = YES;
+
                 if ([msg isEqualToString:@"User already exists"])
                 {
                     msg = @"Email address already in use, Please try with different email.";
@@ -359,7 +713,7 @@
         
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/menuList/1/1.json",SERVER_URL];
         
-        NSLog(@"%ld,%ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
+        NSLog(@"%ld,%ld",(long)[user_defaults integerForKey:@"country_id"],(long)[user_defaults integerForKey:@"language_id"]);
         
         NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
