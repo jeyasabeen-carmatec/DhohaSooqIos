@@ -35,6 +35,10 @@
     
     [_BTN_dohabank addTarget:self action:@selector(BTN_dohabank_action) forControlEvents:UIControlEventTouchUpInside];
 }
+-(void)viewWillAppear:(BOOL)animated{
+    self.navigationItem.hidesBackButton = YES;
+    
+}
 
 -(void)picker_set_UP
 {

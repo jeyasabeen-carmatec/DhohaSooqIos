@@ -407,20 +407,38 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *identifier = @"Gemder_cell";
    
-
-   
-    if(indexPath.section == 0)
+    NSString *Gender_identifier,*costCount_identifier;
+    NSInteger index_gndr,index_cost;
+    
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
     {
-        Gender_cell *gcell = (Gender_cell *)[tableView dequeueReusableCellWithIdentifier:identifier];
+        
+        Gender_identifier = @"QGemder_cell";
+        costCount_identifier = @"Qcost_count_cell";
+        index_gndr = 2;
+        index_cost = 3;
+        
+    }
+    else{
+        Gender_identifier = @"Gemder_cell";
+        costCount_identifier = @"cost_count_cell";
+        index_gndr = 0;
+        index_cost = 1;
+
+    }
+    
+//    static NSString *identifier = @"Gemder_cell";
+       if(indexPath.section == 0)
+    {
+        Gender_cell *gcell = (Gender_cell *)[tableView dequeueReusableCellWithIdentifier:Gender_identifier];
         if(gcell == nil)
         
         {
             
             NSArray *nib;
             nib = [[NSBundle mainBundle] loadNibNamed:@"Gender_cell" owner:self options:nil];
-            gcell = [nib objectAtIndex:0];
+            gcell = [nib objectAtIndex:index_gndr];
        }
         gcell.BTN_plus.layer.cornerRadius = gcell.BTN_plus.frame.size.width/2;
         gcell.BTN_plus.layer.masksToBounds = YES;
@@ -435,13 +453,19 @@
         [gcell.BTN_minus addTarget:self action:@selector(BTN_minus_action:) forControlEvents:UIControlEventTouchUpInside];
 
         
-        
+    
         @try
         {
             
       
         gcell.LBL_gender_cat.text = [[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row]valueForKey:@"_TicketName"];
+            
         gcell.LBL_price.text = [NSString stringWithFormat:@"QAR %@",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row] valueForKey:@"_TicketPrice"]];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                  gcell.LBL_price.text = [NSString stringWithFormat:@"%@ QAR ",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row] valueForKey:@"_TicketPrice"]];
+            }
+            
         gcell.LBL_result.text = [[event_cost_arr objectAtIndex:indexPath.row] valueForKey:@"quantity"];
             
         
@@ -460,20 +484,24 @@
     {
         if(indexPath.section == 1)
         {
-    cost_count_cell *ccell = (cost_count_cell *)[tableView dequeueReusableCellWithIdentifier:@"costcell"];
+    cost_count_cell *ccell = (cost_count_cell *)[tableView dequeueReusableCellWithIdentifier:costCount_identifier];
     
     if(ccell == nil)
         
     {
         NSArray *nib;
         nib = [[NSBundle mainBundle] loadNibNamed:@"Gender_cell" owner:self options:nil];
-        ccell = [nib objectAtIndex:1];
+        ccell = [nib objectAtIndex:index_cost];
     }
         @try
         {
             
             NSString *str = [cost_arr objectAtIndex:0];//gcell.LBL_result.text;
-            NSString *text = [NSString stringWithFormat:@"No of Tickets: %@",str];
+            NSString *text = [NSString stringWithFormat:@"%@ : No of Tickets",str];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                text = [NSString stringWithFormat:@"%@ :No of Tickets",str];
+            }
             
             
             if ([ccell.LBL_no_tickets respondsToSelector:@selector(setAttributedText:)]) {
@@ -503,9 +531,15 @@
             { ccell.LBL_no_tickets.text = text;
             }
             
-            
+         
             NSString *str1 = [cost_arr objectAtIndex:1];//gcell.LBL_price.text;
-            NSString *text1 = [NSString stringWithFormat:@"Total Price:QR  %@",str1];
+             NSString *text1 = [NSString stringWithFormat:@"Total Price:QR  %@",str1];
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                 text1 = [NSString stringWithFormat:@"%@ :QR Total Price",str1];
+            }
+           
             
             if ([ccell.LBL_total_price respondsToSelector:@selector(setAttributedText:)]) {
                 

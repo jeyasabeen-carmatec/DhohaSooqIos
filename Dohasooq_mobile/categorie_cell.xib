@@ -30,7 +30,7 @@
                         <rect key="frame" x="282" y="9" width="31" height="27"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="24"/>
-                        <state key="normal" title="">
+                        <state key="normal" title="">
                             <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         </state>
                     </button>
@@ -72,8 +72,8 @@
                 </subviews>
             </tableViewCellContentView>
             <connections>
-                <outlet property="LBL_arrow" destination="3Ma-ht-TNl" id="G7t-9b-hXw"/>
-                <outlet property="LBL_name" destination="W62-pW-Mn8" id="Rqe-hs-S7H"/>
+                <outlet property="LBL_arrow" destination="3Ma-ht-TNl" id="p0o-65-q2u"/>
+                <outlet property="LBL_name" destination="W62-pW-Mn8" id="LFN-7j-f4z"/>
             </connections>
         </tableViewCell>
     </objects>

@@ -115,7 +115,19 @@ static CGPoint const placeholderInsets = {0, 6};
 #pragma mark - Overridden methods
 
 - (void)drawRect:(CGRect)rect {
-    CGRect frame = CGRectMake(20, rect.size.height, rect.size.width, rect.size.height);
+    
+    CGRect frame;
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        frame = CGRectMake(self.bounds.size.width - self.placeholderLabel.frame.size.width, rect.size.height - rect.origin.y, rect.size.width, rect.size.height);
+
+        
+    }
+    else
+    {
+      frame = CGRectMake(20, rect.size.height, rect.size.width, rect.size.height);
+    }
+    
     self.placeholderLabel.frame = CGRectInset(frame, placeholderInsets.x, placeholderInsets.y);
     self.placeholderLabel.font = [self placeholderFontFromFont:self.font];
     
@@ -128,17 +140,46 @@ static CGPoint const placeholderInsets = {0, 6};
 }
 
 - (CGRect)editingRectForBounds:(CGRect)bounds {
-    return CGRectMake(30, bounds.origin.y + 5, bounds.size.width, bounds.size.height);
+    
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        return CGRectMake(bounds.size.width - 30 ,bounds.origin.y + 5,bounds.origin.y- bounds.size.width -5, bounds.size.height);
+        
+    }
+    else
+    {
+        return CGRectMake(30, bounds.origin.y + 5, bounds.size.width, bounds.size.height);
+ 
+    }
+
 }
 
-- (CGRect)textRectForBounds:(CGRect)bounds {
-    return CGRectMake(30, bounds.origin.y + 5, bounds.size.width, bounds.size.height);
+- (CGRect)textRectForBounds:(CGRect)bounds
+{
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        return CGRectMake(bounds.size.width - 30 ,bounds.origin.y + 5,bounds.origin.y- bounds.size.width -5, bounds.size.height);
+        
+    }
+    else
+    {
+        return CGRectMake(30, bounds.origin.y + 5, bounds.size.width, bounds.size.height);
+        
+    }
 }
 
 - (void)animateViewsForTextEntry {
     if (self.text.length == 0) {
         [UIView animateWithDuration:0.35 delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:1.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                self.placeholderLabel.frame = CGRectMake(self.bounds.size.width - self.placeholderLabel.frame.size.width - 30,self.placeholderLabel.frame.origin.y- self.placeholderLabel.frame.origin.y, CGRectGetWidth(self.placeholderLabel.frame) , CGRectGetHeight(self.placeholderLabel.frame));
+
+            }
+            else{
+            
             self.placeholderLabel.frame = CGRectMake(20, self.placeholderLabel.frame.origin.y, CGRectGetWidth(self.placeholderLabel.frame), CGRectGetHeight(self.placeholderLabel.frame));
+            }
             self.placeholderLabel.textColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
         } completion:^(BOOL finished) {
             if (self.didBeginEditingHandler != nil) {
@@ -214,20 +255,18 @@ static CGPoint const placeholderInsets = {0, 6};
 - (void)layoutPlaceholderInTextRect {
     CGRect textRect = [self textRectForBounds:self.bounds];
     CGFloat originX = 30;
-//    
-//    switch (self.textAlignment) {
-//        case NSTextAlignmentCenter:
-//            originX += textRect.size.width/2-self.placeholderLabel.bounds.size.width/2;
-//            break;
-//        case NSTextAlignmentRight:
-//            originX += textRect.size.width-self.placeholderLabel.bounds.size.width;
-//            break;
-//       default:
-//           break;
-//    }
     
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        self.placeholderLabel.frame = CGRectMake(self.bounds.size.width - self.placeholderLabel.frame.size.width -30, textRect.size.height/3.5, CGRectGetWidth(self.placeholderLabel.bounds), CGRectGetHeight(self.placeholderLabel.bounds));
+        self.activePlaceholderPoint = CGPointMake(self.bounds.size.width - self.placeholderLabel.frame.size.width - 30, self.placeholderLabel.frame.origin.y-self.placeholderLabel.frame.size.height +5);
+
+    }
+    else
+    {
     self.placeholderLabel.frame = CGRectMake(originX, textRect.size.height/2.5, CGRectGetWidth(self.placeholderLabel.bounds), CGRectGetHeight(self.placeholderLabel.bounds));
     self.activePlaceholderPoint = CGPointMake(30, self.placeholderLabel.frame.origin.y-self.placeholderLabel.frame.size.height);
+    }
 }
 
 @end

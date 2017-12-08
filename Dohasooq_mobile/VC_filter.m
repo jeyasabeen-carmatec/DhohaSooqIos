@@ -40,20 +40,6 @@
     upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];
 
 
-    
-//    _MAX_slider.minimumValue = 0;
-//    _MIN_slider.minimumValue = 0;
-//    _MAX_slider.maximumValue = 3000;
-//    _MIN_slider.maximumValue = 3000;
-//    _MAX_slider.value = 3000;
-////    _LBL_min.text = [NSString stringWithFormat:@"%f",_MAX_slider.value];
-////    _LBL_max.text = [NSString stringWithFormat:@"%f",_MIN_slider.value];
-//    [_MAX_slider addTarget:self action:@selector(slider_changed) forControlEvents:UIControlEventAllEvents];
-//    [_MIN_slider addTarget:self action:@selector(slider_changed_min) forControlEvents:UIControlEventAllEvents];
-
-    
-    
-    
     [_BTN_submit addTarget:self action:@selector(submit_ACTION) forControlEvents:UIControlEventTouchUpInside];
     
     

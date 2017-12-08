@@ -89,7 +89,7 @@
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L7G-Rp-Stz">
                         <rect key="frame" x="11" y="205" width="180" height="30"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
+                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="13"/>
                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -116,6 +116,7 @@
                 </subviews>
             </tableViewCellContentView>
             <connections>
+                <outlet property="BTN_rating" destination="Km2-bG-nCK" id="09o-nP-Xyk"/>
                 <outlet property="IMG_item_image" destination="wAa-cg-VvZ" id="waS-As-Dcu"/>
                 <outlet property="IMG_track" destination="Lml-GV-Csg" id="Dx8-XV-zOH"/>
                 <outlet property="LBL_Deliver_on" destination="L7G-Rp-Stz" id="5W9-2w-c2f"/>

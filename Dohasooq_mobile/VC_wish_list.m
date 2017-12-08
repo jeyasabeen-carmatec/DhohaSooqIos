@@ -13,7 +13,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 @interface VC_wish_list ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate>
 {
-    NSMutableArray *arr_product,*response_Arr;
+    NSMutableArray *response_Arr;
     NSInteger product_count;
     UITapGestureRecognizer *tapGesture1 ;
     UIView *VW_overlay;
@@ -29,8 +29,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UINib *nib = [UINib nibWithNibName:@"wish_list_cell" bundle:nil];
-    [_TBL_wish_list_items registerNib:nib forCellReuseIdentifier:@"wish_list_cell"];
+//    UINib *nib = [UINib nibWithNibName:@"wish_list_cell" bundle:nil];
+//    [_TBL_wish_list_items registerNib:nib forCellReuseIdentifier:@"wish_list_cell"];
+//    [_TBL_wish_list_items registerNib:nib forCellReuseIdentifier:@"Qwish_list_cell"];
     
     [self set_UP_VIEW];
 }
@@ -113,15 +114,29 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    
-        wish_list_cell *cell = (wish_list_cell *)[tableView dequeueReusableCellWithIdentifier:@"wish_list_cell"];
-    
+    NSString *identifier;
+    NSInteger index;
+
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
         
+        identifier = @"Qwish_list_cell";
+        index = 1;
+
+    }
+    else{
+        identifier = @"wish_list_cell";
+        index = 0;
+
+
+    }
+     wish_list_cell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    
         if (cell == nil)
         {
             NSArray *nib;
             nib = [[NSBundle mainBundle] loadNibNamed:@"wish_list_cell" owner:self options:nil];
-            cell = [nib objectAtIndex:0];
+            cell = [nib objectAtIndex:index];
         }
 
      #pragma Webimage URl Cachee
@@ -144,7 +159,7 @@
 //    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
 //    [paragraphStyle setAlignment:NSTextAlignmentCenter];
 
-    NSString *text = [NSString stringWithFormat:@"QR %@ QR %@",current_price,prec_price];
+    NSString *text = [NSString stringWithFormat:@"QR %@ QR%@",current_price,prec_price];
 
         if ([cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
             
@@ -167,7 +182,6 @@
 //                [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
                 //NSParagraphStyleAttributeName
                 cell.LBL_current_price.attributedText = attributedText;
-                
                 
                 
             }
@@ -197,20 +211,21 @@
             //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
             if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor]}
                                         range:cmp];
             }
             else
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:13.0],NSForegroundColorAttributeName:[UIColor grayColor],}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:13.0],NSForegroundColorAttributeName:[UIColor blackColor],}
                                         range:cmp ];
             }
             @try {
-                [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(current_price.length+7, [prec_price length])];
+                [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(current_price.length+4, [prec_price length]+2)];
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
             }
             cell.LBL_current_price.attributedText = attributedText;
+               
 
         }
         }
@@ -218,6 +233,10 @@
         {
             cell.LBL_current_price.text = text;
         }
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        cell.LBL_current_price.textAlignment = NSTextAlignmentRight;
+    }
         
         UIImage *newImage = [cell.BTN_close.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         UIGraphicsBeginImageContextWithOptions(cell.BTN_close.image.size, NO, newImage.scale);
@@ -229,7 +248,7 @@
         
         cell.BTN_close .userInteractionEnabled = YES;
         
-       tapGesture1 = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tapGesture_close)];
+    tapGesture1 = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tapGesture_close:)];
         
         tapGesture1.numberOfTapsRequired = 1;
         
@@ -305,9 +324,9 @@
 {
     NSLog(@"cart_clicked");
 }
--(void)tapGesture_close
+-(void)tapGesture_close:(UITapGestureRecognizer *)tapgstr
 {
-    CGPoint location = [tapGesture1 locationInView:_TBL_wish_list_items];
+    CGPoint location = [tapgstr locationInView:_TBL_wish_list_items];
     NSIndexPath *indexPath = [_TBL_wish_list_items indexPathForRowAtPoint:location];
     NSString *product_id = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.row] valueForKey:@"id"]];
     
@@ -321,14 +340,21 @@
     wish_list_cell *cell = (wish_list_cell *)[self.TBL_wish_list_items cellForRowAtIndexPath:index];
     product_count = [cell._TXT_count.text integerValue];
     if (product_count<= 0) {
-        [btn removeTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+       
+        product_count = 0;
+        
     }
     else{
         product_count = product_count-1;
         cell._TXT_count.text = [NSString stringWithFormat:@"%ld",product_count];
-        [self.TBL_wish_list_items reloadData];
     }
-   
+    NSString *product_id = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:index.row] valueForKey:@"id"] ];
+    [[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];
+    
+    [[NSUserDefaults standardUserDefaults]setObject:cell._TXT_count.text forKey:@"item_count"];
+    // Update cart Api method calling
+    
+    [self updating_cart_List_api];
 }
 -(void)plus_action:(UIButton*)btn
 {
@@ -337,8 +363,15 @@
     product_count = [cell._TXT_count.text integerValue];
     product_count = product_count+1;
     cell._TXT_count.text = [NSString stringWithFormat:@"%ld",product_count];
-    [self.TBL_wish_list_items reloadData];
     
+   NSString *product_id = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:index.row] valueForKey:@"id"] ];
+    [[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];
+    
+    [[NSUserDefaults standardUserDefaults]setObject:cell._TXT_count.text forKey:@"item_count"];
+    // Update cart Api method calling
+    
+    [self updating_cart_List_api];
+
     
 }
 - (IBAction)back_action_clicked:(id)sender {
@@ -348,6 +381,10 @@
 #pragma wish_list_api_calling
 
 -(void)wish_list_api_calling{
+    
+    
+    
+    @try {
     response_Arr = [[NSMutableArray alloc]init];
 
     
@@ -370,12 +407,18 @@
                 }
                 if (data) {
                     @try {
-                        //[response_Arr addObjectsFromArray:data];
                         VW_overlay.hidden = YES;
                         [activityIndicatorView stopAnimating];
-                        response_Arr = data;
-                        NSLog(@"Wish List Data*******%@*********",response_Arr);
-                        [self.TBL_wish_list_items reloadData];
+                        
+                        if ([data isKindOfClass:[NSArray class]]) {
+                            response_Arr = data;
+                            NSLog(@"Wish List Data*******%@*********",response_Arr);
+                            [self.TBL_wish_list_items reloadData];
+                        }
+                        else{
+                            [HttpClient createaAlertWithMsg:@"The data is in Unknown format" andTitle:@""];
+                        }
+                       
                     } @catch (NSException *exception) {
                         NSLog(@"%@",exception);
                     }
@@ -390,55 +433,62 @@
         [activityIndicatorView stopAnimating];
         NSLog(@"%@",exception);
     }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
 }
-#pragma add_to_cart_API_calling
+#pragma mark  add_to_cart_API_calling
 
 -(void)add_to_cart_API_calling{
-    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
-    NSString *items_count = [[NSUserDefaults standardUserDefaults]valueForKey:@"item_count"];
     
-    //apis/addcartapi.json
-    
-//    this->request->data['pdtId'];
-//    $userId = $this->request->data['userId'];
-//    $qtydtl = $this->request->data['quantity'];
-//    $custom = $this->request->data['custom'];
-//    $variant = $this->request->data['variant'];
-    
-    
-    NSError *error;
-    NSHTTPURLResponse *response = nil;
-    // NSDictionary *parameters = @{@"pdtId":[[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"],@"userId":user_id,@"quantity":items_count,@"custom":@"",@"variant":@""};
-    
-    NSString *pdId = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"];
-    NSDictionary *parameters = @{@"pdtId":pdId,@"userId":user_id,@"quantity":items_count,@"custom":@"",@"variant":@""};
-    
-    NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&error];
-    NSURL *urlProducts=[NSURL URLWithString:[NSString stringWithFormat:@"%@apis/addcartapi.json",SERVER_URL]];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL:urlProducts];
-    [request setHTTPMethod:@"POST"];
-    [request setHTTPBody:postData];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-    if (error) {
-        [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
-    }
-    
-    if(aData)
-    {
-        NSMutableDictionary *dict = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
-        NSLog(@"Response  Error %@ Response %@",error,dict);
-        [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
+    @try {
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+        NSString *items_count = [[NSUserDefaults standardUserDefaults]valueForKey:@"item_count"];
+        
+        //apis/addcartapi.json
+        
+        //    this->request->data['pdtId'];
+        //    $userId = $this->request->data['userId'];
+        //    $qtydtl = $this->request->data['quantity'];
+        //    $custom = $this->request->data['custom'];
+        //    $variant = $this->request->data['variant'];
+        
+        
+        NSError *error;
+        NSHTTPURLResponse *response = nil;
+        // NSDictionary *parameters = @{@"pdtId":[[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"],@"userId":user_id,@"quantity":items_count,@"custom":@"",@"variant":@""};
+        
+        NSString *pdId = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"];
+        NSDictionary *parameters = @{@"pdtId":pdId,@"userId":user_id,@"quantity":items_count,@"custom":@"",@"variant":@""};
+        
+        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&error];
+        NSURL *urlProducts=[NSURL URLWithString:[NSString stringWithFormat:@"%@apis/addcartapi.json",SERVER_URL]];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:urlProducts];
+        [request setHTTPMethod:@"POST"];
+        [request setHTTPBody:postData];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if (error) {
+            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+        }
+        
+        if(aData)
+        {
+            NSMutableDictionary *dict = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            NSLog(@"Response  Error %@ Response %@",error,dict);
+            [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
     }
 
 }
-#pragma cart_count_api
-
+#pragma mark  cart_count_api
 -(void)cart_count{
     
-   NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
     [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
         if (error) {
             [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
@@ -448,25 +498,40 @@
             NSLog(@"%@",data);
             @try {
                 NSString *badge_value = [NSString stringWithFormat:@"%@",[data valueForKey:@"count"]];
-                //NSString *badge_value = @"11";
-                if(badge_value.length > 2)
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
                     
+                    if(badge_value.length > 2)
+                    {
+                        self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
+                        
+                    }
+                    else{
+                        self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
+                        
+                    }
                 }
                 else{
-                    self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
-                    
+                    if(badge_value.length > 2)
+                    {
+                        self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
+                        
+                    }
+                    else{
+                        self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
+                        
+                    }
                 }
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
             }
-
+            
         }
     }];
 }
 
-#pragma delete_from_wishList_API_calling
+
+#pragma mark delete_from_wishList_API_calling
 
 -(void)delete_from_wishLis{
     
@@ -479,6 +544,8 @@ http://192.168.0.171/dohasooq/apis/delFromWishList/1/24.json
     User_Id = 24
 
 */
+    
+    @try {
     
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *user_ID = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
@@ -510,9 +577,13 @@ http://192.168.0.171/dohasooq/apis/delFromWishList/1/24.json
             });
             
         }];
+         } @catch (NSException *exception) {
+                        NSLog(@"%@",exception);
+
+    }
+        
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-
     }
 }
 
@@ -530,9 +601,72 @@ http://192.168.0.171/dohasooq/apis/delFromWishList/1/24.json
     [self performSegueWithIdentifier:@"wish_to_cart" sender:self];
 }
 -(void)btn_add_cart_action:(UIButton*)cart_btn{
-    [self performSelector:@selector(add_to_cart_API_calling) withObject:nil afterDelay:0.01];
-
+    
+    @try {
+        NSIndexPath *index = [NSIndexPath indexPathForRow:cart_btn.tag inSection:0];
+        NSString *product_id = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:index.row] valueForKey:@"id"] ];
+        [[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];
+        wish_list_cell *cell = (wish_list_cell *)[self.TBL_wish_list_items cellForRowAtIndexPath:index];
+        [[NSUserDefaults standardUserDefaults]setObject:cell._TXT_count.text forKey:@"item_count"];
+        [self performSelector:@selector(add_to_cart_API_calling) withObject:nil afterDelay:0.01];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
 }
+
+#pragma mark updating_cart_API
+/*
+ Update cart
+ apis/updatecartapi.json
+ Parameters :
+ 
+ quantity,
+ productId,
+ customerId
+ 
+ Method : POST
+ */
+
+-(void)updating_cart_List_api{
+    
+    @try {
+        
+    
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+    
+    NSDictionary *parameters = @{@"quantity":[[NSUserDefaults standardUserDefaults] valueForKey:@"item_count"],@"productId":[[NSUserDefaults standardUserDefaults]valueForKey:@"product_id"],@"customerId":custmr_id};
+    
+    NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/updatecartapi.json",SERVER_URL];
+    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    
+    
+    [HttpClient api_with_post_params:urlGetuser andParams:parameters completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                NSLog(@"%@",[error localizedDescription]);
+            }
+            if (data) {
+                //NSLog(@"%@",data);
+                
+                
+                @try {
+                    [HttpClient createaAlertWithMsg:[data valueForKey:@"message"] andTitle:@""];
+                } @catch (NSException *exception) {
+                    NSLog(@"exception:: %@",exception);
+                }
+                
+                
+            }
+            
+        });
+        
+    }];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
+}
+
 
 @end
 

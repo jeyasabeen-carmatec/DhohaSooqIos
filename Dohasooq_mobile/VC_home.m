@@ -18,6 +18,8 @@
 #import "dynamic_categirie_cell.h"
 #import "HttpClient.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "product_cell.h"
+#import "VC_product_detail.h"
 
 @interface VC_home ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource>
 {
@@ -27,6 +29,8 @@
     int tag;
     NSMutableDictionary *json_Response_Dic;
     float scroll_ht;
+    UIView *VW_overlay;
+    UIActivityIndicatorView *activityIndicatorView;
     
 }
 //@property(nonatomic, readonly) NSArray<__kindof UICollectionViewCell *> *visibleCells;
@@ -46,22 +50,40 @@
     [self.collection_images registerNib:[UINib nibWithNibName:@"cell_image" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
     [self.collection_features registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"features_cell"];
     //         [self.collection_brands registerNib:[UINib nibWithNibName:@"cell_brands" bundle:nil]  forCellWithReuseIdentifier:@"brands_cell"];
-    [self.collection_hot_deals registerNib:[UINib nibWithNibName:@"hot_deals_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_hot_deals"];
-    [self.collection_best_deals registerNib:[UINib nibWithNibName:@"Best_deals_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_best"];
-    [self.collection_fashion_categirie registerNib:[UINib nibWithNibName:@"Fashion_categorie_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_fashion"];
-    
-    
-    
+    [self.collection_hot_deals registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
+    [self.collection_best_deals registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
+    [self.collection_fashion_categirie registerNib:[UINib nibWithNibName:@"Fashion_categorie_cell" bundle:nil]  forCellWithReuseIdentifier:@"fashion_categorie"];
+    _Hot_deals.text = @"WOMEN'S FASHION ACCESORIES";
+    brands_arr = [[NSMutableArray alloc]init];
+    [self set_up_VIEW];
     // [self menu_set_UP];
     
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [self API_call_total];
-    [self brands_API_call];
     
-    [self set_up_VIEW];
+    self.navigationController.navigationBar.hidden = NO;
+    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    VW_overlay.clipsToBounds = YES;
+    
+    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+    activityIndicatorView.center = VW_overlay.center;
+    [VW_overlay addSubview:activityIndicatorView];
+    VW_overlay.center = self.view.center;
+    [self.view addSubview:VW_overlay];
+    VW_overlay.hidden = YES;
+
+    
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(API_call_total) withObject:activityIndicatorView afterDelay:0.01];
+
+
+    
+  
     
 }
 
@@ -218,7 +240,6 @@
         self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
         
     }
-    brands_arr = [[NSMutableArray alloc]init];
     //    brands_arr = [NSMutableArray arrayWithObjects:@"brand.png",@"brand.png",@"brand.png",@"brand.png",@"brand.png",@"brand.png",@"brand.png",@"brand.png",nil];
     
     temp_arr = [[NSMutableArray alloc]init];
@@ -252,168 +273,273 @@
     setupframe.size.width = _Scroll_contents.frame.size.width;
     _VW_First.frame = setupframe;
     [self.Scroll_contents addSubview:_VW_First];
-    // if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count])
     
-    NSLog(@"the count is:%lu",[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count]);
-    
-    
-    
-    
-    if([[json_Response_Dic valueForKey:@"deal"] count] < 1)
-    {
-        scroll_ht = _VW_First.frame.origin.y + _VW_First.frame.size.height;
-    }
-    else
-    {
-        setupframe = _collection_hot_deals.frame;
+    @try {
         
-        for(int m = 0;m<[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"]count];m++)
+    NSString *hot_deals_IMG_url = [NSString stringWithFormat:@"%@uploads/widgets/%@",SERVER_URL,[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:0] valueForKey:@"Widgets"] valueForKey:@"widget_image"]];
+    hot_deals_IMG_url = [hot_deals_IMG_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    
+    [_IMG_hot_deals sd_setImageWithURL:[NSURL URLWithString:hot_deals_IMG_url]
+                      placeholderImage:[UIImage imageNamed:@"logo.png"]
+                               options:SDWebImageRefreshCached];
+    
+    
+    NSString *best_deals_IMG_url = [NSString stringWithFormat:@"%@uploads/widgets/%@",SERVER_URL,[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0]objectAtIndex:0] valueForKey:@"Widgets"] valueForKey:@"widget_image"]];
+    best_deals_IMG_url = [best_deals_IMG_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    
+    [_IMG_best_deals sd_setImageWithURL:[NSURL URLWithString:best_deals_IMG_url]
+                       placeholderImage:[UIImage imageNamed:@"logo.png"]
+                                options:SDWebImageRefreshCached];
+    
+    
+    _IMG_hot_deals .userInteractionEnabled = YES;
+    
+    UITapGestureRecognizer *hot_deals_hesture = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(hot_deals_action)];
+    
+    hot_deals_hesture.numberOfTapsRequired = 1;
+    
+    [hot_deals_hesture setDelegate:self];
+    
+    [_IMG_hot_deals addGestureRecognizer:hot_deals_hesture];
+    
+    _IMG_best_deals .userInteractionEnabled = YES;
+    
+    UITapGestureRecognizer *best_deals_gesture = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(best_deals_action)];
+    
+    best_deals_gesture.numberOfTapsRequired = 1;
+    
+    [best_deals_gesture setDelegate:self];
+    
+    [_IMG_best_deals addGestureRecognizer:best_deals_gesture];
+    
+    
+
+    
+    setupframe = _VW_second.frame;
+    setupframe.origin.y = _VW_First.frame.origin.y + _VW_First.frame.size.height;
+    setupframe.size.height = _collection_hot_deals.frame.origin.y + _collection_hot_deals.collectionViewLayout.collectionViewContentSize.height+10;
+    setupframe.size.width = _Scroll_contents.frame.size.width;
+    _VW_second.frame = setupframe;
+    [self.Scroll_contents addSubview:_VW_second];
+    
+    [_collection_best_deals reloadData];
+    
+    
+    setupframe = _VW_third.frame;
+    setupframe.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height +10;
+    setupframe.size.height = _collection_best_deals.frame.origin.y + _collection_best_deals.collectionViewLayout.collectionViewContentSize.height+10;
+    setupframe.size.width = _Scroll_contents.frame.size.width;
+    _VW_third.frame = setupframe;
+    [self.Scroll_contents addSubview:_VW_third];
+    
+    [_collection_fashion_categirie reloadData];
+    
+    setupframe = _VW_Fourth.frame;
+    setupframe.origin.y = _VW_third.frame.origin.y + _VW_third.frame.size.height +10;
+    setupframe.size.height = _collection_fashion_categirie.frame.origin.y + _collection_fashion_categirie.collectionViewLayout.collectionViewContentSize.height+10;
+    setupframe.size.width = _Scroll_contents.frame.size.width;
+    _VW_Fourth.frame = setupframe;
+    [self.Scroll_contents addSubview:_VW_Fourth];
+        NSArray *fashion = [[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-2"];
+        NSLog(@"THE count:%lu",(unsigned long)fashion.count);
+    
+    
+    
+        if([[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"]count] < 1)
         {
-            if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count]>2)
+            _VW_second.hidden = YES;
+            if([[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"]count] < 1)
             {
-                setupframe.size.height = _collection_hot_deals.frame.origin.y+_collection_hot_deals.frame.size.height;
+                _VW_third.hidden = YES;
+                if(brands_arr.count < 1)
+                {
+                    if([[json_Response_Dic valueForKey:@"bannerFashion"]count] < 1)
+                    {
+                        _VW_Fourth.hidden = YES;
+                    }
+                    
+                }
+                else
+                {
+                    _VW_Fourth.hidden = NO;
+                    if([[json_Response_Dic valueForKey:@"bannerFashion"]count]< 1)
+                    {
+                        _collection_fashion_categirie.hidden = YES;
+                    }
+                    else
+                    {
+                        setupframe = _VW_Fourth.frame;
+                        setupframe.origin.y  = _VW_First.frame.origin.y + _VW_First.frame.size.height;
+                        _VW_Fourth.frame = setupframe;
+                        
+                    }
+                }
                 
             }
             else
             {
-                setupframe.size.height = 240;
+                setupframe = _VW_third.frame;
+                setupframe.origin.y  = _VW_First.frame.origin.y + _VW_First.frame.size.height;
+                _VW_third.frame = setupframe;
+                if(brands_arr.count < 1)
+                {
+                    if([[json_Response_Dic valueForKey:@"bannerFashion"]count] < 1)
+                    {
+                        _VW_Fourth.hidden = YES;
+                    }
+                    
+                }
+                else
+                {
+                    _VW_Fourth.hidden = NO;
+                    if([[json_Response_Dic valueForKey:@"bannerFashion"]count]< 1)
+                    {
+                        _collection_fashion_categirie.hidden = YES;
+                    }
+                    else
+                    {
+                        setupframe = _VW_Fourth.frame;
+                        setupframe.origin.y  = _VW_third.frame.origin.y + _VW_third.frame.size.height;
+                        _VW_Fourth.frame = setupframe;
+                        
+                    }
+                }
+                
+            }
+            
+            
+        }
+        else
+        {
+            _VW_second.hidden = NO;
+            
+            if([[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"]count] < 1)
+            {
+                _VW_third.hidden = YES;
+                if(brands_arr.count < 1)
+                {
+                    if([[json_Response_Dic valueForKey:@"bannerFashion"]count] < 1)
+                    {
+                        _VW_Fourth.hidden = YES;
+                    }
+                    
+                }
+                else
+                {
+                    _VW_Fourth.hidden = NO;
+                    if([[json_Response_Dic valueForKey:@"bannerFashion"]count] < 1)
+                    {
+                        _collection_fashion_categirie.hidden = YES;
+                    }
+                    else
+                    {
+                        setupframe = _VW_Fourth.frame;
+                        setupframe.origin.y  = _VW_second.frame.origin.y + _VW_second.frame.size.height;
+                        _VW_Fourth.frame = setupframe;
+                        
+                    }
+                }
+                
+            }
+            else
+            {
+                _VW_third.hidden = NO;
+                setupframe = _VW_third.frame;
+                setupframe.origin.y  = _VW_second.frame.origin.y + _VW_second.frame.size.height;
+                _VW_third.frame = setupframe;
+                if(brands_arr.count < 1)
+                {
+                    if([[json_Response_Dic valueForKey:@"bannerFashion"]count] < 1)
+                    {
+                        _VW_Fourth.hidden = YES;
+                    }
+                    
+                }
+                else
+                {
+                    _VW_Fourth.hidden = NO;
+                    if([[json_Response_Dic valueForKey:@"bannerFashion"]count] < 1)
+                    {
+                        _collection_fashion_categirie.hidden = YES;
+                    }
+                    else
+                    {
+                        setupframe = _VW_Fourth.frame;
+                        setupframe.origin.y  = _VW_third.frame.origin.y + _VW_third.frame.size.height;
+                        _VW_Fourth.frame = setupframe;
+                        
+                    }
+                }
+                
+                
+                
+            }
+            
+            
+        }
+    if(_VW_second.hidden == YES)
+    {
+        if(_VW_third.hidden == YES)
+        {
+            if(_VW_Fourth.hidden == YES)
+            {
+                scroll_ht = _VW_First.frame.origin.y + _VW_First.frame.size.height;
+            }
+            else
+            {
+                scroll_ht = _VW_Fourth.frame.origin.y + _VW_Fourth.frame.size.height;
                 
             }
         }
-        _collection_hot_deals.frame = setupframe;
+        else
+        {
+            if(_VW_Fourth.hidden == YES)
+            {
+                scroll_ht = _VW_third.frame.origin.y + _VW_third.frame.size.height;
+                
+            }
+            else
+            {
+                scroll_ht = _VW_Fourth.frame.origin.y + _VW_Fourth.frame.size.height;
+                
+            }
+            
+            
+        }
         
-        setupframe = _VW_second.frame;
-        setupframe.origin.y = _VW_First.frame.origin.y + _VW_First.frame.size.height;
-        setupframe.size.height = _collection_hot_deals.frame.origin.y + _collection_hot_deals.frame.size.height;
-        setupframe.size.width = _Scroll_contents.frame.size.width;
-        _VW_second.frame = setupframe;
-        
-        [self.Scroll_contents addSubview:_VW_second];
     }
-    
-    setupframe = _collection_best_deals.frame;
-    
-    for(int m = 0;m<[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"]count];m++)
+    else
     {
-        if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:m] count]>2)
+        if(_VW_third.hidden == YES)
         {
-            setupframe.size.height =_collection_best_deals.frame.origin.y+ _collection_best_deals.frame.size.height;
-            
-        }
-        else if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] count] < 1)
-        {
-            
-            setupframe.size.height = 0;
-        }
-        else
-        {
-            setupframe.size.height = 240;
-            
-        }
-        
-        
-        _collection_best_deals.frame = setupframe;
-        
-        if(_collection_best_deals.frame.size.height == 0)
-        {
-            _VW_third.hidden = YES;
-        }
-        
-        else if(_VW_second.hidden == YES)
-        {
-            setupframe = _VW_third.frame;
-            setupframe.origin.y = _VW_First.frame.origin.y + _VW_First.frame.size.height +10;
-            setupframe.size.height = _collection_best_deals.frame.origin.y + _collection_best_deals.frame.size.height ;
-            setupframe.size.width = _Scroll_contents.frame.size.width;
-            _VW_third.frame = setupframe;
-            [self.Scroll_contents addSubview:_VW_third];
-            
+            if(_VW_Fourth.hidden == YES)
+            {
+                scroll_ht = _VW_second.frame.origin.y + _VW_second.frame.size.height;
+            }
+            else
+            {
+                scroll_ht = _VW_Fourth.frame.origin.y + _VW_Fourth.frame.size.height;
+
+            }
         }
         else
         {
-            setupframe = _VW_third.frame;
-            setupframe.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height +10;
-            setupframe.size.height = _collection_best_deals.frame.origin.y + _collection_best_deals.frame.size.height ;
-            setupframe.size.width = _Scroll_contents.frame.size.width;
-            _VW_third.frame = setupframe;
-            [self.Scroll_contents addSubview:_VW_third];
-            
-            
-        }
-        
-        setupframe = _collection_fashion_categirie.frame;
-        if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count]>2)
-        {
-            setupframe.size.height = _collection_fashion_categirie.frame.origin.y+_collection_fashion_categirie.frame.size.height;
-            
-            
-        }
-        else if([[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] count] < 1)
-        {
-            
-            setupframe.size.height = 0;
-        }
-        else
-        {      setupframe.size.height =240;
-            
-        }
-        _collection_fashion_categirie.frame = setupframe;
-        
-        if(_collection_fashion_categirie.frame.size.height == 0)
-        {
-            _VW_Fourth.hidden = YES;
-            
-            
-        }
-        else if(_VW_second.hidden == YES && _VW_third.hidden == YES)
-        {
-            setupframe = _VW_Fourth.frame;
-            setupframe.origin.y = _VW_First.frame.origin.y + _VW_First.frame.size.height +10;
-            setupframe.size.height = _collection_fashion_categirie.frame.origin.y + _collection_fashion_categirie.frame.size.height ;
-            setupframe.size.width = _Scroll_contents.frame.size.width;
-            _VW_Fourth.frame = setupframe;
-            [self.Scroll_contents addSubview:_VW_Fourth];
-            
-        }
-        else if(_VW_third.hidden == YES)
-        {
-            setupframe = _VW_Fourth.frame;
-            setupframe.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height +10;
-            setupframe.size.height = _collection_fashion_categirie.frame.origin.y + _collection_fashion_categirie.frame.size.height ;
-            setupframe.size.width = _Scroll_contents.frame.size.width;
-            _VW_Fourth.frame = setupframe;
-            [self.Scroll_contents addSubview:_VW_Fourth];
-            
-            
-            
-        }
-        else
-        {
-            setupframe = _VW_Fourth.frame;
-            setupframe.origin.y = _VW_third.frame.origin.y + _VW_third.frame.size.height +10;
-            setupframe.size.height = _collection_fashion_categirie.frame.origin.y + _collection_fashion_categirie.frame.size.height;
-            setupframe.size.width = _Scroll_contents.frame.size.width;
-            _VW_Fourth.frame = setupframe;
-            [self.Scroll_contents addSubview:_VW_Fourth];
-            
-            
-        }
-        if(_VW_Fourth.hidden == YES && _VW_third.hidden == YES && _VW_second.hidden == YES)
-        {
-            scroll_ht = _VW_First.frame.origin.y + _VW_First.frame.size.height;
-            
-        }
-        else if(_VW_second.hidden == YES && _VW_third.hidden == YES )
-        {
+            if(_VW_Fourth.hidden == YES)
+            {
+                scroll_ht = _VW_third.frame.origin.y + _VW_third.frame.size.height;
+                
+            }
+            else
+            {
+                
             scroll_ht = _VW_Fourth.frame.origin.y + _VW_Fourth.frame.size.height;
-            
+ 
+            }
         }
-        else if(_VW_third.hidden == YES && _VW_Fourth.hidden == YES)
-        {
-            scroll_ht = _VW_second.frame.origin.y + _VW_second.frame.size.height;
-        }
+        
     }
     
+   
     
     self.search_bar.layer.borderWidth = 0.3f;
     self.search_bar.layer.masksToBounds = [UIColor blackColor];
@@ -427,6 +553,16 @@
     [_BTN_right addTarget:self action:@selector(BTN_right_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_left addTarget:self action:@selector(BTN_left_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_menu addTarget:self action:@selector(MENU_action) forControlEvents:UIControlEventTouchUpInside];
+     
+        _BTN_fashion.tag = 1;
+        [_BTN_fashion addTarget:self action:@selector(BTN_fashhion_cahnge) forControlEvents:UIControlEventTouchUpInside];
+
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
+    [self viewDidLayoutSubviews];
     
 }
 -(void)viewDidLayoutSubviews
@@ -477,7 +613,7 @@
     
     else if(collectionView == _collection_fashion_categirie)
     {
-        return [[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] count];
+        return [[json_Response_Dic valueForKey:@"bannerFashion"]count];
     }
     
     return 0;
@@ -489,13 +625,8 @@
     if(collectionView == _collection_images)
     {
         collection_img_cell *img_cell = (collection_img_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_image" forIndexPath:indexPath];
-        
-        NSString *url_Img_FULL = [SERVER_URL stringByAppendingPathComponent:[[[json_Response_Dic valueForKey:@"banners"] objectAtIndex:indexPath.row] valueForKey:@"banner"]];
-        
-        //        img_cell.img.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:url_Img_FULL]]];
-#pragma Webimage URl Cachee
-        
-        //NSString *img_url = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_image"]];
+        NSString *url_Img_FULL = [NSString stringWithFormat:@"%@uploads/banners/%@",SERVER_URL,[[[json_Response_Dic valueForKey:@"banners"] objectAtIndex:indexPath.row] valueForKey:@"banner"]];
+        url_Img_FULL  =[url_Img_FULL stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [img_cell.img sd_setImageWithURL:[NSURL URLWithString:url_Img_FULL]
                         placeholderImage:[UIImage imageNamed:@"logo.png"]
                                  options:SDWebImageRefreshCached];
@@ -506,162 +637,15 @@
         
         return img_cell;
     }
-    
-    else if(collectionView == _collection_hot_deals)
-    {
-        hot_deals_cell *hotdeals_cell = (hot_deals_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_hot_deals" forIndexPath:indexPath];
-        
-        @try
-        {
-            
-            NSString *url_Img_FULL = [SERVER_URL stringByAppendingPathComponent:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_image"]];
-#pragma Webimage URl Cachee
-            
-            [hotdeals_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:url_Img_FULL]
-                                      placeholderImage:[UIImage imageNamed:@"logo.png"]
-                                               options:SDWebImageRefreshCached];
-            
-            hotdeals_cell.LBL_item_name.text = [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"ProductDescriptions"] valueForKey:@"title"];
-            NSString *current_price = [NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"] ];
-            NSString *prec_price = [NSString stringWithFormat:@"%@", [[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_price"]];
-            NSString *text = [NSString stringWithFormat:@"QR %@ QR %@",current_price,prec_price];
-            
-            
-            
-            if ([hotdeals_cell.LBL_price respondsToSelector:@selector(setAttributedText:)]) {
-                
-                
-                NSDictionary *attribs = @{
-                                          NSForegroundColorAttributeName:hotdeals_cell.LBL_price.textColor,
-                                          NSFontAttributeName:hotdeals_cell.LBL_price.font
-                                          };
-                NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
-                
-                
-                
-                NSRange ename = [text rangeOfString:current_price];
-                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-                                            range:ename];
-                }
-                else
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:16.0]}
-                                            range:ename];
-                }
-                NSRange cmp = [text rangeOfString:prec_price];
-                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0],NSForegroundColorAttributeName:[UIColor grayColor]}
-                                            range:cmp];
-                }
-                else
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:13.0],NSForegroundColorAttributeName:[UIColor grayColor],}
-                                            range:cmp ];
-                }
-                hotdeals_cell.LBL_price.attributedText = attributedText;
-            }
-            else
-            {
-                hotdeals_cell.LBL_price.text = text;
-                
-            }
-            int  j = [prec_price intValue]-[current_price intValue];
-            float discount = (j*100)/[prec_price intValue];
-            NSString *str = @"% off";
-            hotdeals_cell.LBL_discount.text= [NSString stringWithFormat:@"%.0f%@ ",discount,str];
-            
-        }
-        @catch(NSException *exception)
-        {
-            
-        }
-        //hotdeals_cell.LBL_discount.text = [temp_dict valueForKey:@"key4"];
-        return hotdeals_cell;
-    }
-    else if(collectionView == _collection_best_deals)
-    {
-        Best_deals_cell *bestdeals_cell = (Best_deals_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_best" forIndexPath:indexPath];
-        @try
-        {NSString *url_Img_FULL = [SERVER_URL stringByAppendingPathComponent:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_image"]];
-#pragma Webimage URl Cachee
-            
-            [bestdeals_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:url_Img_FULL]
-                                       placeholderImage:[UIImage imageNamed:@"logo.png"]
-                                                options:SDWebImageRefreshCached];
-            
-            bestdeals_cell.LBL_best_item_name.text = [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"ProductDescriptions"] valueForKey:@"title"];
-            NSString *current_price = [NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"] ];
-            NSString *prec_price = [NSString stringWithFormat:@"%@", [[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_price"]];
-            NSString *text = [NSString stringWithFormat:@"QR %@ QR %@",current_price,prec_price];
-            
-            
-            
-            if ([bestdeals_cell.LBL_best_price respondsToSelector:@selector(setAttributedText:)]) {
-                
-                // Define general attributes for the entire text
-                NSDictionary *attribs = @{
-                                          NSForegroundColorAttributeName:bestdeals_cell.LBL_best_price.textColor,
-                                          NSFontAttributeName:bestdeals_cell.LBL_best_price.font
-                                          };
-                NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
-                
-                
-                
-                NSRange ename = [text rangeOfString:current_price];
-                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-                                            range:ename];
-                }
-                else
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:16.0]}
-                                            range:ename];
-                }
-                NSRange cmp = [text rangeOfString:prec_price];
-                
-                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0],NSForegroundColorAttributeName:[UIColor grayColor]}
-                                            range:cmp];
-                }
-                else
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:13.0],NSForegroundColorAttributeName:[UIColor grayColor],}
-                                            range:cmp ];
-                }
-                bestdeals_cell.LBL_best_price.attributedText = attributedText;
-            }
-            else
-            {
-                bestdeals_cell.LBL_best_price.text = text;
-            }
-            
-            int  j = [prec_price intValue]-[current_price intValue];
-            float discount = (j*100)/[prec_price intValue];
-            NSString *str = @"% off";
-            bestdeals_cell.LBL_best_discount.text = [NSString stringWithFormat:@"%.0f%@",discount,str];
-        }
-        @catch(NSException *exception)
-        {
-            
-        }
-        //bestdeals_cell.LBL_best_discount.text = [temp_dict valueForKey:@"key4"];
-        return bestdeals_cell;
-        
-    }
-    
     else if(collectionView == _collection_features)
     {
         cell_features *cell = (cell_features *)[collectionView dequeueReusableCellWithReuseIdentifier:@"features_cell" forIndexPath:indexPath];
         //cell.img.image = [UIImage imageNamed:[temp_arr objectAtIndex:indexPath.row]];
         
         @try {
-            NSString *url_Img_FULL = [SERVER_URL stringByAppendingPathComponent:[[[json_Response_Dic valueForKey:@"bannerLarge"] objectAtIndex:indexPath.row] valueForKey:@"banner"]];
-            //cell.img.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:url_Img_FULL]]];
+            NSString *url_Img_FULL = [NSString stringWithFormat:@"%@uploads/banners_ads/%@",SERVER_URL,[[[json_Response_Dic valueForKey:@"bannerLarge"] objectAtIndex:indexPath.row] valueForKey:@"banner"]];
+            url_Img_FULL  =[url_Img_FULL stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+            
             [cell.img sd_setImageWithURL:[NSURL URLWithString:url_Img_FULL]
                         placeholderImage:[UIImage imageNamed:@"logo.png"]];
             
@@ -675,20 +659,340 @@
         
         
     }
+
+    else if(collectionView == _collection_hot_deals)
+    {
+        product_cell *pro_cell = (product_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_product" forIndexPath:indexPath];
+        
+        @try
+        {
+            
+            
+#pragma Webimage URl Cachee
+            
+            NSString *url_Img_FULL =[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_image"]];
+            
+            [pro_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:url_Img_FULL]
+                                 placeholderImage:[UIImage imageNamed:@"logo.png"]
+                                          options:SDWebImageRefreshCached];
+            
+            
+            
+            pro_cell.LBL_item_name.text = [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"ProductDescriptions"] valueForKey:@"title"];
+            
+            pro_cell.LBL_rating.text = [NSString stringWithFormat:@"%@  ",[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_reviews"] valueForKey:@"rating"]];
+            int rating = [[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_reviews"] valueForKey:@"rating"] intValue];
+            if(rating <= 1)
+            {
+                 pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.92 green:0.39 blue:0.25 alpha:1.0];
+            }
+            else if(rating <= 2)
+            {
+                 pro_cell.LBL_rating.backgroundColor =[UIColor colorWithRed:0.96 green:0.69 blue:0.24 alpha:1.0];
+            }
+            else if(rating <= 3)
+            {
+                pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.19 green:0.56 blue:0.78 alpha:1.0];
+            }
+            else
+            {
+                pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.25 green:0.80 blue:0.51 alpha:1.0];
+            }
+            
+           
+            pro_cell.LBL_current_price.text = [NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"]];
+            
+            NSString *current_price = [NSString stringWithFormat:@"QR %@", [[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"]];
+            
+            NSString *prec_price = [NSString stringWithFormat:@"QR %@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_price"]];
+            NSString *text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
+            
+            if ([pro_cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
+                
+                
+                NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+                [paragraphStyle setAlignment:NSTextAlignmentCenter];
+                
+                if ([current_price isEqualToString:@"QR <null>"]) {
+                    
+                    
+                    NSString *text = [NSString stringWithFormat:@" %@",prec_price];
+                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
+                    
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor],}range:[text rangeOfString:prec_price] ];
+                    
+                    [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
+                    //NSParagraphStyleAttributeName
+                    pro_cell.LBL_current_price.attributedText = attributedText;
+                    
+                    
+                    
+                }
+                
+                else{
+                    
+                    // Define general attributes for the entire text
+                    //        NSDictionary *attribs = @{
+                    //                                  NSForegroundColorAttributeName:pro_cell.LBL_current_price.textColor,
+                    //                                  NSFontAttributeName:pro_cell.LBL_current_price.font
+                    //                                  };
+                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
+                    
+                    
+                    
+                    NSRange ename = [text rangeOfString:current_price];
+                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+                    {
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                                                range:ename];
+                    }
+                    else
+                    {
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                                                range:ename];
+                    }
+                    
+                    NSRange cmp = [text rangeOfString:prec_price];
+                    //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
+                    
+                    
+                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+                    {
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                                                range:cmp];
+                    }
+                    else
+                    {
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
+                    }
+                    [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
+                    [attributedText addAttribute:NSStrikethroughStyleAttributeName
+                                           value:@2
+                                           range:NSMakeRange([prec_price length]+4, [current_price length]-3)];
+                    pro_cell.LBL_current_price.attributedText = attributedText;
+                    
+                }
+            }
+            else
+            {
+                pro_cell.LBL_current_price.text = text;
+            }
+            if([prec_price isEqualToString:@"QR (null)"])
+            {
+                prec_price = 0;
+            }
+            else if([current_price isEqualToString:@"QR (null)"])
+            {
+                current_price =0;
+            }
+            
+            int prev_pricee = [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_price"] intValue];
+            int current_pricee =  [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"] intValue];
+            
+            int  n = prev_pricee-current_pricee;
+            float discount = (n*100)/prev_pricee;
+            
+            NSString *str = @"% off";
+            pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%.0f%@",discount,str];
+            [pro_cell.BTN_fav setTag:indexPath.row];//wishListStatus
+            
+            if ([[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"wishListStatus"] isEqualToString:@"Yes"]) {
+                
+                [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
+                [pro_cell.BTN_fav setTitleColor:[UIColor colorWithRed:244.f/255.f green:176.f/255.f blue:77.f/255.f alpha:1] forState:UIControlStateNormal];
+            }
+            else{
+                [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
+                
+                [pro_cell.BTN_fav setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            }
+            
+            [pro_cell.BTN_fav addTarget:self action:@selector(Wishlist_add:) forControlEvents:UIControlEventTouchUpInside];
+            
+            
+            
+        }
+        @catch(NSException *exception)
+        {
+            
+        }
+        //hotdeals_cell.LBL_discount.text = [temp_dict valueForKey:@"key4"];
+        
+        NSLog(@"The cell frame is :%@",NSStringFromCGRect(pro_cell.frame));
+        NSLog(@"The hot_deals frame is :%@",NSStringFromCGRect(_collection_hot_deals.frame));
+        
+        return pro_cell;
+    }
+    //collection Best deals
+    else if(collectionView == _collection_best_deals)
+    {
+        product_cell *pro_cell = (product_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_product" forIndexPath:indexPath];
+        
+        @try
+        {
+             NSString *url_Img_FULL =[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_image"]];
+            [pro_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:url_Img_FULL]
+                                 placeholderImage:[UIImage imageNamed:@"logo.png"]
+                                          options:SDWebImageRefreshCached];
+            
+            
+            
+            pro_cell.LBL_item_name.text = [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"ProductDescriptions"] valueForKey:@"title"];
+            
+            pro_cell.LBL_rating.text = [NSString stringWithFormat:@"%@  ",[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_reviews"] valueForKey:@"rating"]];
+            int rating = [[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_reviews"] valueForKey:@"rating"] intValue];
+            if(rating <= 1)
+            {
+                pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.92 green:0.39 blue:0.25 alpha:1.0];
+            }
+            else if(rating <= 2)
+            {
+                pro_cell.LBL_rating.backgroundColor =[UIColor colorWithRed:0.96 green:0.69 blue:0.24 alpha:1.0];
+            }
+            else if(rating <= 3)
+            {
+                pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.19 green:0.56 blue:0.78 alpha:1.0];
+            }
+            else
+            {
+                pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.25 green:0.80 blue:0.51 alpha:1.0];
+            }
+            
+
+            pro_cell.LBL_current_price.text = [NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"]];
+            
+            NSString *current_price = [NSString stringWithFormat:@"QR %@", [[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"]];
+            
+            NSString *prec_price = [NSString stringWithFormat:@"QR %@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_price"]];
+            NSString *text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
+            
+            if ([pro_cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
+                
+                
+                NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+                [paragraphStyle setAlignment:NSTextAlignmentCenter];
+                
+                if ([current_price isEqualToString:@"QR <null>"]) {
+                    
+                    
+                    NSString *text = [NSString stringWithFormat:@" %@",prec_price];
+                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
+                    
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor],}range:[text rangeOfString:prec_price] ];
+                    
+                    [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
+                    //NSParagraphStyleAttributeName
+                    pro_cell.LBL_current_price.attributedText = attributedText;
+                    
+                    
+                    
+                }
+                
+                else{
+                    
+                    // Define general attributes for the entire text
+                    //        NSDictionary *attribs = @{
+                    //                                  NSForegroundColorAttributeName:pro_cell.LBL_current_price.textColor,
+                    //                                  NSFontAttributeName:pro_cell.LBL_current_price.font
+                    //                                  };
+                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
+                    
+                    
+                    
+                    NSRange ename = [text rangeOfString:current_price];
+                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+                    {
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                                                range:ename];
+                    }
+                    else
+                    {
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                                                range:ename];
+                    }
+                    
+                    NSRange cmp = [text rangeOfString:prec_price];
+                    //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
+                    
+                    
+                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+                    {
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                                                range:cmp];
+                    }
+                    else
+                    {
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
+                    }
+                    [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
+                    [attributedText addAttribute:NSStrikethroughStyleAttributeName
+                                           value:@2
+                                           range:NSMakeRange([prec_price length]+4, [current_price length]-3)];
+                    pro_cell.LBL_current_price.attributedText = attributedText;
+                    
+                }
+            }
+            else
+            {
+                pro_cell.LBL_current_price.text = text;
+            }
+            if([prec_price isEqualToString:@"QR (null)"])
+            {
+                prec_price = 0;
+            }
+            else if([current_price isEqualToString:@"QR (null)"])
+            {
+                current_price =0;
+            }
+            
+            
+            int prev_pricee = [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_price"] intValue];
+            int current_pricee =  [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"] intValue];
+            
+            int  n = prev_pricee-current_pricee;
+            float discount = (n*100)/prev_pricee;
+            NSString *str = @"% off";
+            pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%.0f%@",discount,str];
+            [pro_cell.BTN_fav setTag:indexPath.row];//wishListStatus
+            
+            if ([[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"wishListStatus"] isEqualToString:@"Yes"]) {
+                
+                [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
+                [pro_cell.BTN_fav setTitleColor:[UIColor colorWithRed:244.f/255.f green:176.f/255.f blue:77.f/255.f alpha:1] forState:UIControlStateNormal];
+            }
+            else{
+                [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
+                
+                [pro_cell.BTN_fav setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            }
+            
+            [pro_cell.BTN_fav addTarget:self action:@selector(Wishlist_add:) forControlEvents:UIControlEventTouchUpInside];
+            
+            
+            
+        }
+        @catch(NSException *exception)
+        {
+            
+        }
+        return pro_cell;
+        
+        
+    }
     else if(collectionView == _collection_brands)
     {
         cell_brands *cell = (cell_brands *)[collectionView dequeueReusableCellWithReuseIdentifier:@"brands_cell" forIndexPath:indexPath];
         
         @try
         {
-            NSString *img_URL = [NSString stringWithFormat:@"%@%@",IMG_URL,[[brands_arr objectAtIndex:indexPath.row] valueForKey:@"logo"]];
-            
+            NSString *img_URL = [NSString stringWithFormat:@"%@uploads/brands/%@",SERVER_URL,[[brands_arr objectAtIndex:indexPath.row]  valueForKey:@"logo"]];
+            img_URL = [img_URL stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
             [cell.img sd_setImageWithURL:[NSURL URLWithString:img_URL]
                         placeholderImage:[UIImage imageNamed:@"brand.png"]
                                  options:SDWebImageRefreshCached];
-            //cell.img.image = [UIImage imageNamed:[brands_arr objectAtIndex:indexPath.row]];
             
-            //            cell.img.image = [UIImage imageNamed:[brands_arr objectAtIndex:indexPath.row]];
+            cell.contentView.layer.cornerRadius = 2.0f;
+            cell.contentView.layer.masksToBounds = YES;
             cell.img.layer.cornerRadius = 2.0f;
             cell.img.layer.masksToBounds = YES;
             
@@ -700,69 +1004,29 @@
         return cell;
         
         
+        
     }
+    //Collection Fashion categories
     else if(collectionView == _collection_fashion_categirie)
     {
-        Fashion_categorie_cell *fashion_cell = (Fashion_categorie_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_fashion" forIndexPath:indexPath];
+        Fashion_categorie_cell *pro_cell = (Fashion_categorie_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"fashion_categorie" forIndexPath:indexPath];
         
-        NSMutableDictionary *temp_dict = [[NSMutableDictionary alloc]init];
-        temp_dict = [fashion_categirie_arr objectAtIndex:indexPath.row];
-        fashion_cell.IMG_item.image = [UIImage imageNamed:[temp_dict valueForKey:@"key5"]];
-        fashion_cell.LBL_best_item_name.text = [temp_dict valueForKey:@"key1"];
-        
-        
-        NSString *str = @"Flat";
-        NSString  *discount = [temp_dict valueForKey:@"key2"];
-        NSString *text = [NSString stringWithFormat:@"%@ %@",str,discount];
-        
-        
-        if ([fashion_cell.LBL_best_price respondsToSelector:@selector(setAttributedText:)]) {
-            
-            NSDictionary *attribs = @{
-                                      NSForegroundColorAttributeName:fashion_cell.LBL_best_price.textColor,
-                                      NSFontAttributeName: fashion_cell.LBL_best_price.font
-                                      };
-            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
-            
-            
-            
-            NSRange ename = [text rangeOfString:str];
-            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-            {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-                                        range:ename];
-            }
-            else
-            {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0]}
-                                        range:ename];
-            }
-            
-            
-            
-            
-            NSRange cmp = [text rangeOfString:discount];
-            //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
-            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-            {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:21.0]}
-                                        range:cmp];
-            }
-            else
-            {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:18.0]}
-                                        range:cmp];
-            }
-            fashion_cell.LBL_best_price.attributedText = attributedText;
-        }
-        else
+        @try
         {
-            fashion_cell.LBL_best_price.text = text;
+            NSString *url_Img_FULL =[NSString stringWithFormat:@"%@uploads/banners_ads/%@",SERVER_URL,[[[json_Response_Dic valueForKey:@"bannerFashion"] objectAtIndex:indexPath.row] valueForKey:@"banner"]];
+            url_Img_FULL = [url_Img_FULL stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+
+            [pro_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:url_Img_FULL]
+                                 placeholderImage:[UIImage imageNamed:@"logo.png"]
+                                          options:SDWebImageRefreshCached];
+            
         }
-        fashion_cell.LBL_best_discount.text = [temp_dict valueForKey:@"key3"];
+        @catch(NSException *exception)
+        {
+            
+        }
         
-        
-        return fashion_cell;
+                   return pro_cell;
         
         
     }
@@ -784,12 +1048,12 @@
     }
     else if(collectionView == _collection_best_deals)
     {
-        return CGSizeMake(_collection_best_deals.frame.size.width/2.02, 240);
+        return CGSizeMake(_collection_best_deals.frame.size.width/2.011, 281);
         
     }
     else if(collectionView == _collection_hot_deals)
     {
-        return CGSizeMake(self.collection_hot_deals.frame.size.width/2.02, 240);
+        return CGSizeMake(self.collection_hot_deals.frame.size.width/2.011, 281);
         
     }
     else if( collectionView == _collection_brands)
@@ -799,8 +1063,24 @@
     }
     else
     {
-        return CGSizeMake(self.collection_hot_deals.frame.size.width/2.02, 240);
-        
+//        if( [[json_Response_Dic valueForKey:@"bannerFashion"]count] == 1 || [[json_Response_Dic valueForKey:@"bannerFashion"]count] == 3)
+//        {
+//            if(indexPath.row == 0)
+//            {
+//                return CGSizeMake(self.collection_fashion_categirie.bounds.size.width, 180);
+//            }
+//            else
+////            {
+//                return CGSizeMake(self.collection_fashion_categirie.bounds.size.width/2.011, 180);
+//        //    }
+//            
+//            
+//        }
+//        else
+//        {
+            return CGSizeMake(self.collection_fashion_categirie.bounds.size.width/2.011, 180);
+     //   }
+    
     }
     
     
@@ -810,12 +1090,12 @@
     int ht = 0;
     if(collectionView == _collection_hot_deals)
     {
-        ht = 2;
+        ht = 0;
     }
     
     if(collectionView == _collection_best_deals)
     {
-        ht = 2;
+        ht = 0;
     }
     
     return ht;
@@ -825,16 +1105,16 @@
     int ht = 0;
     if(collectionView == _collection_hot_deals)
     {
-        ht = 3.5;
+        ht = 2;
     }
     
     if(collectionView == _collection_best_deals)
     {
-        ht = 3.5;
+        ht = 2;
     }
     if(collectionView == _collection_fashion_categirie)
     {
-        ht = 3.5;
+        ht = 2;
     }
     return ht;
     
@@ -857,46 +1137,103 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSUserDefaults *userDflts = [NSUserDefaults standardUserDefaults];
     
-    if(collectionView == _collection_hot_deals)
+    
+      if(collectionView == _collection_hot_deals)
     {
-        [userDflts setObject:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"url_key"] forKey:@"URL_Key"];
-        //[self performSegueWithIdentifier:@"homw_product_list" sender:self];
+        NSString *merchant_id = [NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"merchant_id"]];
+        [[NSUserDefaults standardUserDefaults] setValue:merchant_id forKey:@"Mercahnt_ID"];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+
+        [self.delegate collection_acttion:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row] valueForKey:@"url_key"]:[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0]objectAtIndex:0] valueForKey:@"Widgets"] valueForKey:@"title"]];
+
     }
     else if (collectionView == _collection_best_deals)
     {
-        [userDflts setObject:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"url_key"] forKey:@"url_key_home"];
+        NSString *merchant_id = [NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"merchant_id"]];
+        [[NSUserDefaults standardUserDefaults] setValue:merchant_id forKey:@"Mercahnt_ID"];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+        [self.delegate collection_acttion:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row] valueForKey:@"url_key"]:[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0]objectAtIndex:0] valueForKey:@"Widgets"] valueForKey:@"title"]];
+
+
         
-        //[self performSegueWithIdentifier:@"homw_product_list" sender:self];
+    }
+    else if(collectionView == _collection_brands)
+    {
+        
+        [self.delegate brands_action:[[brands_arr objectAtIndex:indexPath.row] valueForKey:@"url_key"] :[[[[brands_arr objectAtIndex:indexPath.row] valueForKey:@"_matchingData"]valueForKey:@"BrandDescriptions"] valueForKey:@"name"]];
+        
         
     }
     
-    else if(collectionView == _collection_features)
+     else if(collectionView == _collection_features)
     {
-        NSString *newString= [[[json_Response_Dic valueForKey:@"bannerLarge"] objectAtIndex:indexPath.row] valueForKey:@"url"];
-        NSString *newString1 = [newString stringByReplacingOccurrencesOfString:@"catalog/" withString:@""];
-        NSString *urlKey = [newString1 stringByReplacingOccurrencesOfString:@"/discount" withString:@""];
         
-        [[NSUserDefaults standardUserDefaults]setObject:urlKey forKey:@"product_list_key"];
+      
+            NSString *hot_deals_url = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"bannerLarge"] objectAtIndex:indexPath.row] valueForKey:@"url"]];
+            hot_deals_url = [hot_deals_url stringByReplacingOccurrencesOfString:@"catalog/" withString:@""];
+            hot_deals_url = [hot_deals_url stringByReplacingOccurrencesOfString:@"discount/" withString:@""];
+            NSString *url_key;
+            if([hot_deals_url containsString:@"/"])
+            {
+                url_key = [NSString stringWithFormat:@"%@",hot_deals_url];
+                
+            }
+            else
+            {
+                url_key =[NSString stringWithFormat:@"%@/0",hot_deals_url];
+            }
+        
+       [self.delegate features_slection:url_key :[[[json_Response_Dic valueForKey:@"bannerLarge"] objectAtIndex:indexPath.row] valueForKey:@"title"]];
+
+                      
+            
+        
+        
         
     }
     else if(collectionView == _collection_images)
     {
-        NSString *newString = [[[json_Response_Dic valueForKey:@"banners"] objectAtIndex:indexPath.row] valueForKey:@"url"];
-        NSString *newString1 = [newString stringByReplacingOccurrencesOfString:@"catalog/" withString:@""];
-        NSString *urlKey = [newString1 stringByReplacingOccurrencesOfString:@"/discount" withString:@""];
-        NSLog(@"%@",urlKey);
-        //NSString *key = [newString stringByAppendingString:urlKey];
         
-        [[NSUserDefaults standardUserDefaults]setObject:urlKey forKey:@"product_list_key"];
+        NSString *hot_deals_url = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"banners"] objectAtIndex:indexPath.row] valueForKey:@"url"]];
+        hot_deals_url = [hot_deals_url stringByReplacingOccurrencesOfString:@"catalog/" withString:@""];
+        hot_deals_url = [hot_deals_url stringByReplacingOccurrencesOfString:@"discount/" withString:@""];
+        NSString *url_key;
+        if([hot_deals_url containsString:@"/"])
+        {
+            url_key = [NSString stringWithFormat:@"%@",hot_deals_url];
+            
+        }
+        else
+        {
+            url_key =[NSString stringWithFormat:@"%@/0",hot_deals_url];
+        }
         
-        //        [self performSegueWithIdentifier:@"homw_product_list" sender:self];
+        [self.delegate features_slection:url_key :[[[json_Response_Dic valueForKey:@"bannerLarge"] objectAtIndex:indexPath.row] valueForKey:@"title"]];
+        
         
     }
+    else if(collectionView == _collection_fashion_categirie)
+    {
+        NSString *hot_deals_url = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"bannerFashion"] objectAtIndex:indexPath.row] valueForKey:@"url"]];
+        hot_deals_url = [hot_deals_url stringByReplacingOccurrencesOfString:@"catalog/" withString:@""];
+        hot_deals_url = [hot_deals_url stringByReplacingOccurrencesOfString:@"discount/" withString:@""];
+        NSString *url_key;
+        if([hot_deals_url containsString:@"/"])
+        {
+            url_key = [NSString stringWithFormat:@"%@",hot_deals_url];
+            
+        }
+        else
+        {
+            url_key =[NSString stringWithFormat:@"%@/0",hot_deals_url];
+        }
+        
+        [self.delegate features_slection:url_key :[[[json_Response_Dic valueForKey:@"bannerFashion"] objectAtIndex:indexPath.row] valueForKey:@"title"]];
+        
+
+    }
     
-    [self performSegueWithIdentifier:@"homw_product_list" sender:self];
-    //NSLog(@"%@",[userDflts valueForKey:@"url_key_home"]);
     
 }
 
@@ -1678,7 +2015,17 @@
         NSHTTPURLResponse *response = nil;
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@brands/getFashionBrands/male/%@/%@.json",SERVER_URL,country,languge];
+        NSString *urlGetuser;
+        if(_BTN_fashion.tag == 0)
+        {
+            urlGetuser =[NSString stringWithFormat:@"%@brands/getFashionBrands/male/%@/%@.json",SERVER_URL,country,languge];
+        }
+        else
+        {
+            urlGetuser =[NSString stringWithFormat:@"%@brands/getFashionBrands/female/%@/%@.json",SERVER_URL,country,languge];
+            
+            
+        }
         NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
         [request setURL:urlProducts];
@@ -1691,13 +2038,22 @@
         {
             // [activityIndicatorView stopAnimating];
             // VW_overlay.hidden = YES;
+            VW_overlay.hidden = YES;
+            [activityIndicatorView stopAnimating];
             brands_arr= (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             [self.collection_brands reloadData];
+            [[NSUserDefaults standardUserDefaults] setObject:brands_arr forKey:@"brands_LIST"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             NSLog(@"The response Api form Brands%@",brands_arr);
             
-            //  arr_product = [json_DATA valueForKey:@"Success"];
-            // [_TBL_merchants reloadData];
             
+        }
+        else
+        {
+            VW_overlay.hidden=YES;
+            [activityIndicatorView stopAnimating];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
         }
     }
     
@@ -1721,7 +2077,10 @@
         
         /**********   After passing Language Id and Country ID ************/
         NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/home/%ld/%ld/.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]];
+        NSDictionary *dict = [user_defaults valueForKey:@"userdata"];
+        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/home/%ld/%ld/%@/Customer.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"],user_id];
         NSLog(@"%ld,%ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
         
         //NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/home/1/1/.json",SERVER_URL];
@@ -1740,12 +2099,16 @@
                     // NSLog(@"the api_collection_product%@",json_Response_Dic);
                     @try {
                         if(json_Response_Dic )
-                            [self set_up_VIEW];
-                        
+                        [self brands_API_call];
+                        VW_overlay.hidden = YES;
+                        [activityIndicatorView stopAnimating];
                         [_collection_images reloadData];
                         [_collection_features reloadData];
                         [_collection_hot_deals reloadData];
                         [_collection_best_deals reloadData];
+                        [_collection_fashion_categirie reloadData];
+
+                         [self set_up_VIEW];
                     } @catch (NSException *exception) {
                         NSLog(@"%@",exception);
                     }
@@ -1763,6 +2126,161 @@
     }
     
 }
+#pragma mark Add_to_wishList_API Calling
+-(void)Wishlist_add:(UIButton *)sender
+{
+    
+    @try
+    {
+        
+        //        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+        NSString *urlGetuser;
+        if(_collection_best_deals)
+        {
+            urlGetuser =[NSString stringWithFormat:@"%@apis/addToWishList/%@/%@.json",SERVER_URL,[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:sender.tag]valueForKey:@"id"],user_id];
+            
+        }
+        else if(_collection_hot_deals)
+        {
+            urlGetuser =[NSString stringWithFormat:@"%@apis/addToWishList/%@/%@.json",SERVER_URL,[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:sender.tag]valueForKey:@"id"],user_id];
+        }
+        else if(_collection_fashion_categirie)
+        {
+            urlGetuser =[NSString stringWithFormat:@"%@apis/addToWishList/%@/%@.json",SERVER_URL,[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-2"] objectAtIndex:0] objectAtIndex:sender.tag]valueForKey:@"id"],user_id];
+            
+        }
+        
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    
+                    VW_overlay.hidden=YES;
+                    [activityIndicatorView stopAnimating];
+                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                }
+                if (data) {
+                    json_Response_Dic = data;
+                    if(json_Response_Dic)
+                    {
+                        VW_overlay.hidden=YES;
+                        [activityIndicatorView stopAnimating];
+                        NSLog(@"The Wishlist %@",json_Response_Dic);
+                        
+                        NSIndexPath *index = [NSIndexPath indexPathForRow:sender.tag inSection:0];
+                        product_cell *cell;
+                        if(_collection_hot_deals)
+                        {
+                            cell = (product_cell *)[self.collection_hot_deals cellForItemAtIndexPath:index];
+                        }
+                        else  if(_collection_fashion_categirie)
+                        {
+                            cell = (product_cell *)[self.collection_fashion_categirie cellForItemAtIndexPath:index];
+                        }
+                        else  if(_collection_best_deals)
+                        {
+                            cell = (product_cell *)[self.collection_best_deals cellForItemAtIndexPath:index];
+                        }
+                        
+                        
+                        
+                        
+                        @try {
+                            if ([[json_Response_Dic valueForKey:@"msg"] isEqualToString:@"add"]) {
+                                
+                                //  [self startAnimation:sender];
+                                [cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
+                                
+                                [cell.BTN_fav setTitleColor:[UIColor colorWithRed:244.f/255.f green:176.f/255.f blue:77.f/255.f alpha:1] forState:UIControlStateNormal];
+                                [HttpClient createaAlertWithMsg:@"Item added successfully" andTitle:@""];
+                                
+                                
+                            }
+                            else{
+                                
+                                [cell.BTN_fav setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                            }
+                            
+                            
+                        } @catch (NSException *exception) {
+                            NSLog(@"%@",exception);
+                            [cell.BTN_fav setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                        }
+                        
+                    }
+                    else
+                    {
+                        VW_overlay.hidden=YES;
+                        [activityIndicatorView stopAnimating];
+                        
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        [alert show];
+                        NSLog(@"The Wishlist%@",json_Response_Dic);
+                        
+                        
+                    }
+                    
+                    
+                }
+                
+            });
+        }];
+    }
+    @catch(NSException *exception)
+    {
+        VW_overlay.hidden=YES;
+        [activityIndicatorView stopAnimating];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"already added" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+        
+        NSLog(@"The error is:%@",exception);
+        [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+    }
+    
+    VW_overlay.hidden=YES;
+    [activityIndicatorView stopAnimating];
+    
+    
+}
+-(void)hot_deals_action
+{
+    
+    [ self.delegate images_action:[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0]objectAtIndex:0] valueForKey:@"Widgets"] valueForKey:@"title"] :[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0]objectAtIndex:0] valueForKey:@"Widgets"] valueForKey:@"title"]];
+    
+}
+-(void)best_deals_action
+{
+      [ self.delegate images_action:[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0]objectAtIndex:0] valueForKey:@"Widgets"] valueForKey:@"title"] :[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0]objectAtIndex:0] valueForKey:@"Widgets"] valueForKey:@"title"]];
+}
+-(void)BTN_fashhion_cahnge
+{
+    if(_BTN_fashion.tag == 1)
+    {
+        _IMG_Person_banner.image = [UIImage imageNamed:@"men"];
+        _IMG_Things_banner.image = [UIImage imageNamed:@"shoes_prod"];
+        [_BTN_fashion setBackgroundImage:[UIImage imageNamed:@"men_icon"] forState:UIControlStateNormal];
+        [_BTN_fashion setTag:0];
+        [self brands_API_call];
+         _Hot_deals.text = @"MEN'S FASHION ACCESORIES";
+        [_collection_brands reloadData];
+        
+    }
+    else
+    {
+        _IMG_Person_banner.image = [UIImage imageNamed:@"upload-4"];
+        _IMG_Things_banner.image = [UIImage imageNamed:@"bag"];
+        [_BTN_fashion setBackgroundImage:[UIImage imageNamed:@"women_logo"] forState:UIControlStateNormal];
+        [_BTN_fashion setTag:1];
+        [self brands_API_call];
+         _Hot_deals.text = @"WOMEN'S FASHION ACCESORIES";
+        [_collection_brands reloadData];
+        
+    }
+    
+}
+
 
 /*
  #pragma mark - Navigation

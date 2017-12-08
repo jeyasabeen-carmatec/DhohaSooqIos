@@ -547,9 +547,7 @@
     {
         
     }
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"connection error"delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
-    [alert show];
-
+    
 
 }
 

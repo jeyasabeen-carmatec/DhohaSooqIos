@@ -139,7 +139,7 @@ arr_product = [[NSMutableArray alloc]init];
 
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return 10.0;
+    return 100.0;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -148,6 +148,12 @@ arr_product = [[NSMutableArray alloc]init];
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+   [[NSUserDefaults standardUserDefaults] setObject:[arr_product objectAtIndex:indexPath.row] forKey:@"merchant_data"];
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    
+    
     [self performSegueWithIdentifier:@"merchant_detail_segue" sender:self];
 }
 

@@ -299,7 +299,7 @@ int j ,i;
         {
             order_cell.LBL_Deliver_on.text = date_text;
         }
-        
+        [order_cell.BTN_rating addTarget:self action:@selector(review_Screen) forControlEvents:UIControlEventTouchUpInside];
 
         return order_cell;
     }
@@ -393,8 +393,8 @@ int j ,i;
 //        
 //        country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
         
-        NSString *state = [[dict valueForKey:@"billingaddress"] valueForKey:@"state"];
-        NSString *country = [[dict valueForKey:@"billingaddress"] valueForKey:@"country"];
+        NSString *state = [NSString stringWithFormat:@"%@",[[dict valueForKey:@"billingaddress"] valueForKey:@"state"]];
+        NSString *country = [NSString stringWithFormat:@"%@",[[dict valueForKey:@"billingaddress"] valueForKey:@"country"]];
         
         state = [state stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
         
@@ -623,6 +623,10 @@ int j ,i;
 }
 - (IBAction)back_ACTIon:(id)sender {
     [self.navigationController popViewControllerAnimated:NO];
+}
+-(void)review_Screen
+{
+    [self performSegueWithIdentifier:@"order_rating" sender:self];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

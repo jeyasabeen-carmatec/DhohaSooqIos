@@ -8,6 +8,7 @@
 
 #import "VC_intial.h"
 #import "HttpClient.h"
+#import "ViewController.h"
 
 @interface VC_intial ()<UITableViewDataSource,UITableViewDelegate,UITableViewDataSource>
 {
@@ -32,6 +33,7 @@
     
     _VW_ceter.center = self.view.center;
     country_arr = [[NSMutableArray alloc]init];
+   // lang_arr = [[NSMutableArray alloc]init];
     CGRect frameset = _TBL_list_coutry.frame;
     frameset.origin.x =_TXT_country.frame.origin.x;
     frameset.origin.y =_TXT_country.frame.origin.y + _TXT_country.frame.size.height + 5;
@@ -103,7 +105,31 @@
 }
 -(void)go_to_login
 {
-    [self performSegueWithIdentifier:@"intial_login" sender:self];
+    
+         if ([self.TXT_language.text isEqualToString:@"Arabic"])
+          {
+              [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"story_board_language"];
+              [[NSUserDefaults  standardUserDefaults] setValue:_TXT_language.text forKey:@"story_board_language"];
+              [[NSUserDefaults standardUserDefaults] synchronize];
+           UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Arabic" bundle:nil];
+           ViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"ViewController"];
+             [self  presentViewController:controller animated:NO completion:nil];
+             
+            }
+            else
+             {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"story_board_language"];
+
+             [self performSegueWithIdentifier:@"intial_login" sender:self];
+               
+             }
+    
+//     [[NSUserDefaults standardUserDefaults] setObject:lang_arr forKey:@"languages"];
+    
+    [[NSUserDefaults  standardUserDefaults] setValue:_TXT_language.text forKey:@"languge"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
+    
 }
 #pragma textfield delegates
 
@@ -201,7 +227,7 @@
         [usd setInteger:[[[country_arr objectAtIndex:indexPath.row]valueForKey:@"id" ] integerValue] forKey:@"country_id"];
         //NSLog(@"Country id:::%@",[usd valueForKey:@"country_id"]);
         
-        //[self language_api_call];
+       // [self language_api_call];
 #pragma Language_api_integration Method Calling
         
         @try
@@ -216,7 +242,9 @@
                     }
                     if (data) {
                         NSMutableDictionary *json_DATA = data;
+                        lang_arr = [NSMutableArray array];
                         lang_arr = [json_DATA valueForKey:@"languages"];
+                           
                         [_TBL_list_lang reloadData];
                         
                         
@@ -235,7 +263,7 @@
     }
     if(tableView == _TBL_list_lang)
     {
-        _TBL_list_lang.hidden = YES;
+               _TBL_list_lang.hidden = YES;
         //_TXT_username.text = [];
         _TXT_language.text = [[lang_arr objectAtIndex:indexPath.row]valueForKey:@"language_name"];
         
@@ -312,8 +340,8 @@
             //NSLog(@"The response Api post sighn up API %@",json_DATA);
             
             lang_arr = [json_DATA valueForKey:@"languages"];
-            //NSLog(@"%@",lang_arr);
-            [_TBL_list_lang reloadData];
+                      //NSLog(@"%@",lang_arr);
+          
             
             
             
