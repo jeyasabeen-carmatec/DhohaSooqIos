@@ -331,12 +331,12 @@
 
     //cell.LBL_discount.text = [temp_dict valueForKey:@"key4"];
     
-    UIImage *newImage = [cell.BTN_close.currentBackgroundImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    UIGraphicsBeginImageContextWithOptions(cell.BTN_close.currentBackgroundImage.size, NO, newImage.scale);
-    [[UIColor darkGrayColor] set];
-    [newImage drawInRect:CGRectMake(0, 0, cell.BTN_close.currentBackgroundImage.size.width/2, newImage.size.height/2)];
-    newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
+//    UIImage *newImage = [cell.BTN_close.currentBackgroundImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+//    UIGraphicsBeginImageContextWithOptions(cell.BTN_close.currentBackgroundImage.size, NO, newImage.scale);
+//    [[UIColor darkGrayColor] set];
+//    [newImage drawInRect:CGRectMake(0, 0, cell.BTN_close.currentBackgroundImage.size.width/2, newImage.size.height/2)];
+//    newImage = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
     //cell.BTN_close.image = newImage;
     
    // cell.BTN_close .userInteractionEnabled = YES;
@@ -348,9 +348,9 @@
 //    [tapGesture1 setDelegate:self];
 //    
 //    [cell.BTN_close addGestureRecognizer:tapGesture1];
-        [cell.BTN_close addTarget:self action:@selector(remove_from_cart:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.BTN_close setBackgroundImage:newImage forState:UIControlStateNormal];
-
+//        [cell.BTN_close addTarget:self action:@selector(remove_from_cart:) forControlEvents:UIControlEventTouchUpInside];
+//        [cell.BTN_close setBackgroundImage:newImage forState:UIControlStateNormal];
+//
         
     
     [cell.BTN_plus addTarget:self action:@selector(plus_action:) forControlEvents:UIControlEventTouchUpInside];
