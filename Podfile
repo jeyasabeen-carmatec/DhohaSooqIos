@@ -4,7 +4,11 @@
 target 'Dohasooq_mobile' do
 pod 'SDWebImage', '~> 4.0'
 pod "youtube-ios-player-helper", "~> 0.1.4"
-  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
+pod 'FBSDKCoreKit'
+pod 'FBSDKShareKit'
+pod 'FBSDKLoginKit'
+pod 'Google/SignIn'
+  # Uncomment the next line if you're using Swift or would like to use dynamic framework
   # use_frameworks!
   # Pods for Dohasooq_mobile
 

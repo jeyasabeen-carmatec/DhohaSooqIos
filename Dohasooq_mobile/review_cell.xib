@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
-        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
         <array key="FontAwesome.otf">
             <string>FontAwesome</string>
+        </array>
+        <array key="Poppins-Regular.ttf">
+            <string>Poppins-Regular</string>
         </array>
     </customFonts>
     <objects>
@@ -25,8 +27,8 @@
                 <rect key="frame" x="0.0" y="0.0" width="409" height="90.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vE8-99-W0z">
-                        <rect key="frame" x="8" y="14" width="258" height="60"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vE8-99-W0z">
+                        <rect key="frame" x="8" y="14" width="258" height="17"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="258" id="3Xx-Nh-gkl"/>
                         </constraints>
@@ -35,15 +37,18 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2kU-5f-Yfe">
-                        <rect key="frame" x="305" y="7" width="1" height="74"/>
+                        <rect key="frame" x="305" y="7" width="1" height="31"/>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="1" id="J3F-Xs-JfQ"/>
+                        </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BwK-XY-RaK">
                         <rect key="frame" x="322" y="48" width="79" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="o85-In-iUJ"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -51,6 +56,7 @@
                         <rect key="frame" x="346" y="17" width="31" height="24"/>
                         <color key="backgroundColor" red="0.27058823529999998" green="0.80784313730000001" blue="0.52156862749999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstAttribute="height" constant="24" id="QVE-SM-vOh"/>
                             <constraint firstAttribute="width" constant="31" id="T1w-H1-pAy"/>
                         </constraints>
                         <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="13"/>
@@ -59,19 +65,18 @@
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="vE8-99-W0z" firstAttribute="firstBaseline" secondItem="898-mI-YVO" secondAttribute="firstBaseline" id="0As-M5-JIr"/>
                     <constraint firstItem="898-mI-YVO" firstAttribute="centerX" secondItem="BwK-XY-RaK" secondAttribute="centerX" id="1D7-v2-r67"/>
                     <constraint firstAttribute="bottomMargin" secondItem="BwK-XY-RaK" secondAttribute="bottom" constant="13.5" id="7RY-zT-5Ni"/>
                     <constraint firstItem="vE8-99-W0z" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="6" id="HgI-RN-OjD"/>
-                    <constraint firstItem="vE8-99-W0z" firstAttribute="centerY" secondItem="2kU-5f-Yfe" secondAttribute="centerY" id="LeA-2G-CIz"/>
                     <constraint firstItem="2kU-5f-Yfe" firstAttribute="leading" secondItem="vE8-99-W0z" secondAttribute="trailing" constant="39" id="Mxv-92-1Ke"/>
                     <constraint firstItem="2kU-5f-Yfe" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="-1" id="Nan-bD-S7O"/>
                     <constraint firstItem="898-mI-YVO" firstAttribute="leading" secondItem="2kU-5f-Yfe" secondAttribute="trailing" constant="40" id="QHJ-Zj-9F6"/>
                     <constraint firstItem="BwK-XY-RaK" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="eMh-cL-aQd"/>
+                    <constraint firstItem="898-mI-YVO" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="9" id="gUD-Rq-tMP"/>
                     <constraint firstItem="vE8-99-W0z" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="hMI-eX-tnq"/>
                     <constraint firstItem="BwK-XY-RaK" firstAttribute="leading" secondItem="2kU-5f-Yfe" secondAttribute="trailing" constant="16" id="hYO-z8-G6V"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="vE8-99-W0z" secondAttribute="bottom" constant="8.5" id="hzb-PE-hP1"/>
                     <constraint firstItem="BwK-XY-RaK" firstAttribute="top" secondItem="898-mI-YVO" secondAttribute="bottom" constant="7" id="qRi-Jl-L1R"/>
+                    <constraint firstItem="2kU-5f-Yfe" firstAttribute="centerY" secondItem="vE8-99-W0z" secondAttribute="centerY" id="sgX-q3-Tgo"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

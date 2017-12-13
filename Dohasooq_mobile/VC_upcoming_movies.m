@@ -51,7 +51,7 @@
 }
 -(void)getResponse_detail
 {
-        detail_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"];
+    detail_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"];
     [self set_UP_VIEW];
     
     [activityIndicatorView stopAnimating];
@@ -62,7 +62,6 @@
 -(void)set_UP_VIEW
 {
     
-    _LBL_movie_description.numberOfLines = 3;
     
     CGRect frameset = _VW_dtl_movie.frame;
     frameset.size.width = self.Scroll_contents.frame.size.width;
@@ -77,11 +76,13 @@
     {
         NSLog(@"%@",exception);
     }
-    
+    _LBL_movie_description.numberOfLines = 0;
+    [_LBL_movie_description sizeToFit];
+
     
     frameset = _VW_about_movie.frame;
     frameset.origin.y = _VW_dtl_movie.frame.origin.y + _VW_dtl_movie.frame.size.height;
-    frameset.size.height = _BTN_view_more.frame.origin.y + _BTN_view_more.frame.size.height;
+    frameset.size.height = _LBL_movie_description.frame.origin.y + _LBL_movie_description.frame.size.height;
     frameset.size.width = self.Scroll_contents.frame.size.width;
     _VW_about_movie.frame = frameset;
     oldframe = _LBL_movie_description.frame;

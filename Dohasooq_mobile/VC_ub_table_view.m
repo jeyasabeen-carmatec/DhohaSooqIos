@@ -46,17 +46,31 @@ UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellSty
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+   // product_list_type
     
-    [[NSUserDefaults standardUserDefaults] setValue:[[[sub_arr valueForKey:@"child_categories" ]objectAtIndex:indexPath.row] valueForKey:@"url_key"] forKey:@"product_list_key"];
-    [[NSUserDefaults standardUserDefaults]setObject:@"0" forKey:@"discount"];
+     [[NSUserDefaults standardUserDefaults] setValue:@"0" forKey:@"discount"];
+     [[NSUserDefaults standardUserDefaults] synchronize];
     
-    
-    [[NSUserDefaults standardUserDefaults] synchronize];
     NSString *name = [[[sub_arr valueForKey:@"child_categories"]objectAtIndex:indexPath.row] valueForKey:@"name"];
+   NSString *item_name = [NSString stringWithFormat:@"%@ - %@",[[NSUserDefaults standardUserDefaults]  valueForKey:@"item_name"],name];
+   // [[NSUserDefaults standardUserDefaults] setValue:item_name forKey:@"search_val"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"sub_name"];
     [[NSUserDefaults standardUserDefaults] setValue:name forKey:@"sub_name"];
-    
+     [[NSUserDefaults standardUserDefaults] synchronize];
     [self performSegueWithIdentifier:@"sublist_product_list" sender:self];
     
+    NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+    NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    
+    NSString *url_key = [NSString stringWithFormat:@"%@",[[[sub_arr valueForKey:@"child_categories" ]objectAtIndex:indexPath.row] valueForKey:@"url_key"]];
+    NSString *list_TYPE = @"productList";
+    NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/0/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,url_key,country,languge,user_id];
+        
+   
+    [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
     
     // [self dismissViewControllerAnimated:NO completion:nil];
 }

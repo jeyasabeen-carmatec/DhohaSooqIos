@@ -107,9 +107,10 @@
     }
     if([[[arr_events objectAtIndex:indexPath.row] valueForKey:@"url"] isEqualToString:@"movies"])
     {
+        
         [[NSUserDefaults standardUserDefaults]  setValue:[[arr_events objectAtIndex:indexPath.row] valueForKey:@"id"] forKey:@"id"];
         [[NSUserDefaults standardUserDefaults]  synchronize];
-        [self movie_detil_api];
+     //   [self movie_detil_api];
         [self performSegueWithIdentifier:@"search_movie_detail" sender:self];
 
     }

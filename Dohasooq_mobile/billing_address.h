@@ -21,6 +21,11 @@
 @property(nonatomic,weak) IBOutlet UITextField *TXT_phone;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_check;
 @property(nonatomic,weak) IBOutlet UIImageView *LBL_stat;
+@property (weak, nonatomic) IBOutlet UIView *checkBtnView;
+//@property (weak, nonatomic) IBOutlet UIButton *Btn_save;
+@property (weak, nonatomic) IBOutlet UILabel *LBL_shipping;
+@property (weak, nonatomic) IBOutlet UILabel *LBL_Blng_title;
+@property (weak, nonatomic) IBOutlet UIButton *Btn_save;
 
 
 @end

@@ -20,8 +20,6 @@
 @property (nonatomic, strong) UIDatePicker *start_picker;
 @property (nonatomic, strong) UIDatePicker *end_picker;
 
-@property(nonatomic,weak) IBOutlet UISlider *MIN_slider;
-@property(nonatomic,weak) IBOutlet UISlider *MAX_slider;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_min;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_max;
 

@@ -15,6 +15,8 @@
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_track;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_Deliver_on;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_item_image;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_rating;
+
 
 
 

@@ -14,5 +14,7 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_address_type;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_edit;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_edit_addres;
+@property(nonatomic,weak) IBOutlet UIView *VW_layer;
+
 
 @end

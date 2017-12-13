@@ -10,7 +10,4 @@
 
 @interface Fashion_categorie_cell : UICollectionViewCell
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_item;
-@property(nonatomic,weak) IBOutlet UILabel *LBL_best_item_name;
-@property(nonatomic,weak) IBOutlet UILabel *LBL_best_price;
-@property(nonatomic,weak) IBOutlet UILabel *LBL_best_discount;
 @end

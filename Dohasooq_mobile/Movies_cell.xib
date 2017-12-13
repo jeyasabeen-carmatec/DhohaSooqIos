@@ -28,7 +28,7 @@
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Layer-104.png" translatesAutoresizingMaskIntoConstraints="NO" id="3hI-YX-FQm">
                         <rect key="frame" x="0.0" y="0.0" width="196" height="284"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask"/>
                     </imageView>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="upload-7.png" translatesAutoresizingMaskIntoConstraints="NO" id="iup-Ko-NyO">
                         <rect key="frame" x="0.0" y="119" width="196" height="165"/>

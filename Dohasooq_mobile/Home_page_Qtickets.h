@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "VC_home.h"
+@interface Home_page_Qtickets : UIViewController<collection_protocol>
 
-@interface Home_page_Qtickets : UIViewController
 @property(nonatomic,strong) NSArray *items;
 @property(nonatomic,weak)IBOutlet UITabBar *Tab_MENU;
 //side bar
@@ -23,6 +24,7 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_wish_list;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_address_icon;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_address;
+@property(nonatomic,strong) UIPickerView *lang_pickers;
 
 
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_profile;
@@ -58,6 +60,7 @@
 @property(nonatomic,weak) IBOutlet UIButton *BTN_right;
 
 
+
 @property(nonatomic,weak) IBOutlet UILabel *LBL_best_selling;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_fashio;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_log_out;
@@ -89,6 +92,13 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_profile;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_profile;
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_brands;
+
+@property(nonatomic,weak) IBOutlet UIButton *BTN_fashion;
+@property(nonatomic,weak) IBOutlet UIImageView *IMG_Person_banner;
+@property(nonatomic,weak) IBOutlet UIImageView *IMG_Things_banner;
+
+
+
 
 //Movies Tab
 @property(nonatomic,weak) IBOutlet UICollectionView *Collection_movies;

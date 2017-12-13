@@ -16,7 +16,7 @@
 #import "review_cell.h"
 
 
-@interface VC_product_detail ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UITextFieldDelegate,UIWebViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource>
+@interface VC_product_detail ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UITextFieldDelegate,UIWebViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,UITextViewDelegate>
 {
     NSMutableArray   *images_arr,*color_arr,*size_arr;
     NSArray *keys;
@@ -43,12 +43,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    _TXTVW_description.delegate = self;
     json_Response_Dic = [[NSMutableDictionary alloc]init];
     images_arr = [[NSMutableArray alloc]init];
-    
-    [self.collection_images registerNib:[UINib nibWithNibName:@"product_detail_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
+    [self addSEgmentedControl];
 
+    [self.collection_images registerNib:[UINib nibWithNibName:@"product_detail_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
+   
     
     
     
@@ -74,16 +74,16 @@
     [self performSelector:@selector(cart_count) withObject:nil afterDelay:0.01];
     [self performSelector:@selector(product_detail_API) withObject:activityIndicatorView afterDelay:0.01];
     
-   
-    
 }
 
 
 
 -(void)set_UP_VIEW
 {
-    [self addSEgmentedControl];
     _TXT_count.delegate = self;
+    
+   // [self segment_ACTION];
+
 //    temp_arr = [[NSMutableArray alloc]init];
 //    temp_arr = [NSMutableArray arrayWithObjects:@"upload-2.png",@"upload-2.png",@"upload-2.png",@"upload-2.png",nil];
     
@@ -103,9 +103,9 @@
 //    [_Btn_addto_cart addTarget:self action:@selector(add_to_cart:) forControlEvents:UIControlEventTouchUpInside];
     
     
-    _BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
-                 @selector(btnfav_action:)];
-    _BTN_cart = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain   target:self action:@selector(btn_cart_action:)];
+//    _BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
+//                 @selector(btnfav_action:)];
+//    _BTN_cart = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain   target:self action:@selector(btn_cart_action:)];
 //    
 //       NSString *badge_value = @"25";
 //    
@@ -120,35 +120,33 @@
 //        
 //    }
     
-    CGRect frame_set = _Scroll_content.frame;
-    //frame_set.origin.y = 0;
-    frame_set.origin.y = self.navigationController.navigationBar.frame.origin.y +  self.navigationController.navigationBar.frame.size.height;
-    frame_set.size.width = self.Scroll_content.frame.size.width;
-    frame_set.size.height =self.view.frame.size.height - self.navigationController.navigationBar.frame.origin.y +  self.navigationController.navigationBar.frame.size.height;
-    _Scroll_content.frame = frame_set;
+//    CGRect frame_set = _Scroll_content.frame;
+  //  frame_set.origin.y = self.navigationController.navigationBar.frame.origin.y +  self.navigationController.navigationBar.frame.size.height;
+ //   frame_set.size.width = self.Scroll_content.frame.size.width;
+//_Scroll_content.frame = frame_set;
     
     
-     frame_set = _VW_First.frame;
-    frame_set.origin.y = -(self.navigationController.navigationBar.frame.origin.y +  self.navigationController.navigationBar.frame.size.height);
+   CGRect  frame_set = _VW_First.frame;
+ //   frame_set.origin.y = -(self.navigationController.navigationBar.frame.origin.y +  self.navigationController.navigationBar.frame.size.height);
    frame_set.size.height = _custom_story_page_controller.frame.origin.y + _custom_story_page_controller.frame.size.height;
     frame_set.size.width = self.Scroll_content.frame.size.width;
     _VW_First.frame = frame_set;
-    
+    [self.Scroll_content addSubview:_VW_First];
     
     _LBL_item_name.numberOfLines = 0;
+    [_LBL_item_name sizeToFit];
     
     
     starRatingView = [[HCSStarRatingView alloc] init];
-    starRatingView.frame = CGRectMake(_LBL_item_name.frame.origin.x, _LBL_item_name.frame.origin.y+_LBL_item_name.frame.size.height + 3, 100.0f, _LBL_item_name.frame.size.height - 15);
+    starRatingView.frame = CGRectMake(_LBL_item_name.frame.origin.x-2, _LBL_item_name.frame.origin.y+_LBL_item_name.frame.size.height + 3, 100.0f, _LBL_item_name.frame.size.height - 10);
     starRatingView.maximumValue = 5;
     starRatingView.minimumValue = 0;
     starRatingView.value = 0;
-   
     starRatingView.tintColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
-    //[starRatingView addTarget:self action:@selector(didChangeValue:) forControlEvents:UIControlEventValueChanged];
-    [self.VW_second addSubview:starRatingView];
     starRatingView.allowsHalfStars = YES;
     starRatingView.value = 2.5f;
+    [self.VW_second addSubview:starRatingView];
+    
     
    
     frame_set = _LBL_prices.frame;
@@ -164,77 +162,101 @@
     frame_set.size.height = _LBL_discount.frame.origin.y + _LBL_discount.frame.size.height + 10;
     frame_set.size.width = self.Scroll_content.frame.size.width;
     _VW_second.frame = frame_set;
+    [self.Scroll_content addSubview:_VW_second];
     
     frame_set = _BTN_play.frame;
     frame_set.origin.x = self.view.frame.size.width - _BTN_play.frame.size.width - 20;
     frame_set.origin.y = (self.VW_second.frame.origin.y - _BTN_play.frame.size.height / 2) - 4 ;
     _BTN_play.frame = frame_set;
-//    
-//    [_collectionview_variants reloadData];
-//    
-//    frame_set = _collectionview_variants.frame;
-//    frame_set.size.height =  _collectionview_variants.contentSize.height;
-//    _collectionview_variants.frame = frame_set;
-//    
-    // [_collectionview_variants reloadData];
-    
-    frame_set = _VW_third.frame;
-    frame_set.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height + 3;
-    frame_set.size.height =_collectionview_variants.frame.origin.y + _collectionview_variants.collectionViewLayout.collectionViewContentSize.height;
-    frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
-    _VW_third.frame = frame_set;
+    [self.Scroll_content addSubview:_BTN_play];
     
     
+    @try
+    {
+     
+    
+    if([[json_Response_Dic valueForKey:@"getVariantNames"] isEqualToString:@""])
+    {
+        
+        frame_set = _VW_third.frame;
+        frame_set.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height + 3;
+        frame_set.size.height =_TXT_count.frame.origin.y +_TXT_count.frame.size.height + 10;
+        frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
+        _VW_third.frame = frame_set;
 
+    
+    
+    }
+    }
+    @catch(NSException *exception)
+    {
+        [self.collectionview_variants reloadData];
+        if([[json_Response_Dic valueForKey:@"getVariantNames"] count] < 1)
+        {
+            frame_set = _VW_third.frame;
+            frame_set.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height + 3;
+            frame_set.size.height =_TXT_count.frame.origin.y +_TXT_count.frame.size.height + 10;
+            frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
+            _VW_third.frame = frame_set;
+            
+            
+        }
+        else
+        {
+            frame_set = _VW_third.frame;
+            frame_set.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height + 3;
+            frame_set.size.height =_collectionview_variants.frame.origin.y + _collectionview_variants.collectionViewLayout.collectionViewContentSize.height;
+            frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
+            _VW_third.frame = frame_set;
+            
+        }
+        
+        
+
+    }
+    [self.Scroll_content addSubview:_VW_third];
+    
+    
     frame_set = _VW_segemnt.frame;
-    frame_set.origin.y = _VW_fourth.frame.origin.y;
-    frame_set.size.height = 100;
-    frame_set.size.width = self.VW_second.frame.size.width;
+    frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
     _VW_segemnt.frame = frame_set;
     
-    frame_set = _VW_fourth.frame;
-    frame_set.origin.y = _VW_third.frame.origin.y + _VW_third.frame.size.height + 3;
-   // frame_set.size.height = _VW_segemnt.frame.origin.y+_VW_segemnt.frame.size.height;
-    frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
-    _VW_fourth.frame = frame_set;
-    
-    [_TXTVW_description layoutIfNeeded];
-    [_TXTVW_description sizeToFit];
-    
-   frame_set = _TXTVW_description.frame;
-    frame_set.size.height = _TXTVW_description.frame.origin.y +  _TXTVW_description.contentSize.height;
-    _TXTVW_description.frame = frame_set;
-    
-    
-    
-    NSString *description =[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"products"]valueForKey:@"0"]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"description"]];
+    _TXTVW_description.numberOfLines = 0;
+
+  /*  NSString *description =[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"products"]valueForKey:@"0"]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"description"]];
     description = [description stringByAppendingString:[NSString stringWithFormat:@"<style>body{font-family: 'Poppins-Regular'; font-size:%dpx;}</style>",17]];
     NSAttributedString *attributedString = [[NSAttributedString alloc] initWithData:[description dataUsingEncoding:NSUTF8StringEncoding]options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}documentAttributes:nil error:nil];
     _TXTVW_description.attributedText = attributedString;
     NSString *str = _TXTVW_description.text;
     str = [str stringByReplacingOccurrencesOfString:@"/" withString:@"\n"];
     _TXTVW_description.text = str;
-
-   
-    frame_set = _VW_fifth.frame;
-    frame_set.origin.y = _VW_fourth.frame.origin.y + _VW_fourth.frame.size.height;
-    frame_set.size.height = _TXTVW_description.frame.origin.y + _TXTVW_description.contentSize.height;//_TXTVW_description.contentSize.height;
+    
+    [_TXTVW_description sizeToFit];*/
+    
+    
+    frame_set = _VW_fourth.frame;
+    frame_set.origin.y = _VW_third.frame.origin.y + _VW_third.frame.size.height + 3;
+    frame_set.size.height = _VW_segemnt.frame.origin.y + _VW_segemnt.frame.size.height;
+    //_TXTVW_description.frame.origin.y +  _TXTVW_description.frame.size.height;
     frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
-    _VW_fifth.frame = frame_set;
+    _VW_fourth.frame = frame_set;
+    [self.Scroll_content addSubview:_VW_fourth];
+    
+
+    
+   // frame_set = _TXTVW_description.frame;
+   // frame_set.origin.y = _VW_fourth.frame.origin.y + _VW_fourth.frame.size.height;
+   // frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
+   // _TXTVW_description.frame = frame_set;
+//[self.Scroll_content addSubview:_TXTVW_description];
+
+    
+//    frame_set = _VW_fifth.frame;
+//    frame_set.size.height = _TXTVW_description.frame.origin.y + _TXTVW_description.frame.size.height;//_TXTVW_description.contentSize.height;
+//    frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
+//    _VW_fifth.frame = frame_set;
 
   
-    
-    [self.Scroll_content addSubview:_VW_First];
-    [self.Scroll_content addSubview:_VW_second];
-    [self.Scroll_content addSubview:_BTN_play];
-    [self.Scroll_content addSubview:_VW_third];
-    [self.Scroll_content addSubview:_VW_fourth];
-    [self.Scroll_content addSubview:_VW_fifth];
-    
-    
-   
-    
-    
     
     _TXT_count.layer.borderWidth = 0.4f;
     _TXT_count.layer.borderColor = [UIColor grayColor].CGColor;
@@ -253,7 +275,6 @@
     _BTN_play.layer.cornerRadius = self.BTN_play.frame.size.width / 2;
     _BTN_play.layer.masksToBounds = YES;
     
-//    self.custom_story_page_controller.numberOfPages = [[json_Response_Dic valueForKey:@"products"] count];
     UIImage *newImage = [_IMG_cart.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIGraphicsBeginImageContextWithOptions(_IMG_cart.image.size, NO, newImage.scale);
     [[UIColor whiteColor] set];
@@ -261,15 +282,31 @@
     newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     _IMG_cart.image = newImage;
-    
+    @try
+    {
+        if([[json_Response_Dic valueForKey:@"getVariantNames"] isEqualToString:@""])
+        {
+            
+        }
+    }
+    @catch(NSException *exception)
+    {
     data_arr = [[NSMutableArray alloc]init];
     for(int i = 0; i<[[json_Response_Dic valueForKey:@"getVariantNames"] count];i++)
     {
         [data_arr insertObject:@"" atIndex:i];
 
     }
-    scroll_ht = _VW_fifth.frame.origin.y+ _VW_fifth.frame.size.height + self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height - _VW_filter.frame.size.height;
-    [self viewDidLayoutSubviews];
+    }
+    // + self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height ;
+    scroll_ht = _VW_fourth.frame.origin.y+ _VW_fourth.frame.size.height;
+//    frame_set = _Scroll_content.frame;
+//    frame_set.origin.y = - (self.navigationController.navigationBar.frame.size.height +50);
+//    frame_set.size.height = scroll_ht;
+  //  _Scroll_content.frame = frame_set;
+//    
+    
+   [self viewDidLayoutSubviews];
 
 }
 
@@ -286,16 +323,22 @@
            
             // Storing product id into User Defaults
             [[NSUserDefaults standardUserDefaults]setObject:[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_descriptions"] objectAtIndex:0] valueForKey:@"product_id"]] forKey:@"product_id"];
+            
+           NSString *currency_code = [NSString stringWithFormat:@"%@",[[json_Response_Dic valueForKey:@"products"] valueForKey:@"currency_code"]];
+            
+            NSString  *actuel_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
+            
+            NSString *special_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"special_price"]];
+            
+            NSString *doha_miles = [NSString stringWithFormat:@"%@%@",currency_code,[[json_Response_Dic valueForKey:@"products"] valueForKey:@"mileValue"]];
+            NSString *mils  = @"Doha Miles";
     
             
-            NSString  *actuel_price = [NSString stringWithFormat:@"QR %@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
+            NSString *text;
             
-            NSString *special_price = [NSString stringWithFormat:@"QR %@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"special_price"]];
-            
-            
-            if ([special_price isEqualToString:@"QR "]|| [special_price isEqualToString:@"null"]||[special_price isEqualToString:@"QR <null>"]) {
+            if ([special_price isEqualToString:@" "]|| [special_price isEqualToString:@"null"]||[special_price isEqualToString:@"<null>"]) {
                 
-                NSString *text = [NSString stringWithFormat:@"%@",actuel_price];
+               text = [NSString stringWithFormat:@"%@",actuel_price];
                   NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
 
                 attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
@@ -309,9 +352,22 @@
             else{
                 
                 
-                NSString *doha_miles = @"QR 6758";
-                NSString *mils  = @"Doha Miles";
-            NSString *text = [NSString stringWithFormat:@"%@ %@ / %@ %@",special_price,actuel_price,doha_miles,mils];
+               // NSString  *actuelprice = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
+                
+                //NSString *specialprice = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"special_price"]];
+                
+                float disc = [actuel_price integerValue]-[special_price integerValue];
+                float digits = disc/[actuel_price integerValue];
+                int discount = digits *100;
+                NSString *of = @"% off";
+                _LBL_discount.text =[NSString stringWithFormat:@"%d%@",discount,of];
+                
+                
+                
+                //NSString *doha_miles = @"QR 6758";
+                actuel_price = [currency_code stringByAppendingString:actuel_price];
+                special_price = [NSString stringWithFormat:@"%@ %@",currency_code,special_price];
+            text = [NSString stringWithFormat:@"%@ %@ / %@ %@",special_price,actuel_price,doha_miles,mils];
                 
                 if ([_LBL_prices respondsToSelector:@selector(setAttributedText:)]) {
                     
@@ -325,7 +381,7 @@
                             }
                             else
                             {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:19.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0],NSForegroundColorAttributeName:[UIColor redColor]}
                                                         range:ename];
                             }
                     
@@ -336,41 +392,41 @@
                             //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
                             if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
                             {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:21.0]}
+                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0]}
                                                         range:cmp];
                             }
                             else
                             {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:13.0]}
+                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor]}
                                                         range:cmp];
                             }
                     
                             NSRange miles_price = [text rangeOfString:doha_miles];
                             if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
                             {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:21.0]}
+                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0]}
                                                         range:miles_price];
                             }
                             else
                             {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:19.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0],NSForegroundColorAttributeName:[UIColor redColor]}
                                                         range:miles_price];
                             }
                             NSRange miles = [text rangeOfString:mils];
                             if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
                             {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:21.0]}
+                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0]}
                                                         range:miles];
                             }
                             else
                             {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:13.0]}
+                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0]}
                                                         range:miles];
                             }
                             
                     [attributedText addAttribute:NSStrikethroughStyleAttributeName
                                             value:@2
-                                            range:NSMakeRange([special_price length]+4, [actuel_price length]-3)];
+                                            range:NSMakeRange([special_price length]+1, [actuel_price length])];
                     
                             _LBL_prices.attributedText = attributedText;
                         }
@@ -378,17 +434,6 @@
                         {
                             _LBL_prices.text = text;
                         }
-                
-                
-                NSString  *actuelprice = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
-                
-                NSString *specialprice = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"special_price"]];
-                
-                float disc = [actuelprice integerValue]-[specialprice integerValue];
-                float digits = disc/[actuelprice integerValue];
-                int discount = digits *100;
-                NSString *of = @"% off";
-                _LBL_discount.text =[NSString stringWithFormat:@"%d%@",discount,of];
                 
                 
             }
@@ -406,7 +451,7 @@
 {
     [super viewDidLayoutSubviews];
     [_Scroll_content layoutIfNeeded];
-    _Scroll_content.contentSize = CGSizeMake(_Scroll_content.frame.size.width,scroll_ht);
+    _Scroll_content.contentSize = CGSizeMake(_Scroll_content.frame.size.width,scroll_ht + _VW_filter.frame.size.height);
     
     
 }
@@ -460,7 +505,21 @@
 
     }
     else
-    {          return [[json_Response_Dic valueForKey:@"getVariantNames"] count];
+    {
+        NSInteger count = 0;
+        @try
+        {
+        if([[json_Response_Dic valueForKey:@"getVariantNames"] isEqualToString:@""])
+        {
+            count = 0;
+        }
+        }
+        @catch(NSException *exception)
+        {
+            count =[[json_Response_Dic valueForKey:@"getVariantNames"] count];
+        }
+        
+        return count;
         
     }
     
@@ -550,7 +609,7 @@
 
     }
     else{
-        return CGSizeMake(_collectionview_variants.frame.size.width/5, 64);
+        return CGSizeMake(_collectionview_variants.frame.size.width/3, 64);
     }
     
 }
@@ -635,7 +694,12 @@
     frame.size.width = self.navigationController.navigationBar.frame.size.width;
     self.segmentedControl4.frame = frame;
     
-    self.segmentedControl4.sectionTitles = @[@" DESCRIPTION  ", @" REVIEWS(235) "];
+    
+    @try {
+        
+    NSString *count = [NSString stringWithFormat:@"  REVIEWS(%lu)  ",[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_reviews"] count]];
+    
+    self.segmentedControl4.sectionTitles = @[@" DESCRIPTION  ",count];
     
     self.segmentedControl4.backgroundColor = [UIColor clearColor];
     self.segmentedControl4.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:15]};
@@ -650,17 +714,21 @@
     [self.segmentedControl4 addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     [self.VW_fourth addSubview:self.segmentedControl4];
+    } @catch (NSException *exception) {
+        
+    }
 }
 
 - (void)segmentedControlChangedValue:(HMSegmentedControl *)segmentedControl4
 {
     NSLog(@"Selected index %ld (via UIControlEventValueChanged) aaa", (long)segmentedControl4.selectedSegmentIndex);
-  //  [_TXTVW_description layoutIfNeeded];
-    //[_TXTVW_description sizeToFit];
+  
     if(segmentedControl4.selectedSegmentIndex == 0)
     {
         
-     //   [_TXTVW_description loadHTMLString:[[[[[json_Response_Dic valueForKey:@"products"]valueForKey:@"0"]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"description"] baseURL:nil];
+   
+        @try {
+            
         NSString *description =[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"products"]valueForKey:@"0"]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"description"]];
         description = [description stringByAppendingString:[NSString stringWithFormat:@"<style>body{font-family: 'Poppins-Regular'; font-size:%dpx;}</style>",17]];
         NSAttributedString *attributedString = [[NSAttributedString alloc] initWithData:[description dataUsingEncoding:NSUTF8StringEncoding]options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}documentAttributes:nil error:nil];
@@ -669,36 +737,50 @@
         str = [str stringByReplacingOccurrencesOfString:@"/" withString:@"\n"];
         _TXTVW_description.text = str;
         
-        CGRect frame_set = _VW_fifth.frame;
-        frame_set.size.height = _TXTVW_description.frame.origin.y + _TXTVW_description.contentSize.height;
+        _TXTVW_description.hidden = NO;
+        _TXTVW_description.numberOfLines = 0;
+        [_TXTVW_description sizeToFit];
+        
+//        CGRect frame_set = _TXTVW_description.frame;
+//        frame_set.size.height = _TXTVW_description.frame.origin.y +  _TXTVW_description.frame.size.height;
+//        frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
+//        _TXTVW_description.frame = frame_set;
+
+         CGRect  frame_set = _VW_fourth.frame;
+        frame_set.size.height = _TXTVW_description.frame.origin.y + _TXTVW_description.frame.size.height;
         frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
-        _VW_fifth.frame = frame_set;
+        _VW_fourth.frame = frame_set;
 
         
-       scroll_ht = _VW_fifth.frame.origin.y+ _VW_fifth.frame.size.height + self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height + _VW_filter.frame.size.height;
+        scroll_ht = _VW_fourth.frame.origin.y+ _VW_fourth.frame.size.height;// + self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height + _VW_filter.frame.size.height;
          [self viewDidLayoutSubviews];
         _TBL_reviews.hidden = YES;
-       
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        }
         
     }
     else
     {
         [_TBL_reviews reloadData];
         _TBL_reviews.hidden = NO;
+        _TXTVW_description.hidden = YES;
         
         CGRect frame_set = _TBL_reviews.frame;
+        frame_set.origin.y = _TXTVW_description.frame.origin.y;
         frame_set.size.height = _TBL_reviews.frame.origin.y + _TBL_reviews.contentSize.height;
         frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
         _TBL_reviews.frame = frame_set;
+        [self.VW_fourth addSubview:_TBL_reviews];
         
-        frame_set = _VW_fifth.frame;
+        frame_set = _VW_fourth.frame;
         frame_set.size.height = _TBL_reviews.frame.origin.y + _TBL_reviews.contentSize.height;
         frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
-        _VW_fifth.frame = frame_set;
+        _VW_fourth.frame = frame_set;
         
-        [self.VW_fifth addSubview:_TBL_reviews];
         
-         scroll_ht = _VW_fifth.frame.origin.y+ _VW_fifth.frame.size.height + self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height+_VW_filter.frame.size.height;
+        
+        scroll_ht = _VW_fourth.frame.origin.y+ _VW_fourth.frame.size.height ;// + self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height+_VW_filter.frame.size.height;
          [self viewDidLayoutSubviews];
 
     }
@@ -801,18 +883,18 @@
 
 
  #pragma mark add_to_cart_API_calling
+//apis/addcartapi.json
+
+//    this->request->data['pdtId'];
+//    $userId = $this->request->data['userId'];
+//    $qtydtl = $this->request->data['quantity'];
+//    $custom = $this->request->data['custom'];
+//    $variant = $this->request->data['variant'];
 
  -(void)add_to_cart_API_calling{
      
-     
-     //apis/addcartapi.json
-     
-     //    this->request->data['pdtId'];
-     //    $userId = $this->request->data['userId'];
-     //    $qtydtl = $this->request->data['quantity'];
-     //    $custom = $this->request->data['custom'];
-     //    $variant = $this->request->data['variant'];
-     
+     @try {
+         
  NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
  NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
  NSString *items_count = [[NSUserDefaults standardUserDefaults]valueForKey:@"item_count"];
@@ -853,7 +935,10 @@
          [activityIndicatorView stopAnimating];
      }
  }
- 
+         
+     } @catch (NSException *exception) {
+         NSLog(@"%@",exception);
+     }
  }
 
 /*-(void)add_cart_action
@@ -931,8 +1016,9 @@
         NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
         NSString *country = [user_dflts valueForKey:@"country_id"];
         NSString *languge = [user_dflts valueForKey:@"language_id"];
+        NSString *mercahnt_ID = [NSString stringWithFormat:@"%@",[user_dflts valueForKey:@"Mercahnt_ID"]];
         
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/details/%@/%@/%@.json",SERVER_URL,[user_dflts valueForKey:@"product_list_key_sub"],country,languge];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/details/%@/%@/%@/%@/Customer.json",SERVER_URL,[user_dflts valueForKey:@"product_list_key_sub"],mercahnt_ID,country,languge];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -979,18 +1065,18 @@
                                 
                             }
                         }
+                        
                         self.custom_story_page_controller.numberOfPages = images_arr.count;
+                       
+                        
                         NSLog(@"%@",json_Response_Dic);
-                        [self set_UP_VIEW];
-                        [_collectionview_variants reloadData];
-                        [_TBL_reviews reloadData];
-//                        [self.collectionview_size reloadData];
-//                        [self.collectionView_color reloadData];
-                        [self.collection_images reloadData];
-                        [self set_Data_to_UIElements];
+                        
                         NSArray *size_Color_arr = [json_Response_Dic valueForKey:@"getVariantNames"];
+                        if([size_Color_arr isKindOfClass:[NSDictionary class]])
+                        {
                         color_arr=[[NSMutableArray alloc]init];
                        size_arr = [[NSMutableArray alloc]init];
+                        
                         for (int i=0; i<size_Color_arr.count; i++) {
                             @try {
                                 if ([[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:i] valueForKey:@"variant"] isEqualToString:@"Colour"]) {
@@ -1004,6 +1090,25 @@
                                 NSLog(@"%@",exception);
                             }
                     
+                        }
+                        
+                        
+                        [self set_UP_VIEW];
+                        [self set_Data_to_UIElements];
+                        [self.collection_images reloadData];
+                        [self.collectionview_variants reloadData];
+                        
+                        self.segmentedControl4.selectedSegmentIndex = 0;
+                            [self segmentedControlChangedValue:self.segmentedControl4];
+                        }
+                        else{
+                            [self set_UP_VIEW];
+                            [self set_Data_to_UIElements];
+                            [self.collection_images reloadData];
+                             [self.collectionview_variants reloadData];
+                             self.segmentedControl4.selectedSegmentIndex = 0;
+                            [self segmentedControlChangedValue:self.segmentedControl4];
+
                         }
 
                     } @catch (NSException *exception) {
@@ -1183,6 +1288,8 @@
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     NSLog(@"picker_component:%@",picker_arr[row]);
     
+    
+    
     [data_arr replaceObjectAtIndex:tag withObject:picker_arr[row]];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:tag inSection:
                               0];
@@ -1242,7 +1349,7 @@
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0]}
                                     range:ename];
         }
         
@@ -1258,7 +1365,7 @@
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:18.0],NSForegroundColorAttributeName:[UIColor lightGrayColor]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor lightGrayColor]}
                                     range:cmp];
         }
         NSRange cmps = [str_review rangeOfString:str_rview];
@@ -1270,7 +1377,7 @@
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:18.0],NSForegroundColorAttributeName:[UIColor darkGrayColor]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor darkGrayColor]}
                                     range:cmps];
         }
 
@@ -1293,7 +1400,7 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 10;
+    return 100;
 }
 
 - (IBAction)add_to_wih_list:(id)sender {
@@ -1309,6 +1416,31 @@
         
         
     }
+}
+- (IBAction)BTN_back_action:(id)sender
+{
+    
+    [self dismissViewControllerAnimated:NO completion:nil];
+    
+}
+- (IBAction)BTN_cart_action:(id)sender
+{
+    [self performSegueWithIdentifier:@"productDetail_to_wishList" sender:self];
+
+}
+- (IBAction)BTN_wish_list:(id)sender
+{
+    if ([[[json_Response_Dic valueForKey:@"products"] valueForKey:@"wishStatus"] isEqualToString:@"No"]) {
+        
+        [HttpClient createaAlertWithMsg:@"already added" andTitle:@""];
+        
+    }
+    else{
+        [self performSelector:@selector(wish_list_API) withObject:activityIndicatorView afterDelay:0.01];
+        
+        
+    }
+
 }
 
 // product Detail to Wish List

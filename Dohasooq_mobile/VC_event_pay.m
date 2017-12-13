@@ -21,8 +21,8 @@
 
    
     NSMutableArray  *dtl = [[NSUserDefaults standardUserDefaults] valueForKey:@"Amount_dict"];
-
-   NSMutableDictionary  *event_dtl_dict = [[NSMutableDictionary alloc]init];
+ 
+    NSMutableDictionary  *event_dtl_dict = [[NSMutableDictionary alloc]init];
     
     
     event_dtl_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"event_detail"];
@@ -34,6 +34,12 @@
     {
     NSLog(@"%@",exception);
     }
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"]){
+        _LBL_event_name.textAlignment = NSTextAlignmentRight;
+    }
+    else{
+         _LBL_event_name.textAlignment = NSTextAlignmentLeft;
+    }
 
                            
     _LBL_event_name.numberOfLines = 0;
@@ -44,6 +50,7 @@
     CGRect framseset = _LBL_location.frame ;
     framseset.origin.y = _LBL_event_name.frame.origin.y+ _LBL_event_name.frame.size.height + 3;
     _LBL_location.frame = framseset;
+   
     @try
     {
       _LBL_location.text = [NSString stringWithFormat:@"%@",[event_dtl_dict valueForKey:@"_Venue"]];
@@ -60,7 +67,9 @@
     _LBL_event_name.numberOfLines = 0;
  
     
-       
+       NSLog(@"_LBL_event_name %f",_LBL_event_name.frame.size.width);
+      NSLog(@"_LBL_location %f",_LBL_location.frame.size.width);
+    
     framseset = _LBL_time.frame ;
     framseset.origin.y = _LBL_location.frame.origin.y+ _LBL_location.frame.size.height + 3;
     _LBL_time.frame = framseset;
@@ -164,6 +173,12 @@
     
     
 }
+
+
+-(void)viewWillAppear:(BOOL)animated{
+    self.navigationItem.hidesBackButton = YES;
+}
+
 #pragma Button Ations
 - (IBAction)back_action:(id)sender
 {

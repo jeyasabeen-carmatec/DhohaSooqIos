@@ -104,7 +104,7 @@ int j ,i;
         {
             NSArray *nib;
             nib = [[NSBundle mainBundle] loadNibNamed:@"first_top_cell" owner:self options:nil];
-            top_cell = [nib objectAtIndex:0];
+            top_cell = [nib objectAtIndex:1];
         }
         NSString *str = @"789457534";
         NSString *text = [NSString stringWithFormat:@"ORDER ID : %@",str];
@@ -182,7 +182,7 @@ int j ,i;
         {
             NSArray *nib;
             nib = [[NSBundle mainBundle] loadNibNamed:@"orders_cell" owner:self options:nil];
-            order_cell = [nib objectAtIndex:0];
+            order_cell = [nib objectAtIndex:1];
         }
 
 
@@ -299,7 +299,7 @@ int j ,i;
         {
             order_cell.LBL_Deliver_on.text = date_text;
         }
-        
+        [order_cell.BTN_rating addTarget:self action:@selector(review_Screen) forControlEvents:UIControlEventTouchUpInside];
 
         return order_cell;
     }
@@ -312,7 +312,7 @@ int j ,i;
         {
             NSArray *nib;
             nib = [[NSBundle mainBundle] loadNibNamed:@"cost_find_cell" owner:self options:nil];
-            cost_cell = [nib objectAtIndex:0];
+            cost_cell = [nib objectAtIndex:1];
         }
         cost_cell.LBL_Total_items.text = [NSString stringWithFormat:@"TOTAL ITEMS: 2"];
         
@@ -356,7 +356,7 @@ int j ,i;
         {
             NSArray *nib;
             nib = [[NSBundle mainBundle] loadNibNamed:@"address_cell" owner:self options:nil];
-            cell = [nib objectAtIndex:0];
+            cell = [nib objectAtIndex:1];
         }
         cell.BTN_edit_addres.hidden = YES;
         
@@ -393,8 +393,8 @@ int j ,i;
 //        
 //        country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
         
-        NSString *state = [[dict valueForKey:@"billingaddress"] valueForKey:@"state"];
-        NSString *country = [[dict valueForKey:@"billingaddress"] valueForKey:@"country"];
+        NSString *state = [NSString stringWithFormat:@"%@",[[dict valueForKey:@"billingaddress"] valueForKey:@"state"]];
+        NSString *country = [NSString stringWithFormat:@"%@",[[dict valueForKey:@"billingaddress"] valueForKey:@"country"]];
         
         state = [state stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
         
@@ -421,7 +421,7 @@ int j ,i;
         {
             NSArray *nib;
             nib = [[NSBundle mainBundle] loadNibNamed:@"address_cell" owner:self options:nil];
-            cell = [nib objectAtIndex:0];
+            cell = [nib objectAtIndex:1];
         }
         cell.BTN_edit_addres.hidden = YES;
         
@@ -489,7 +489,7 @@ int j ,i;
         {
             NSArray *nib;
             nib = [[NSBundle mainBundle] loadNibNamed:@"Payment_summary_cell" owner:self options:nil];
-            cell = [nib objectAtIndex:0];
+            cell = [nib objectAtIndex:1];
         }
         NSString *current_price = [NSString stringWithFormat:@"QR"];
         NSString *prec_price = [NSString stringWithFormat:@"6800"];
@@ -623,6 +623,10 @@ int j ,i;
 }
 - (IBAction)back_ACTIon:(id)sender {
     [self.navigationController popViewControllerAnimated:NO];
+}
+-(void)review_Screen
+{
+    [self performSegueWithIdentifier:@"order_rating" sender:self];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
