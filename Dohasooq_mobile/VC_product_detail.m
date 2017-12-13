@@ -18,7 +18,7 @@
 
 @interface VC_product_detail ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UITextFieldDelegate,UIWebViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,UITextViewDelegate>
 {
-    NSMutableArray   *images_arr,*color_arr,*size_arr;
+    NSMutableArray   *images_arr,*color_arr,*size_arr,*indexPaths,*variant_arr;
     NSArray *keys;
     NSArray *picker_arr;
     
@@ -45,6 +45,8 @@
     // Do any additional setup after loading the view.
     json_Response_Dic = [[NSMutableDictionary alloc]init];
     images_arr = [[NSMutableArray alloc]init];
+    variant_arr = [[NSMutableArray alloc]init];
+
     [self addSEgmentedControl];
 
     [self.collection_images registerNib:[UINib nibWithNibName:@"product_detail_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
@@ -150,7 +152,7 @@
     
    
     frame_set = _LBL_prices.frame;
-    frame_set.origin.y = starRatingView.frame.origin.y + starRatingView.frame.size.height + 3;
+    frame_set.origin.y = starRatingView.frame.origin.y + starRatingView.frame.size.height;
     _LBL_prices.frame = frame_set;
     
     frame_set = _LBL_discount.frame;
@@ -190,9 +192,10 @@
     }
     @catch(NSException *exception)
     {
-        [_collectionview_variants reloadData];
+       
         if([[json_Response_Dic valueForKey:@"getVariantNames"] count] < 1)
         {
+            
             frame_set = _VW_third.frame;
             frame_set.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height + 3;
             frame_set.size.height =_TXT_count.frame.origin.y +_TXT_count.frame.size.height + 10;
@@ -203,10 +206,14 @@
         }
         else
         {
-            [_collectionview_variants reloadData];
+             [self.collectionview_variants reloadData];
+            frame_set = _collectionview_variants.frame;
+            frame_set.size.height = _collectionview_variants.frame.origin.y + _collectionview_variants.collectionViewLayout.collectionViewContentSize.height;
+            _collectionview_variants.frame = frame_set;
+            
             frame_set = _VW_third.frame;
             frame_set.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height + 3;
-            frame_set.size.height =_collectionview_variants.frame.origin.y + _collectionview_variants.collectionViewLayout.collectionViewContentSize.height;
+            frame_set.size.height =_collectionview_variants.frame.origin.y + _collectionview_variants.frame.size.height;
             frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
             _VW_third.frame = frame_set;
             
@@ -565,15 +572,23 @@
                                                                                              action:@selector(tappedToSelectRow:)];
                 tapToSelect.delegate = self;
                 [_variant_picker addGestureRecognizer:tapToSelect];
+                
                 UIToolbar* conutry_close = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
                 conutry_close.barStyle = UIBarStyleBlackTranslucent;
                 [conutry_close sizeToFit];
                 
+                UIButton *Done=[[UIButton alloc]init];
+                Done.frame=CGRectMake(conutry_close.frame.size.width - 100, 0, 100, conutry_close.frame.size.height);
+                [Done setTitle:@"Done" forState:UIControlStateNormal];
+                [Done addTarget:self action:@selector(countrybuttonClick:) forControlEvents:UIControlEventTouchUpInside];
+                [conutry_close addSubview:Done];
+                
                 UIButton *close=[[UIButton alloc]init];
-                close.frame=CGRectMake(conutry_close.frame.size.width - 100, 0, 100, conutry_close.frame.size.height);
-                [close setTitle:@"close" forState:UIControlStateNormal];
-                [close addTarget:self action:@selector(countrybuttonClick:) forControlEvents:UIControlEventTouchUpInside];
+                close.frame=CGRectMake(conutry_close.frame.origin.x, 0, 100, conutry_close.frame.size.height);
+                [close setTitle:@"Close" forState:UIControlStateNormal];
+                [close addTarget:self action:@selector(Close_action) forControlEvents:UIControlEventTouchUpInside];
                 [conutry_close addSubview:close];
+                
                 close.tag = indexPath.row;
                cell.TXT_variant.inputAccessoryView=conutry_close;
                cell.TXT_variant.inputView = _variant_picker;
@@ -648,13 +663,6 @@
     [textField resignFirstResponder];
     return YES;
 }
--(void)countrybuttonClick:(UIButton *)sender
-{
-    [self.view endEditing:YES]; //assuming self is your top view controller.
-    //[sender setHidden:YES];
-    //_collectionview_variants.keyboardDismissMode = UIControlStateNormal ;
-    
-}
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
     
@@ -712,9 +720,17 @@
   
     if(segmentedControl4.selectedSegmentIndex == 0)
     {
+        NSString *description;
         
+        @try
+        {
    
-        NSString *description =[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"products"]valueForKey:@"0"]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"description"]];
+        description =[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"products"]valueForKey:@"0"]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"description"]];
+        }
+        @catch(NSException *exception)
+        {
+           description =[NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"]valueForKey:@"0"]valueForKey:@"product_descriptions"]];
+        }
         description = [description stringByAppendingString:[NSString stringWithFormat:@"<style>body{font-family: 'Poppins-Regular'; font-size:%dpx;}</style>",17]];
         NSAttributedString *attributedString = [[NSAttributedString alloc] initWithData:[description dataUsingEncoding:NSUTF8StringEncoding]options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}documentAttributes:nil error:nil];
         _TXTVW_description.attributedText = attributedString;
@@ -774,6 +790,7 @@
   picker_arr = [[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:sender.tag] valueForKey:@"0"] allObjects];
     NSLog(@"variant_count%lu",(unsigned long)picker_arr.count);
     tag = [sender tag];
+    
     
    
 }
@@ -877,14 +894,38 @@
      //    $qtydtl = $this->request->data['quantity'];
      //    $custom = $this->request->data['custom'];
      //    $variant = $this->request->data['variant'];
-     
+  @try
+     {
  NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
  NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
  NSString *items_count = [[NSUserDefaults standardUserDefaults]valueForKey:@"item_count"];
  NSError *error;
  NSHTTPURLResponse *response = nil;
  NSString *pdId = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"];
- NSDictionary *parameters = @{@"pdtId":pdId,@"userId":user_id,@"quantity":items_count,@"custom":@"",@"variant":@""};
+     NSString *variant = [[json_Response_Dic valueForKey:@"products"] valueForKey:@"customOption"];
+     NSString *custom = [[json_Response_Dic valueForKey:@"products"] valueForKey:@"variant"];
+     NSString *variant_stat; NSDictionary *parameters;
+     NSString *variant_str = [variant_arr componentsJoinedByString:@","];
+     
+     if([custom isEqualToString:@"Yes"] && [variant isEqualToString:@"No"])
+     {
+         variant_stat = @"custom";
+         parameters = @{@"pdtId":pdId,@"userId":user_id,@"quantity":items_count,variant_stat:variant_str};
+
+     }
+     else if([custom isEqualToString:@"No"] && [variant isEqualToString:@"Yes"])
+     {
+         variant_stat = @"variant";
+         parameters = @{@"pdtId":pdId,@"userId":user_id,@"quantity":items_count,variant_stat:variant_str};
+
+     }
+     else
+     {
+         variant_stat = @"";
+         parameters = @{@"pdtId":pdId,@"userId":user_id,@"quantity":items_count,variant_stat:variant_stat};
+
+     }
+
  NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&error];
  NSURL *urlProducts=[NSURL URLWithString:[NSString stringWithFormat:@"%@apis/addcartapi.json",SERVER_URL]];
  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
@@ -894,22 +935,21 @@
  [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
  NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
  if (error) {
-    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
-     VW_overlay.hidden=YES;
+//     VW_overlay.hidden=YES;
      [activityIndicatorView stopAnimating];
  }
  
  if(aData)
  {
-      NSMutableDictionary *dict = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+      NSMutableDictionary *dict = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
       NSLog(@"Response  Error %@ Response %@",error,dict);
-      [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
+      //[HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
      
      if([[dict valueForKey:@"success"] intValue] == 1)
      {
          VW_overlay.hidden=YES;
          [activityIndicatorView stopAnimating];
-         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_Response_Dic valueForKey:@"message"]delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[dict valueForKey:@"message"]delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
          [alert show];
          NSLog(@"The Wishlist%@",json_Response_Dic);
      }
@@ -918,6 +958,12 @@
          [activityIndicatorView stopAnimating];
      }
  }
+     }
+     @catch(NSException *exception)
+     {
+         VW_overlay.hidden=YES;
+         [activityIndicatorView stopAnimating];
+     }
  
  }
 
@@ -1052,7 +1098,7 @@
                         NSLog(@"%@",json_Response_Dic);
                         
                         NSArray *size_Color_arr = [json_Response_Dic valueForKey:@"getVariantNames"];
-                        if([size_Color_arr isKindOfClass:[NSDictionary class]])
+                        if([size_Color_arr isKindOfClass:[NSArray class]])
                         {
                         color_arr=[[NSMutableArray alloc]init];
                        size_arr = [[NSMutableArray alloc]init];
@@ -1071,20 +1117,22 @@
                             }
                     
                         }
-                        
-                        
-                        [self set_UP_VIEW];
                         [self set_Data_to_UIElements];
                         [self.collection_images reloadData];
+                        [self.collectionview_variants reloadData];
+                        [self set_UP_VIEW];
+                            
                         
                         self.segmentedControl4.selectedSegmentIndex = 0;
                             [self segmentedControlChangedValue:self.segmentedControl4];
                         }
-                        else{
-                            [self set_UP_VIEW];
+                        else
+                        {
                             [self set_Data_to_UIElements];
                             [self.collection_images reloadData];
-                             self.segmentedControl4.selectedSegmentIndex = 0;
+                             [self.collectionview_variants reloadData];
+                            [self set_UP_VIEW];
+                            self.segmentedControl4.selectedSegmentIndex = 0;
                             [self segmentedControlChangedValue:self.segmentedControl4];
 
                         }
@@ -1267,16 +1315,34 @@
     NSLog(@"picker_component:%@",picker_arr[row]);
     
     
-    
     [data_arr replaceObjectAtIndex:tag withObject:picker_arr[row]];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:tag inSection:
                               0];
-    NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithObjects:indexPath, nil];
     
-    BOOL animationsEnabled = [UIView areAnimationsEnabled];
-    [UIView setAnimationsEnabled:NO];
-    [_collectionview_variants reloadItemsAtIndexPaths:indexPaths];
-    [UIView setAnimationsEnabled:animationsEnabled];
+    NSArray *key_arr = [[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:indexPath.row] valueForKey:@"0"] allKeys];
+   
+    for(int i=0;i<key_arr.count;i++)
+    {
+        NSLog(@"The seperated :%@",[[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:indexPath.row] valueForKey:@"0"] allObjects] objectAtIndex:i]);
+
+        if([[[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:indexPath.row] valueForKey:@"0"] allObjects]objectAtIndex:i] isEqualToString:picker_arr[row]])
+        {
+              NSLog(@"Variant ID:%@,Color_ID:%@",[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:indexPath.row] valueForKey:@"variant_id"],[key_arr objectAtIndex:i]);
+            
+            NSDictionary *temp_dict;
+            @try {
+            temp_dict = @{[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:indexPath.row] valueForKey:@"variant_id"]:[key_arr objectAtIndex:i]};
+            }
+            @catch(NSException *exception)
+            {
+                temp_dict = @{[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:indexPath.row] valueForKey:@"custom_option_id"]:[key_arr objectAtIndex:i]};
+            }
+            [variant_arr addObject:temp_dict];
+        }
+    }
+    
+    indexPaths = [[NSMutableArray alloc] initWithObjects:indexPath, nil];
+   
     
     
 }
@@ -1379,6 +1445,27 @@
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 100;
+}
+
+#pragma Button ACIONS
+
+-(void)Close_action
+{
+     [self.view endEditing:YES];
+    
+}
+-(void)countrybuttonClick:(UIButton *)sender
+{
+    [self.view endEditing:YES];
+    NSLog(@"The variant ARR:%@",variant_arr);
+    
+    BOOL animationsEnabled = [UIView areAnimationsEnabled];
+    [UIView setAnimationsEnabled:NO];
+    [_collectionview_variants reloadItemsAtIndexPaths:indexPaths];
+    [UIView setAnimationsEnabled:animationsEnabled];
+    
+    NSLog(@"%@",data_arr);
+    
 }
 
 - (IBAction)add_to_wih_list:(id)sender {

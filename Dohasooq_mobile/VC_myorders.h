@@ -10,4 +10,8 @@
 
 @interface VC_myorders : UIViewController
 @property(nonatomic,weak) IBOutlet UITableView *TBL_orders;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_order_ID;
+
+@property(nonatomic,weak) IBOutlet UILabel *LBL_order_date;
+
 @end

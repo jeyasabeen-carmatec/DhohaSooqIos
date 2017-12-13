@@ -106,8 +106,15 @@
         NSInteger ct = 0;
       if(section == 0)
       {
-        ct = [[[jsonresponse_dic_address valueForKey:@"billaddress"]allKeys]count] ;
-        
+          @try {
+              ct = [[[jsonresponse_dic_address valueForKey:@"billaddress"]allKeys]count] ;
+ 
+          } @catch (NSException *exception) {
+              ct = 0;
+          }
+          
+          
+          
       }
     else if(section == 1)
     {
@@ -342,9 +349,18 @@
             new_address_input = @"0";
         }
             
-        }
-          [str_country stringByReplacingOccurrencesOfString:@"<null>" withString:@"select Country"];
-          [str_state stringByReplacingOccurrencesOfString:@"<null>" withString:@"select Country"];
+      }
+            
+            
+            if ([str_country isEqualToString:@""] || [str_country isEqualToString:@"<nil>"]  || [str_country isEqual:[NSNull class]]) {
+                cell.TXT_country.placeholder = @"select countrt";
+            }
+            if ([str_city isEqualToString:@""] || [str_city isEqualToString:@"<nil>"]  || [str_city isEqual:[NSNull class]]) {
+                cell.TXT_country.placeholder = @"select state";
+            }
+            
+//          [str_country stringByReplacingOccurrencesOfString:@"<null>" withString:@"select Country"];
+//          [str_state stringByReplacingOccurrencesOfString:@"<null>" withString:@"select states"];
 
         
             cell.TXT_first_name.text = str_fname;
@@ -375,19 +391,22 @@
             NSLog(@"%@",exception);
         }
    
-           [cell.BTN_check removeFromSuperview];
-           [cell.LBL_stat removeFromSuperview];
-           [cell.LBL_shipping removeFromSuperview];
-        
-        UIButton *save_Btn = [UIButton buttonWithType:UIButtonTypeSystem];
-        save_Btn.frame = CGRectMake(cell.TXT_phone.frame.origin.x, 522, cell.TXT_phone.frame.size.width, 44);
         
         
-        [save_Btn addTarget:self action:@selector(save_btn_action:) forControlEvents:UIControlEventTouchUpInside];
-        [save_Btn setTitle:@"SAVE" forState:UIControlStateNormal];
-        [save_Btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        save_Btn.backgroundColor = [UIColor colorWithRed:251.0/255.0 green:185.0/255.0 blue:71.0/255 alpha:1];
-        [cell.contentView addSubview:save_Btn];
+        [cell.Btn_save addTarget:self action:@selector(save_btn_action:) forControlEvents:UIControlEventTouchUpInside];
+//           [cell.BTN_check removeFromSuperview];
+//           [cell.LBL_stat removeFromSuperview];
+//           [cell.LBL_shipping removeFromSuperview];
+//        
+//        UIButton *save_Btn = [UIButton buttonWithType:UIButtonTypeSystem];
+//        save_Btn.frame = CGRectMake(cell.TXT_phone.frame.origin.x, 522, cell.TXT_phone.frame.size.width, 44);
+        
+        
+        
+//        [save_Btn setTitle:@"SAVE" forState:UIControlStateNormal];
+//        [save_Btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//        save_Btn.backgroundColor = [UIColor colorWithRed:251.0/255.0 green:185.0/255.0 blue:71.0/255 alpha:1];
+//        [cell.contentView addSubview:save_Btn];
         
             return cell;
         
@@ -504,9 +523,16 @@
                     VW_overlay.hidden = YES;
                     [activityIndicatorView stopAnimating];
                     @try {
-                        jsonresponse_dic_address = data;
-                        [_TBL_address reloadData];
-                        NSLog(@"*******%@*********",data);
+                        if ([data isKindOfClass:[NSDictionary class]]) {
+                            jsonresponse_dic_address = data;
+                            [_TBL_address reloadData];
+                            NSLog(@"*******%@*********",data);
+                        }
+                        else{
+                            NSLog(@"The data is in unknown format");
+                        }
+                        
+                       
                     } @catch (NSException *exception) {
                         
                     }
@@ -563,6 +589,7 @@
 
 -(void)BTN_edit_clickd:(UIButton *)sender
 {
+    
     edit_tag = sender.tag ;
     is_add_new = NO;
     i = 1;
@@ -586,7 +613,101 @@
     str_country = cell.TXT_country.text ;
     str_zip_code = cell.TXT_zip.text ;
     str_phone =  cell.TXT_phone.text ;
+    NSString *msg;
     
+    if ([str_fname isEqualToString:@""]) {
+        
+        [cell.TXT_first_name becomeFirstResponder];
+       msg = @"fname should not be empty";
+        
+    }
+    else if (str_fname.length<3 || str_fname.length>30)
+    {
+        [cell.TXT_first_name becomeFirstResponder];
+         msg = @"fname should be 3 to 30  characters range";
+    }
+    
+    else if ([str_lname isEqualToString:@""]) {
+        
+        [cell.TXT_last_name becomeFirstResponder];
+        msg = @"lname should not be empty";
+        
+    }
+    else if (str_lname.length<3 || str_lname.length>30)
+    {
+        [cell.TXT_last_name becomeFirstResponder];
+        msg = @"lname should be 3 to 30  characters range";
+    }
+    else if ([str_addr1 isEqualToString:@""]) {
+        
+        [cell.TXT_address1 becomeFirstResponder];
+        msg = @"address1 should not be empty";
+        
+    }
+    else if (str_addr1.length<3 || str_addr1.length>30)
+    {
+        [cell.TXT_address1 becomeFirstResponder];
+        msg = @"address1 should be 3 to 30  characters range";
+    }
+        //else if ([str_addr2 isEqualToString:@""]) {
+//        
+//        [cell.TXT_address2 becomeFirstResponder];
+//        msg = @"fname should not be empty";
+//        
+//    }
+//    else if (str_addr2.length<3 || str_addr2.length>30)
+//    {
+//        [cell.TXT_address2 becomeFirstResponder];
+//        msg = @"fname should be 3 to 30  characters range";
+//    }
+    else if ([str_city isEqualToString:@""]) {
+        
+        [cell.TXT_city becomeFirstResponder];
+        msg = @"city should not be empty";
+        
+    }
+    else if (str_city.length<3 || str_city.length>15)
+    {
+        [cell.TXT_city becomeFirstResponder];
+        msg = @"city should be 3 to 30  characters range";
+    }
+    else if ([str_zip_code isEqualToString:@""]) {
+        
+        [cell.TXT_zip becomeFirstResponder];
+        msg = @"zip code should not be empty";
+        
+    }
+    else if (str_zip_code.length<5 || str_zip_code.length>8)
+    {
+        [cell.TXT_zip becomeFirstResponder];
+        msg = @"zip code should be 3 to 30  characters range";
+    }
+    else if ([str_phone isEqualToString:@""]) {
+        
+        [cell.TXT_phone becomeFirstResponder];
+        msg = @"phone number field should not be empty";
+        
+    }
+    else if (str_phone.length<5 || str_phone.length >10)
+    {
+        [cell.TXT_phone becomeFirstResponder];
+        msg = @"phone should be 5 to 10  characters range";
+    }
+    else if ([str_state isEqualToString:@""])
+    {
+        [cell.TXT_state becomeFirstResponder];
+        msg = @"please select state";
+    }
+    else if ([str_country isEqualToString:@""])
+    {
+        [cell.TXT_country becomeFirstResponder];
+        msg = @"please select country";
+    }
+    
+    
+    if (msg) {
+        [HttpClient createaAlertWithMsg:msg andTitle:@""];
+    }
     if (edit_tag == 999) {
         [self edit_Billing_address_API];
     }
@@ -626,7 +747,14 @@
                      ];
                 }
                 if (data) {
+                    
                     NSLog(@"edit_Shipping_Address Response%@",data);
+                    if ([data isKindOfClass:[NSDictionary class]]) {
+                        
+                        if ([[data valueForKey:@"success"] isEqualToString:@"1"]) {
+                            [self.navigationController popViewControllerAnimated:NO];
+                        }
+                    }
                    
                 }
                 
@@ -664,6 +792,14 @@
                      ];
                 }
                 if (data) {
+                    
+                    if ([data isKindOfClass:[NSDictionary class]]) {
+                        
+                        if ([[data valueForKey:@"success"] isEqualToString:@"1"]) {
+                            [self.navigationController popViewControllerAnimated:NO];
+                        }
+                    }
+                    
                     NSLog(@"edit_Shipping_Address Response%@",data);
                     
                 }
@@ -703,6 +839,12 @@
                 }
                 if (data) {
                     NSLog(@"add_new_Shipping_Address Response%@",data);
+                    if ([data isKindOfClass:[NSDictionary class]]) {
+                        
+                        if ([[data valueForKey:@"success"] isEqualToString:@"1"]) {
+                            [self.navigationController popViewControllerAnimated:NO];
+                        }
+                    }
                     
                 }
                 
@@ -767,7 +909,7 @@ if (textField.tag == 8) {
     }else{
         
     }
-    textFieldRowCell.TXT_state.text = @" Select State";
+    textFieldRowCell.TXT_state.placeholder = @" Select State";
 
 }
 }
@@ -905,7 +1047,9 @@ if (textField.tag == 8) {
             @try {
                 
                 cntry_selection = [[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_name"];
+                
                 cntry_ID = [[[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_id"] integerValue];
+            
                 state_selection = @"";
                 
                 //  NSLog(@"country::%@",cntry_selection);
@@ -915,7 +1059,10 @@ if (textField.tag == 8) {
         }
         else{
             @try {
+                
                 state_selection = [[response_picker_arr objectAtIndex:row] valueForKey:@"value"];
+                
+                state_id = [[response_picker_arr objectAtIndex:row] valueForKey:@"key"];
                 //NSLog(@"State::%@",state_selection);
             } @catch (NSException *exception) {
                 state_selection = @"";

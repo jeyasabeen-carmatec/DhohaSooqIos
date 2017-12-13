@@ -18,7 +18,7 @@
     NSMutableArray *arr_product;
     NSMutableArray *productDataArray;
     CGRect frame;
-    NSString *type_product,*sort_key;
+    NSString *type_product,*sort_key,*currency_code;
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
     NSMutableDictionary *json_Response_Dic,*json_DATA,*sort_array;
@@ -229,16 +229,16 @@
     product_cell *pro_cell = (product_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_product" forIndexPath:indexPath];
     @try
     {
-     #pragma Webimage URl Cachee
-    
-    NSString *img_url = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_image"]];
-    [pro_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:img_url]
-                         placeholderImage:[UIImage imageNamed:@"logo.png"]
-                                  options:SDWebImageRefreshCached];
-    
-    
-    pro_cell.LBL_item_name.text = [[productDataArray objectAtIndex:indexPath.row] valueForKey:@"title"];
-           pro_cell.LBL_rating.text = [NSString stringWithFormat:@"%@  ",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"rating"]];
+#pragma Webimage URl Cachee
+        
+        NSString *img_url = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_image"]];
+        [pro_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:img_url]
+                             placeholderImage:[UIImage imageNamed:@"logo.png"]
+                                      options:SDWebImageRefreshCached];
+        
+        
+        pro_cell.LBL_item_name.text = [[productDataArray objectAtIndex:indexPath.row] valueForKey:@"title"];
+        pro_cell.LBL_rating.text = [NSString stringWithFormat:@"%@  ",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"rating"]];
         int rating = [[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"rating"] intValue];
         if(rating <= 1)
         {
@@ -257,110 +257,128 @@
             pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.25 green:0.80 blue:0.51 alpha:1.0];
         }
         
-
-    pro_cell.LBL_current_price.text = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
-    
-    NSString *current_price = [NSString stringWithFormat:@"QR %@", [[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
         
-    NSString *prec_price = [NSString stringWithFormat:@"QR %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
-    NSString *text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
-  
-    if ([pro_cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
+        pro_cell.LBL_current_price.text = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
         
         
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        [paragraphStyle setAlignment:NSTextAlignmentCenter];
+        NSString *current_price = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
         
-                if ([current_price isEqualToString:@"QR <null>"]) {
+        NSString *prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
+        NSString *text ;
+        
+        if ([pro_cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
             
             
-                NSString *text = [NSString stringWithFormat:@" %@",prec_price];
+            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+            [paragraphStyle setAlignment:NSTextAlignmentCenter];
+            
+            if ([current_price isEqualToString:@"<null>"] || [current_price isEqualToString:@"<nil>"] || [current_price isEqualToString:@" "]) {
+                
+                
+                text = [NSString stringWithFormat:@" %@",prec_price];
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                 
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor],}range:[text rangeOfString:prec_price] ];
-                    
-                   [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
-            //NSParagraphStyleAttributeName
+                
+                [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
+                //NSParagraphStyleAttributeName
                 pro_cell.LBL_current_price.attributedText = attributedText;
-            
+                
                 
                 
             }
-        
-        else{
-        
-        // Define general attributes for the entire text
-//        NSDictionary *attribs = @{
-//                                  NSForegroundColorAttributeName:pro_cell.LBL_current_price.textColor,
-//                                  NSFontAttributeName:pro_cell.LBL_current_price.font
-//                                  };
-        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
-        
-        
-        
-        NSRange ename = [text rangeOfString:current_price];
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0],NSForegroundColorAttributeName:[UIColor redColor]}
-                                    range:ename];
+            
+            else{
+                
+                // Define general attributes for the entire text
+                //        NSDictionary *attribs = @{
+                //                                  NSForegroundColorAttributeName:pro_cell.LBL_current_price.textColor,
+                //                                  NSFontAttributeName:pro_cell.LBL_current_price.font
+                //                                  };
+                text = [NSString stringWithFormat:@"%@ %@ %@",currency_code,current_price,prec_price];
+                NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
+                
+                
+                
+                NSRange ename = [text rangeOfString:current_price];
+                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+                {
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                                            range:ename];
+                }
+                else
+                {
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                                            range:ename];
+                }
+                
+                
+                NSRange qrname = [text rangeOfString:currency_code];
+                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+                {
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0],NSForegroundColorAttributeName:[UIColor blackColor]}
+                                            range:qrname];
+                }
+                else
+                {
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor]}
+                                            range:qrname];
+                }
+                
+                
+                
+                
+                NSRange cmp = [text rangeOfString:prec_price];
+                //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
+                
+                
+                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+                {
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0],NSForegroundColorAttributeName:[UIColor blackColor]}
+                                            range:cmp];
+                }
+                else
+                {
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:14.0],NSForegroundColorAttributeName:[UIColor blackColor],}range:cmp ];
+                }
+                [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
+                
+                [attributedText addAttribute:NSStrikethroughStyleAttributeName
+                                       value:@2
+                                       range:NSMakeRange([current_price length]+[currency_code length]+2 ,[prec_price length])];
+                pro_cell.LBL_current_price.attributedText = attributedText;
+                
+            }
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
-                                    range:ename];
+            pro_cell.LBL_current_price.text = text;
         }
         
-        NSRange cmp = [text rangeOfString:prec_price];
-        //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
+        NSString *str = @"%off";
+        pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@ %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"],str];
         
-        
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0],NSForegroundColorAttributeName:[UIColor grayColor]}
-                                    range:cmp];
-        }
-        else
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
-        }
-            [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
-        [attributedText addAttribute:NSStrikethroughStyleAttributeName
-                               value:@2
-                               range:NSMakeRange([prec_price length]+4, [current_price length]-3)];
-        pro_cell.LBL_current_price.attributedText = attributedText;
-        
-    }
-    }
-    else
-    {
-        pro_cell.LBL_current_price.text = text;
-    }
-        
-    NSString *str = @"%off";
-    pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@ %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"],str];
-    
-    [pro_cell.BTN_fav setTag:indexPath.row];//wishListStatus
+        [pro_cell.BTN_fav setTag:indexPath.row];//wishListStatus
         
         if ([[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"wishListStatus"] isEqualToString:@"Yes"]) {
             [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
-
+            
             [pro_cell.BTN_fav setTitleColor:[UIColor colorWithRed:244.f/255.f green:176.f/255.f blue:77.f/255.f alpha:1] forState:UIControlStateNormal];
         }
         else{
             [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
-
+            
             [pro_cell.BTN_fav setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         }
         
-    [pro_cell.BTN_fav addTarget:self action:@selector(Wishlist_add:) forControlEvents:UIControlEventTouchUpInside];
-  //  }
-         return pro_cell;
+        [pro_cell.BTN_fav addTarget:self action:@selector(Wishlist_add:) forControlEvents:UIControlEventTouchUpInside];
+        //  }
+        return pro_cell;
     }
     @catch(NSException *exception)
     {
         
     }
-    
     return pro_cell;
 }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -403,7 +421,7 @@
     
     
     NSUserDefaults *userDflts = [NSUserDefaults standardUserDefaults];
-    NSString *merchant_ID = [NSString stringWithFormat:@"%c",firstLetter];
+//    NSString *merchant_ID = [NSString stringWithFormat:@"%c",firstLetter];
     [userDflts setObject:[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"url_key"] forKey:@"product_list_key_sub"];
     [userDflts setValue:[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"merchant_id"]  forKey:@"Mercahnt_ID"];
     [userDflts synchronize];
@@ -697,6 +715,11 @@
                         @try {
                             VW_overlay.hidden = YES;
                             [activityIndicatorView stopAnimating];
+                            if ([[json_DATA valueForKey:@"currency"] isKindOfClass:[NSDictionary class]]) {
+                                currency_code = [[json_DATA valueForKey:@"currency"] valueForKey:@"currency_code"];
+                            }
+                            
+
                             @try
                             {
                             if([[json_DATA valueForKey:@"products"] isEqualToString:@""])
@@ -743,7 +766,7 @@
                                 }
                                 @catch(NSException *exception)
                                 {
-                                     self.LBL_product_name.text = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"displayName"]];
+                                     self.LBL_product_name.text = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"products"] objectAtIndex:0] valueForKey:@"title"]];
                                 }
                                 [[NSUserDefaults standardUserDefaults] setValue:self.LBL_product_name.text forKey:@"search_val"];
                                   [[NSUserDefaults standardUserDefaults]synchronize];
