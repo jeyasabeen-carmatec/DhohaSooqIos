@@ -1,4 +1,4 @@
-//
+ //
 //  Home_page_Qtickets.m
 //  Dohasooq_mobile
 //
@@ -152,18 +152,13 @@
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
     [self performSelector:@selector(API_call_total) withObject:activityIndicatorView afterDelay:0.01];
-    [self Events_API_CALL];
-     [self movie_API_CALL];
     [self menu_set_UP];
     [self tab_BAR_set_UP];
-    [self Event_API_CALL];
-    [self picker_view_set_UP];
-    
     [self set_up_VIEW];
-    self.segmentedControl4.selectedSegmentIndex =  0;
     
+
    
-    [self addSEgmentedControl];
+
    
     
     
@@ -297,17 +292,17 @@
     
     
 }
--(void)Shop_view
-{
-     _Scroll_contents.hidden = YES;
-    home = [self.storyboard instantiateViewControllerWithIdentifier:@"shop_home"];
-     home.delegate = self;
-    home.view.frame = CGRectMake(0, _Tab_MENU.frame.origin.y + _Tab_MENU.frame.size.height , self.Scroll_contents.frame.size.width,self.Scroll_contents.frame.size.height-20 );
-    self.Scroll_contents.hidden =YES;
-    [self.view addSubview:home.view];
-    
-    
-}
+//-(void)Shop_view
+//{
+//     _Scroll_contents.hidden = YES;
+//    home = [self.storyboard instantiateViewControllerWithIdentifier:@"shop_home"];
+//     home.delegate = self;
+//    home.view.frame = CGRectMake(0, _Tab_MENU.frame.origin.y + _Tab_MENU.frame.size.height , self.Scroll_contents.frame.size.width,self.Scroll_contents.frame.size.height-20 );
+//    self.Scroll_contents.hidden =YES;
+//    [self.view addSubview:home.view];
+//    
+//    
+//}
 
 -(void)ATTRIBUTE_TEXT
 {
@@ -530,7 +525,6 @@
         
         if(_VW_event.hidden == YES || _VW_sports.hidden == YES || _VW_Movies.hidden == YES|| _VW_Leisure.hidden == YES)
         {
-            [self Shop_view];
         }
         else
         {
@@ -538,7 +532,6 @@
             _VW_sports.hidden = YES;
             _VW_Movies.hidden = YES;
             _VW_Leisure.hidden = YES;
-           [self Shop_view];
             
         }
         [self.VW_Leisure addSubview:VW_overlay];
@@ -692,6 +685,8 @@
 //    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
 //    self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
     
+    [self addSEgmentedControl];
+    self.segmentedControl4.selectedSegmentIndex =  0;
     
     [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTitleTextAttributes:
      @{NSForegroundColorAttributeName:[UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:1.0],
@@ -701,6 +696,7 @@
 //                 @selector(btnfav_action)];
     
     
+       
     _LBL_best_selling.text = @"BEST SELLING\nPRODUCTS";
     _LBL_fashio.text = @"FASHION\nACCSESORIES";
     
@@ -732,7 +728,8 @@
     [temp_hot_deals addObject:temp_dictin];
     
     CGRect setupframe = _Scroll_contents.frame;
-    setupframe.origin.y = _Tab_MENU.frame.origin.y + _Tab_MENU.frame.size.height;
+    setupframe.origin.y = self.navigationController.navigationBar.frame.origin.y +  self.navigationController.navigationBar.frame.size.height;
+    
     _Scroll_contents.frame = setupframe;
     
      setupframe = _VW_First.frame;
@@ -754,21 +751,21 @@
 //    _collection_fashion_categirie.frame = setupframe;
 //
     
-    NSString *hot_deals_IMG_url = [NSString stringWithFormat:@"%@uploads/widgets/%@",SERVER_URL,[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:0] valueForKey:@"Widgets"] valueForKey:@"widget_image"]];
-    hot_deals_IMG_url = [hot_deals_IMG_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-    
-    [_IMG_hot_deals sd_setImageWithURL:[NSURL URLWithString:hot_deals_IMG_url]
-                         placeholderImage:[UIImage imageNamed:@"logo.png"]
-                                  options:SDWebImageRefreshCached];
-    
-    
-    NSString *best_deals_IMG_url = [NSString stringWithFormat:@"%@uploads/widgets/%@",SERVER_URL,[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0]objectAtIndex:0] valueForKey:@"Widgets"] valueForKey:@"widget_image"]];
-    best_deals_IMG_url = [best_deals_IMG_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-    
-    [_IMG_best_deals sd_setImageWithURL:[NSURL URLWithString:best_deals_IMG_url]
-                      placeholderImage:[UIImage imageNamed:@"logo.png"]
-                               options:SDWebImageRefreshCached];
-    
+//    NSString *hot_deals_IMG_url = [NSString stringWithFormat:@"%@uploads/widgets/%@",SERVER_URL,[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:0] valueForKey:@"Widgets"] valueForKey:@"widget_image"]];
+//    hot_deals_IMG_url = [hot_deals_IMG_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+//    
+//    [_IMG_hot_deals sd_setImageWithURL:[NSURL URLWithString:hot_deals_IMG_url]
+//                         placeholderImage:[UIImage imageNamed:@"logo.png"]
+//                                  options:SDWebImageRefreshCached];
+//    
+//    
+//    NSString *best_deals_IMG_url = [NSString stringWithFormat:@"%@uploads/widgets/%@",SERVER_URL,[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0]objectAtIndex:0] valueForKey:@"Widgets"] valueForKey:@"widget_image"]];
+//    best_deals_IMG_url = [best_deals_IMG_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+//    
+//    [_IMG_best_deals sd_setImageWithURL:[NSURL URLWithString:best_deals_IMG_url]
+//                      placeholderImage:[UIImage imageNamed:@"logo.png"]
+//                               options:SDWebImageRefreshCached];
+//    
     
     _IMG_hot_deals .userInteractionEnabled = YES;
     
@@ -833,6 +830,13 @@
                 {
                     _VW_Fourth.hidden = YES;
                 }
+                else
+                {
+                    setupframe = _VW_Fourth.frame;
+                    setupframe.origin.y  = _VW_First.frame.origin.y + _VW_First.frame.size.height;
+                    _VW_Fourth.frame = setupframe;
+                }
+                
                 
             }
             else
@@ -1017,7 +1021,7 @@
     
     
     self.page_controller_movies.numberOfPages =[[temp_dicts valueForKey:@"movie"] count];
-    self.custom_story_page_controller.numberOfPages=[temp_arr count];
+    self.custom_story_page_controller.numberOfPages=[[json_Response_Dic valueForKey:@"banners"] count];
     _BTN_left.layer.cornerRadius = _BTN_left.frame.size.width/2;
     _BTN_left.layer.masksToBounds = YES;
     _BTN_right.layer.cornerRadius = _BTN_right.frame.size.width/2;
@@ -1037,6 +1041,7 @@
     
     _BTN_fashion.tag = 1;
     [_BTN_fashion addTarget:self action:@selector(BTN_fashhion_cahnge) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_QT_view addTarget:self action:@selector(movies_ACTIOn) forControlEvents:UIControlEventTouchUpInside];
     [self viewDidLayoutSubviews];
 }
 -(void)viewDidLayoutSubviews
@@ -1960,7 +1965,7 @@
         i = i +1;
         if(indexPath.row % 5 == 0 && indexPath.row==0)
         {
-            return CGSizeMake(_Collection_movies.frame.size.width /2.02,284);
+            return CGSizeMake(_Collection_movies.frame.size.width /2.02,232);
             
         }
         if(i % 5 == 0 && i!=0)
@@ -1971,7 +1976,7 @@
         
         else
         {
-            return CGSizeMake(_Collection_movies.frame.size.width /2.02,284);
+            return CGSizeMake(_Collection_movies.frame.size.width /2.02,232);
         }
         
 
@@ -2141,7 +2146,7 @@
     else if(collectionView == _collection_images)
     {
         
-        NSString *hot_deals_url = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"bannerLarge"] objectAtIndex:indexPath.row] valueForKey:@"url"]];
+        NSString *hot_deals_url = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"banners"] objectAtIndex:indexPath.row] valueForKey:@"url"]];
         hot_deals_url = [hot_deals_url stringByReplacingOccurrencesOfString:@"catalog/" withString:@""];
         hot_deals_url = [hot_deals_url stringByReplacingOccurrencesOfString:@"discount/" withString:@""];
         NSString *url_key;
@@ -2154,7 +2159,7 @@
         {
             url_key =[NSString stringWithFormat:@"%@/0",hot_deals_url];
         }
-        [[NSUserDefaults standardUserDefaults] setValue:[[[json_Response_Dic valueForKey:@"bannerLarge"] objectAtIndex:indexPath.row] valueForKey:@"title"] forKey:@"item_name"];
+        [[NSUserDefaults standardUserDefaults] setValue:[[[json_Response_Dic valueForKey:@"banners"] objectAtIndex:indexPath.row] valueForKey:@"title"] forKey:@"item_name"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
@@ -2329,15 +2334,16 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.LBL_arrow.hidden = YES;
    
-        
-    
     if(indexPath.section == 0)
     {
         cell.LBL_arrow.hidden = NO;
         
    
-    NSString *Title= [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"name"];
+        NSString *Title= [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"name"];
         cell.LBL_name.text = Title;
+        [cell.LBL_arrow addTarget:self action:@selector(sub_category_action:) forControlEvents:UIControlEventTouchUpInside];
+        cell.LBL_arrow.tag = indexPath.row;
+
 //    return [self createCellWithTitle:Title image:[[ARR_category objectAtIndex:indexPath.row] valueForKey:@"Image name"] indexPath:indexPath];
         
     }
@@ -2354,14 +2360,14 @@
     {
         cell.LBL_name.text = [lang_arr objectAtIndex:indexPath.row];
         
-         if(indexPath.row == 0){
-             cell.LBL_arrow.hidden = NO;
-             tag = 0;
-               if(lang_count < lang_arr.count)
-               {
-                  cell.LBL_arrow.text = @"";
-               }
-         }
+        if(indexPath.row == 0){
+            cell.LBL_arrow.hidden = NO;
+            tag = 0;
+            //               if(lang_count < lang_arr.count)
+            //               {
+            //                  cell.LBL_arrow.text = @"";
+            //               }
+        }
         
 //        if(indexPath.row == 0)
 //        {
@@ -2677,41 +2683,27 @@
     {
     switch (indexPath.section)
     {
-       case 0:
+        case 0:
         {
-            if([ARR_category valueForKey:@"child_categories"])
-            {
-             NSString *name = [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"name"];
-             [[NSUserDefaults standardUserDefaults] setValue:name forKey:@"item_name"];
-             [[NSUserDefaults standardUserDefaults] synchronize];
-             [[NSUserDefaults standardUserDefaults] setObject:[ARR_category objectAtIndex:indexPath.row] forKey:@"product_sub_list"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+             [self swipe_left];
             NSString *list_key = [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"url_key"];
             [[NSUserDefaults standardUserDefaults] setValue:list_key forKey:@"product_list_key"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-                
-                VW_overlay.hidden = NO;
-                [activityIndicatorView startAnimating];
-                [self performSelector:@selector(didelct_sub_categoies) withObject:activityIndicatorView afterDelay:0.01];
-           
-
             
-           // [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
-             [self swipe_left];
-            }
-            else
-            {
-                NSString *name = [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"name"];
-                [[NSUserDefaults standardUserDefaults] setValue:name forKey:@"item_name"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                NSString *list_key = [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"url_key"];
-                [[NSUserDefaults standardUserDefaults] setValue:list_key forKey:@"product_list_key"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                
-                 [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
-                
-            }
-             break;
+            NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+            NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+            NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+            
+            NSString *list_TYPE = @"productList";
+            NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/0/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,list_key,country,languge,user_id];
+            
+            
+            [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [self didelct_sub_categoies];
+            
+
+                  break;
         }
         case 1:
             [self swipe_left];
@@ -2721,6 +2713,8 @@
                 self.VW_Leisure.hidden =YES;
                 self.VW_event.hidden = YES;
                 self.VW_sports.hidden =YES;
+                home.view.hidden = YES;
+                _Tab_MENU.selectedItem = nil;
                 self.Scroll_contents.hidden = NO;
                 
             }
@@ -2927,7 +2921,7 @@
             
             if([show_browser intValue] == 1)
             {
-                [self performSegueWithIdentifier:@"leisure_webview" sender:self];
+                [self performSegueWithIdentifier:@"Event_WebVIEW" sender:self];
             }
             
             else
@@ -3081,12 +3075,27 @@
     
    }
 }
--(void)didelct_sub_categoies
-{   VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
-    
+-(void)sub_category_action:(UIButton *)sender
+{
+    NSString *name = [[ARR_category objectAtIndex:sender.tag] valueForKey:@"name"];
+    [[NSUserDefaults standardUserDefaults] setValue:name forKey:@"item_name"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [[NSUserDefaults standardUserDefaults] setObject:[ARR_category objectAtIndex:sender.tag] forKey:@"product_sub_list"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    NSString *list_key = [[ARR_category objectAtIndex:sender.tag] valueForKey:@"url_key"];
+    [[NSUserDefaults standardUserDefaults] setValue:list_key forKey:@"product_list_key"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self swipe_left];
     [self performSegueWithIdentifier:@"qt_home_sub_brands" sender:self];
-
+    
+    
+    
+}
+-(void)didelct_sub_categoies
+{
+     [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
+    
+    
 }
 //-(void)picker_view_raise:(UIButton *)sender
 //{
@@ -3551,7 +3560,12 @@
     
 }
 
-
+#pragma Button ACTIONS
+-(void)movies_ACTIOn
+{
+    [self performSegueWithIdentifier:@"QTickets_identifier" sender:self];
+    
+}
 -(void)MENU_action
 {
     
@@ -4078,19 +4092,23 @@
                        
                         [self brands_API_call];
                         json_Response_Dic = data;
-
+                        [self movie_API_CALL];
+                        [self Events_API_CALL];
+                        [self Event_API_CALL];
+                        [self picker_view_set_UP];
                        
                         [_collection_images reloadData];
                         [_collection_features reloadData];
                         [_collection_hot_deals reloadData];
                         [_collection_best_deals reloadData];
                         [_collection_fashion_categirie reloadData];
-
                          [self set_up_VIEW];
                         
-                        VW_overlay.hidden = YES;
+                        VW_overlay.hidden=YES;
                         [activityIndicatorView stopAnimating];
 
+                        
+                       
 
                         NSLog(@"the api_collection_product%@",json_Response_Dic);
 
@@ -4585,7 +4603,7 @@
     
     [[NSUserDefaults standardUserDefaults] setValue:[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0]objectAtIndex:0] valueForKey:@"Widgets"] valueForKey:@"title"] forKey:@"item_name"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
+   // http://192.168.0.171/dohasooq/apis/dealsList/Best%20Selling%20Products/(null)/(null)/27/Customer.json
     
     NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
     NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
@@ -4778,6 +4796,25 @@
     [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
 
 }
+-(void)search_results:(NSString *)search_url :(NSString *)item_name
+{
+    NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+    NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    
+    NSString *list_TYPE = @"productList";
+    NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/txt_%@/0/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,search_url,country,languge,user_id];
+    
+    
+    [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [[NSUserDefaults standardUserDefaults] setValue:item_name forKey:@"item_name"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
+
+}
 
 - (void)alertView:(UIAlertView *)alertView
 clickedButtonAtIndex:(NSInteger)buttonIndex{
@@ -4795,6 +4832,25 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         
     }
     }
+}
+-(void)Total_search
+{
+    NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+    NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"customer_id"];
+    
+    NSString *list_TYPE = @"productList";
+    NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/0/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,country,languge,user_id];
+    
+    
+    [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    
+    [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
+    
+
+    
 }
 /*
 #pragma mark - Navigation

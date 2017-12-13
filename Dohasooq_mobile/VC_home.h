@@ -16,6 +16,9 @@
 -(void)brands_action:(NSString *)brands_url : (NSString *)item_name;
 -(void)images_selction:(NSString *)images_url : (NSString *)item_name;
 -(void)features_slection:(NSString *)features_url : (NSString *)item_name;
+-(void)search_results:(NSString *)search_url :(NSString *)item_name;
+-(void)Total_search;
+
 
 
 @end
@@ -56,12 +59,16 @@
 //view First View
 @property(nonatomic,weak) IBOutlet UIView *VW_First;
 @property(nonatomic,weak) IBOutlet UITextField *search_bar;
+@property(nonatomic,weak) IBOutlet UITableView *TBL_search_results;
+
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_images;
 @property(nonatomic,weak) IBOutlet UIPageControl *custom_story_page_controller;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_featured;
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_features;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_left;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_right;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_search;
+
 
 
 

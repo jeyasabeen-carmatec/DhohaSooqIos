@@ -35,6 +35,37 @@
 
 //shipping view
 @property(nonatomic,weak) IBOutlet UIView *VW_shipping;
+@property(nonatomic,weak) IBOutlet UIScrollView *scroll_shipping;
+ //Billing_address
+@property(nonatomic,weak) IBOutlet UIView *VW_BILLING_ADDRESS;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_HEADER;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_fname;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_lname;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_phone;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_addr1;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_addr2;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_state;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_city;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_country;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_zip;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_email;
+
+// Shiiping address
+@property(nonatomic,weak) IBOutlet UIView *VW_SHIIPING_ADDRESS;
+
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_ship_fname;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_ship_lname;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_ship_phone;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_ship_addr1;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_ship_addr2;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_ship_state;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_ship_city;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_ship_country;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_ship_zip;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_ship_email;
+
+
+
 @property(nonatomic,weak) IBOutlet UITableView *TBL_address;
 //@property(nonatomic,weak) IBOutlet UIButton *BTN_add;
 @property(nonatomic,weak) IBOutlet UIView *VW_next;

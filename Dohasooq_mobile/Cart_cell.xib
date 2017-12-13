@@ -28,14 +28,14 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="11" translatesAutoresizingMaskIntoConstraints="NO" id="vPm-Ba-zIB">
-                        <rect key="frame" x="119" y="7" width="173" height="29"/>
+                        <rect key="frame" x="119" y="5" width="173" height="29"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K0Z-wZ-sTc">
-                        <rect key="frame" x="158" y="107" width="23" height="23"/>
+                        <rect key="frame" x="158" y="106" width="23" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" type="system" pointSize="24"/>
                         <inset key="contentEdgeInsets" minX="0.0" minY="2" maxX="0.0" maxY="5"/>
@@ -44,14 +44,14 @@
                         </state>
                     </button>
                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="2" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="H0m-Xp-8Pj">
-                        <rect key="frame" x="185" y="107" width="60" height="23"/>
+                        <rect key="frame" x="185" y="106" width="60" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <nil key="textColor"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <textInputTraits key="textInputTraits"/>
                     </textField>
                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6TP-5R-IDO">
-                        <rect key="frame" x="249" y="107" width="26" height="23"/>
+                        <rect key="frame" x="249" y="106" width="26" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
                         <inset key="contentEdgeInsets" minX="0.0" minY="2" maxX="0.0" maxY="5"/>
@@ -60,7 +60,7 @@
                         </state>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Qty" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="72e-nr-Arm">
-                        <rect key="frame" x="119" y="107" width="32" height="23"/>
+                        <rect key="frame" x="119" y="106" width="32" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
                         <nil key="textColor"/>
@@ -74,24 +74,20 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" scrollEnabled="NO" editable="NO" text="Lorem ipsum dolor sit er " textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="scQ-sx-lqp">
-                        <rect key="frame" x="116" y="34" width="139" height="31"/>
+                        <rect key="frame" x="114" y="38" width="139" height="31"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
+                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textView>
-                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PLn-xc-Q9U">
-                        <rect key="frame" x="292" y="45" width="18" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES"/>
-                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
-                        <state key="normal" backgroundImage="cross.png">
-                            <color key="titleColor" red="0.20392156859999999" green="0.25490196079999999" blue="0.28627450980000002" alpha="1" colorSpace="calibratedRGB"/>
-                        </state>
-                    </button>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="cross.png" translatesAutoresizingMaskIntoConstraints="NO" id="cuY-rg-6Hy">
+                        <rect key="frame" x="292" y="45" width="20" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                    </imageView>
                 </subviews>
             </tableViewCellContentView>
             <connections>
-                <outlet property="BTN_close" destination="PLn-xc-Q9U" id="KTm-Hw-3hE"/>
+                <outlet property="BTN_close" destination="cuY-rg-6Hy" id="RQ2-Cd-9r9"/>
                 <outlet property="BTN_minus" destination="K0Z-wZ-sTc" id="24V-zb-B26"/>
                 <outlet property="BTN_plus" destination="6TP-5R-IDO" id="4pg-5j-hdQ"/>
                 <outlet property="IMG_item" destination="c1o-QU-yU9" id="hbe-sT-bvS"/>
@@ -136,29 +132,12 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.89999997615814209" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dy3-rR-0x1">
-                        <rect key="frame" x="79" y="75" width="125" height="23"/>
+                        <rect key="frame" x="79" y="66" width="125" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
                         <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" scrollEnabled="NO" editable="NO" text="Lorem ipsum dolor sit er " textAlignment="right" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cw2-QI-XCd">
-                        <rect key="frame" x="66" y="35" width="139" height="31"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
-                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                    </textView>
-                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VD2-su-cIZ">
-                        <rect key="frame" x="8" y="46" width="18" height="16"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
-                        <state key="normal" backgroundImage="cross.png">
-                            <color key="titleColor" red="0.20392156859999999" green="0.25490196079999999" blue="0.28627450980000002" alpha="1" colorSpace="calibratedRGB"/>
-                        </state>
-                        <state key="selected" backgroundImage="cross.png"/>
-                        <state key="highlighted" backgroundImage="cross.png"/>
-                    </button>
                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Kr-KD-qji">
                         <rect key="frame" x="141" y="106" width="23" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
@@ -177,10 +156,20 @@
                             <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         </state>
                     </button>
+                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" scrollEnabled="NO" editable="NO" text="Lorem ipsum dolor sit er " textAlignment="right" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cw2-QI-XCd">
+                        <rect key="frame" x="68" y="37" width="139" height="31"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                    </textView>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="cross.png" translatesAutoresizingMaskIntoConstraints="NO" id="2zp-IU-NwV">
+                        <rect key="frame" x="11" y="41" width="20" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    </imageView>
                 </subviews>
             </tableViewCellContentView>
             <connections>
-                <outlet property="BTN_close" destination="VD2-su-cIZ" id="66X-IF-Le0"/>
                 <outlet property="BTN_minus" destination="9Kr-KD-qji" id="2iH-fk-Edo"/>
                 <outlet property="BTN_plus" destination="jO2-Mp-IRK" id="aKd-a1-Mzc"/>
                 <outlet property="IMG_item" destination="ViU-7w-Mqi" id="JCX-hS-60J"/>

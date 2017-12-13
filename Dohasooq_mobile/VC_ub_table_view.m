@@ -52,7 +52,7 @@ UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellSty
      [[NSUserDefaults standardUserDefaults] synchronize];
     
     NSString *name = [[[sub_arr valueForKey:@"child_categories"]objectAtIndex:indexPath.row] valueForKey:@"name"];
-   NSString *item_name = [NSString stringWithFormat:@"%@ - %@",[[NSUserDefaults standardUserDefaults]  valueForKey:@"item_name"],name];
+//   NSString *item_name = [NSString stringWithFormat:@"%@ - %@",[[NSUserDefaults standardUserDefaults]  valueForKey:@"item_name"],name];
    // [[NSUserDefaults standardUserDefaults] setValue:item_name forKey:@"search_val"];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"sub_name"];
     [[NSUserDefaults standardUserDefaults] setValue:name forKey:@"sub_name"];
@@ -74,8 +74,9 @@ UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellSty
     
     // [self dismissViewControllerAnimated:NO completion:nil];
 }
-- (IBAction)back_ACTIon:(id)sender {
-    [self dismissViewControllerAnimated:NO completion:nil];
+- (IBAction)back_ACTIon:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:NO];
 }
 
 /*

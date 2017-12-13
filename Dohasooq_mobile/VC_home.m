@@ -21,9 +21,9 @@
 #import "product_cell.h"
 #import "VC_product_detail.h"
 
-@interface VC_home ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource>
+@interface VC_home ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 {
-    NSMutableArray *temp_arr,*temp_hot_deals,*fashion_categirie_arr,*brands_arr,*ARR_category,*lang_arr;
+    NSMutableArray *temp_arr,*temp_hot_deals,*fashion_categirie_arr,*brands_arr,*ARR_category,*lang_arr,*search_ARR;
     NSIndexPath *INDX_selected;
     NSInteger i,lang_count;
     int tag;
@@ -44,8 +44,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     _Scroll_contents.delegate =self;
-    
-    
+    _TBL_search_results.delegate = self;
+    _TBL_search_results.dataSource = self;
+    search_ARR =  [[NSMutableArray alloc]init];
     
     [self.collection_images registerNib:[UINib nibWithNibName:@"cell_image" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
     [self.collection_features registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"features_cell"];
@@ -80,6 +81,7 @@
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
     [self performSelector:@selector(API_call_total) withObject:activityIndicatorView afterDelay:0.01];
+    _TBL_search_results.hidden = YES;
 
 
     
@@ -273,6 +275,11 @@
     setupframe.size.width = _Scroll_contents.frame.size.width;
     _VW_First.frame = setupframe;
     [self.Scroll_contents addSubview:_VW_First];
+    [_search_bar addTarget:self action:@selector(search_API) forControlEvents:UIControlEventEditingChanged];
+    [_BTN_search addTarget:self action:@selector(search_ALL) forControlEvents:UIControlEventTouchUpInside];
+
+    
+
     
     @try {
         
@@ -1239,136 +1246,26 @@
 
 #pragma Tableview delegates
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 5;
-}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSInteger ceel_count = 0;
-    if(section == 0)
-    {
-        ceel_count = ARR_category.count;
-    }
-    if(section == 1)
-    {
-        ceel_count = 2;
-    }
-    if(section == 2)
-    {
-        ceel_count = 2;
-    }
-    if(section == 3)
-    {
-        ceel_count = lang_arr.count;
-    }
-    if(section == 4)
-    {
-        ceel_count = 5;
-    }
-    
-    return ceel_count;
+    return search_ARR.count;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    categorie_cell *cell = (categorie_cell *)[tableView dequeueReusableCellWithIdentifier:@"cate_cell"];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
     
-    
-    if (cell == nil)
-    {
-        NSArray *nib;
-        nib = [[NSBundle mainBundle] loadNibNamed:@"categorie_cell" owner:self options:nil];
-        cell = [nib objectAtIndex:1];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
     }
-    cell.LBL_arrow.hidden = YES;
-    
-    if(indexPath.section == 0)
-    {
-        //        cell.LBL_name.text = [ARR_category objectAtIndex:indexPath.row];
-        //        if([cell.LBL_name.text isEqualToString:@"MORE"])
-        //        {
-        //            cell.LBL_arrow.hidden = NO;
-        //            tag = 0;
-        //            if(i < ARR_category.count)
-        //            {
-        //                cell.LBL_arrow.text = @"";
-        //                tag = 1;
-        //            }
-        //
-        //        }
-        NSString *Title= [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"Name"];
-        
-        return [self createCellWithTitle:Title image:[[ARR_category objectAtIndex:indexPath.row] valueForKey:@"Image name"] indexPath:indexPath];
-        
-        
-    }
-    if(indexPath.section == 1)
-    {
-        NSArray *ARR_info = [NSArray arrayWithObjects:@"MY PROFILE",@"CHANGE PASSWORD", nil];
-        cell.LBL_name.text = [ARR_info objectAtIndex:indexPath.row];
-    }
-    if(indexPath.section == 2)
-    {
-        NSArray *mer_arr = [NSArray arrayWithObjects:@"PRODUCT LIST",@"MERCHANT LIST", nil];
-        cell.LBL_name.text = [mer_arr objectAtIndex:indexPath.row];
-    }
-    if(indexPath.section == 3)
-    {
-        cell.LBL_name.text = [lang_arr objectAtIndex:indexPath.row];
-        
-        if(indexPath.row == 0)
-        {
-            cell.LBL_arrow.hidden = NO;
-            tag = 0;
-            if(lang_count < lang_arr.count)
-            {
-                cell.LBL_arrow.text = @"";
-                tag = 1;
-            }
-        }
-        
-    }
-    if(indexPath.section == 4)
-    {
-        
-        NSArray *ARR_info = [NSArray arrayWithObjects:@"ABOUT US",@"CONTACT US",@"TERMS AND CONDITIONS",@"PRIVACY POLACY",@"HELP DESK", nil];
-        cell.LBL_name.text = [ARR_info objectAtIndex:indexPath.row];
-    }
-    
-    
-    
+    cell.textLabel.text = [NSString stringWithFormat:@"%@",[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"title"]];
     return cell;
-}
+   }
 
 
--(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    NSString *str;
-    if(section == 0)
-    {
-        str =@"ALL CATEGORIES";
-    }
-    if(section == 1)
-    {
-        str = @"ACCOUNT INFO";
-    }
-    if(section == 2)
-    {
-        str = @"MERCHANT LIST";
-    }
-    if(section == 3)
-    {
-        str = @"LANGUAGE";
-    }
-    if(section == 4)
-    {
-        str = @"QUICK LINKS";
-    }
-    
-    return  str;
-}
+
 //- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 //{
 ////    UIView* header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
@@ -1404,200 +1301,11 @@
 //}
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSString *url_key= [NSString stringWithFormat:@"%@",[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"url_key"]];
+   [self.delegate search_results:url_key :[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"title"]];
+
     
     
-    switch (indexPath.section)
-    {
-        case 0:
-            if(indexPath.row)
-            {
-                NSMutableDictionary *dic=[ARR_category objectAtIndex:indexPath.row];
-                
-                NSLog(@"Selected dict = %@",dic);
-                
-                if([dic valueForKey:@"SubItems"])
-                {
-                    NSArray *arr=[dic valueForKey:@"SubItems"];
-                    BOOL isTableExpanded=NO;
-                    
-                    for(NSDictionary *subitems in arr )
-                    {
-                        NSInteger index=[ARR_category indexOfObjectIdenticalTo:subitems];
-                        isTableExpanded=(index>0 && index!=NSIntegerMax);
-                        if(isTableExpanded) break;
-                    }
-                    
-                    if(isTableExpanded)
-                    {
-                        [self CollapseRows:arr];
-                    }
-                    else
-                    {
-                        NSUInteger count=indexPath.row+1;
-                        NSMutableArray *arrCells=[NSMutableArray array];
-                        for(NSDictionary *dInner in arr )
-                        {
-                            [arrCells addObject:[NSIndexPath indexPathForRow:count inSection:0]];
-                            [ARR_category insertObject:dInner atIndex:count++];
-                            
-                            NSLog(@"Inserted dictin %@",dInner);
-                        }
-                        [self.TBL_menu insertRowsAtIndexPaths:arrCells withRowAnimation:UITableViewRowAnimationLeft];
-                    }
-                }
-            }
-            
-            //            if(indexPath.row == i - 1)
-            //            {
-            //
-            //                NSMutableArray *s = [NSMutableArray arrayWithObjects:@"hsdf",@"dfghhy",@"hsdf",@"dfghhy",nil];
-            //                if(tag == 0)
-            //                {
-            //
-            //                    [ARR_category addObjectsFromArray:s];
-            //
-            //                    int sectionIndex = 0;
-            //                    NSIndexPath *iPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:sectionIndex];
-            //                    [self tableView:_TBL_menu commitEditingStyle:UITableViewCellEditingStyleInsert forRowAtIndexPath:iPath];
-            //                    [_TBL_menu reloadData];
-            //                }
-            //                else if(tag == 1)
-            //                {
-            //
-            //                    NSMutableArray *cellIndicesToBeDeleted = [[NSMutableArray alloc] init];
-            //                    long minVAL = indexPath.row;
-            //                    long maxVal = indexPath.row + [s count];
-            //
-            //                    [ARR_category removeObjectsInRange:NSMakeRange(minVAL+1, s.count)];
-            //                    for (long j =  minVAL; j < maxVal; j++) {
-            //                        NSIndexPath *p = [NSIndexPath indexPathForRow:j inSection:indexPath.section];
-            //                        if ([tableView cellForRowAtIndexPath:p])
-            //                        {
-            //                            [cellIndicesToBeDeleted addObject:p];
-            //
-            //                        }
-            //                    }
-            //                    [_TBL_menu reloadData];
-            //
-            //                }
-            
-            
-            
-            break;
-        case 1:
-            [self swipe_left];
-            if(indexPath.row == 1)
-            {
-                [self performSegueWithIdentifier:@"login_forgot_pwd" sender:self];
-            }
-            break;
-        case 2:
-            [self swipe_left];
-            if(indexPath.row == 0)
-            {
-                NSUserDefaults *userDflts = [NSUserDefaults standardUserDefaults];
-                
-                [userDflts setObject:[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:0]valueForKey:@"url_key"] forKey:@"url_key_home"];
-                NSLog(@"%@",[userDflts valueForKey:@"url_key_hotDeals"]);
-                [self performSegueWithIdentifier:@"homw_product_list" sender:self];
-                
-                
-            }
-            else
-                [self performSegueWithIdentifier:@"merchant_segue" sender:self];
-            break;
-        case 3:
-            if(indexPath.section == 3)
-            {
-                NSMutableArray *s = [NSMutableArray arrayWithObjects:@"HINDI",@"ARABIC",@"TELUGU",@"MALAYALA",nil];
-                if(tag == 0)
-                {
-                    
-                    [lang_arr addObjectsFromArray:s];
-                    
-                    int sectionIndex = 0;
-                    NSIndexPath *iPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:sectionIndex];
-                    [self tableView:_TBL_menu commitEditingStyle:UITableViewCellEditingStyleInsert forRowAtIndexPath:iPath];
-                    [_TBL_menu reloadData];
-                }
-                else if(tag == 1)
-                {
-                    
-                    NSMutableArray *cellIndicesToBeDeleted = [[NSMutableArray alloc] init];
-                    long minVAL = indexPath.row;
-                    long maxVal = indexPath.row + [s count];
-                    
-                    [lang_arr removeObjectsInRange:NSMakeRange(minVAL+1, s.count)];
-                    for (long j =  minVAL; j < maxVal; j++) {
-                        NSIndexPath *p = [NSIndexPath indexPathForRow:j inSection:indexPath.section];
-                        if ([tableView cellForRowAtIndexPath:p])
-                        {
-                            [cellIndicesToBeDeleted addObject:p];
-                            
-                        }
-                    }
-                    [_TBL_menu reloadData];
-                    
-                }
-                
-                
-                
-            }
-            break;
-            
-        case 4:
-            [self swipe_left];
-            if(indexPath.row == 0)
-            {
-                NSLog(@"selected");
-            }
-            if(indexPath.row == 1)
-            {
-                [self performSegueWithIdentifier:@"contact_us_segue" sender:self];
-            }
-            if(indexPath.row == 2)
-            {
-                NSLog(@"selected");
-            }
-            if(indexPath.row == 3)
-            {
-                NSLog(@"selected");
-            }
-            if(indexPath.row == 4)
-            {
-                NSLog(@"selected");
-            }
-            break;
-        default:
-            break;
-    }
-    
-    
-    
-}
-- (UITableViewCellEditingStyle)tableView:(UITableView *)aTableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (self.editing == NO || !indexPath)
-        return UITableViewCellEditingStyleNone;
-    
-    if (self.editing && indexPath.row == ([ARR_category count]))
-        return UITableViewCellEditingStyleInsert;
-    else
-        if (self.editing && indexPath.row == ([ARR_category count]))
-            return UITableViewCellEditingStyleDelete;
-    
-    return UITableViewCellEditingStyleNone;
-}
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle) editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleInsert)
-    {
-        
-    }
-    else if(editingStyle == UITableViewCellEditingStyleDelete)
-    {
-        
-    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -2280,6 +1988,124 @@
     }
     
 }
+#pragma Textfield delegates
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
+}
+-(void)search_API
+{
+    
+    NSString *search_str = _search_bar.text;
+    if(search_str.length >2)
+    {
+         _TBL_search_results.hidden = NO;
+        VW_overlay.hidden = NO;
+        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(search_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+        
+
+    }
+    if(search_str.length < 2)
+    {
+        _TBL_search_results.hidden = YES;
+        
+    }
+
+}
+-(void)search_API_CALL
+{
+
+    @try
+    {
+         NSString *search_str = _search_bar.text;
+        NSError *error;
+        // NSError *err;
+        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
+        NSString *country = [user_dflts valueForKey:@"country_id"];
+        NSString *languge = [user_dflts valueForKey:@"language_id"];
+        NSDictionary *dict = [user_dflts valueForKey:@"userdata"];
+        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+        
+        // http://192.168.0.171/dohasooq/apis/productList/txt_Handbags/0/1/2/137/Customer.json
+        
+        NSString *urlGetuser = [NSString stringWithFormat:@"%@apis/productList/txt_%@/0/%@/%@/%@/Customer.json",SERVER_URL,search_str,country,languge,user_id];
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+
+        NSHTTPURLResponse *response = nil;
+        //   Languages/getLangByCountry/"+countryid+".json
+        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:urlProducts];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        // [request setHTTPBody:postData];
+        //[request setAllHTTPHeaderFields:headers];
+        [request setHTTPShouldHandleCookies:NO];
+        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if(aData)
+        {
+            NSDictionary *dictin = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            NSLog(@"The response Api post sighn up API %@",dictin);
+            search_ARR = [dictin valueForKey:@"products"];
+            if([search_ARR isKindOfClass:[NSArray class]])
+            {
+                [_TBL_search_results reloadData];
+                [self TBL_frame_set];
+                _TBL_search_results.hidden =  NO;
+             
+                VW_overlay.hidden = YES;
+                [activityIndicatorView stopAnimating];
+  
+            }
+            else
+            {
+                VW_overlay.hidden = YES;
+                [activityIndicatorView stopAnimating];
+                _TBL_search_results.hidden =  YES;
+                //  [_TBL_search_results reloadData];
+
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No data found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+
+            }
+                
+        
+            
+        }
+    }
+    
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+        
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
+
+    }
+}
+-(void)search_ALL
+{
+    [self.delegate Total_search];
+ 
+}
+-(void)TBL_frame_set
+{
+    [_TBL_search_results reloadData];
+    
+    CGRect frameset = _TBL_search_results.frame;
+    frameset.origin.x = _search_bar.frame.origin.x;
+    frameset.origin.y = _search_bar.frame.origin.y  + _search_bar.frame.size.height + 5;
+    frameset.size.width = _search_bar.frame.size.width;
+    frameset.size.height = frameset.origin.y + _TBL_search_results.contentSize.height;
+    _TBL_search_results.frame = frameset;
+    [self.VW_First addSubview:_TBL_search_results];
+}
+
+
 
 
 /*
