@@ -8,9 +8,14 @@
 
 #import "VC_myorder_list.h"
 #import "orders_list_cell.h"
+#import "HttpClient.h"
 
 @interface VC_myorder_list ()<UITableViewDelegate,UITableViewDataSource>
-
+{
+    UIView *VW_overlay;
+    UIActivityIndicatorView *activityIndicatorView;
+   NSMutableDictionary *json_DATA;
+}
 @end
 
 @implementation VC_myorder_list
@@ -19,12 +24,37 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 }
+-(void)viewWillAppear:(BOOL)animated
+{
+    
+    self.navigationController.navigationBar.hidden = NO;
+    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    VW_overlay.clipsToBounds = YES;
+    
+    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+    activityIndicatorView.center = VW_overlay.center;
+    [VW_overlay addSubview:activityIndicatorView];
+    VW_overlay.center = self.view.center;
+    [self.view addSubview:VW_overlay];
+    VW_overlay.hidden = YES;
+    
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(Orders_list_API) withObject:activityIndicatorView afterDelay:0.01];
+    
+    
+    
+    
+}
+
 - (IBAction)back_ACTIon:(id)sender {
     [self.navigationController popViewControllerAnimated:NO];
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    return [[json_DATA valueForKey:@"Orders"] count];
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -41,7 +71,8 @@
         nib = [[NSBundle mainBundle] loadNibNamed:@"orders_list_cell" owner:self options:nil];
         order_cell = [nib objectAtIndex:0];
     }
-    NSString *str = @"789457534";
+    NSString *str = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Orders"] objectAtIndex:indexPath.section] valueForKey:@"order_number"]];
+    str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
     NSString *text = [NSString stringWithFormat:@"ORDER ID : %@",str];
     
     
@@ -72,7 +103,8 @@
     {
         [order_cell.BTN_order_ID setTitle:text forState:UIControlStateNormal];
     }
-    NSString *date = @"sun,jun 4th,2017";
+    NSString *date = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Orders"] objectAtIndex:indexPath.section] valueForKey:@"order_created"]];
+    date = [date stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
     NSString *date_text = [NSString stringWithFormat:@"Order on: %@",date];
     
     
@@ -103,7 +135,8 @@
     {
         order_cell.LBL_order_date.text = text;
     }
-    NSString *qr = @"285";
+    NSString *qr = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Orders"] objectAtIndex:indexPath.section] valueForKey:@"order_total"]];
+    qr = [qr stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
     NSString *price = [NSString stringWithFormat:@"QR %@",qr];
     
     if ([order_cell.LBL_price respondsToSelector:@selector(setAttributedText:)]) {
@@ -132,7 +165,7 @@
     {
         order_cell.LBL_price.text = price;
     }
-    order_cell.VW_content.layer.borderWidth = 1.5f;
+    order_cell.VW_content.layer.borderWidth = 0.5f;
     order_cell.VW_content.layer.borderColor = [UIColor grayColor].CGColor;
 
     return order_cell;
@@ -143,12 +176,74 @@
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+      
+    [[NSUserDefaults standardUserDefaults] setValue:[[[json_DATA valueForKey:@"Orders"] objectAtIndex:indexPath.section] valueForKey:@"id"] forKey:@"order_ID"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+  
     [self performSegueWithIdentifier:@"order_list_detail" sender:self];
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 85;
+  return 85;
 }
+-(void)Orders_list_API
+{
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+    
+    @try
+    {
+    
+        NSDictionary *parameters = @{
+                                     @"customerId": user_id
+                                     };
+        NSError *error;
+        NSError *err;
+        NSHTTPURLResponse *response = nil;
+        
+        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
+        NSLog(@"the posted data is:%@",parameters);
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@Apis/orderlistapi.json",SERVER_URL];
+        // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:urlProducts];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:postData];
+        //[request setAllHTTPHeaderFields:headers];
+        [request setHTTPShouldHandleCookies:NO];
+        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if(aData)
+        {
+           json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            NSLog(@"The response Api post sighn up API %@",json_DATA);
+            [self.TBL_orders reloadData];
+            [activityIndicatorView stopAnimating];
+            VW_overlay.hidden = YES;
+            
+            
+        }
+        else
+        {
+            [activityIndicatorView stopAnimating];
+            VW_overlay.hidden = YES;
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+        }
+        
+    }
+    
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+    }
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

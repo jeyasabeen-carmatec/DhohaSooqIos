@@ -7,10 +7,15 @@
 //
 
 #import "VC_review_rating.h"
+#import <SDWebImage/UIImageView+WebCache.h>
+
 
 @interface VC_review_rating ()<UITextFieldDelegate>
 {
     HCSStarRatingView *lbl_review;
+    UIView *VW_overlay;
+    UIActivityIndicatorView *activityIndicatorView;
+    NSDictionary  *json_DATA;
 }
 
 @end
@@ -47,64 +52,55 @@
     lbl_review.value = 0;
     
     lbl_review.tintColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
-    //[starRatingView addTarget:self action:@selector(didChangeValue:) forControlEvents:UIControlEventValueChanged];
+    [lbl_review addTarget:self action:@selector(didChangeValue) forControlEvents:UIControlEventValueChanged];
     lbl_review.allowsHalfStars = YES;
-    lbl_review.value = 2.5f;
     [self.view addSubview:lbl_review];
     
-    NSString *item_name =[NSString stringWithFormat:@"Shining Diva Fashion"];
+    NSString *item_name =[NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"review_item_name"]];
     
     item_name = [item_name stringByReplacingOccurrencesOfString:@"<null>" withString:@"not mentioned"];
-    NSString *item_seller =[NSString stringWithFormat:@"Seller : Anar ahar"];
-    item_name = [item_name stringByReplacingOccurrencesOfString:@"<null>" withString:@"not mentioned"];
+    NSString *item_seller =[NSString stringWithFormat:@"Seller:%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"review_item_seller_name"]];
+    item_seller = [item_seller stringByReplacingOccurrencesOfString:@"<null>" withString:@"not mentioned"];
     
-    NSString *name_text = [NSString stringWithFormat:@"%@\n%@",item_name,item_seller];
+    NSString *image_url =[NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"review_item_image_name"]];
+    image_url = [image_url stringByReplacingOccurrencesOfString:@"  " withString:@"%20"];
+
+    
+    
+    [_Item_image sd_setImageWithURL:[NSURL URLWithString:image_url]
+                                 placeholderImage:[UIImage imageNamed:@"logo.png"]
+                                          options:SDWebImageRefreshCached];
+    _LBL_item_name.text = item_name;
+     _LBL_seller.text = item_seller;
+
+    
     _LBL_item_name.numberOfLines = 0;
+    [_BTN_save addTarget:self action:@selector(SAVE_ACTION) forControlEvents:UIControlEventTouchUpInside];
+    _TXT_review_review.layer.cornerRadius = 2.0f;
+    _TXT_review_review.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    _TXT_review_review.layer.borderWidth = 0.5f;
+    _TXT_review_review.layer.masksToBounds = YES;
     
-    
-    if ([_LBL_item_name respondsToSelector:@selector(setAttributedText:)]) {
-        
-        // Define general attributes for the entire text
-        NSDictionary *attribs = @{
-                                  NSForegroundColorAttributeName:_LBL_item_name.textColor,
-                                  NSFontAttributeName:_LBL_item_name.font
-                                  };
-        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:name_text attributes:attribs];
-        
-        
-        
-        NSRange ename = [name_text rangeOfString:item_name];
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-                                    range:ename];
-        }
-        else
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0]}
-                                    range:ename];
-        }
-        NSRange cmp = [name_text rangeOfString:item_seller];
-        
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0]}
-                                    range:cmp];
-        }
-        else
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:13.0]}
-                                    range:cmp ];
-        }
-        _LBL_item_name.attributedText = attributedText;
-    }
-    else
-    {
-        _LBL_item_name.text = name_text;
-    }
     
 
 
+}
+-(void)viewWillAppear:(BOOL)animated
+{
+    self.navigationController.navigationBar.hidden = NO;
+    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    VW_overlay.clipsToBounds = YES;
+    
+    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+    activityIndicatorView.center = VW_overlay.center;
+    [VW_overlay addSubview:activityIndicatorView];
+    VW_overlay.center = self.view.center;
+    [self.view addSubview:VW_overlay];
+    VW_overlay.hidden = YES;
+
+    
 }
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -150,7 +146,164 @@
     [self performSegueWithIdentifier:@"rating_to_cart_lsit" sender:self];
 
 }
+-(void)SAVE_ACTION
+{
+    //product-reviews/add-review/"+product_id+"/"+userid+"/
+   
+    
+    @try
+    {
+        
+        
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+        NSString *rating_text = [NSString stringWithFormat:@"%@",_TXT_review_review.text];
+        NSString *rating = [NSString stringWithFormat:@"%f",lbl_review.value];
+        NSString *prodID = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"review_Prod_ID"]];
 
+//        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+//        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+//        NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+//        NSString *ORDER_ID = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"order_ID"]];
+        
+        
+        NSString *urlString =[NSString stringWithFormat:@"%@Apis/oproduct-reviews/add-review/%@/%@/1.json",SERVER_URL,user_id,prodID];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:[NSURL URLWithString:urlString]];
+        [request setHTTPMethod:@"POST"];
+        
+        NSString *boundary = @"---------------------------14737809831466499882746641449";
+        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
+        [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+        
+        NSMutableData *body = [NSMutableData data];
+        //    [request setHTTPBody:body];
+        
+        // text parameter
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"comment\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]]; //venu1@carmatec.com
+        [body appendData:[[NSString stringWithFormat:@"%@",rating_text]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        // another text parameter
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"rating\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",rating]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+//        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+//        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"langId\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+//        [body appendData:[[NSString stringWithFormat:@"%@",languge]dataUsingEncoding:NSUTF8StringEncoding]];
+//        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        //    [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        //    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"id\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        //    [body appendData:[[NSString stringWithFormat:@"%@",GET_prof_ID]dataUsingEncoding:NSUTF8StringEncoding]];
+        //    [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        //
+        //
+        //    NSData *webData = UIImageJPEGRepresentation(_img_Profile.image, 100);
+        //    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        //    NSString *documentsDirectory = [paths objectAtIndex:0];//@"sample.png"
+        //    NSString *localFilePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg",[self randomStringWithLength:7]]];
+        //    [webData writeToFile:localFilePath atomically:YES];
+        //    NSLog(@"localFilePath.%@",localFilePath);
+        //
+        //    [[NSUserDefaults standardUserDefaults]setValue:localFilePath forKey:@"new_PP"];
+        //    [[NSUserDefaults standardUserDefaults]synchronize];
+        //
+        //    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        //    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: multipart/form-data; name=\"uploaded_file\"; filename=\"%@\"\r\n",localFilePath] dataUsingEncoding:NSUTF8StringEncoding]];
+        //    [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        //    [body appendData:[NSData dataWithData:imageData]];
+        //    [body appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        //
+        NSError *er;
+        //    NSHTTPURLResponse *response = nil;
+        
+        // close form
+        [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        // set request body
+        [request setHTTPBody:body];
+        
+        NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+        
+        if (returnData) {
+            json_DATA = [[NSMutableDictionary alloc]init];
+            json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
+            [activityIndicatorView stopAnimating];
+            VW_overlay.hidden = YES;
+            NSLog(@"%@", [NSString stringWithFormat:@"JSON DATA OF ORDER DETAIL: %@", json_DATA]);
+        }
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
+    
+
+    
+    
+    
+//    
+//    @try
+//    {
+//        
+//        NSDictionary *parameters = @{
+//                                     @"comment": rating_text,
+//                                     @"rating":rating
+//                                     };
+//        NSError *error;
+//        NSError *err;
+//        NSHTTPURLResponse *response = nil;
+//        
+//        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
+//        NSLog(@"the posted data is:%@",parameters);
+//        NSString *urlGetuser =[NSString stringWithFormat:@"%@Apis/oproduct-reviews/add-review/%@/%@/1.json",SERVER_URL,user_id,prodID];
+//        // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+//        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+//        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+//        [request setURL:urlProducts];
+//        [request setHTTPMethod:@"POST"];
+//        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+//        [request setHTTPBody:postData];
+//        //[request setAllHTTPHeaderFields:headers];
+//        [request setHTTPShouldHandleCookies:NO];
+//        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+//        if(aData)
+//        {
+//            json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+//            NSLog(@"The response Api post sighn up API %@",json_DATA);
+//            [activityIndicatorView stopAnimating];
+//            VW_overlay.hidden = YES;
+//            
+//            
+//        }
+//        else
+//        {
+//            [activityIndicatorView stopAnimating];
+//            VW_overlay.hidden = YES;
+//            
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//            [alert show];
+//        }
+//        
+//    }
+//    
+//    @catch(NSException *exception)
+//    {
+//        NSLog(@"The error is:%@",exception);
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//        [alert show];
+//    }
+
+}
+-(void)didChangeValue
+{
+    NSLog(@"The rating is:%f",lbl_review.value);
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
