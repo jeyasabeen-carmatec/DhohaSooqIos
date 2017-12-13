@@ -12,9 +12,13 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_item_name;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_price;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_QTY;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_seller;
+
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_track;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_Deliver_on;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_item_image;
+@property(nonatomic,weak) IBOutlet UIImageView *IMG_track_image;
+
 @property(nonatomic,weak) IBOutlet UIButton *BTN_rating;
 
 

@@ -103,6 +103,29 @@
     
     
 }
+//-(void)viewWillAppear:(BOOL)animated
+//{
+//    NSString *lang = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+//    NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+//    lang = [lang stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+//    lang = [lang stringByReplacingOccurrencesOfString:@"null" withString:@""];
+//    lang = [lang stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+//    country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+//    country = [country stringByReplacingOccurrencesOfString:@"null" withString:@""];
+//    country = [country stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+//    if([lang isEqualToString:@""] || [country isEqualToString:@""])
+//    {
+//       
+//    }
+//    else
+//    {
+//        [self performSegueWithIdentifier:@"intial_login" sender:self];
+//
+//    }
+//
+//
+//
+//}
 -(void)go_to_login
 {
     

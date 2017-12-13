@@ -36,6 +36,8 @@
 @property(nonatomic,weak) IBOutlet UIButton *BTN_menu;
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_fav;
 @property(nonatomic,weak) IBOutlet UIBarButtonItem *BTN_cart;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_QT_view;
+
 
 
 

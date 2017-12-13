@@ -13,7 +13,8 @@
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
 #define emailRegEx @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,10}"
 #define pass_RegEx @"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{4,}$"
-#define SERVER_URL @"http://192.168.0.171/dohasooq/"
+//#define SERVER_URL @"http://192.168.0.171/dohasooq/"
+#define SERVER_URL @"http://test2.dohasooq.com/"
 #define language_Url @"Languages/getLangByCountry/"
 #define IMG_URL @"http://192.168.0.171"
 #define Product_List_Url @"Pages/catalog/Electronics/1/1.json"

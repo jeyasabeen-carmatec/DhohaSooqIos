@@ -19,6 +19,7 @@
     NSDictionary *user_dictionary;
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
+    NSString *state_val,*group_val,*country_val;
 }
 
 @end
@@ -143,14 +144,6 @@
 
     
     
-    UITapGestureRecognizer *tapToSelect = [[UITapGestureRecognizer alloc]initWithTarget:self
-                                                                                 action:@selector(tappedToSelectRow:)];
-    tapToSelect.delegate = self;
-    [_contry_pickerView addGestureRecognizer:tapToSelect];
-    UITapGestureRecognizer *satetap = [[UITapGestureRecognizer alloc]initWithTarget:self
-                                                                             action:@selector(tappedToSelectRowstate:)];
-    satetap.delegate = self;
-    [_state_pickerView addGestureRecognizer:satetap];
     
     
     
@@ -159,11 +152,21 @@
     conutry_close.barStyle = UIBarStyleBlackTranslucent;
     [conutry_close sizeToFit];
     
+    UIButton *Done=[[UIButton alloc]init];
+    Done.frame=CGRectMake(conutry_close.frame.size.width - 100, 0, 100, conutry_close.frame.size.height);
+    [Done setTitle:@"Done" forState:UIControlStateNormal];
+    [Done addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
+    [conutry_close addSubview:Done];
+    
     UIButton *close=[[UIButton alloc]init];
-    close.frame=CGRectMake(conutry_close.frame.size.width - 100, 0, 100, conutry_close.frame.size.height);
-    [close setTitle:@"Done" forState:UIControlStateNormal];
-    [close addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
+    close.frame=CGRectMake(conutry_close.frame.size.width , 0, 100, conutry_close.frame.size.height);
+    [close setTitle:@"Close" forState:UIControlStateNormal];
+    [close addTarget:self action:@selector(close_ACTION) forControlEvents:UIControlEventTouchUpInside];
     [conutry_close addSubview:close];
+    
+
+    
+    
     _TXT_country.inputAccessoryView=conutry_close;
     _TXT_state.inputAccessoryView=conutry_close;
     _TXT_group.inputAccessoryView=conutry_close;
@@ -203,12 +206,27 @@
     
     // = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
 }
--(void)countrybuttonClick
+-(void)close_ACTION
 {
     [_TXT_state resignFirstResponder];
     [_TXT_country resignFirstResponder];
     [_TXT_group resignFirstResponder];
     [_TXT_Dob resignFirstResponder];
+    
+}
+-(void)countrybuttonClick
+{
+   
+    self.TXT_country.text = country_val;
+    self.TXT_state.text=state_val;
+    self.TXT_group.text  = group_val;
+
+    [_TXT_country resignFirstResponder];
+    [_TXT_group resignFirstResponder];
+    [_TXT_Dob resignFirstResponder];
+    [_TXT_state resignFirstResponder];
+    
+    
 
 
     
@@ -499,7 +517,7 @@
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     if (pickerView == _contry_pickerView) {
-        self.TXT_country.text = countrypicker[row];
+            country_val = countrypicker[row];
         NSLog(@"the text is:%@",_TXT_country.text);
        NSArray *temp_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
 
@@ -508,48 +526,19 @@
     }
     if (pickerView == _state_pickerView) {
         
-        self.TXT_state.text=statepicker[row];
-        self.TXT_email.enabled=YES;
+               self.TXT_email.enabled=YES;
+        state_val = statepicker[row];
+
     }
     if(pickerView == _group_pickerVIEW)
     {
-        self.TXT_group.text  = [grouppicker allValues][row];
+        group_val = [grouppicker allKeys][row];
         [[NSUserDefaults standardUserDefaults] setValue:[grouppicker allKeys][row] forKey:@"groupid"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }
 
 
-- (IBAction)tappedToSelectRow:(UITapGestureRecognizer *)tapRecognizer
-{
-    if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
-        CGFloat rowHeight = [_contry_pickerView rowSizeForComponent:0].height;
-        CGRect selectedRowFrame = CGRectInset(_contry_pickerView.bounds, 0.0, (CGRectGetHeight(_contry_pickerView.frame) - rowHeight) / 2.0 );
-        BOOL userTappedOnSelectedRow = (CGRectContainsPoint(selectedRowFrame, [tapRecognizer locationInView:_contry_pickerView]));
-        if (userTappedOnSelectedRow) {
-            NSInteger selectedRow = [_contry_pickerView selectedRowInComponent:0];
-            [self pickerView:_contry_pickerView didSelectRow:selectedRow inComponent:0];
-        }
-    }
-}
-- (IBAction)tappedToSelectRowstate:(UITapGestureRecognizer *)tapRecognizer
-{
-    if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
-        CGFloat rowHeight = [_state_pickerView rowSizeForComponent:0].height;
-        CGRect selectedRowFrame = CGRectInset(_state_pickerView.bounds, 0.0, (CGRectGetHeight(_state_pickerView.frame) - rowHeight) / 2.0 );
-        BOOL userTappedOnSelectedRow = (CGRectContainsPoint(selectedRowFrame, [tapRecognizer locationInView:_state_pickerView]));
-        if (userTappedOnSelectedRow) {
-            NSInteger selectedRow = [_state_pickerView selectedRowInComponent:0];
-            [self pickerView:_state_pickerView didSelectRow:selectedRow inComponent:0];
-        }
-    }
-}
-#pragma mark - UIGestureRecognizerDelegate
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{
-    return true;
-}
 #pragma states API
 -(void)states_API :(NSString *)country_id
 {

@@ -172,7 +172,7 @@
     [_BTN_sign_up addTarget:self action:@selector(sign_up_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_login addTarget:self action:@selector(login_home) forControlEvents:UIControlEventTouchUpInside];
     
-    _TXT_username.text = @"karuna@carmatec.in";
+    _TXT_username.text = @"venugopal@mailinator.com";
     _TXT_password.text = @"qazplm123";
     
     [_BTN_facebook addTarget:self action:@selector(facebook_action:) forControlEvents:UIControlEventTouchUpInside];
@@ -263,8 +263,13 @@
     NSString *emails = [NSString stringWithFormat:@"%@",[dict valueForKey:@"userEmail"]];
 
 
-    
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(google_LOGIN) withObject:activityIndicatorView afterDelay:0.01];
     [self Google_plus_login:first_name:last_name:emails];
+
+    
+
     
     
     
@@ -375,7 +380,10 @@ error:(NSError *)error{
     NSLog(@"LOGGED IN TO FACEBOOK");
    // [self fetchUserInfo];
 }
-
+-(void)google_LOGIN
+{
+    
+}
 -(void)Google_plus_login:(NSString *)f_name :(NSString *)l_name :(NSString *)e_mail
 {
     
