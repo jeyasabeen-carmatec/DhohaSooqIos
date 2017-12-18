@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Hoshi_Billing_ADDR.h"
 #import "billing_address.h"
+#import "MIBadgeButton.h"
 
 
 @interface VC_order_detail : UIViewController
@@ -20,10 +21,11 @@
 @property(nonatomic,weak) IBOutlet UITextField *TXT_second;
 @property(nonatomic,weak) IBOutlet UIView *VW_top;
 
+
 @property(nonatomic,weak) IBOutlet UITableView *TBL_orders;
 
-@property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_cart;
-@property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_fav;
+@property(nonatomic,strong) IBOutlet MIBadgeButton *BTN_cart;
+@property(nonatomic,strong) IBOutlet MIBadgeButton *BTN_fav;
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_back;
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *LBL_navigation;
 
@@ -80,6 +82,8 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_card;
 @property(nonatomic,weak) IBOutlet UIImageView *LBL_stat;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_check;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_close;
+
 
 
 @property(nonatomic,weak) IBOutlet UILabel *LBL_terms;
@@ -90,7 +94,7 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_summary;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sub_total;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_shipping_charge;
-@property (weak, nonatomic) IBOutlet UITextField *TXT_cupon;
+@property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_cupon;
 
 
 

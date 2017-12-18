@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "HMSegmentedControl.h"
+#import "MIBadgeButton.h"
 
 
 
@@ -15,18 +16,22 @@
 @property(nonatomic,weak) IBOutlet UIScrollView *Scroll_content;
 
 
-@property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_cart;
-@property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_fav;
+@property(nonatomic,strong) IBOutlet MIBadgeButton *BTN_cart;
+@property(nonatomic,strong) IBOutlet MIBadgeButton *BTN_fav;
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_back;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_back_modal;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_cart_list;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_wish_list;
+@property(nonatomic,weak) IBOutlet UIButton *header_name;
+
 
 //first view
 @property(nonatomic,weak) IBOutlet UIView *VW_First;
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_images;
 @property(nonatomic,weak) IBOutlet UIPageControl *custom_story_page_controller;
 @property(nonatomic,strong) IBOutlet UIButton *BTN_play;
+@property(nonatomic,strong) IBOutlet UIButton *BTN_share;
+
 
 //second view
 @property(nonatomic,weak) IBOutlet UIView *VW_second;
@@ -44,6 +49,14 @@
 @property(nonatomic,weak) IBOutlet UIButton *BTN_plus;
 @property (nonatomic, strong) UIPickerView *variant_picker;
 
+@property(nonatomic,weak) IBOutlet UILabel *LBL_stock;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_delivery_cod;
+@property(nonatomic,weak) IBOutlet UIImageView *IMG_merchant;
+@property(nonatomic,weak) IBOutlet UILabel *QTY;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_more_sellers;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_sold_by;
+
+@property(nonatomic,weak) IBOutlet UILabel *LBL_merchant_sellers;
 
 
 //fourth view
@@ -52,6 +65,8 @@
 
 //fifth_view
 @property(nonatomic,retain) IBOutlet UIView *VW_fifth;
+@property(nonatomic,retain) IBOutlet UICollectionView  *collection_related_products;
+
 @property(nonatomic,weak) IBOutlet UILabel *TXTVW_description;
 
 @property(nonatomic,weak) IBOutlet UIView *VW_filter;

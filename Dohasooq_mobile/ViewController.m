@@ -177,6 +177,8 @@
     
     [_BTN_facebook addTarget:self action:@selector(facebook_action:) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_Google_PLUS addTarget:self action:@selector(Google_PLUS_ACTIOn) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_guest addTarget:self action:@selector(guest_action) forControlEvents:UIControlEventTouchUpInside];
+
 
     
     
@@ -660,6 +662,8 @@ error:(NSError *)error{
             
             if([status isEqualToString:@"1"])
             {
+                [activityIndicatorView stopAnimating];
+                VW_overlay.hidden = YES;
                 
                 [[NSUserDefaults standardUserDefaults] setObject:[json_DATA valueForKey:@"detail"] forKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
@@ -760,7 +764,12 @@ error:(NSError *)error{
     //    [alert show];
     
 }
+-(void)guest_action
+{
+    [self performSegueWithIdentifier:@"logint_to_home" sender:self];
 
+    
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

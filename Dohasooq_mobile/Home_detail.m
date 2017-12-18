@@ -37,14 +37,14 @@
     
     
     
-    [_Header_name setTitle:[[NSUserDefaults standardUserDefaults] valueForKey:@"item_title"] forState:UIControlStateNormal];
-    [self.Collection_movies registerNib:[UINib nibWithNibName:@"Movies_cell" bundle:nil]  forCellWithReuseIdentifier:@"movie_cell"];
+        [self.Collection_movies registerNib:[UINib nibWithNibName:@"Movies_cell" bundle:nil]  forCellWithReuseIdentifier:@"movie_cell"];
 
     [self.Collection_movies registerNib:[UINib nibWithNibName:@"Image_qtickets" bundle:nil]  forCellWithReuseIdentifier:@"Image_qtickets"];
     
     [self.Collection_movies registerNib:[UINib nibWithNibName:@"upcoming_cell" bundle:nil]  forCellWithReuseIdentifier:@"upcoming_cell"];
 
-    
+    [self set_UP_VIEW];
+
     Movies_arr = [[NSMutableArray alloc]init];
     Leisure_arr = [[NSMutableArray alloc] init];
     Sports_arr = [[NSMutableArray alloc] init];
@@ -52,8 +52,8 @@
    
     _BTN_leisure_venues.text = _BTN_venues.text;
     _BTN_sports_venues.text = _BTN_venues.text;
-    leng_text = @"LANGUAGES";
-    halls_text =@"THEATERS";
+    leng_text = @"ALL LANGUAGES";
+    halls_text =@"ALL CINEMA HALLS";
      [self ATTRIBUTE_TEXT];
     [self picker_view_set_UP];
     [self addSEgmentedControl];
@@ -62,7 +62,9 @@
 }
 -(void)viewWillAppear:(BOOL)animated
 {
-    
+    NSLog(@"%@",_Header_name.titleLabel.text);
+    [_Header_name setTitle:[[NSUserDefaults standardUserDefaults] valueForKey:@"header_name"] forState:UIControlStateNormal];
+
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     VW_overlay.clipsToBounds = YES;
@@ -72,44 +74,84 @@
     activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
     activityIndicatorView.center = VW_overlay.center;
     [VW_overlay addSubview:activityIndicatorView];
-    [self.view addSubview:VW_overlay];
+   
     VW_overlay.hidden = YES;
     
+    CGFloat highlightedWidth = self.view.frame.size.width/_Tab_MENU.items.count;
+    [_Tab_MENU setItemWidth:highlightedWidth];
+    CGRect rect = CGRectMake(0, 0, highlightedWidth, _Tab_MENU.frame.size.height);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [[UIColor colorWithRed:0.85 green:0.56 blue:0.04 alpha:1.0] CGColor]);
+    CGContextFillRect(context, rect);
+    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    _Tab_MENU.selectionIndicatorImage = img;
 
-    
     
    if([_Header_name.titleLabel.text isEqualToString:@"Movies"])
    {
-        
         [self Movies_view];
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(movie_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+        [self.view addSubview:VW_overlay];
+       VW_overlay.hidden = NO;
+       [activityIndicatorView startAnimating];
+       [self performSelector:@selector(movie_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+       [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:0]];
+       
+    
     
   }
    else if([_Header_name.titleLabel.text isEqualToString:@"Events"])
    {
-       
-      VW_overlay.hidden = NO;
+       [self Events_view];
+        [self.view addSubview:VW_overlay];
+       VW_overlay.hidden = NO;
         [activityIndicatorView startAnimating];
        [self performSelector:@selector(Events_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+       [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:1]];
+
+       
+       
+       
        
     }
     else if([_Header_name.titleLabel.text isEqualToString:@"Sports"])
    {
-       
+        [self Sports_view];
+        [self.view addSubview:VW_overlay];
         VW_overlay.hidden = NO;
         [activityIndicatorView startAnimating];
         [self performSelector:@selector(Sports_API_call) withObject:activityIndicatorView afterDelay:0.01];
+       [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:2]];
+
+      
        
     }
     else if([_Header_name.titleLabel.text isEqualToString:@"Leisure"])
    {
-
+        [self Leisure_view];
+        [self.view addSubview:VW_overlay];
        VW_overlay.hidden = NO;
         [activityIndicatorView startAnimating];
        [self performSelector:@selector(Leisure_API_call) withObject:activityIndicatorView afterDelay:0.01];
+       [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:3]];
+
+      
        
+    }
+    else
+    {
+        
+        [self Movies_view];
+        [self.view addSubview:VW_overlay];
+        VW_overlay.hidden = NO;
+        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(movie_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:0]];
+        [_Header_name setTitle:@"Movies" forState:UIControlStateNormal];
+
+
+        
     }
 
     
@@ -141,7 +183,7 @@
     
     UIButton *close=[[UIButton alloc]init];
     close.frame=CGRectMake(conutry_close.frame.size.width - 100, 0, 100, conutry_close.frame.size.height);
-    [close setTitle:@"close" forState:UIControlStateNormal];
+    [close setTitle:@"Done" forState:UIControlStateNormal];
     [close addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
     [conutry_close addSubview:close];
     _BTN_all_lang.inputAccessoryView=conutry_close;
@@ -174,6 +216,11 @@
 -(void)set_UP_VIEW
 {
      [self tab_BAR_set_UP];
+    [_BTN_event_filter addTarget:self action:@selector(filter_action) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_sports_filter addTarget:self action:@selector(filter_action) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_leisure_filter addTarget:self action:@selector(filter_action) forControlEvents:UIControlEventTouchUpInside];
+
+
    
 
 }
@@ -190,13 +237,15 @@
     frameset.size.width =  self.view.frame.size.width;
     _VW_event.frame = frameset;
     [self.view addSubview:_VW_event];
+    [self Event_API_CALL];
+    
     
 
 }
 -(void)Movies_view
 {
    
-    [self API_movie];
+  
     _VW_Movies.hidden = NO;
     CGRect frameset = _VW_Movies.frame;
     frameset.origin.y = _Tab_MENU.frame.origin.y + _Tab_MENU.frame.size.height;
@@ -204,7 +253,8 @@
     frameset.size.width =  self.view.frame.size.width;
     _VW_Movies.frame = frameset;
     [self.view addSubview:_VW_Movies];
-    self.segmentedControl4.selectedSegmentIndex = 0;
+       self.segmentedControl4.selectedSegmentIndex = 0;
+ 
     
   
 
@@ -212,7 +262,6 @@
 }
 -(void)Leisure_view
 {
-   
 
     _VW_Leisure.hidden = NO;
     CGRect frameset = _VW_Leisure.frame;
@@ -269,13 +318,11 @@
     UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     _Tab_MENU.selectionIndicatorImage = img;
-    
+    NSUserDefaults *user_defafults = [NSUserDefaults standardUserDefaults];
+
     if([item.title isEqualToString:@"Events"])
     {
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(Events_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
-
+       
         if(_VW_sports.hidden == YES || _VW_Movies.hidden == YES ||  _VW_Leisure.hidden == YES)
         {
             
@@ -290,22 +337,22 @@
             [self Events_view];
             
         }
+      
         [self.VW_event addSubview:VW_overlay];
-        
-        
+         [_Header_name setTitle:@"Events" forState:UIControlStateNormal];
         [self Event_API_CALL];
-        
+        [user_defafults setValue:@"Events" forKey:@"header_name"];
         [self ATTRIBUTE_TEXT];
+        VW_overlay.hidden = NO;
+        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(Events_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+
+       
         
     }
     else if([item.title isEqualToString:@"Sports"])
     {
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(Sports_API_call) withObject:activityIndicatorView afterDelay:0.01];
-        
-
-        
+     
         if(_VW_event.hidden == YES || _VW_Movies.hidden == YES||_VW_Leisure.hidden == YES)
         {
             [self Sports_view];
@@ -320,14 +367,23 @@
             
         }
         [self.VW_sports addSubview:VW_overlay];
+        [_Header_name setTitle:@"Sports" forState:UIControlStateNormal];
+        [user_defafults setValue:@"Sports" forKey:@"header_name"];
+
+        VW_overlay.hidden = NO;
+        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(Sports_API_call) withObject:activityIndicatorView afterDelay:0.01];
         
+
+        
+
     }
     else if([item.title isEqualToString:@"Movies"])
     {
         //[self API_movie];
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(movie_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+       
+        
+        
 
         if(_VW_event.hidden == YES || _VW_sports.hidden == YES||_VW_Leisure.hidden == YES)
         {
@@ -342,20 +398,22 @@
             [self Movies_view];
             
         }
-        
         [self.VW_Movies addSubview:VW_overlay];
+          [_Header_name setTitle:@"Movies" forState:UIControlStateNormal];
+        [user_defafults setValue:@"Movies" forKey:@"header_name"];
+
         
-        
+        VW_overlay.hidden = NO;
+        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(movie_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
         
         
     }
     else if([item.title isEqualToString:@"Leisure"])
     {
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(Leisure_API_call) withObject:activityIndicatorView afterDelay:0.01];
-
+       
         
+
         if(_VW_event.hidden == YES || _VW_sports.hidden == YES || _VW_Movies.hidden == YES)
         {
             [self Leisure_view];
@@ -369,10 +427,18 @@
             [self Leisure_view];
             
         }
-        [self.VW_Leisure addSubview:VW_overlay];
-        
+         [self.VW_Leisure addSubview:VW_overlay];
+           [_Header_name setTitle:@"Leisure" forState:UIControlStateNormal];
+        [user_defafults setValue:@"Leisure" forKey:@"header_name"];
+
+        VW_overlay.hidden = NO;
+        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(Leisure_API_call) withObject:activityIndicatorView afterDelay:0.01];
+       
+      
         
     }
+    [user_defafults synchronize];
 }
 
 
@@ -383,7 +449,7 @@
     
     NSString *str = @"";
     NSString *text = [NSString stringWithFormat:@"VENUES %@",str];
-    if ([_BTN_venues respondsToSelector:@selector(setAttributedText:)]) {
+    if ([_BTN_venues  respondsToSelector:@selector(setAttributedText:)]) {
         
         NSDictionary *attribs = @{
                                   NSForegroundColorAttributeName:_BTN_venues.textColor,
@@ -410,8 +476,66 @@
     {
         _BTN_venues.text = text;
     }
-    
-    
+        NSString *leisure_str = @"";
+        NSString *leisure_text = [NSString stringWithFormat:@"VENUES %@",str];
+        if ([_BTN_venues  respondsToSelector:@selector(setAttributedText:)]) {
+            
+            NSDictionary *attribs = @{
+                                      NSForegroundColorAttributeName:_BTN_leisure_venues.textColor,
+                                      NSFontAttributeName: _BTN_leisure_venues.font
+                                      };
+            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
+            
+            
+            
+            NSRange ename = [leisure_text rangeOfString:leisure_str];
+            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+            {
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:25.0]}
+                                        range:ename];
+            }
+            else
+            {
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:15.0]}
+                                        range:ename];
+            }
+            _BTN_leisure_venues.attributedText = attributedText;
+        }
+        else
+        {
+            _BTN_leisure_venues.text = text;
+        }
+
+        NSString *sports_str = @"";
+        NSString *sports_text = [NSString stringWithFormat:@"VENUES %@",str];
+        if ([_BTN_venues  respondsToSelector:@selector(setAttributedText:)]) {
+            
+            NSDictionary *attribs = @{
+                                      NSForegroundColorAttributeName:_BTN_leisure_venues.textColor,
+                                      NSFontAttributeName: _BTN_leisure_venues.font
+                                      };
+            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
+            
+            
+            
+            NSRange ename = [sports_text rangeOfString:sports_str];
+            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+            {
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:25.0]}
+                                        range:ename];
+            }
+            else
+            {
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:15.0]}
+                                        range:ename];
+            }
+            _BTN_sports_venues.attributedText = attributedText;
+        }
+        else
+        {
+            _BTN_sports_venues.text = text;
+        }
+
     NSString *lang = @"";
     
     NSString *lang_text = [NSString stringWithFormat:@"%@ %@",leng_text,lang];
@@ -610,7 +734,7 @@
             NSArray *nib;
             nib = [[NSBundle mainBundle] loadNibNamed:@"no_data_cell" owner:self options:nil];
             cell = [nib objectAtIndex:0];
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Sports events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Sports Available" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
             
             
@@ -689,7 +813,7 @@
             NSArray *nib;
             nib = [[NSBundle mainBundle] loadNibNamed:@"no_data_cell" owner:self options:nil];
             cell = [nib objectAtIndex:0];
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Leisure events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
             
         }
@@ -1406,7 +1530,7 @@
     
     self.segmentedControl4.backgroundColor = [UIColor clearColor];
     self.segmentedControl4.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:16]};
-    self.segmentedControl4.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:16]};
+    self.segmentedControl4.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14]};
     self.segmentedControl4.selectionIndicatorColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
     //    self.segmentedControl4.selectionIndicatorColor
     self.segmentedControl4.selectionStyle = HMSegmentedControlSelectionStyleFullWidthStripe;
@@ -1730,7 +1854,7 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         
-        
+        [_TBL_event_list reloadData];
         
         VW_overlay.hidden = YES;
         [activityIndicatorView stopAnimating];
@@ -2055,6 +2179,10 @@
     
     
     
+}
+- (void)filter_action
+{
+    [self performSegueWithIdentifier:@"events_filter" sender:self];
 }
 
 - (IBAction)back_ACTION:(id)sender {

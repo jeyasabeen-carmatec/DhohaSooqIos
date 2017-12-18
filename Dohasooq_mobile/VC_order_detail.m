@@ -26,6 +26,7 @@
     NSMutableArray  *temp_arr;
     BOOL isfirstTimeTransform,isAddClicked,is_Txt_date,isCountrySelected,orderCheckSelected;;
     float scroll_height,shiiping_ht;
+   
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
     NSMutableDictionary *jsonresponse_dic,*jsonresponse_dic_address,*delivary_slot_dic,*response_countries_dic;
@@ -65,28 +66,49 @@
     stat_arr = [[NSMutableArray alloc]init];
     stat_arr = [NSMutableArray arrayWithObjects:@"0", nil];
     billcheck_clicked = @"0";
+    [_BTN_close addTarget:self action:@selector(close_ACTION) forControlEvents:UIControlEventTouchUpInside];
+    [self set_UP_VIEW];
+    @try
+    {
+    [_BTN_fav setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
+    [_BTN_cart setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
+
     
     
 }
 -(void)viewWillAppear:(BOOL)animated
 {
-    VW_overlay = [[UIView alloc]init];
-    CGRect vwframe;
-    vwframe = VW_overlay.frame;
-    vwframe.origin.y = self.navigationController.navigationBar.frame.origin.y;
-    vwframe.size.height = self.view.frame.size.height - _VW_next.frame.size.height - self.navigationController.navigationBar.frame.size.height;
-    vwframe.size.width = self.view.frame.size.width;
-    VW_overlay.frame = vwframe;
+    VW_overlay = [[UIView alloc] init];
+    CGRect frameset = VW_overlay.frame;
+    frameset.origin.y = self.navigationController.navigationBar.frame.origin.y;
+    frameset.size.height = self.navigationController.view.frame.size.height - self.VW_next.frame.size.height;
+    VW_overlay.frame = frameset;
+    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    VW_overlay.clipsToBounds = YES;
+    
+    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+    activityIndicatorView.center = VW_overlay.center;
+    [VW_overlay addSubview:activityIndicatorView];
+    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    [self.view addSubview:VW_overlay];
+    
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]; //[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     // VW_overlay.center = self.view.center;
-    [self.view addSubview:VW_overlay];
-    VW_overlay.hidden = YES;
+   
+    //VW_overlay.hidden = YES;
     
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
-    [self cart_count];
+    
     [self performSelector:@selector(order_detail_API_call) withObject:activityIndicatorView afterDelay:0.01];
-    [self Shipp_address_API];
+    
+   
     
     
     response_picker_arr = [NSMutableArray array];
@@ -196,7 +218,7 @@
     _BTN_apply_promo.layer.masksToBounds = YES;
     
     
-    
+    [self CountryAPICall];
     
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
@@ -209,9 +231,9 @@
     
     
     
-    _BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
-                 @selector(btnfav_action)];
-    _BTN_cart = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain   target:self action:@selector(btn_cart_action)];
+//    _BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
+//                 @selector(btnfav_action)];
+//    _BTN_cart = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain   target:self action:@selector(btn_cart_action)];
    
 //    NSString *badge_value = @"25";
 //    if(badge_value.length > 2)
@@ -796,59 +818,61 @@
                 NSString *item_name =[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"product_name"]];
                 
                 item_name = [item_name stringByReplacingOccurrencesOfString:@"<null>" withString:@"not mentioned"];
-                NSString *item_seller =[NSString stringWithFormat:@" %@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"merchantname"]];
+                NSString *item_seller =[NSString stringWithFormat:@"Seller: %@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"merchantname"]];
                 
                 
                 
                 item_name = [item_name stringByReplacingOccurrencesOfString:@"<null>" withString:@"not mentioned"];
+                cell.LBL_item_name.text = item_name;
+                cell.LBL_seller.text = item_seller;
                 
-                NSString *name_text = [NSString stringWithFormat:@"%@\nseller :%@",item_name,item_seller];
+               // NSString *name_text = [NSString stringWithFormat:@"%@\nseller :%@",item_name,item_seller];
                 
                 
                 
 #pragma mark LBL_item_name Attributed Text
                 
-                if ([cell.LBL_item_name respondsToSelector:@selector(setAttributedText:)]) {
-                    
-                    // Define general attributes for the entire text
-                    NSDictionary *attribs = @{
-                                              NSForegroundColorAttributeName:cell.LBL_item_name.textColor,
-                                              NSFontAttributeName:cell.LBL_item_name.font
-                                              };
-                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:name_text attributes:attribs];
-                    
-                    
-                    
-                    NSRange ename = [name_text rangeOfString:item_name];
-                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-                                                range:ename];
-                    }
-                    else
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0]}
-                                                range:ename];
-                    }
-                    NSRange cmp = [name_text rangeOfString:item_seller];
-                    
-                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0]}
-                                                range:cmp];
-                    }
-                    else
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:13.0]}
-                                                range:cmp ];
-                    }
-                    cell.LBL_item_name.attributedText = attributedText;
-                }
-                else
-                {
-                    cell.LBL_item_name.text = name_text;
-                }
-                
+//                if ([cell.LBL_item_name respondsToSelector:@selector(setAttributedText:)]) {
+//                    
+//                    // Define general attributes for the entire text
+//                    NSDictionary *attribs = @{
+//                                              NSForegroundColorAttributeName:cell.LBL_item_name.textColor,
+//                                              NSFontAttributeName:cell.LBL_item_name.font
+//                                              };
+//                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:name_text attributes:attribs];
+//                    
+//                    
+//                    
+//                    NSRange ename = [name_text rangeOfString:item_name];
+//                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+//                    {
+//                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
+//                                                range:ename];
+//                    }
+//                    else
+//                    {
+//                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0]}
+//                                                range:ename];
+//                    }
+//                    NSRange cmp = [name_text rangeOfString:item_seller];
+//                    
+//                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+//                    {
+//                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0]}
+//                                                range:cmp];
+//                    }
+//                    else
+//                    {
+//                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:13.0]}
+//                                                range:cmp ];
+//                    }
+//                    cell.LBL_item_name.attributedText = attributedText;
+//                }
+//                else
+//                {
+//                    cell.LBL_item_name.text = name_text;
+//                }
+//                
                 
                 
                 NSString *qr = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"currencycode"]];
@@ -1774,7 +1798,7 @@
         billcheck_clicked = @"1"; // for place order
 
         isCompare = YES;
-        self.LBL_stat.image = [UIImage imageNamed:@"uncheked_order"];
+        self.LBL_stat.image = [UIImage imageNamed:@"profile_checkbox.png"];
     
         
         if([[jsonresponse_dic_address valueForKey:@"shipaddress"] isKindOfClass:[NSDictionary class]]){
@@ -1932,6 +1956,7 @@
         _LBL_arrow.text = @"";
         VW_overlay.hidden = NO;
         _VW_summary.hidden = NO;
+        _VW_delivery_slot.hidden =YES;
         
         //_LBL_arrow.text = @"";
     }
@@ -2470,6 +2495,12 @@
         [self performSelector:@selector(stateApiCall) withObject:activityIndicatorView afterDelay:0.01];
         
     }
+    if(textField == _TXT_cupon)
+    {
+        [UIView beginAnimations:nil context:NULL];
+        self.view.frame = CGRectMake(0,100,self.view.frame.size.width,self.view.frame.size.height);
+        [UIView commitAnimations];
+    }
     
 }
 -(void)textFieldDidEndEditing:(UITextField *)textField
@@ -2775,11 +2806,16 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
                         NSLog(@"%@",[error localizedDescription]);
-                    }
-                    if (data) {
-                        
                         VW_overlay.hidden = YES;
                         [activityIndicatorView stopAnimating];
+
+                    }
+                    if (data) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self cart_count];
+                        });
+
+                        
                         
                         @try {
                             if ([data isKindOfClass:[NSDictionary class]]) {
@@ -2790,13 +2826,23 @@
                                 NSLog(@"order_detail_API Response:::%@*********",data);
                                 [self filtering_MerchantId];
                                 [_TBL_orders reloadData];
+                                 [self Shipp_address_API];
+                                [self cart_count];
+                                VW_overlay.hidden = YES;
+                                [activityIndicatorView stopAnimating];
+
                             }
                             else{
                                 [HttpClient createaAlertWithMsg:@"The Data could not be read It is not in correct format" andTitle:@""];
+                                VW_overlay.hidden = YES;
+                                [activityIndicatorView stopAnimating];
                             }
                             
                         } @catch (NSException *exception) {
                             NSLog(@"%@",exception);
+                            VW_overlay.hidden = YES;
+                            [activityIndicatorView stopAnimating];
+
                         }
                         
                         
@@ -2813,10 +2859,11 @@
             [activityIndicatorView stopAnimating];
         }
         
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+       
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
     }
     
 }
@@ -2935,51 +2982,41 @@
 #pragma mark  cart_count_api
 
 -(void)cart_count{
-    @try {
-        NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
-        [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-            if (error) {
-                [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
-                 ];
-            }
-            if (data) {
-                NSLog(@"%@",data);
-                @try {
-                    NSString *badge_value = [NSString stringWithFormat:@"%@",[data valueForKey:@"count"]];
-                    if ([[NSUserDefaults standardUserDefaults]integerForKey:@"language_id"] == 2) {
-                        
-                        if(badge_value.length > 2)
-                        {
-                            self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
-                            
-                        }
-                        else{
-                            self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
-                            
-                        }
-                    }
-                    else{
-                        if(badge_value.length > 2)
-                        {
-                            self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
-                            
-                        }
-                        else{
-                            self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
-                            
-                        }
-                    }
-                } @catch (NSException *exception) {
-                    NSLog(@"%@",exception);
+    
+    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        if (error) {
+            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
+             ];
+        }
+        if (data) {
+            NSLog(@"%@",data);
+            NSDictionary *dict = data;
+            @try {
+                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
+                NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
+                
+                //NSString *badge_value = @"11";
+                if(badge_value.length > 99 || wishlist.length > 99)
+                {
+                    [_BTN_cart setBadgeString:[NSString stringWithFormat:@"%@+",badge_value]];
+                    [_BTN_fav setBadgeString:[NSString stringWithFormat:@"%@+",wishlist]];
+                    
+                    
+                }
+                else{
+                    [_BTN_cart setBadgeString: [NSString stringWithFormat:@"%@",badge_value]];
+                    [_BTN_fav setBadgeString:[NSString stringWithFormat:@"%@",wishlist]];
+                    
+                    
                 }
                 
+            } @catch (NSException *exception) {
+                NSLog(@"%@",exception);
             }
-        }];
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-        
-    }
-    
+            
+        }
+    }];
 }
 #pragma mark Delivary_slot_API
 
@@ -4231,6 +4268,10 @@
     }
     
 }
-
+-(void)close_ACTION
+{
+    VW_overlay.hidden = YES;
+    _VW_delivery_slot.hidden = YES;
+}
 
 @end

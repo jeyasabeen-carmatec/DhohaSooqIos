@@ -22,7 +22,8 @@
     // Override point for customization after application launch.
     
   //  self.window.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Log in"]];
-    
+    @try
+    {
      [[FBSDKApplicationDelegate sharedInstance] application:application
                              didFinishLaunchingWithOptions:launchOptions];
     /***************** Google Sign In ******************/
@@ -31,6 +32,11 @@
     NSAssert(!configureError, @"Error configuring Google services: %@", configureError);
     
     [GIDSignIn sharedInstance].delegate = self;
+    }
+    @catch(NSException *exception)
+    {
+    }
+    
     /***************** Google Sign In ******************/
     
     return YES;
@@ -75,7 +81,14 @@ sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    @try
+    {
     [FBSDKAppEvents activateApp];
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
 
 }
 

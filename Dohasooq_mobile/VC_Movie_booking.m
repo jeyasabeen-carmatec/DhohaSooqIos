@@ -394,7 +394,7 @@
        self.LBL_movie_name.text =  [detail_dict valueForKey:@"_name"];
         self.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[detail_dict valueForKey:@"_IMDB_rating"]];
       _LBL_censor.text = [detail_dict valueForKey:@"_Censor"];
-        NSString *img_url = [detail_dict valueForKey:@"_thumbURL"];
+        NSString *img_url = [detail_dict valueForKey:@"_iphonethumb"];
         img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
         [self.IMG_movie sd_setImageWithURL:[NSURL URLWithString:img_url]
                            placeholderImage:[UIImage imageNamed:@"upload-8.png"]
@@ -477,6 +477,7 @@
     
     self.dayPicker.dayNameLabelFontSize = 12.0f;
     self.dayPicker.dayLabelFontSize = 18.0f;
+    
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateFormat:@"EE"];
@@ -783,14 +784,14 @@
     if(result.height <= 480)
     {
         // iPhone Classic
-        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:13];
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:10];
         
         
     }
     else if(result.height <= 568)
     {
         // iPhone 5
-        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:13];
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:10];
       //  cell.BTN_time.textAlignment = NSTextAlignmentLeft;
         
         
@@ -811,9 +812,12 @@
     
     
     @try {
+        
+        
         if(([[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] isKindOfClass:[NSDictionary class]]))
         {
-            
+            if([[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] valueForKey:@"_type"] isEqualToString:@"available"])
+            {
             [[NSUserDefaults standardUserDefaults] setValue:[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] valueForKey:@"_id"] forKey:@"movie_id"];
             [[NSUserDefaults standardUserDefaults] synchronize];
 //            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"movie_date"];
@@ -829,10 +833,20 @@
 
 
             NSLog(@"Selected Time Detail %@",[ARR_temp objectAtIndex:collectionView.tag]);
+                NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
+                
+                NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                [self performSegueWithIdentifier:@"booking_seat" sender:self];
+
+            }
             
         }
         else{
-            
+            if([[[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"]objectAtIndex:indexPath.row] valueForKey:@"_type"] isEqualToString:@"available"])
+            {
             NSLog(@"Selected Time Detail %@",[[[ARR_temp objectAtIndex:collectionView.tag]  valueForKey:@"shows"]objectAtIndex:indexPath.row]);
             [[NSUserDefaults standardUserDefaults] setValue:[[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"]objectAtIndex:indexPath.row] valueForKey:@"_id"] forKey:@"movie_id"];
              [[NSUserDefaults standardUserDefaults] synchronize];
@@ -845,17 +859,20 @@
             
             [[NSUserDefaults standardUserDefaults] setValue:[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"theatre"] forKey:@"theatre"];
             [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
+                
+                NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                [self performSegueWithIdentifier:@"booking_seat" sender:self];
+
+            }
           
 
           
         }
-        NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
-
-        NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
-          [self performSegueWithIdentifier:@"booking_seat" sender:self];
         
   
         
@@ -924,7 +941,7 @@
 {
     if([[detail_dict valueForKey:@"_TrailerURL"] isEqualToString:@""])
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Trailer video is not available" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No video available to share" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
         
         
@@ -955,7 +972,11 @@
 //        [[NSUserDefaults standardUserDefaults] setObject:[[xmlDoc valueForKey:@"Movies"] valueForKey:@"movie"] forKey:@"Movie_detail"];
 //        [[NSUserDefaults standardUserDefaults] synchronize];
         
-        detail_dict = [[xmlDoc valueForKey:@"Movies"] valueForKey:@"movie"] ;
+        detail_dict = [[xmlDoc valueForKey:@"Movies"] valueForKey:@"movie"] ;//
+        [[NSUserDefaults standardUserDefaults]setObject:detail_dict forKey:@"Movie_detail"] ;
+        [[NSUserDefaults standardUserDefaults] synchronize];
+
+        
         [self filtering_date];
         [self getResponse_detail];
     }

@@ -38,6 +38,7 @@
     
     lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
     upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];
+    self.BTN_all.backgroundColor = self.BTN_submit.backgroundColor;
 
 
     [_BTN_submit addTarget:self action:@selector(submit_ACTION) forControlEvents:UIControlEventTouchUpInside];
@@ -95,7 +96,7 @@
     
     UIButton *close=[[UIButton alloc]init];
     close.frame=CGRectMake(conutry_close.frame.size.width - 100, 0, 100, conutry_close.frame.size.height);
-    [close setTitle:@"close" forState:UIControlStateNormal];
+    [close setTitle:@"Done" forState:UIControlStateNormal];
     [close addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
     [conutry_close addSubview:close];
     _TXT_start_date.inputAccessoryView=conutry_close;
@@ -246,6 +247,11 @@
 - (IBAction)all_action:(id)sender {
     _TXT_start_date.text = @"Select start date";
     _TXT_end_date.text = @"Select end date";
+    _BTN_all.backgroundColor = self.BTN_submit.backgroundColor;
+    _BTN_today.backgroundColor = [UIColor colorWithRed:0.31 green:0.29 blue:0.21 alpha:1.0];
+    _BTN_tomorrow.backgroundColor = [UIColor colorWithRed:0.31 green:0.29 blue:0.21 alpha:1.0];
+    _BTN_weekend.backgroundColor =  [UIColor colorWithRed:0.31 green:0.29 blue:0.21 alpha:1.0];
+    
 }
 - (IBAction)today_action:(id)sender {
     
@@ -255,6 +261,12 @@
     NSString  *date = [NSString stringWithFormat:@"%@",[formatter stringFromDate:min_date]];
     _TXT_start_date.text = date;
     _TXT_end_date.text = date;
+    _BTN_today.backgroundColor = self.BTN_submit.backgroundColor;
+    _BTN_all.backgroundColor = [UIColor colorWithRed:0.31 green:0.29 blue:0.21 alpha:1.0];
+    _BTN_tomorrow.backgroundColor = [UIColor colorWithRed:0.31 green:0.29 blue:0.21 alpha:1.0];
+    _BTN_weekend.backgroundColor =  [UIColor colorWithRed:0.31 green:0.29 blue:0.21 alpha:1.0];
+    
+
     
 }
 - (IBAction)tomorrow_action:(id)sender {
@@ -263,7 +275,11 @@
     [formatter setDateFormat:@"MM-dd-yyyy"];
     NSString  *date = [NSString stringWithFormat:@"%@",[formatter stringFromDate:tomorrow]];
     _TXT_start_date.text = date;
-    _TXT_end_date.text = date;
+    _BTN_tomorrow.backgroundColor = self.BTN_submit.backgroundColor;
+    _BTN_all.backgroundColor = [UIColor colorWithRed:0.31 green:0.29 blue:0.21 alpha:1.0];
+    _BTN_today.backgroundColor = [UIColor colorWithRed:0.31 green:0.29 blue:0.21 alpha:1.0];
+    _BTN_weekend.backgroundColor =  [UIColor colorWithRed:0.31 green:0.29 blue:0.21 alpha:1.0];
+    
     
 }
 - (IBAction)weekend_action:(id)sender
@@ -293,9 +309,15 @@
     _TXT_start_date.text = friday;
     _TXT_end_date.text = next_sat;
     
+    _BTN_weekend.backgroundColor = self.BTN_submit.backgroundColor;
+    _BTN_all.backgroundColor = [UIColor colorWithRed:0.31 green:0.29 blue:0.21 alpha:1.0];
+    _BTN_today.backgroundColor = [UIColor colorWithRed:0.31 green:0.29 blue:0.21 alpha:1.0];
+    _BTN_tomorrow.backgroundColor =  [UIColor colorWithRed:0.31 green:0.29 blue:0.21 alpha:1.0];
+    
 }
 -(void)submit_ACTION
 {
+    
     if([_TXT_start_date.text isEqualToString:@"Select start date"])
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please select the Start date"delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
@@ -325,6 +347,7 @@ else{
     NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
    
     NSLog(@"The Order Data is:%@",xmlDoc);
+       
         
         if([[[xmlDoc valueForKey:@"EventDetails"]valueForKey:@"eventdetail"]count] > 0)
         {
@@ -342,11 +365,18 @@ else{
                 [self.navigationController popViewControllerAnimated:NO];
                 
             }
+        }
+            else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Events Found"delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+                [alert show];
+
+            }
             
 
         
         
-        }
+        
      
      }
      @catch(NSException *exception)

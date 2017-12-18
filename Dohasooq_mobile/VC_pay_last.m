@@ -10,7 +10,7 @@
 
 @interface VC_pay_last ()<UICollectionViewDelegate,UICollectionViewDataSource,UITextFieldDelegate,UIGestureRecognizerDelegate,UIPickerViewDataSource,UIPickerViewDelegate>
 {
-    NSArray *country_arr;
+    NSMutableArray *country_arr;
     NSString *str_URL;
 }
 
@@ -42,7 +42,8 @@
 
 -(void)picker_set_UP
 {
-    country_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_array"];
+    country_arr =[[NSUserDefaults standardUserDefaults] valueForKey:@"country_array"];
+    [country_arr sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 
     
     _country_picker_view = [[UIPickerView alloc] init];
@@ -64,7 +65,7 @@
     
     UIButton *close=[[UIButton alloc]init];
     close.frame=CGRectMake(phone_close.frame.size.width - 100, 0, 100, phone_close.frame.size.height);
-    [close setTitle:@"close" forState:UIControlStateNormal];
+    [close setTitle:@"Done" forState:UIControlStateNormal];
     [close addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
     [phone_close addSubview:close];
     

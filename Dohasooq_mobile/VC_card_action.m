@@ -10,7 +10,7 @@
 
 @interface VC_card_action ()<UICollectionViewDelegate,UICollectionViewDataSource,UITextFieldDelegate,UIGestureRecognizerDelegate,UIPickerViewDataSource,UIPickerViewDelegate>
 {
-    NSArray *country_arr;
+    NSMutableArray *country_arr;
     NSTimer *timer;
     int currMinute;
     int currSeconds;
@@ -71,8 +71,9 @@
 }
 -(void)picker_set_UP
 {
-    country_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_array"];
-    
+    country_arr =[[NSUserDefaults standardUserDefaults] valueForKey:@"country_array"];
+    [country_arr sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+   
     
     _country_picker_view = [[UIPickerView alloc] init];
     _country_picker_view.delegate = self;
@@ -93,7 +94,7 @@
     
     UIButton *close=[[UIButton alloc]init];
     close.frame=CGRectMake(phone_close.frame.size.width - 100, 0, 100, phone_close.frame.size.height);
-    [close setTitle:@"close" forState:UIControlStateNormal];
+    [close setTitle:@"Done" forState:UIControlStateNormal];
     [close addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
     [phone_close addSubview:close];
     

@@ -10,9 +10,9 @@
 #import "merchant_cell.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 
-@interface VC_merchant_list ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate>
+@interface VC_merchant_list ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,UITextFieldDelegate>
 {
-    NSMutableArray *arr_product;
+    NSArray *arr_product;
     
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
@@ -28,6 +28,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    _search_bar.delegate =self;
     [self set_UP_VIEW];
 
 }
@@ -46,6 +47,7 @@
     VW_overlay.center = self.view.center;
     [self.view addSubview:VW_overlay];
     [self Merchant_api_integration];
+    [_search_bar addTarget:self action:@selector(filter_ARR) forControlEvents:UIControlEventEditingChanged];
     
 //    
 //    VW_overlay.hidden = NO;
@@ -54,7 +56,38 @@
 //    _TBL_merchants.rowHeight = UITableViewAutomaticDimension;
 
 }
+-(void)filter_ARR
+{
+    @try {
+        if(arr_product.count < 1)
+        {
+            [self Merchant_api_integration];
+        }
+        else
+        {
+        
+    NSString *substring = [NSString stringWithString:_search_bar.text];
+    
+    NSArray *arr = [arr_product mutableCopy];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF[name] CONTAINS %@",substring];
+    
+   arr_product = [arr filteredArrayUsingPredicate:predicate];
+            
+            if(arr_product.count < 1)
+            {
+                [self Merchant_api_integration];
+                
+            }
+        [_TBL_merchants reloadData];
+        }
+ 
+    }
+    @catch(NSException *exeption)
+    {
+        
+    }
 
+}
 
 -(void)set_UP_VIEW
 {
@@ -65,24 +98,36 @@
     _search_bar.layer.shadowOffset = CGSizeMake(1.0f, 1.0f);
     _search_bar.layer.shadowRadius = 4.0f;
     _search_bar.layer.shadowOpacity = 1.0f;
-arr_product = [[NSMutableArray alloc]init];
+//arr_product = [[NSMutableArray alloc]init];
+}
+#pragma text field delgates
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
 }
 #pragma table view delegates
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if(section == 0)
-    {
+//    NSString *substring = [NSString stringWithString:_search_bar.text];
+//    
+//    NSArray *arr = [arr_product mutableCopy];
+//    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF['name'] CONTAINS[cd] %@",substring];
+//    
+//    arr_product = [arr filteredArrayUsingPredicate:predicate];
+//    if(section == 0)
+//    {
+//        return search_arr.count;
+//    }
+//    else
+//    {
         return arr_product.count;
-    }
-    else
-    {
-        return 1;
-    }
+   // }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -99,6 +144,8 @@ arr_product = [[NSMutableArray alloc]init];
             nib = [[NSBundle mainBundle] loadNibNamed:@"merchant_cell" owner:self options:nil];
             cell = [nib objectAtIndex:0];
         }
+//        if(indexPath.section == 0)
+//        {
         temp_dict = [arr_product objectAtIndex:indexPath.row];
     
          NSString *address= [temp_dict valueForKey:@"location"];
@@ -124,11 +171,46 @@ arr_product = [[NSMutableArray alloc]init];
         cell.LBL_merchat_name.text = str_name;
         
         //Webimage URl Cachee
-        NSString *img_url = [NSString stringWithFormat:@"%@%@",IMG_URL,[temp_dict valueForKey:@"image"]];
+        NSString *img_url = [NSString stringWithFormat:@"%@%@",SERVER_URL,[temp_dict valueForKey:@"image"]];
     
        [cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:img_url]
                  placeholderImage:[UIImage imageNamed:@"logo.png"]
                           options:SDWebImageRefreshCached];
+//        }
+//        else
+//        {
+//            temp_dict = [arr_product objectAtIndex:indexPath.row];
+//            
+//            NSString *address= [temp_dict valueForKey:@"location"];
+//            address = [address stringByReplacingOccurrencesOfString:@"    " withString:@"NotMentioned"];
+//            cell.LBL_loction.text = address;
+//            
+//            NSString *str_phone =[temp_dict valueForKey:@"phone"];
+//            str_phone = [str_phone stringByReplacingOccurrencesOfString:@"" withString:@"NotMentioned"];
+//            if(str_phone.length == 0)
+//            {
+//                str_phone = @"NotMentioned";
+//                
+//            }
+//            cell.LBL_phone.text =str_phone;
+//            
+//            NSString *str_email =[temp_dict valueForKey:@"email"];
+//            str_email = [str_email stringByReplacingOccurrencesOfString:@" " withString:@"NotMentioned"];
+//            cell.LBL_addres.text =str_email;
+//            
+//            
+//            NSString *str_name =[temp_dict valueForKey:@"name"];
+//            //str_name = [str_name stringByReplacingOccurrencesOfString:@" " withString:@"NotMentioned"];
+//            cell.LBL_merchat_name.text = str_name;
+//            
+//            //Webimage URl Cachee
+//            NSString *img_url = [NSString stringWithFormat:@"%@%@",SERVER_URL,[temp_dict valueForKey:@"image"]];
+//            
+//            [cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:img_url]
+//                             placeholderImage:[UIImage imageNamed:@"logo.png"]
+//                                      options:SDWebImageRefreshCached];
+//
+//        }
        return cell;
     }
     @catch(NSException *exception)
@@ -139,7 +221,7 @@ arr_product = [[NSMutableArray alloc]init];
 
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return 100.0;
+    return 10.0;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -148,9 +230,18 @@ arr_product = [[NSMutableArray alloc]init];
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-   [[NSUserDefaults standardUserDefaults] setObject:[arr_product objectAtIndex:indexPath.row] forKey:@"merchant_data"];
-    
-    [[NSUserDefaults standardUserDefaults] synchronize];
+//    if(indexPath.section == 0)
+//    {
+//   [[NSUserDefaults standardUserDefaults] setObject:[search_arr objectAtIndex:indexPath.row] forKey:@"merchant_data"];
+//    
+//    [[NSUserDefaults standardUserDefaults] synchronize];
+//    }
+//    else{
+        [[NSUserDefaults standardUserDefaults] setObject:[arr_product objectAtIndex:indexPath.row] forKey:@"merchant_data"];
+        
+        [[NSUserDefaults standardUserDefaults] synchronize];
+
+  //  }
     
     
     
@@ -160,6 +251,18 @@ arr_product = [[NSMutableArray alloc]init];
 - (IBAction)back_action:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+//{
+//    
+//    NSString *titleName = @"";
+//    if (section == 0) {
+//        titleName = @"";
+//    }else{
+//        titleName = @"Merchants Related To your Search";
+//    }
+//    return  titleName;
+//    
+//}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -190,6 +293,8 @@ arr_product = [[NSMutableArray alloc]init];
             VW_overlay.hidden = YES;
             NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             NSLog(@"The response Api post sighn up API %@",json_DATA);
+            
+            
             
             arr_product = [json_DATA valueForKey:@"Success"];
             [_TBL_merchants reloadData];
