@@ -46,7 +46,10 @@
     [VW_overlay addSubview:activityIndicatorView];
     VW_overlay.center = self.view.center;
     [self.view addSubview:VW_overlay];
-    [self Merchant_api_integration];
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(Merchant_api_integration) withObject:activityIndicatorView afterDelay:0.01];
+   // [self Merchant_api_integration];
     [_search_bar addTarget:self action:@selector(filter_ARR) forControlEvents:UIControlEventEditingChanged];
     
 //    
@@ -69,7 +72,7 @@
     NSString *substring = [NSString stringWithString:_search_bar.text];
     
     NSArray *arr = [arr_product mutableCopy];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF[name] CONTAINS %@",substring];
+   NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF['name'] CONTAINS[cd] %@",substring];
     
    arr_product = [arr filteredArrayUsingPredicate:predicate];
             
@@ -159,6 +162,7 @@
              str_phone = @"NotMentioned";
              
          }
+        
          cell.LBL_phone.text =str_phone;
     
         NSString *str_email =[temp_dict valueForKey:@"email"];
@@ -176,6 +180,7 @@
        [cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:img_url]
                  placeholderImage:[UIImage imageNamed:@"logo.png"]
                           options:SDWebImageRefreshCached];
+        [cell.BTN_phone_icon addTarget:self action:@selector(Phone_merahnt:) forControlEvents:UIControlEventTouchUpInside];
 //        }
 //        else
 //        {
@@ -268,6 +273,22 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+-(void)Phone_merahnt:(UIButton *)sender
+{
+    NSString *string_phone = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:sender.tag] valueForKey:@"phone"]];
+    
+    NSURL *phoneUrl = [NSURL URLWithString:[NSString  stringWithFormat:@"telprompt:%@",string_phone]];
+    
+    if ([[UIApplication sharedApplication] canOpenURL:phoneUrl]) {
+        [[UIApplication sharedApplication] openURL:phoneUrl];
+    } else
+    {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Alert" message:@"Call facility is not available!!!" delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+
+    
+}
 #pragma API call
 -(void)Merchant_api_integration
 {
@@ -304,6 +325,8 @@
     
     @catch(NSException *exception)
     {
+        VW_overlay.hidden = NO;
+        [activityIndicatorView startAnimating];
         NSLog(@"The error is:%@",exception);
     }
     

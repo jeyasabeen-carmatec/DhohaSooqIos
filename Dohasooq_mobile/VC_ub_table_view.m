@@ -64,11 +64,12 @@ UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellSty
     NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
     
     NSString *url_key = [NSString stringWithFormat:@"%@",[[[sub_arr valueForKey:@"child_categories" ]objectAtIndex:indexPath.row] valueForKey:@"url_key"]];
+    
     NSString *list_TYPE = @"productList";
     NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/0/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,url_key,country,languge,user_id];
         
     [[NSUserDefaults standardUserDefaults] setValue:@"sublist" forKey:@"list_seg"];
-
+    [[NSUserDefaults standardUserDefaults] setValue:url_key forKey:@"product_list_key"];
     [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [self performSegueWithIdentifier:@"sublist_product_list" sender:self];

@@ -22,7 +22,7 @@
 @property(nonatomic,weak) IBOutlet UIButton *BTN_back_modal;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_cart_list;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_wish_list;
-@property(nonatomic,weak) IBOutlet UIButton *header_name;
+//@property(nonatomic,weak) IBOutlet UIButton *header_name;
 
 
 //first view
@@ -53,7 +53,7 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_delivery_cod;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_merchant;
 @property(nonatomic,weak) IBOutlet UILabel *QTY;
-@property(nonatomic,weak) IBOutlet UILabel *LBL_more_sellers;
+@property(nonatomic,weak) IBOutlet UIButton *LBL_more_sellers;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sold_by;
 
 @property(nonatomic,weak) IBOutlet UILabel *LBL_merchant_sellers;

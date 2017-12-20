@@ -187,9 +187,22 @@
     {
         
     }
+    _LBL_delivery_cod.numberOfLines = 0;
+    [_LBL_delivery_cod sizeToFit];
+
     @try
     {
-    NSString *cod_TEXT = [NSString stringWithFormat:@"> Cash on Delivery %@\n>%@\n>freeShipping%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"cod"],[[json_Response_Dic valueForKey:@"products"] valueForKey:@"dispatchTime"],[[json_Response_Dic valueForKey:@"products"] valueForKey:@"freeShipping"]];
+        NSString *str_cod =[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"cod"];
+        if([str_cod isEqualToString:@"Yes"])
+        {
+            str_cod =  @"available";
+            
+        }
+        else
+        {
+             str_cod =  @"unavailable";
+        }
+    NSString *cod_TEXT = [NSString stringWithFormat:@"> Cash on Delivery %@\n>%@\n>%@",str_cod,[[json_Response_Dic valueForKey:@"products"] valueForKey:@"dispatchTime"],[[json_Response_Dic valueForKey:@"products"] valueForKey:@"freeShipping"]];
     cod_TEXT = [cod_TEXT stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
         _LBL_delivery_cod.text = cod_TEXT;
     }
@@ -198,8 +211,6 @@
         
     }
    
-    _LBL_delivery_cod.numberOfLines = 0;
-    [_LBL_delivery_cod sizeToFit];
     
     
     frame_set = _LBL_sold_by.frame;
@@ -410,6 +421,7 @@
     newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     _IMG_cart.image = newImage;
+    [_BTN_share addTarget:self action:@selector(share_action) forControlEvents:UIControlEventTouchUpInside];
        // + self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height ;
    
 //    frame_set = _Scroll_content.frame;
@@ -434,17 +446,25 @@
                 rating = [rating stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
                  starRatingView.value = [rating floatValue];
                 
-            NSString *str_name =[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_descriptions"] objectAtIndex:0] valueForKey:@"title"]];
-                str_name = [str_name stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-            [_header_name setTitle:str_name forState:UIControlStateNormal];
+          //  NSString *str_name =[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_descriptions"] objectAtIndex:0] valueForKey:@"title"]];
+            //    str_name = [str_name stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+          //  [_header_name setTitle:str_name forState:UIControlStateNormal];
                 NSString *str_srock = [[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"stock_status"];
                 str_srock = [str_srock stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
 
                 _LBL_stock.text = str_srock;
-                if([[json_Response_Dic valueForKey:@"relatedProducts"] isKindOfClass:[NSArray class]])
+                if([[json_Response_Dic valueForKey:@"multipleSellers"] isKindOfClass:[NSDictionary class]])
                 {
-                    _LBL_more_sellers.text = [NSString stringWithFormat:@"%lu more Sellers",[[json_Response_Dic valueForKey:@"relatedProducts"] count]];
+                    NSString *str_sellers =[NSString stringWithFormat:@"%lu more Sellers",[[[json_Response_Dic valueForKey:@"multipleSellers"] allKeys] count] - 1];
+                    [_LBL_more_sellers setTitle:str_sellers forState:UIControlStateNormal];
+                   
                 }
+                else
+                {
+                    [_LBL_more_sellers setTitle:@"" forState:UIControlStateNormal];
+
+                }
+                
               
                 @try
                 {
@@ -644,6 +664,7 @@
             }
         }
         
+        [_LBL_more_sellers addTarget:self action:@selector(sellers_details) forControlEvents:UIControlEventTouchUpInside];
     }
     @catch (NSException *exception) {
         
@@ -1042,7 +1063,7 @@
                     @try
                     {
                         
-                    if ([[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row]objectAtIndex:0]  valueForKey:@"wishListStatus"] isEqualToString:@"Yes"]) {
+                    if ([[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row]objectAtIndex:0]  valueForKey:@"wishStatus"] isEqualToString:@"Yes"]) {
                         [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
                         
                         [pro_cell.BTN_fav setTitleColor:[UIColor colorWithRed:244.f/255.f green:176.f/255.f blue:77.f/255.f alpha:1] forState:UIControlStateNormal];
@@ -1403,9 +1424,9 @@
          product_id =[NSString stringWithFormat:@"%@", [[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:sender.tag] objectAtIndex:0] valueForKey:@"id"]];
             //[[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];
             
-            if ([[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:sender.tag] objectAtIndex:0]valueForKey:@"wishListStatus"] isEqualToString:@"Yes"]) {
+            if ([[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:sender.tag] objectAtIndex:0]valueForKey:@"wishStatus"] isEqualToString:@"Yes"]) {
                 [self delete_from_wishLis];
-                [self product_detail_API];
+                //[self product_detail_API];
             }
             
                 
@@ -1691,17 +1712,13 @@
 {
      
       noDuplicates = [[NSMutableArray alloc]init];
-     //apis/addcartapi.json
-     
-     //    this->request->data['pdtId'];
-     //    $userId = $this->request->data['userId'];
-     //    $qtydtl = $this->request->data['quantity'];
-     //    $custom = $this->request->data['custom'];
-     //    $variant = $this->request->data['variant'];
-    NSString *items_count = _TXT_count.text;
+        NSString *items_count = _TXT_count.text;
 
          NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
          NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+    
+    
+    
          if([user_id isEqualToString:@"(null)"])
          {
              
@@ -1710,6 +1727,7 @@
              [alert show];
              
          }
+       
          else
          {
              [noDuplicates addObject:temp_DICT];
@@ -1717,6 +1735,22 @@
              variant_arr1 = [[NSSet setWithArray: hasDuplicates] allObjects];
              NSLog(@"%@",variant_arr1);
              
+                         NSString *stock =  [[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"stock_status"];
+                         stock = [stock stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+                         stock = [stock stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+                         if([stock isEqualToString:@""] || [stock isEqualToString:@"Out of stock"])
+                         {
+                             VW_overlay.hidden=YES;
+                             [activityIndicatorView stopAnimating];
+
+                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Out of Stock" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+             
+                             [alert show];
+                             
+                         }
+                         else
+                         {
+
 
              
              NSString *stock =  [[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"stock_status"];
@@ -1952,7 +1986,8 @@
          [activityIndicatorView stopAnimating];
      }
      */
-     
+         }
+    
  }
 
 /*-(void)add_cart_action
@@ -2367,8 +2402,8 @@
     cell.LBL_review.text =[NSString stringWithFormat: @"%@ ",[[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_reviews"] objectAtIndex:indexPath.row]valueForKey:@"rating"]];
     cell.LBL_type_rate.text = @"Excellent";
     
-    NSString *str_name = @"AJ.sabeen";
-    NSString *str_date = @"18/04/2017";
+    NSString *str_name = @"";
+    NSString *str_date = @"";
     NSString *str_rview = [NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_reviews"] objectAtIndex:indexPath.row]valueForKey:@"comment"]];
     
     NSString *str_review = [NSString stringWithFormat:@"%@ %@\n%@",str_name,str_date,str_rview];
@@ -2616,8 +2651,19 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     
 }
-//- (IBAction)share_action:(id)sender
-//{
+-(void)sellers_details
+{
+    if([[json_Response_Dic valueForKey:@"multipleSellers"] isKindOfClass:[NSDictionary class]])
+    {
+    [[NSUserDefaults standardUserDefaults] setObject:[json_Response_Dic valueForKey:@"multipleSellers"] forKey:@"multiple_seller_detail"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self performSegueWithIdentifier:@"details_sellers" sender:self];
+    }
+    
+}
+- (void)share_action
+{
 //    if([[detail_dict valueForKey:@"_TrailerURL"] isEqualToString:@""])
 //    {
 //        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No video available to share" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
@@ -2627,13 +2673,17 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
 //    }
 //    else
 //    {
-//        NSString *trailer_URL= [detail_dict valueForKey:@"_TrailerURL"];
-//        NSArray* sharedObjects=[NSArray arrayWithObjects:trailer_URL,  nil];
-//        UIActivityViewController *activityViewController = [[UIActivityViewController alloc]                                                                initWithActivityItems:sharedObjects applicationActivities:nil];
-//        activityViewController.popoverPresentationController.sourceView = self.view;
-//        [self presentViewController:activityViewController animated:YES completion:nil];
-//   // }
-//}
+    
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+
+    NSString *trailer_URL= [NSString stringWithFormat:@"%@Pages/details/%@/%@",SERVER_URL,[[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_descriptions"] objectAtIndex:0] valueForKey:@"product_id"],custmr_id];
+        NSArray* sharedObjects=[NSArray arrayWithObjects:trailer_URL,  nil];
+        UIActivityViewController *activityViewController = [[UIActivityViewController alloc]                                                                initWithActivityItems:sharedObjects applicationActivities:nil];
+        activityViewController.popoverPresentationController.sourceView = self.view;
+        [self presentViewController:activityViewController animated:YES completion:nil];
+   // }
+}
 
 // product Detail to Wish List
 

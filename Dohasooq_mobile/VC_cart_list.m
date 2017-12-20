@@ -24,6 +24,8 @@
     UITapGestureRecognizer *tapGesture1;
     NSString *currency_code,*product_id,*item_count;
     UIImageView *image_empty;
+    NSInteger doha_miles_value, qr_dm_value;
+
 }
 
 @end
@@ -714,6 +716,15 @@ params.put("customerId",customerid);
                         
                         [cart_array addObject:[[json_dict valueForKey:@"data"] valueForKey:[allkeysArr objectAtIndex:i]]];
                     }
+                        @try {
+                            doha_miles_value = [[json_dict valueForKey:@"dohamiles"] integerValue];
+                            qr_dm_value = [[json_dict valueForKey:@"oneQARtoDM"] integerValue] ;
+                            
+                        } @catch (NSException *exception) {
+                            NSLog(@"doha_miles_value & qr_dm_value  COULD NOT BE READ%@",exception);
+                        }
+                        
+
                     VW_overlay.hidden=YES;
                     [activityIndicatorView stopAnimating];
                          _TBL_cart_items.hidden =  NO;
@@ -862,51 +873,53 @@ params.put("customerId",customerid);
         price = @"0";
     }
    // NSString *plans = @"VIEW PRICE DETAILS";
-    NSString *text = [NSString stringWithFormat:@"%@ %@",qr,price];
-    if ([_LBL_price respondsToSelector:@selector(setAttributedText:)]) {
+        NSString *plans = [NSString stringWithFormat:@"%ld Doha Miles",doha_miles_value];
         
-        // Define general attributes for the entire text
-        NSDictionary *attribs = @{
-                                  NSForegroundColorAttributeName:_LBL_price.textColor,
-                                  NSFontAttributeName:_LBL_price.font
-                                  };
-        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
-        
-        
-        
-        NSRange ename = [text rangeOfString:qr];
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-                                    range:ename];
+        NSString *text =  [NSString stringWithFormat:@"%@ %@\n%@",qr,price,plans];
+        if ([_LBL_price respondsToSelector:@selector(setAttributedText:)]) {
+            
+            // Define general attributes for the entire text
+            NSDictionary *attribs = @{
+                                      NSForegroundColorAttributeName:_LBL_price.textColor,
+                                      NSFontAttributeName:_LBL_price.font
+                                      };
+            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
+            
+            
+            
+            NSRange ename = [text rangeOfString:qr];
+            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+            {
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
+                                        range:ename];
+            }
+            else
+            {
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0]}
+                                        range:ename];
+            }
+            NSRange cmp = [text rangeOfString:price];
+            //        [attributedText addAttribute: NSStrikethroughStyleAttributeName value:[NSNumber numberWithInteger: NSUnderlineStyleSingle] range: NSMakeRange(0, [prec_price length])];
+            //
+            
+            
+            //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
+            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+            {
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
+                                        range:cmp];
+            }
+            else
+            {
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
+                                        range:cmp ];
+            }
+            _LBL_price.attributedText = attributedText;
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0]}
-                                    range:ename];
+            _LBL_price.text = text;
         }
-        NSRange cmp = [text rangeOfString:price];
-        //        [attributedText addAttribute: NSStrikethroughStyleAttributeName value:[NSNumber numberWithInteger: NSUnderlineStyleSingle] range: NSMakeRange(0, [prec_price length])];
-        //
-        
-        
-        //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
-                                    range:cmp];
-        }
-        else
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
-                                    range:cmp ];
-        }
-        _LBL_price.attributedText = attributedText;
-    }
-    else
-    {
-        _LBL_price.text = text;
-    }
         
     } @catch (NSException *exception) {
         

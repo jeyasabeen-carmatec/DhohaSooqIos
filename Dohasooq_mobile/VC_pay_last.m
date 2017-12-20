@@ -22,6 +22,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     _TXT_countries.inputView = [[UIView alloc]init];
+    country_arr = [[NSMutableArray alloc]init];
     self.navigationController.navigationBar.hidden = NO;
 
    
@@ -42,7 +43,20 @@
 
 -(void)picker_set_UP
 {
-    country_arr =[[NSUserDefaults standardUserDefaults] valueForKey:@"country_array"];
+    @try
+    {
+        NSArray *country_arr_temp =[[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
+        for(int i=0;i<country_arr_temp.count;i++)
+        {
+            [country_arr addObject:[[country_arr_temp objectAtIndex:i] valueForKey:@"name"]];
+        }
+        
+        [country_arr sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
     [country_arr sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 
     

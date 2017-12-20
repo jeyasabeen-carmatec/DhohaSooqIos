@@ -310,7 +310,7 @@
     }
 
     FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
-   // login.loginBehavior = FBSDKLoginBehaviorWeb;
+    login.loginBehavior = FBSDKLoginBehaviorWeb;
     [login
      logInWithReadPermissions: @[@"email",@"public_profile"]
      fromViewController:self
@@ -665,7 +665,14 @@ error:(NSError *)error{
                 [activityIndicatorView stopAnimating];
                 VW_overlay.hidden = YES;
                 
-                [[NSUserDefaults standardUserDefaults] setObject:[json_DATA valueForKey:@"detail"] forKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+
+                
+                NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
+                [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
+                
+                [[NSUserDefaults standardUserDefaults] setObject:dictMutable forKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 [[NSUserDefaults standardUserDefaults]setObject:self.TXT_username.text forKey:@"email"];
                 [[NSUserDefaults standardUserDefaults] setObject:email forKey:@"user_email"];
@@ -743,8 +750,9 @@ error:(NSError *)error{
             
             [[NSUserDefaults standardUserDefaults] setObject:json_DATA forKey:@"menu_detail"];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            [self dismissViewControllerAnimated:NO completion:nil];
             
-            [self performSegueWithIdentifier:@"logint_to_home" sender:self];
+           // [self performSegueWithIdentifier:@"logint_to_home" sender:self];
             
             NSLog(@"the api_collection_product%@",json_DATA);
             [activityIndicatorView stopAnimating];

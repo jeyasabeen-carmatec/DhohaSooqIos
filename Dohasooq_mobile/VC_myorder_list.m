@@ -16,6 +16,7 @@
     UIActivityIndicatorView *activityIndicatorView;
    NSArray *json_DATA;
     NSArray *search_arr;
+    UIImageView *image_empty;
     
 }
 @end
@@ -364,7 +365,7 @@
 -(void)move_to_detail:(UIButton *)sender
 {
     
-        [[NSUserDefaults standardUserDefaults] setValue:[[search_arr objectAtIndex:sender.tag] valueForKey:@"id"] forKey:@"order_ID"];
+        [[NSUserDefaults standardUserDefaults] setValue:[[json_DATA objectAtIndex:sender.tag] valueForKey:@"id"] forKey:@"order_ID"];
         [[NSUserDefaults standardUserDefaults] synchronize];
       [self performSegueWithIdentifier:@"order_list_detail" sender:self];
         
@@ -402,6 +403,31 @@
           NSMutableDictionary *json_DAT = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             json_DATA = [json_DAT valueForKey:@"Orders"];
             NSLog(@"The response Api post sighn up API %@",json_DATA);
+            if([json_DATA isKindOfClass:[NSArray class]])
+            {
+                [self.TBL_orders reloadData];
+                [activityIndicatorView stopAnimating];
+                VW_overlay.hidden = YES;
+                image_empty.hidden = YES;
+
+                
+            }
+            else{
+                [activityIndicatorView stopAnimating];
+                VW_overlay.hidden = YES;
+
+                _TBL_orders.hidden =  YES;
+               image_empty = [[UIImageView alloc]init];
+                CGRect frame_image = image_empty.frame;
+                frame_image.size.height = 200;
+                frame_image.size.width = 200;
+                image_empty.frame = frame_image;
+                image_empty.center = self.view.center;
+                [self.view addSubview:image_empty];
+                image_empty.image = [UIImage imageNamed:@"Orders_not_found"];
+                
+
+            }
             [self.TBL_orders reloadData];
             [activityIndicatorView stopAnimating];
             VW_overlay.hidden = YES;

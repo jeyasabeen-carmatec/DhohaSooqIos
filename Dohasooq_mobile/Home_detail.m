@@ -55,6 +55,7 @@
     leng_text = @"ALL LANGUAGES";
     halls_text =@"ALL CINEMA HALLS";
      [self ATTRIBUTE_TEXT];
+    [self Events_API_CALL];
     [self picker_view_set_UP];
     [self addSEgmentedControl];
     
@@ -340,12 +341,13 @@
       
         [self.VW_event addSubview:VW_overlay];
          [_Header_name setTitle:@"Events" forState:UIControlStateNormal];
-        [self Event_API_CALL];
+      
         [user_defafults setValue:@"Events" forKey:@"header_name"];
         [self ATTRIBUTE_TEXT];
         VW_overlay.hidden = NO;
         [activityIndicatorView startAnimating];
         [self performSelector:@selector(Events_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+        [self Event_API_CALL];
 
        
         
@@ -616,7 +618,15 @@
     
     if(tableView == _TBL_event_list)
     {
-         return Events_arr.count;
+        if([Events_arr isKindOfClass:[NSArray class]])
+        {
+            return Events_arr.count;
+        }
+        else
+        {
+            
+         return 1;
+        }
     }
     else if(tableView == _TBL_sports_list)
     {
@@ -1877,7 +1887,7 @@
 {
     VW_overlay.hidden = YES;
     [activityIndicatorView stopAnimating];
-    //  [Events_arr removeAllObjects];
+    //[Events_arr removeAllObjects];
     Events_arr = [[[NSUserDefaults standardUserDefaults] valueForKey:@"Events_arr"] mutableCopy];
     if(Events_arr.count<1)
     {

@@ -317,6 +317,12 @@
 }
 -(void)submit_ACTION
 {
+    if(_BTN_all.backgroundColor == _BTN_submit.backgroundColor)
+    {
+          [self.navigationController popViewControllerAnimated:NO];
+    }
+    else
+    {
     
     if([_TXT_start_date.text isEqualToString:@"Select start date"])
     {
@@ -386,7 +392,7 @@ else{
      }
    
     }
-    
+    }
     
 }
 

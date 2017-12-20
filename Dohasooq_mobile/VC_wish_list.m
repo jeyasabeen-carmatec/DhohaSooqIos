@@ -20,6 +20,7 @@
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
     NSString *product_id;
+    UIImageView *image_empty;
 
 }
 
@@ -161,9 +162,17 @@
                                   options:SDWebImageRefreshCached];
     cell.LBL_item_name.text = [[response_Arr objectAtIndex:indexPath.section] valueForKey:@"product_name"];
     NSString *str = @"% off";
+        NSString *str_discount = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"product_discount"]];
     
-    
-         cell.LBL_discount.text = [NSString stringWithFormat:@"%@ %@",[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"product_discount"],str];
+    if([str_discount isEqualToString:@"0"])
+    {
+        cell.LBL_discount.text = [NSString stringWithFormat:@""];
+
+    }
+    else
+    {
+    cell.LBL_discount.text = [NSString stringWithFormat:@"%@ %@",[[response_Arr objectAtIndex:indexPath.section]valueForKey:@"product_discount"],str];
+    }
     
     //NSString *str1 = [NSString stringWithFormat:@"%ld",[[[response_Arr objectAtIndex:indexPath.row] valueForKey:@"special_price"] integerValue]];
     
@@ -449,12 +458,13 @@
                         VW_overlay.hidden = YES;
                         [activityIndicatorView stopAnimating];
                        response_Arr = data;
+                    image_empty.hidden = YES;
                         
                         if (response_Arr.count == 0)
                         {
                             
                             _TBL_wish_list_items.hidden =  YES;
-                            UIImageView *image_empty = [[UIImageView alloc]init];
+                           image_empty = [[UIImageView alloc]init];
                             CGRect frame_image = image_empty.frame;
                             frame_image.size.height = 200;
                             frame_image.size.width = 200;
@@ -515,20 +525,11 @@
         NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
         NSString *items_count =@"1";
         
-        //apis/addcartapi.json
-        
-        //    this->request->data['pdtId'];
-        //    $userId = $this->request->data['userId'];
-        //    $qtydtl = $this->request->data['quantity'];
-        //    $custom = $this->request->data['custom'];
-        //    $variant = $this->request->data['variant'];
         
         
         NSError *error;
         NSHTTPURLResponse *response = nil;
-//         NSDictionary *parameters = @{@"pdtId":[[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"],@"userId":user_id,@"quantity":items_count,@"custom":@"",@"variant":@""};
-        
-                NSString *pdId = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"];
+        NSString *pdId = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"];
         NSDictionary *parameters = @{@"pdtId":product_id
                                      ,@"userId":user_id,@"quantity":items_count,@"custom":@"",@"variant":@""};
         

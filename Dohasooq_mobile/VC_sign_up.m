@@ -506,8 +506,12 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
                 [activityIndicatorView stopAnimating];
                 VW_overlay.hidden = YES;
                 
-                [[NSUserDefaults standardUserDefaults] setObject:[json_DATA valueForKey:@"detail"] forKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
+                NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
+                [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
+                
+                [[NSUserDefaults standardUserDefaults] setValue:dictMutable forKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults]setObject:self.TXT_email.text forKey:@"email"];
                 [[NSUserDefaults standardUserDefaults] setObject:email forKey:@"user_email"];
                 [[NSUserDefaults standardUserDefaults] synchronize];

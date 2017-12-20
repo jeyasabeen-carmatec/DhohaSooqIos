@@ -76,7 +76,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                     </imageView>
                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6TP-5R-IDO">
-                        <rect key="frame" x="253" y="84" width="26" height="23"/>
+                        <rect key="frame" x="250" y="84" width="26" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
                         <inset key="contentEdgeInsets" minX="0.0" minY="2" maxX="0.0" maxY="5"/>
@@ -125,7 +125,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" scrollEnabled="NO" editable="NO" text="Lorem ipsum dolor sit er " textAlignment="right" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cw2-QI-XCd">
-                        <rect key="frame" x="68" y="31" width="139" height="31"/>
+                        <rect key="frame" x="68" y="30" width="139" height="31"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
@@ -159,7 +159,7 @@
                         </state>
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jO2-Mp-IRK">
-                        <rect key="frame" x="41" y="97" width="23" height="23"/>
+                        <rect key="frame" x="44" y="97" width="23" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
                         <inset key="contentEdgeInsets" minX="0.0" minY="2" maxX="0.0" maxY="5"/>

@@ -34,6 +34,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"brnds"];
+    [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"discount_val"];
+    [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"Range_val"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+
 
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
@@ -448,7 +454,15 @@
         }
         
         NSString *str = @"%off";
+        NSString *str_discount = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"]];
+        if([str_discount isEqualToString:@"0"])
+        {
+            pro_cell.LBL_discount.text = [NSString stringWithFormat:@""];
+
+        }
+        else{
         pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@ %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"],str];
+        }
         
         [pro_cell.BTN_fav setTag:indexPath.row];//wishListStatus
         
@@ -1104,7 +1118,9 @@
 }
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    self.BTN_sort.text = [sort_array allValues][row];
+    NSString *str =[[sort_array allValues] objectAtIndex:row];
+    self.BTN_sort.text =[NSString stringWithFormat:@"%@  ",str];
+    NSLog(@"THe sort text is:%@",_BTN_sort.text);
     sort_key = [sort_array allKeys][row];
 }
 -(void)countrybuttonClick
@@ -1122,7 +1138,10 @@
     NSString *discount = [user_dflts valueForKey:@"discount_val"];
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
     
-    NSString *url_str = [NSString stringWithFormat:@"%@apis/productList/%@/0/%@/%@/%@/Customer.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=%@",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"search_val"],country,languge,user_id,discount,min,max,brands,sort_key];
+    NSString *url_str = [NSString stringWithFormat:@"%@apis/productList/%@/0/%@/%@/%@/Customer.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=%@",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"product_list_key"],country,languge,user_id,discount,min,max,brands,sort_key];
+    url_str = [url_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    url_str = [url_str stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    
     [[NSUserDefaults standardUserDefaults] setValue:url_str forKey:@"product_list_sort"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
@@ -1167,38 +1186,45 @@
                         [activityIndicatorView stopAnimating];
                         @try
                         {
-                            if([[json_DATA valueForKey:@"products"] isEqualToString:@""])
+                            if([[json_DATA valueForKey:@"products"] isKindOfClass:[NSArray class]])
                             {
-                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No products Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                                [alert show];
-                                // [productDataArray removeAllObjects];
-                                [_collection_product reloadData];
                                 
+                                productDataArray = [json_DATA valueForKey:@"products"];
+                                //BOOL stat = @"YES";
                                 
-                            }
-                        }
-                        @catch(NSException *exception)
-                        {
-                            productDataArray = [json_DATA valueForKey:@"products"];
-                            //BOOL stat = @"YES";
-                            
-                            if([[json_DATA valueForKey:@"brands"] isKindOfClass:[NSDictionary class]])
-                            {
-                                [[NSUserDefaults standardUserDefaults]  setObject:[json_DATA valueForKey:@"brands"] forKey:@"brands_LISTs"];
-                                [[NSUserDefaults standardUserDefaults]synchronize];
-                                NSLog(@"THE JSON DTA BRADS:%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"brands_LISTs"]);
+                                if([[json_DATA valueForKey:@"brands"] isKindOfClass:[NSDictionary class]])
+                                {
+                                    [[NSUserDefaults standardUserDefaults]  setObject:[json_DATA valueForKey:@"brands"] forKey:@"brands_LISTs"];
+                                    [[NSUserDefaults standardUserDefaults]synchronize];
+                                    NSLog(@"THE JSON DTA BRADS:%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"brands_LISTs"]);
+                                    
+                                }
+                                else
+                                {
+                                    
+                                    NSLog(@"THE userdefaults%@",[[json_DATA valueForKey:@"brnads"]allValues]);
+                                    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"brands_LISTs"];
+                                    [[NSUserDefaults standardUserDefaults]synchronize];
+                                    
+                                    
+                                }
+                                
+
                                 
                             }
                             else
                             {
                                 
-                                NSLog(@"THE userdefaults%@",[[json_DATA valueForKey:@"brnads"]allValues]);
-                                [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"brands_LISTs"];
-                                [[NSUserDefaults standardUserDefaults]synchronize];
+                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No products Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                                [alert show];
+                                // [productDataArray removeAllObjects];
+                                [_collection_product reloadData];
                                 
-                                
+
                             }
-                            
+                        }
+                        @catch(NSException *exception)
+                        {
                             
                             
                             NSLog(@"THE respons PRODUCT LIST:%@",json_DATA);
@@ -1212,8 +1238,8 @@
                             {
                                 self.LBL_product_name.text = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"displayName"]];
                             }
-                            [[NSUserDefaults standardUserDefaults] setValue:self.LBL_product_name.text forKey:@"search_val"];
-                            [[NSUserDefaults standardUserDefaults]synchronize];
+//                            [[NSUserDefaults standardUserDefaults] setValue:self.LBL_product_name.text forKey:@"search_val"];
+//                            [[NSUserDefaults standardUserDefaults]synchronize];
                             
                             
                             // }

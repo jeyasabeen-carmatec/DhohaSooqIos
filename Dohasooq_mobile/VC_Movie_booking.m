@@ -14,7 +14,7 @@
 #import "MZDayPickerCell.h"
 
 
-@interface VC_Movie_booking ()<UITableViewDelegate,UITableViewDataSource,MZDayPickerDelegate, MZDayPickerDataSource,UICollectionViewDelegate,UICollectionViewDataSource>
+@interface VC_Movie_booking ()<UITableViewDelegate,UITableViewDataSource,MZDayPickerDelegate, MZDayPickerDataSource,UICollectionViewDelegate,UICollectionViewDataSource,UIAlertViewDelegate>
 {
     NSMutableArray *collection_count,*table_count,*date_Arr;
     NSMutableDictionary *detail_dict;
@@ -784,21 +784,25 @@
     if(result.height <= 480)
     {
         // iPhone Classic
-        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:10];
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:12];
+        cell.BTN_time.textAlignment = NSTextAlignmentJustified;
         
         
     }
     else if(result.height <= 568)
     {
         // iPhone 5
-        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:10];
-      //  cell.BTN_time.textAlignment = NSTextAlignmentLeft;
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:12];
+        cell.BTN_time.textAlignment = NSTextAlignmentJustified;
+        
         
         
     }
     else
     {
         cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:13];
+        cell.BTN_time.textAlignment = NSTextAlignmentCenter;
+
         
     }
 
@@ -837,9 +841,10 @@
                 
                 NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
                 
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
+                alert.tag = 0;
                 [alert show];
-                [self performSegueWithIdentifier:@"booking_seat" sender:self];
+              //  [self performSegueWithIdentifier:@"booking_seat" sender:self];
 
             }
             
@@ -864,9 +869,12 @@
                 
                 NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
                 
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
+                alert.tag = 1;
+
                 [alert show];
-                [self performSegueWithIdentifier:@"booking_seat" sender:self];
+               
+                
 
             }
           
@@ -987,8 +995,43 @@
     }
     
     
-    
 }
+
+- (void)alertView:(UIAlertView *)alertView
+clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if(alertView.tag == 1)
+    {
+        if (buttonIndex == [alertView cancelButtonIndex])
+        {
+            NSLog(@"cancel:");
+            [alertView dismissWithClickedButtonIndex:0 animated:nil];
+            
+        }
+        
+        else{
+            
+            
+            [self performSegueWithIdentifier:@"booking_seat" sender:self];
+        }
+    }
+    if(alertView.tag == 0)
+    {
+        if (buttonIndex == [alertView cancelButtonIndex])
+        {
+            NSLog(@"cancel:");
+            [alertView dismissWithClickedButtonIndex:0 animated:nil];
+            
+        }
+        
+        else{
+            
+            
+            [self performSegueWithIdentifier:@"booking_seat" sender:self];
+        }
+    }
+
+}
+
 
 /*
 #pragma mark - Navigation
