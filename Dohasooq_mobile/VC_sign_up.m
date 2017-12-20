@@ -7,8 +7,9 @@
 //
 
 #import "VC_sign_up.h"
+#import "Home_page_Qtickets.h"
 
-@interface VC_sign_up ()<UIGestureRecognizerDelegate,UITextFieldDelegate>
+@interface VC_sign_up ()<UIGestureRecognizerDelegate,UITextFieldDelegate,UIAlertViewDelegate>
 {
     float scroll_height;
     UIView *VW_overlay;
@@ -114,19 +115,33 @@
 }
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    
-    if(textField)
+    if(textField == _TXT_email || _TXT_phone ||_TXT_password)
     {
         scroll_height = scroll_height + 120;
+        [self viewDidLayoutSubviews];
+
+    }
+    if(textField == _TXT_con_password)
+    {
+        scroll_height = scroll_height + 140;
         [self viewDidLayoutSubviews];
     }
     
 }
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
-    if(textField)
+    
+    if(textField == _TXT_email || _TXT_phone ||_TXT_password)
     {
+        [textField resignFirstResponder];
         scroll_height = scroll_height - 120;
+        [self viewDidLayoutSubviews];
+        
+    }
+    if(textField == _TXT_con_password)
+    {
+         [textField resignFirstResponder];
+        scroll_height = scroll_height - 160;
         [self viewDidLayoutSubviews];
     }
     
@@ -147,9 +162,9 @@
                 return NO;
             }
         }
-        NSCharacterSet *invalidCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "] invertedSet];
-        NSString *filtered = [[string componentsSeparatedByCharactersInSet:invalidCharSet] componentsJoinedByString:@""];
-        return [string isEqualToString:filtered];
+//        NSCharacterSet *invalidCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "] invertedSet];
+//        NSString *filtered = [[string componentsSeparatedByCharactersInSet:invalidCharSet] componentsJoinedByString:@""];
+        return string;
     }
     if(textField.tag==2)
     {
@@ -164,9 +179,9 @@
                 return NO;
             }
         }
-        NSCharacterSet *invalidCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "] invertedSet];
-        NSString *filtered = [[string componentsSeparatedByCharactersInSet:invalidCharSet] componentsJoinedByString:@""];
-        return [string isEqualToString:filtered];
+//        NSCharacterSet *invalidCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "] invertedSet];
+//        NSString *filtered = [[string componentsSeparatedByCharactersInSet:invalidCharSet] componentsJoinedByString:@""];
+        return string;
     }
     
     if(textField.tag==3)
@@ -182,9 +197,9 @@
                 return NO;
             }
         }
-        NSCharacterSet *invalidCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789()+- "] invertedSet];
-        NSString *filtered = [[string componentsSeparatedByCharactersInSet:invalidCharSet] componentsJoinedByString:@""];
-        return [string isEqualToString:filtered];
+//        NSCharacterSet *invalidCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789()+- "] invertedSet];
+//        NSString *filtered = [[string componentsSeparatedByCharactersInSet:invalidCharSet] componentsJoinedByString:@""];
+        return string;
         
     }
  return YES;
@@ -194,10 +209,7 @@
 {
     NSString *text_to_compare_email = _TXT_email.text;
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
-    NSString *text_to_comapre_apss = _TXT_password.text;
-    NSPredicate *pass_test = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pass_RegEx];
-   
-    NSString *msg;
+     NSString *msg;
     if ([_TXT_F_name.text isEqualToString:@""])
     {
          [_TXT_F_name becomeFirstResponder];
@@ -300,16 +312,10 @@
         [_TXT_password becomeFirstResponder];
         msg = @"Password field cannot be more than 64 charcaters";
     }
-    else if([pass_test evaluateWithObject:text_to_comapre_apss] == NO)
-    {
-        [_TXT_password becomeFirstResponder];
-        msg = @"Password should contain at least one special character,one numeral,one uppercase letter";
-        
-    }
     else if(_TXT_con_password.text.length == 0)
     {
         [_TXT_password becomeFirstResponder];
-        msg = @"Please confirm password";
+        msg = @"Please enter confirm password";
     }
     else if(![_TXT_con_password.text isEqualToString:_TXT_password.text])
     {
@@ -376,15 +382,29 @@
         VW_overlay.hidden = YES;
         NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
         NSLog(@"The response Api post sighn up API %@",json_DATA);
-        NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"status"]];
+        NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
         NSString *msg = [json_DATA valueForKey:@"message"];
 
+        [activityIndicatorView stopAnimating];
+        VW_overlay.hidden = YES;
 
         if([status isEqualToString:@"1"])
         {
            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                       NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
+            [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
+            
+            [[NSUserDefaults standardUserDefaults] setObject:dictMutable forKey:@"userdata"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [[NSUserDefaults standardUserDefaults]setObject:self.TXT_email.text forKey:@"email"];
+            [[NSUserDefaults standardUserDefaults] setObject:email forKey:@"user_email"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Your Registration has been Successful" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            alert.tag = 1;
             [alert show];
+
+            
+
 
             //[self performSegueWithIdentifier:@"normalsighnuptoinitialVC" sender:self];
             
@@ -397,6 +417,7 @@
             }
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            
             [alert show];
         }
        
@@ -407,6 +428,7 @@
         VW_overlay.hidden = YES;
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+       
         [alert show];
     }
 
@@ -418,6 +440,121 @@
     }
     
 }
+- (void)alertView:(UIAlertView *)alertView
+clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(alertView.tag == 1)
+    {
+        if (buttonIndex == [alertView cancelButtonIndex])
+        {
+            NSLog(@"cancel:");
+            
+            
+        }
+        
+        else{
+            
+//            Home_page_Qtickets *intial = [self.storyboard instantiateViewControllerWithIdentifier:@"QT_controller"];
+//            [self presentViewController:intial animated:NO completion:nil];
+            [self performSegueWithIdentifier:@"signUP_home" sender:self];
+
+            
+           
+            
+            
+        }
+    }
+}
+-(void)LOGIN_up_api_integration
+{
+    @try
+    {
+        NSString *email = _TXT_email.text;
+        NSString *password = _TXT_con_password.text;
+        NSDictionary *parameters = @{
+                                     @"username": email,
+                                     @"password": password
+                                     
+                                     };
+        NSError *error;
+        NSError *err;
+        NSHTTPURLResponse *response = nil;
+        
+        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
+        NSLog(@"the posted data is:%@",parameters);
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/login/1.json",SERVER_URL];
+        // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:urlProducts];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:postData];
+        //[request setAllHTTPHeaderFields:headers];
+        [request setHTTPShouldHandleCookies:NO];
+        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if(aData)
+        {
+            NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            NSLog(@"The response Api post sighn up API %@",json_DATA);
+            NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
+            NSString *msg = [json_DATA valueForKey:@"message"];
+            
+            
+            if([status isEqualToString:@"1"])
+            {
+                [activityIndicatorView stopAnimating];
+                VW_overlay.hidden = YES;
+                
+                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
+                [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
+                
+                [[NSUserDefaults standardUserDefaults] setValue:dictMutable forKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults]setObject:self.TXT_email.text forKey:@"email"];
+                [[NSUserDefaults standardUserDefaults] setObject:email forKey:@"user_email"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                
+            }
+            else
+            {
+                [activityIndicatorView stopAnimating];
+                VW_overlay.hidden = YES;
+                
+                if ([msg isEqualToString:@"User already exists"])
+                {
+                    msg = @"Email address already in use, Please try with different email.";
+                }
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+            }
+            
+        }
+        else
+        {
+            [activityIndicatorView stopAnimating];
+            VW_overlay.hidden = YES;
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+        }
+        
+    }
+    
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+    }
+    
+    
+}
+
 
 /*
 #pragma mark - Navigation

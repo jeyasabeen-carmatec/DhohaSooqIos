@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface order_cell : UITableViewCell
+@property(nonatomic,weak) IBOutlet UILabel *LBL_seller;
+
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_item;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_item_name;
 @property(nonatomic,weak) IBOutlet UITextView *LBL_current_price;

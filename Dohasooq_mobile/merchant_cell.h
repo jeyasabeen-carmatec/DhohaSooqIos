@@ -14,6 +14,8 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_addres;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_phone;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_loction;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_phone_icon;
+
 
 
 

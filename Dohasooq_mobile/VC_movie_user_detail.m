@@ -39,8 +39,9 @@
     @try
     {
         temp_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Amount_dict"];
-        _LBL_amount.text = [NSString stringWithFormat:@"%@ QR",[[temp_dict valueForKey:@"result"] valueForKey:@"_ticketprice"]];
-        _LBL_service_charges.text = [NSString stringWithFormat:@"%@ QR",[[temp_dict valueForKey:@"result"] valueForKey:@"_servicecharges"]];
+        _LBL_amount.text = [NSString stringWithFormat:@"%@ %@",[[temp_dict valueForKey:@"result"] valueForKey:@"_ticketprice"],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+        _LBL_service_charges.text = [NSString stringWithFormat:@"%@ %@",[[temp_dict valueForKey:@"result"] valueForKey:@"_servicecharges"],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+        _LBL_total_charge.text = [NSString stringWithFormat:@"%d %@",[[[temp_dict valueForKey:@"result"] valueForKey:@"_ticketprice"] intValue]+[[[temp_dict valueForKey:@"result"] valueForKey:@"_servicecharges"] intValue],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
         
         int result = [[[temp_dict valueForKey:@"result"] valueForKey:@"_servicecharges"] intValue] +[[[temp_dict valueForKey:@"result"] valueForKey:@"_ticketprice"] intValue];
         NSString *charge = [NSString stringWithFormat:@"%d",result];
@@ -442,7 +443,7 @@
     if(_TXT_name.text.length < 1)
     {
         [_TXT_name becomeFirstResponder];
-        msg = @"please enter your name";
+        msg = @"Please enter your name";
     }
     else if([emailTest evaluateWithObject:text_to_compare_email] == NO)
     {
@@ -484,7 +485,7 @@
     }
     else  if(_LBL_stat.tag == 0)
     {
-        msg = @"please accept term and conditions";
+        msg = @"Please accept the accept terms and conditions";
     }
     
     
@@ -579,6 +580,14 @@
     NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
     NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
     NSLog(@"The booking_data is:%@",xmlDoc);
+    if(![xmlDoc valueForKey:@"result"])
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Some Thing Went Wrong" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+        [self get_transaction_id];
+    }
+    else
+    {
     [[NSUserDefaults standardUserDefaults] setValue:[[xmlDoc valueForKey:@"result"] valueForKey:@"_Transaction_Id"] forKey:@"TID"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
@@ -587,6 +596,7 @@
     [activityIndicatorView stopAnimating];
     
     [self performSegueWithIdentifier:@"movie_user_detail_pay" sender:self];
+    }
     
     
 }

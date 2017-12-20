@@ -16,5 +16,7 @@
 //@property(nonatomic,weak) IBOutlet UILabel *LBL_prev_price;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_discount;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_fav;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_stock;
+
 
 @end

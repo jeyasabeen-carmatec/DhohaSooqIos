@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MIBadgeButton.h"
 
 @interface VC_cart_list : UIViewController
 
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_cart;
-@property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_fav;
+@property(nonatomic,strong) IBOutlet MIBadgeButton *BTN_fav;
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_back;
 
 @property(nonatomic,weak) IBOutlet UITableView *TBL_cart_items;

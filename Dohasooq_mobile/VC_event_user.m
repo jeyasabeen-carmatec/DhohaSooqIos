@@ -37,8 +37,9 @@
     @try
     {
         NSArray *arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"Amount_dict"];
-        _LBL_amount.text = [NSString stringWithFormat:@"%@ QR",[arr objectAtIndex:1]];
-        _LBL_service_charges.text = [NSString stringWithFormat:@"%@ QR",[arr objectAtIndex:2]];
+        _LBL_amount.text = [NSString stringWithFormat:@"%@ %@",[arr objectAtIndex:1],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+        _LBL_service_charges.text = [NSString stringWithFormat:@"%@ %@",[arr objectAtIndex:2],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+         _LBL_total_charge.text = [NSString stringWithFormat:@"%d %@",[[arr objectAtIndex:1] intValue]+[[arr objectAtIndex:2] intValue],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
 
     }
     @catch (NSException *exception)
@@ -432,7 +433,7 @@
     if(_TXT_name.text.length < 1)
     {
         [_TXT_name becomeFirstResponder];
-        msg = @"please enter your name";
+        msg = @"Please enter your name";
     }
     else if([emailTest evaluateWithObject:text_to_compare_email] == NO)
     {
@@ -522,7 +523,15 @@
     
     NSString *str_count = [NSString stringWithFormat:@"%@",[[[NSUserDefaults standardUserDefaults] valueForKey:@"Amount_dict"] objectAtIndex:0]];
     NSString *str_price = [NSString stringWithFormat:@"%@",[[[NSUserDefaults standardUserDefaults] valueForKey:@"Amount_dict"] objectAtIndex:1]];
-    NSString *start_date = [event_dict valueForKey:@"_startDate"];
+    NSString *start_date = [[NSUserDefaults standardUserDefaults] valueForKey:@"event_book_date"];
+    if([start_date isEqualToString:@"(null)"] ||[start_date isEqualToString:@"<null>"])
+    {
+        start_date = [event_dict valueForKey:@"_startDate"];
+
+    }
+    else{
+        start_date = start_date;
+    }
     NSString *start_time = [event_dict valueForKey:@"_StartTime"];
     NSLog(@"The appended string is:%@",event_price_id);
     

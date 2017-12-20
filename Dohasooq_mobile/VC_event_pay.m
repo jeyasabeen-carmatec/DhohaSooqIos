@@ -121,6 +121,8 @@
     _BTN_pay.frame = framseset;
     @try
     {
+       //product_list_home
+       // logint_to_home
 
     
     NSString *str = [NSString stringWithFormat:@"%@",[dtl objectAtIndex:1]];

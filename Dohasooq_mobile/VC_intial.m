@@ -9,12 +9,17 @@
 #import "VC_intial.h"
 #import "HttpClient.h"
 #import "ViewController.h"
+#import "Home_page_Qtickets.h"
 
 @interface VC_intial ()<UITableViewDataSource,UITableViewDelegate,UITableViewDataSource>
 {
     NSMutableArray *country_arr,*lang_arr;
     NSMutableDictionary *temp_dict;
     NSString *country_ID;
+    Home_page_Qtickets *QT;
+    NSTimer *timer;
+    UIView *VW_overlay;
+    UIActivityIndicatorView *activityIndicatorView;
 }
 
 @end
@@ -23,6 +28,109 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self set_UP_VW];
+    NSString *lang = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+    NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+    lang = [lang stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    lang = [lang stringByReplacingOccurrencesOfString:@"null" withString:@""];
+    lang = [lang stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    country = [country stringByReplacingOccurrencesOfString:@"null" withString:@""];
+    country = [country stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    if([lang isEqualToString:@""] || [country isEqualToString:@""])
+    {
+        [self set_UP_VW];
+        VW_overlay.hidden = NO;
+        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(country_API_call) withObject:activityIndicatorView afterDelay:0.01];
+    }
+    else if([lang isEqualToString:@"()"] || [country isEqualToString:@"()"])
+    {
+          [self set_UP_VW];
+        VW_overlay.hidden = NO;
+        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(country_API_call) withObject:activityIndicatorView afterDelay:0.01];
+
+    }
+    else
+    {
+        //          QT = [self.storyboard instantiateViewControllerWithIdentifier:@"QT_controller"];
+        //
+        //[self  presentViewController:QT animated:NO completion:nil];
+        [self start];
+        
+       // [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
+        
+    }
+    
+}
+-(void)start
+{
+    timer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                             target:self
+                                           selector:@selector(targetMethod)
+                                           userInfo:nil
+                                            repeats:NO];
+}
+-(void)targetMethod
+{
+    [timer invalidate];
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(MENU_api_call) withObject:activityIndicatorView afterDelay:0.01];
+
+
+    
+}
+-(void)viewWillAppear:(BOOL)animated
+{
+    
+    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    VW_overlay.clipsToBounds = YES;
+    //    VW_overlay.layer.cornerRadius = 10.0;
+    
+    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+    activityIndicatorView.center = VW_overlay.center;
+    [VW_overlay addSubview:activityIndicatorView];
+    [self.view addSubview:VW_overlay];
+    
+    VW_overlay.hidden = YES;
+//    [self set_UP_VW];
+//    NSString *lang = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+//    NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+//    lang = [lang stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+//    lang = [lang stringByReplacingOccurrencesOfString:@"null" withString:@""];
+//    lang = [lang stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+//    country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+//    country = [country stringByReplacingOccurrencesOfString:@"null" withString:@""];
+//    country = [country stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+//    if([lang isEqualToString:@""] || [country isEqualToString:@""])
+//    {
+//        [self set_UP_VW];
+//    }
+//    else if([lang isEqualToString:@"()"] || [country isEqualToString:@"()"])
+//    {
+//        [self set_UP_VW];
+//    }
+//    else
+//    {
+//        [self start];
+//         [self MENU_api_call];
+//        
+//    }
+//
+   
+    
+    
+}
+
+
+
+-(void)set_UP_VW
+{
     // Do any additional setup after loading the view.
     //    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(Tap_DTECt:)];
     //    [tap setCancelsTouchesInView:NO];
@@ -33,7 +141,7 @@
     
     _VW_ceter.center = self.view.center;
     country_arr = [[NSMutableArray alloc]init];
-   // lang_arr = [[NSMutableArray alloc]init];
+    // lang_arr = [[NSMutableArray alloc]init];
     CGRect frameset = _TBL_list_coutry.frame;
     frameset.origin.x =_TXT_country.frame.origin.x;
     frameset.origin.y =_TXT_country.frame.origin.y + _TXT_country.frame.size.height + 5;
@@ -63,6 +171,12 @@
     
     //[self country_api_call];
     /***************************/
+    
+    
+
+}
+-(void)country_API_call
+{
 #pragma country_api_integration Method Calling
     
     @try
@@ -73,18 +187,33 @@
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                    VW_overlay.hidden = YES;
+                    [activityIndicatorView stopAnimating];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please check Your Internet Connection" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                     [alert show];
-
+                    
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
                 }
                 if (data) {
                     NSMutableDictionary *json_DATA = data;
+                    if(json_DATA)
+                    {
+                    
+                    VW_overlay.hidden = YES;
+                    [activityIndicatorView stopAnimating];
                     country_arr = [json_DATA valueForKey:@"countries"];
                     
                     [[NSUserDefaults standardUserDefaults] setObject:country_arr forKey:@"country_arr"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     [_TBL_list_coutry reloadData];
+                    }
+                    else{
+                        VW_overlay.hidden = YES;
+                        [activityIndicatorView stopAnimating];
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        [alert show];
+
+                    }
                     
                 }
                 
@@ -95,39 +224,28 @@
     {
         NSLog(@"The error is:%@",exception);
         [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please check Your Internet Connection" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
     }
     
-    
-    
-    
+
 }
-//-(void)viewWillAppear:(BOOL)animated
-//{
-//    NSString *lang = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
-//    NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-//    lang = [lang stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-//    lang = [lang stringByReplacingOccurrencesOfString:@"null" withString:@""];
-//    lang = [lang stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
-//    country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-//    country = [country stringByReplacingOccurrencesOfString:@"null" withString:@""];
-//    country = [country stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
-//    if([lang isEqualToString:@""] || [country isEqualToString:@""])
-//    {
-//       
-//    }
-//    else
-//    {
-//        [self performSegueWithIdentifier:@"intial_login" sender:self];
-//
-//    }
-//
-//
-//
-//}
 -(void)go_to_login
 {
+    NSString *msg;
+    if([_TXT_country.text isEqualToString:@""])
+    {
+        [_TXT_country becomeFirstResponder];
+        msg = @"Please select country";
+        
+    }
+    else if([_TXT_language.text isEqualToString:@""])
+    {
+          [_TXT_language becomeFirstResponder];
+        msg = @"please select language";
+    }
+    else
+    {
     
          if ([self.TXT_language.text isEqualToString:@"Arabic"])
           {
@@ -142,8 +260,9 @@
             else
              {
             [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"story_board_language"];
-
-             [self performSegueWithIdentifier:@"intial_login" sender:self];
+                [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
+             // [self  presentViewController:QT animated:NO completion:nil];
+             //[self performSegueWithIdentifier:@"intial_login" sender:self];
                
              }
     
@@ -151,8 +270,14 @@
     
     [[NSUserDefaults  standardUserDefaults] setValue:_TXT_language.text forKey:@"languge"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 
-    
+    if(msg)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+
+    }
 }
 #pragma textfield delegates
 
@@ -291,6 +416,8 @@
         _TXT_language.text = [[lang_arr objectAtIndex:indexPath.row]valueForKey:@"language_name"];
         
         [usd setInteger:[[[lang_arr objectAtIndex:indexPath.row] valueForKey:@"id"] integerValue] forKey:@"language_id"];
+        [usd setValue: [[lang_arr objectAtIndex:indexPath.row]valueForKey:@"language_name"] forKey:@"language"];
+        [usd synchronize];
         
         //NSLog(@"Language id:::%@",[usd valueForKey:@"language_id"]);
         
@@ -378,26 +505,61 @@
         [alert show];
     }
 }
-//#pragma mark - Tap Gesture
-//-(void) Tap_DTECt :(UITapGestureRecognizer *)sender
-//{
-//
-//}
-//
-//-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-//{
-//    [_TXT_country resignFirstResponder];
-//    [_TXT_language resignFirstResponder];
-//
-////    if ([touch.view isDescendantOfView:_TBL_list_coutry]) {
-////        return NO;
-////    }
-////    else if ([touch.view isDescendantOfView:_TBL_list_lang]) {
-////        return NO;
-////    }
-////
-//    return YES;
-//}
+-(void)MENU_api_call
+{
+    
+    @try
+    {
+        NSError *error;
+        
+        NSHTTPURLResponse *response = nil;
+        NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
+        //    NSString *urlGetuser =[NSString stringWithFormat:@"%@menuList/%ld/%ld.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]];
+        NSString *lang = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/menuList/%@/%@.json",SERVER_URL,country,lang];
+        
+        NSLog(@"%ld,%ld",(long)[user_defaults integerForKey:@"country_id"],(long)[user_defaults integerForKey:@"language_id"]);
+        
+        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:urlProducts];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        
+        [request setHTTPShouldHandleCookies:NO];
+        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if(aData)
+        {
+            
+            
+            NSMutableArray *json_DATA = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            
+            [[NSUserDefaults standardUserDefaults] setObject:json_DATA forKey:@"menu_detail"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+          //  [self performSegueWithIdentifier:@"logint_to_home" sender:self];
+            
+            NSLog(@"the api_collection_product%@",json_DATA);
+            [activityIndicatorView stopAnimating];
+            VW_overlay.hidden = YES;
+            [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
+
+        }
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"%@",exception);
+        [activityIndicatorView stopAnimating];
+        VW_overlay.hidden = YES;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please check Your Internet Connection" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+        
+    }
+       
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
