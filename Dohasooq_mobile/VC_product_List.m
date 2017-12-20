@@ -687,7 +687,8 @@
                                     }
                                     else{
                                         
-                                        [self product_list_API];                            }
+                                        [self product_list_API];
+                                    }
                                     
                                     
                                 } @catch (NSException *exception) {
@@ -701,7 +702,7 @@
                             {
                                 VW_overlay.hidden=YES;
                                 [activityIndicatorView stopAnimating];
-                                
+                                    [self product_list_API];
                                 [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
                                 NSLog(@"The Wishlist%@",json_Response_Dic);
                                 
@@ -979,6 +980,19 @@
                             [self.collection_product reloadData];
                             [self set_UP_VW];
                             }
+                            @try
+                            {
+                                
+                                NSDictionary *min_max_price_dic = [NSDictionary dictionaryWithObjectsAndKeys:[json_DATA valueForKey:@"products_max"],@"max",[json_DATA valueForKey:@"products_min"],@"min", nil];
+                                [[NSUserDefaults standardUserDefaults] setObject:min_max_price_dic forKey:@"max_min"];
+                                [[NSUserDefaults standardUserDefaults] synchronize];
+                            }
+                            @catch(NSException *Exception)
+                            {
+                                
+                            }
+                            
+
                         } @catch (NSException *exception) {
                             VW_overlay.hidden = YES;
                             [activityIndicatorView stopAnimating];
@@ -1186,6 +1200,8 @@
                         [activityIndicatorView stopAnimating];
                         @try
                         {
+                           
+                            
                             if([[json_DATA valueForKey:@"products"] isKindOfClass:[NSArray class]])
                             {
                                 
@@ -1209,6 +1225,7 @@
                                     
                                 }
                                 
+                                
 
                                 
                             }
@@ -1222,6 +1239,8 @@
                                 
 
                             }
+                            
+                          
                         }
                         @catch(NSException *exception)
                         {

@@ -14,6 +14,7 @@
     UIActivityIndicatorView *activityIndicatorView;
     NSMutableArray *search_ARR;;
     NSArray *search_arr;
+    NSString *lower,*upper,*discount;
     
 }
 @end
@@ -23,6 +24,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    
+  
     
     CGRect frame_nav = _VW_navMenu.frame;
     frame_nav.origin.x = 0.0f;
@@ -61,6 +65,10 @@
     [self.navigationController.view addSubview:VW_overlay];
     VW_overlay.hidden = YES;
     
+    [_TBL_search_results reloadData];
+    
+    
+    
 }
 -(void)Close_Action
 {
@@ -79,27 +87,28 @@
 }
 -(void)search_API
 {
-    if(_BTN_search.tag == 0)
-    {
-    NSString *substring = [NSString stringWithString:_TXT_search.text];
-    
-    NSArray *arr = [search_ARR mutableCopy];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF['name'] CONTAINS[cd] %@",substring];
-    
-    search_arr = [arr filteredArrayUsingPredicate:predicate];
-    [self.TBL_search_results reloadData];
-    }
-    else
-    {
-
-     // NSString *search_str = _TXT_search.text;
-               _TBL_search_results.hidden = NO;
-//        VW_overlay.hidden = NO;
-//        [activityIndicatorView startAnimating];
+//{
+//    if(_BTN_search.tag == 0)
+//    {
+//    NSString *substring = [NSString stringWithString:_TXT_search.text];
+//    
+//    NSArray *arr = [search_ARR mutableCopy];
+//    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF['name'] CONTAINS[cd] %@",substring];
+//    
+//    search_arr = [arr filteredArrayUsingPredicate:predicate];
+//    [self.TBL_search_results reloadData];
+//    }
+//    else
+//    {
+//
+//     // NSString *search_str = _TXT_search.text;
+//               _TBL_search_results.hidden = NO;
+////        VW_overlay.hidden = NO;
+////        [activityIndicatorView startAnimating];
         [self performSelector:@selector(search_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
         
         
-     }
+  //   }
     
 }
 -(void)search_API_CALL
@@ -233,7 +242,15 @@
 //    else{
         cell.textLabel.text = [NSString stringWithFormat:@"%@",
                                [[search_ARR objectAtIndex:indexPath.row] valueForKey:@"title"]];
+    
+    NSString *str = cell.textLabel.text;
+      str  =[str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    str  =[str stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    
+    cell.textLabel.text = str;
+    
 
+    
         
    // }
     return cell;
@@ -242,7 +259,7 @@
 {
 //    if(_BTN_search.tag == 1)
 //    {
-    NSString *url_key= [NSString stringWithFormat:@"%@",[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"url_key"]];
+    NSString *url_key= [NSString stringWithFormat:@"%@",[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"title"]];
 //    url_key = [url_key lowercaseString];
 //    url_key = [url_key stringByReplacingOccurrencesOfString:@" " withString:@"-"];
     NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
@@ -250,11 +267,12 @@
    // NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
    // apis/productNamesList/" + country_val + "/" + language_val + "/.json
     NSString *list_TYPE = @"productList";
-        
-    [[NSUserDefaults standardUserDefaults] setValue:[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"url_key"] forKey:@"product_list_key"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    NSString *str_key = [NSString stringWithFormat:@"%@/0",[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"url_key"]];
+    [[NSUserDefaults standardUserDefaults] setValue:str_key forKey:@"product_list_key"];
+    
 
-    NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/txt_%@/0/%@/%@.json",SERVER_URL,list_TYPE,url_key,country,languge];
+    NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/txt_%@/%@/%@.json",SERVER_URL,list_TYPE,url_key,country,languge];
     urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
     
     [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
@@ -317,14 +335,13 @@
     {
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-        NSString *list_TYPE = @"productNamesList";
-        NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@.json",SERVER_URL,list_TYPE,country,languge];
+        NSString *list_TYPE = @"productList";
+      NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/txt_/0/%@/%@.json",SERVER_URL,list_TYPE,country,languge];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         
         [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         [self performSegueWithIdentifier:@"search_product_list" sender:self];
-
 
 
     }
