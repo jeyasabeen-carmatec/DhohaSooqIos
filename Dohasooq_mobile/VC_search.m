@@ -142,8 +142,8 @@
 //}
 -(void)close_action
 {
-   // [self dismissViewControllerAnimated:YES completion:nil];
-    [self.navigationController popViewControllerAnimated:NO];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    //[self.navigationController popViewControllerAnimated:NO];
     
 }
 -(BOOL)textFieldShouldReturn:(UITextField *)textField

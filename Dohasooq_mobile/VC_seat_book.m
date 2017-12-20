@@ -8,8 +8,9 @@
 
 #import "VC_seat_book.h"
 #import "XMLDictionary/XMLDictionary.h"
+#import "ViewController.h"
 
-@interface VC_seat_book ()
+@interface VC_seat_book ()<UIAlertViewDelegate>
 {
     ZSeatSelector *seat,*seat2;
     int layout_height;
@@ -530,7 +531,7 @@
     NSLog(@"the seats count is:%lu",(unsigned long)seats.count);
     
     
-    _LBL_no_ofseats.text = [NSString stringWithFormat:@"No of Seats:%lu",(unsigned long)seats.count];
+    _LBL_no_ofseats.text = [NSString stringWithFormat:@"No of Seats:%lu",(unsigned long)seats_ARR.count];
     count = seats.count;
     
 }
@@ -538,7 +539,7 @@
 {
     if(count == 0)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please select atleast one seat" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please select at least one seat to proceed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
 
     }
@@ -555,8 +556,21 @@
 }
 -(void)Book_action
 {
-    
-    
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+    if([user_id isEqualToString:@"(null)"])
+    {
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login First" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
+        alert.tag = 1;
+        [alert show];
+        
+    }
+    else
+    {
+
+    @try
+        {
     NSString *str = [seats_ARR componentsJoinedByString:@","];
     
     NSLog(@"%@",str);
@@ -588,9 +602,37 @@
 
         [self performSegueWithIdentifier:@"Movie_user_identifier" sender:self];
     }
+        }
+        @catch(NSException *exception)
+        {
+            
+        }
+    }
     
     
 }
+- (void)alertView:(UIAlertView *)alertView
+clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if(alertView.tag == 1)
+    {
+        if (buttonIndex == [alertView cancelButtonIndex])
+        {
+            NSLog(@"cancel:");
+              [alertView dismissWithClickedButtonIndex:0 animated:nil];
+            
+        }
+        
+        else{
+           
+            
+            ViewController *intial = [self.storyboard instantiateViewControllerWithIdentifier:@"login_VC"];
+            [self presentViewController:intial animated:NO completion:nil];
+            
+            
+        }
+    }
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

@@ -75,6 +75,20 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)plase_order_API_calling{
+       // NSString *urlStr = [[NSUserDefaults standardUserDefaults] valueForKey:@"payment_url"];
+           @try {
+               NSString *urlStr = @"bhj";
+               NSURL *url = [[NSURL alloc]initWithString:urlStr];
+               NSURLRequest *request = [NSURLRequest requestWithURL:url];
+               
+               [self.web_pay loadRequest:request];
+               } @catch (NSException *exception) {
+        
+    }
+    
+}
+
 /*
 #pragma mark - Navigation
 

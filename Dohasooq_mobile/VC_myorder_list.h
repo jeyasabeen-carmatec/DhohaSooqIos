@@ -10,4 +10,6 @@
 
 @interface VC_myorder_list : UIViewController
 @property(nonatomic,weak) IBOutlet UITableView *TBL_orders;
+@property(nonatomic,weak) IBOutlet UITextField *TXT_search;
+
 @end

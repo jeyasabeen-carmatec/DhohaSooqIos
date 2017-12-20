@@ -25,6 +25,14 @@
 
 @property(nonatomic,weak) IBOutlet NMRangeSlider *LBL_slider;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_submit;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_all;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_today;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_tomorrow;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_weekend;
+
+
+
+
 
 
 @property(nonatomic,weak)  id <callldelegate>delegate;

@@ -15,6 +15,8 @@
 @property(nonatomic,weak) IBOutlet UIButton *BTN_pay;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_amount;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_service_charges;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_total_charge;
+
 @property(nonatomic,weak) IBOutlet UIImageView *LBL_stat;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_check;
 

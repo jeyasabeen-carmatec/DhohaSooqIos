@@ -10,7 +10,7 @@
 
 @interface VC_pay_last ()<UICollectionViewDelegate,UICollectionViewDataSource,UITextFieldDelegate,UIGestureRecognizerDelegate,UIPickerViewDataSource,UIPickerViewDelegate>
 {
-    NSArray *country_arr;
+    NSMutableArray *country_arr;
     NSString *str_URL;
 }
 
@@ -22,6 +22,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     _TXT_countries.inputView = [[UIView alloc]init];
+    country_arr = [[NSMutableArray alloc]init];
     self.navigationController.navigationBar.hidden = NO;
 
    
@@ -42,7 +43,21 @@
 
 -(void)picker_set_UP
 {
-    country_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_array"];
+    @try
+    {
+        NSArray *country_arr_temp =[[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
+        for(int i=0;i<country_arr_temp.count;i++)
+        {
+            [country_arr addObject:[[country_arr_temp objectAtIndex:i] valueForKey:@"name"]];
+        }
+        
+        [country_arr sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
+    [country_arr sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 
     
     _country_picker_view = [[UIPickerView alloc] init];
@@ -64,7 +79,7 @@
     
     UIButton *close=[[UIButton alloc]init];
     close.frame=CGRectMake(phone_close.frame.size.width - 100, 0, 100, phone_close.frame.size.height);
-    [close setTitle:@"close" forState:UIControlStateNormal];
+    [close setTitle:@"Done" forState:UIControlStateNormal];
     [close addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
     [phone_close addSubview:close];
     

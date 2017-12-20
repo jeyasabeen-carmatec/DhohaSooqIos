@@ -123,7 +123,7 @@
     {
         
         
-    NSString *text = [NSString stringWithFormat:@"TOTAL price \n%@ QAR",[[NSUserDefaults standardUserDefaults] valueForKey:@"charges"]];
+    NSString *text = [NSString stringWithFormat:@"Total Price \n%@ QAR",[[NSUserDefaults standardUserDefaults] valueForKey:@"charges"]];
         _LBL_service_charges.text = text;
     }
     @catch(NSException *exception)
