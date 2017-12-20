@@ -10,9 +10,6 @@
 
 @interface VC_DS_Checkout : UIViewController
 @property(nonatomic,weak) IBOutlet UIWebView *web_pay;
-<<<<<<< HEAD
-=======
 @property(strong,nonatomic)NSString *rcv_params;
->>>>>>> master
 
 @end

@@ -461,11 +461,7 @@
       
         gcell.LBL_gender_cat.text = [[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row]valueForKey:@"_TicketName"];
             
-<<<<<<< HEAD
-        gcell.LBL_price.text = [NSString stringWithFormat:@"QAR %@",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row] valueForKey:@"_TicketPrice"]];
-=======
         gcell.LBL_price.text = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row] valueForKey:@"_TicketPrice"]];
->>>>>>> master
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                   gcell.LBL_price.text = [NSString stringWithFormat:@"%@ QAR ",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row] valueForKey:@"_TicketPrice"]];
@@ -502,11 +498,7 @@
         {
             
             NSString *str = [cost_arr objectAtIndex:0];//gcell.LBL_result.text;
-<<<<<<< HEAD
-            NSString *text = [NSString stringWithFormat:@"%@ : No of Tickets",str];
-=======
             NSString *text = [NSString stringWithFormat:@"%@No of Tickets :",str];
->>>>>>> master
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 text = [NSString stringWithFormat:@"%@ :No of Tickets",str];
@@ -542,19 +534,11 @@
             
          
             NSString *str1 = [cost_arr objectAtIndex:1];//gcell.LBL_price.text;
-<<<<<<< HEAD
-             NSString *text1 = [NSString stringWithFormat:@"Total Price:QR  %@",str1];
-            
-            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-            {
-                 text1 = [NSString stringWithFormat:@"%@ :QR Total Price",str1];
-=======
              NSString *text1 = [NSString stringWithFormat:@"Total Price:%@  %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],str1];
             
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                  text1 = [NSString stringWithFormat:@"%@ :%@ Total Price",str1,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
->>>>>>> master
             }
            
             

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -46,15 +46,15 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0JN-Xt-yQa">
-                        <rect key="frame" x="116" y="39" width="194" height="42"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0JN-Xt-yQa">
+                        <rect key="frame" x="116" y="37" width="194" height="23"/>
                         <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="top" secondItem="Sys-Nu-Cfj" secondAttribute="bottom" constant="8" id="2K6-mT-iPm"/>
+                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="top" secondItem="Sys-Nu-Cfj" secondAttribute="bottom" constant="6" id="2K6-mT-iPm"/>
                     <constraint firstItem="Sys-Nu-Cfj" firstAttribute="leading" secondItem="g6W-IO-VhK" secondAttribute="trailing" constant="8" id="5aJ-p4-eYh"/>
                     <constraint firstAttribute="trailingMargin" secondItem="Sys-Nu-Cfj" secondAttribute="trailing" id="8O2-aJ-2Bo"/>
                     <constraint firstAttribute="bottom" secondItem="g6W-IO-VhK" secondAttribute="bottom" constant="7.5" id="Bci-Wg-55A"/>
@@ -62,9 +62,7 @@
                     <constraint firstAttribute="bottomMargin" secondItem="VMX-LK-G7a" secondAttribute="bottom" constant="0.75" id="EgV-tK-fe2"/>
                     <constraint firstItem="0JN-Xt-yQa" firstAttribute="leading" secondItem="g6W-IO-VhK" secondAttribute="trailing" constant="8" id="HeQ-hx-YeN"/>
                     <constraint firstItem="0JN-Xt-yQa" firstAttribute="trailing" secondItem="VMX-LK-G7a" secondAttribute="trailing" id="ObP-dM-0Ih"/>
-                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="centerY" secondItem="g6W-IO-VhK" secondAttribute="centerY" id="Qed-uU-4u6"/>
                     <constraint firstItem="g6W-IO-VhK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="Ywb-1c-Sxy"/>
-                    <constraint firstItem="VMX-LK-G7a" firstAttribute="top" secondItem="0JN-Xt-yQa" secondAttribute="bottom" constant="8" id="Z4O-x3-Z8a"/>
                     <constraint firstItem="0JN-Xt-yQa" firstAttribute="leading" secondItem="VMX-LK-G7a" secondAttribute="leading" id="eU4-7I-Euf"/>
                     <constraint firstItem="g6W-IO-VhK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="gaw-sE-hn7"/>
                     <constraint firstItem="0JN-Xt-yQa" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="xUV-Cj-w2r"/>

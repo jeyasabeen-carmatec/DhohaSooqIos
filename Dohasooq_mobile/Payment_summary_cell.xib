@@ -95,8 +95,6 @@
                                 <rect key="frame" x="224" y="130" width="108" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="17"/>
-<<<<<<< HEAD
-=======
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -188,7 +186,6 @@
                                 <rect key="frame" x="124" y="134" width="208" height="24"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="17"/>
->>>>>>> master
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -197,17 +194,10 @@
                 </subviews>
             </tableViewCellContentView>
             <connections>
-<<<<<<< HEAD
-                <outlet property="LBL_discount" destination="ccd-3i-Yzn" id="VEe-uU-dHK"/>
-                <outlet property="LBL_ship_charge" destination="yvt-KT-1Vm" id="RKC-N2-FzI"/>
-                <outlet property="LBL_sub_total" destination="q2K-p9-bDf" id="7Lc-d4-MhP"/>
-                <outlet property="LBL_total" destination="ABm-tn-ikc" id="Ihi-c5-aSt"/>
-=======
                 <outlet property="LBL_discount" destination="cdj-Zp-Uv2" id="P46-mG-jtl"/>
                 <outlet property="LBL_ship_charge" destination="eh3-rl-0RD" id="3f8-92-cy4"/>
                 <outlet property="LBL_sub_total" destination="4eT-m4-k5l" id="bLl-vx-2Gm"/>
                 <outlet property="LBL_total" destination="WPa-gm-0Ev" id="sKP-jE-c2B"/>
->>>>>>> master
             </connections>
             <point key="canvasLocation" x="32" y="195"/>
         </tableViewCell>

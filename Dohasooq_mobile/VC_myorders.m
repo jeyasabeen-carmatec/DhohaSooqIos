@@ -58,10 +58,7 @@ int j ,i;
 }
 -(void)viewWillAppear:(BOOL)animated
 {
-<<<<<<< HEAD
-=======
     self.navigationItem.hidesBackButton = YES;
->>>>>>> master
     
     
     
@@ -286,11 +283,7 @@ int j ,i;
             qr = [qr stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             qr = [qr stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
             
-<<<<<<< HEAD
-            NSString *price = [NSString stringWithFormat:@"QR :%@",qr];
-=======
             NSString *price = [NSString stringWithFormat:@"%@ :%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],qr];
->>>>>>> master
             
             if ([order_cell.LBL_price respondsToSelector:@selector(setAttributedText:)]) {
                 
@@ -343,18 +336,6 @@ int j ,i;
                 
                 
                 NSRange ename = [date_text rangeOfString:date];
-<<<<<<< HEAD
-                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-                                            range:ename];
-                }
-                else
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName :[UIColor grayColor]}
-                                            range:ename];
-                }
-=======
                 CGSize result = [[UIScreen mainScreen] bounds].size;
                 if(result.height <= 480)
                 {
@@ -380,7 +361,6 @@ int j ,i;
 
                 
                 
->>>>>>> master
                 order_cell.LBL_Deliver_on.attributedText = attributedText;
             }
             else
@@ -407,7 +387,6 @@ int j ,i;
                 order_cell.IMG_track_image.image = [UIImage imageNamed:@"3"];
             }
             else  if([status isEqualToString:@"Dispatched"])
-<<<<<<< HEAD
             {
                 order_cell.IMG_track_image.image = [UIImage imageNamed:@"2"];
             }
@@ -415,15 +394,6 @@ int j ,i;
             {
                 order_cell.IMG_track_image.image = [UIImage imageNamed:@"1"];
             }
-=======
-            {
-                order_cell.IMG_track_image.image = [UIImage imageNamed:@"2"];
-            }
-            else  if([status isEqualToString:@"Delivered"])
-            {
-                order_cell.IMG_track_image.image = [UIImage imageNamed:@"1"];
-            }
->>>>>>> master
 
 
 
@@ -448,11 +418,7 @@ int j ,i;
             
             NSString *qr = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_total"]];
             qr = [qr stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-<<<<<<< HEAD
-            qr = [qr stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];        NSString *price = [NSString stringWithFormat:@"QR :%@",qr];
-=======
             qr = [qr stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];        NSString *price = [NSString stringWithFormat:@"%@ :%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],qr];
->>>>>>> master
             
             if ([cost_cell.LBL_cost respondsToSelector:@selector(setAttributedText:)]) {
                 
@@ -580,15 +546,6 @@ int j ,i;
                 cell = [nib objectAtIndex:0];
             }
             NSString *sub_total = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"order_subtotal"]];
-<<<<<<< HEAD
-            sub_total = [sub_total stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-            
-            NSString *shipping = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"shipping_amount"]];
-            shipping = [shipping stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-            
-            NSString *discount = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"discount"]];
-            discount = [discount stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-=======
             sub_total = [sub_total stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
             sub_total = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],sub_total];
             
@@ -599,22 +556,14 @@ int j ,i;
             NSString *discount = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"discount"]];
             discount = [discount stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
 //             discount = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"], discount];
->>>>>>> master
             
             cell.LBL_discount.text = discount;
             cell.LBL_sub_total.text = sub_total;
             cell.LBL_ship_charge.text = shipping;
             
-<<<<<<< HEAD
-            
-            
-            cell.LBL_total.text =sub_total;
-            NSString *current_price = [NSString stringWithFormat:@"QR"];
-=======
             cell.LBL_total.text =sub_total;
             NSString *current_price = [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"];
              //NSString *current_price = [NSString stringWithFormat:@"QR"];
->>>>>>> master
             NSString *prec_price = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"order_total"]];
             NSString *text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
             
@@ -811,30 +760,6 @@ else{
     [body appendData:[[NSString stringWithFormat:@"%@",languge]dataUsingEncoding:NSUTF8StringEncoding]];
     [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
     
-<<<<<<< HEAD
-//    [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-//    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"id\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-//    [body appendData:[[NSString stringWithFormat:@"%@",GET_prof_ID]dataUsingEncoding:NSUTF8StringEncoding]];
-//    [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-//    
-//    
-//    NSData *webData = UIImageJPEGRepresentation(_img_Profile.image, 100);
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSString *documentsDirectory = [paths objectAtIndex:0];//@"sample.png"
-//    NSString *localFilePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg",[self randomStringWithLength:7]]];
-//    [webData writeToFile:localFilePath atomically:YES];
-//    NSLog(@"localFilePath.%@",localFilePath);
-//    
-//    [[NSUserDefaults standardUserDefaults]setValue:localFilePath forKey:@"new_PP"];
-//    [[NSUserDefaults standardUserDefaults]synchronize];
-//    
-//    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-//    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: multipart/form-data; name=\"uploaded_file\"; filename=\"%@\"\r\n",localFilePath] dataUsingEncoding:NSUTF8StringEncoding]];
-//    [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-//    [body appendData:[NSData dataWithData:imageData]];
-//    [body appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-=======
->>>>>>> master
     
     //
     NSError *er;
@@ -877,16 +802,10 @@ else{
             
             
             NSRange ename = [text rangeOfString:str];
-<<<<<<< HEAD
-            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-            {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-=======
             CGSize result = [[UIScreen mainScreen] bounds].size;
             if(result.height <= 480)
             {
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor blueColor]}
->>>>>>> master
                                         range:ename];
  
             }
@@ -903,41 +822,9 @@ else{
                 
 
             }
-<<<<<<< HEAD
-            _LBL_order_ID.attributedText = attributedText;
-        }
-        else
-        {
-            _LBL_order_ID.text = text;
-        }
-        NSString *date = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_created"]];
-        date = [date stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-        date = [date stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
-        
-        
-        NSString *date_text = [NSString stringWithFormat:@"Order on: %@",date];
-        
-        
-        if ([_LBL_order_ID respondsToSelector:@selector(setAttributedText:)]) {
-            
-            NSDictionary *attribs = @{
-                                      NSForegroundColorAttributeName:_LBL_order_date.textColor,
-                                      NSFontAttributeName: _LBL_order_date.font
-                                      };
-            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:date_text attributes:attribs];
-            
-=======
->>>>>>> master
             
 
             
-<<<<<<< HEAD
-            NSRange ename = [date_text rangeOfString:date];
-            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-            {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-                                        range:ename];
-=======
             _LBL_order_ID.attributedText = attributedText;
         }
         else
@@ -978,17 +865,13 @@ else{
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName :[UIColor blackColor]}
                                         range:ename];
                 
->>>>>>> master
             }
             else
             {
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName :[UIColor blackColor]}
                                         range:ename];
             }
-<<<<<<< HEAD
-=======
             
->>>>>>> master
             _LBL_order_date.attributedText = attributedText;
         }
         else

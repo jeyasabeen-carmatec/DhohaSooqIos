@@ -10,7 +10,7 @@
 
 @interface VC_card_action ()<UICollectionViewDelegate,UICollectionViewDataSource,UITextFieldDelegate,UIGestureRecognizerDelegate,UIPickerViewDataSource,UIPickerViewDelegate>
 {
-    NSArray *country_arr;
+    NSMutableArray *country_arr;
     NSTimer *timer;
     int currMinute;
     int currSeconds;
@@ -25,6 +25,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    country_arr = [[NSMutableArray alloc]init];
     _TXT_countries.inputView = [[UIView alloc]init];
     self.navigationController.navigationBar.hidden = NO;
 
@@ -71,18 +72,23 @@
 }
 -(void)picker_set_UP
 {
-    country_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_array"];
+    @try
+    {
+   NSArray *country_arr_temp =[[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
+    for(int i=0;i<country_arr_temp.count;i++)
+    {
+        [country_arr addObject:[[country_arr_temp objectAtIndex:i] valueForKey:@"name"]];
+    }
     
-    
+    [country_arr sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
     _country_picker_view = [[UIPickerView alloc] init];
     _country_picker_view.delegate = self;
     _country_picker_view.dataSource = self;
-    
-    
-    UITapGestureRecognizer *tapToSelect = [[UITapGestureRecognizer alloc]initWithTarget:self
-                                                                                 action:@selector(tappedToSelectRow:)];
-    tapToSelect.delegate = self;
-    [_country_picker_view addGestureRecognizer:tapToSelect];
     
     
     NSLog(@"%@",country_arr);
@@ -93,7 +99,7 @@
     
     UIButton *close=[[UIButton alloc]init];
     close.frame=CGRectMake(phone_close.frame.size.width - 100, 0, 100, phone_close.frame.size.height);
-    [close setTitle:@"close" forState:UIControlStateNormal];
+    [close setTitle:@"Done" forState:UIControlStateNormal];
     [close addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
     [phone_close addSubview:close];
     
@@ -180,7 +186,7 @@
     
     NSDictionary *order_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"order_details"];
     
-      NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/Qpayment-registration.aspx?Currency=QAR&Amount=%@&OrderName=online&OrderID=%@&nationality=Qatar&paymenttype=%@",[[order_dict valueForKey:@"result"] valueForKey:@"_balance"],[[order_dict valueForKey:@"result"] valueForKey:@"_OrderInfo"],str_URL];
+      NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/Qpayment-registration.aspx?Currency=QAR&Amount=%@&OrderName=online&OrderID=%@&nationality=%@&paymenttype=%@",[[order_dict valueForKey:@"result"] valueForKey:@"_balance"],[[order_dict valueForKey:@"result"] valueForKey:@"_OrderInfo"],_TXT_countries.text,str_URL];
     [[NSUserDefaults standardUserDefaults] setValue:str_url forKey:@"payment_url"];
     [[NSUserDefaults standardUserDefaults]  synchronize];
     
@@ -193,23 +199,6 @@
     
     [self dismissViewControllerAnimated:NO completion:nil];
 }
-- (IBAction)tappedToSelectRow:(UITapGestureRecognizer *)tapRecognizer
-{
-    if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
-        CGFloat rowHeight = [_country_picker_view rowSizeForComponent:0].height;
-        CGRect selectedRowFrame = CGRectInset(_country_picker_view.bounds, 0.0, (CGRectGetHeight(_country_picker_view.frame) - rowHeight) / 2.0 );
-        BOOL userTappedOnSelectedRow = (CGRectContainsPoint(selectedRowFrame, [tapRecognizer locationInView:_country_picker_view]));
-        if (userTappedOnSelectedRow) {
-            NSInteger selectedRow = [_country_picker_view selectedRowInComponent:0];
-            [self pickerView:_country_picker_view didSelectRow:selectedRow inComponent:0];
-        }
-    }
-}
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{
-    return true;
-}
-
 #pragma picker view delgates
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {

@@ -9,10 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Hoshi_Billing_ADDR.h"
 #import "billing_address.h"
-<<<<<<< HEAD
-=======
 #import "MIBadgeButton.h"
->>>>>>> master
 
 
 @interface VC_order_detail : UIViewController
@@ -97,11 +94,7 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_summary;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sub_total;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_shipping_charge;
-<<<<<<< HEAD
-@property (weak, nonatomic) IBOutlet UITextField *TXT_cupon;
-=======
 @property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_cupon;
->>>>>>> master
 
 
 

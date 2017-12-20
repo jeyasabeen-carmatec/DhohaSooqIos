@@ -8,10 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "VC_home.h"
-<<<<<<< HEAD
-=======
 #import "MIBadgeButton.h"
->>>>>>> master
 @interface Home_page_Qtickets : UIViewController<collection_protocol>
 
 @property(nonatomic,strong) NSArray *items;
@@ -29,11 +26,8 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_address_icon;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_address;
 @property(nonatomic,strong) UIPickerView *lang_pickers;
-<<<<<<< HEAD
-=======
 @property(nonatomic,weak) IBOutlet UILabel *invisible_LBL;
 
->>>>>>> master
 
 
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_profile;
@@ -46,11 +40,6 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_hot_deals;
 
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_fav;
-<<<<<<< HEAD
-@property(nonatomic,weak) IBOutlet UIBarButtonItem *BTN_cart;
-@property(nonatomic,weak) IBOutlet UIButton *BTN_QT_view;
-
-=======
 @property(nonatomic,weak) IBOutlet MIBadgeButton *BTN_cart;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_QT_view;
 @property(nonatomic,weak) IBOutlet UITextField *TXT_search;
@@ -59,7 +48,6 @@
 
 
 //_TBL_search_results
->>>>>>> master
 
 
 

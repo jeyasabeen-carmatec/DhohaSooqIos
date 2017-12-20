@@ -11,6 +11,6 @@
 @interface VC_merchant_list : UIViewController
 
 @property(nonatomic,weak) IBOutlet UITableView *TBL_merchants;
-@property(nonatomic,weak) IBOutlet UISearchBar *search_bar;
+@property(nonatomic,weak) IBOutlet UITextField *search_bar;
 
 @end

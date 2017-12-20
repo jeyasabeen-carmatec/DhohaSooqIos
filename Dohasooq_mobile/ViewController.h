@@ -27,11 +27,8 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sign_up;
 @property (weak, nonatomic) IBOutlet UIButton  *BTN_facebook;
 @property (weak, nonatomic) IBOutlet UIButton  *BTN_Google_PLUS;
-<<<<<<< HEAD
-=======
 @property (weak, nonatomic) IBOutlet UIButton  *BTN_guest;
 
->>>>>>> master
 
 
 

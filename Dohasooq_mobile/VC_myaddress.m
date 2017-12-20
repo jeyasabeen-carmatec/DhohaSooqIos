@@ -54,11 +54,7 @@
     
     UIButton *close=[[UIButton alloc]init];
     close.frame=CGRectMake(accessoryView.frame.size.width - 100, 0, 100, accessoryView.frame.size.height);
-<<<<<<< HEAD
-    [close setTitle:@"DONE" forState:UIControlStateNormal];
-=======
     [close setTitle:@"Done" forState:UIControlStateNormal];
->>>>>>> master
     [close addTarget:self action:@selector(picker_done_btn_action:) forControlEvents:UIControlEventTouchUpInside];
     [accessoryView addSubview:close];
 
@@ -171,23 +167,8 @@
             cell = [nib objectAtIndex:index];
         }
 
-<<<<<<< HEAD
-        
-=======
->>>>>>> master
         
         
-       // cell.VW_layer.layer.shadowColor = [UIColor lightGrayColor].CGColor;
-       // cell.layer.shadowOffset = CGSizeMake(0.5, 0);
-       // cell.layer.shadowOpacity = 1.0;
-        //cell.layer.shadowRadius = 2.0;
-        cell.VW_layer.layer.borderColor = [UIColor lightGrayColor].CGColor;
-        cell.VW_layer.layer.borderWidth = 0.5f;
-       
-        cell.BTN_edit_addres.hidden = YES;
-        if ([[jsonresponse_dic_address valueForKey:@"billaddress"] isKindOfClass:[NSDictionary class]]) {
-       
-         NSMutableDictionary *dict = [jsonresponse_dic_address valueForKey:@"billaddress"];
         
        // cell.VW_layer.layer.shadowColor = [UIColor lightGrayColor].CGColor;
        // cell.layer.shadowOffset = CGSizeMake(0.5, 0);
@@ -312,11 +293,7 @@
                 nib = [[NSBundle mainBundle] loadNibNamed:@"billing_address" owner:self options:nil];
                 cell = [nib objectAtIndex:index];
             }
-<<<<<<< HEAD
-        cell.LBL_Blng_title.text = @"ADD NEW ADDRESS";
-=======
         cell.LBL_Blng_title.text = @"EDIT SHIPPING ADDRESS";
->>>>>>> master
         
         cell.BTN_check.tag = 0;
         cell.TXT_first_name.delegate = self;
@@ -324,10 +301,7 @@
         cell.TXT_address1.delegate = self;
         cell.TXT_address2.delegate = self;
         cell.TXT_city.delegate = self;
-<<<<<<< HEAD
-=======
         
->>>>>>> master
         cell.TXT_state.delegate = self;
         cell.TXT_country.delegate = self;
         cell.TXT_zip.delegate = self;
@@ -340,10 +314,7 @@
                 
                 if (edit_tag == 999) {
                     
-<<<<<<< HEAD
-=======
                      cell.LBL_Blng_title.text = @"EDIT BILLING ADDRESS";
->>>>>>> master
                 country = [NSString stringWithFormat:@"%@", [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"country"]];
             str_fname = [NSString stringWithFormat:@"%@", [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"firstname"]];
             str_city = [NSString stringWithFormat:@"%@", [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"city"]];
@@ -413,10 +384,7 @@
             cell.TXT_phone.text = str_phone;
         
         if (is_add_new) {
-<<<<<<< HEAD
-=======
              cell.LBL_Blng_title.text = @"ADD NEW ADDRESS";
->>>>>>> master
             cell.TXT_first_name.text = @"";
             cell.TXT_last_name.text = @"";
             cell.TXT_address1.text = @"";
@@ -635,7 +603,6 @@
     
     edit_tag = sender.tag ;
     is_add_new = NO;
-<<<<<<< HEAD
     i = 1;
     [self.TBL_address reloadData];
 }
@@ -644,16 +611,6 @@
     i = 1;
     [self.TBL_address reloadData];
 }
-=======
-    i = 1;
-    [self.TBL_address reloadData];
-}
--(void)add_new_address:(UIButton *)sender{
-    is_add_new = YES;
-    i = 1;
-    [self.TBL_address reloadData];
-}
->>>>>>> master
 -(void)save_btn_action:(UIButton *)sender{
     
     billing_address *cell = [self.TBL_address cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
@@ -849,14 +806,6 @@
                     
                     if ([data isKindOfClass:[NSDictionary class]]) {
                         
-<<<<<<< HEAD
-                        if ([[data valueForKey:@"success"] isEqualToString:@"1"]) {
-                            [self.navigationController popViewControllerAnimated:NO];
-                        }
-                    }
-                    
-                    NSLog(@"edit_Shipping_Address Response%@",data);
-=======
                         @try {
                              NSLog(@"edit_Shipping_Address Response%@",[data valueForKey:@"success"]);
                             
@@ -871,7 +820,6 @@
                     }
                     
                     //NSLog(@"edit_Shipping_Address Response%@",[data valueForKey:@"success"]);
->>>>>>> master
                     
                 }
                 
@@ -894,10 +842,6 @@
 -(void)add_new_shipping_address_API{
     @try {
         
-<<<<<<< HEAD
-        
-        NSDictionary *params = @{@"FirstName":str_fname,@"LastName":str_lname,@"country":country,@"state":str_state,@"city":str_city,@"address1":str_addr1,@"address2":str_addr2,@"zipcode":str_zip_code,@"newaddressinput":new_address_input,@"customerId":[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"customer_id"]};
-=======
         NSDictionary *params;
         
         
@@ -907,7 +851,6 @@
             NSLog(@"%@",exception);
         }
        
->>>>>>> master
         
         NSLog(@"add_new_shipping_address params %@",params);
         
@@ -924,18 +867,12 @@
                     NSLog(@"add_new_Shipping_Address Response%@",data);
                     if ([data isKindOfClass:[NSDictionary class]]) {
                         
-<<<<<<< HEAD
-                        if ([[data valueForKey:@"success"] isEqualToString:@"1"]) {
-                            [self.navigationController popViewControllerAnimated:NO];
-                        }
-=======
                         
                         NSString *succes = [NSString stringWithFormat:@"%@",[data valueForKey:@"success"]];
                         if ([succes isEqualToString:@"1"]) {
                             [self.navigationController popViewControllerAnimated:NO];
                         }
                         
->>>>>>> master
                     }
                     
                 }

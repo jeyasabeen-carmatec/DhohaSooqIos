@@ -9,10 +9,7 @@
 #import "VC_intial.h"
 #import "HttpClient.h"
 #import "ViewController.h"
-<<<<<<< HEAD
-=======
 #import "Home_page_Qtickets.h"
->>>>>>> master
 
 @interface VC_intial ()<UITableViewDataSource,UITableViewDelegate,UITableViewDataSource>
 {
@@ -144,11 +141,7 @@
     
     _VW_ceter.center = self.view.center;
     country_arr = [[NSMutableArray alloc]init];
-<<<<<<< HEAD
-   // lang_arr = [[NSMutableArray alloc]init];
-=======
     // lang_arr = [[NSMutableArray alloc]init];
->>>>>>> master
     CGRect frameset = _TBL_list_coutry.frame;
     frameset.origin.x =_TXT_country.frame.origin.x;
     frameset.origin.y =_TXT_country.frame.origin.y + _TXT_country.frame.size.height + 5;
@@ -237,33 +230,8 @@
     
 
 }
-//-(void)viewWillAppear:(BOOL)animated
-//{
-//    NSString *lang = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
-//    NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-//    lang = [lang stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-//    lang = [lang stringByReplacingOccurrencesOfString:@"null" withString:@""];
-//    lang = [lang stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
-//    country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-//    country = [country stringByReplacingOccurrencesOfString:@"null" withString:@""];
-//    country = [country stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
-//    if([lang isEqualToString:@""] || [country isEqualToString:@""])
-//    {
-//       
-//    }
-//    else
-//    {
-//        [self performSegueWithIdentifier:@"intial_login" sender:self];
-//
-//    }
-//
-//
-//
-//}
 -(void)go_to_login
 {
-<<<<<<< HEAD
-=======
     NSString *msg;
     if([_TXT_country.text isEqualToString:@""])
     {
@@ -278,7 +246,6 @@
     }
     else
     {
->>>>>>> master
     
          if ([self.TXT_language.text isEqualToString:@"Arabic"])
           {
@@ -293,14 +260,9 @@
             else
              {
             [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"story_board_language"];
-<<<<<<< HEAD
-
-             [self performSegueWithIdentifier:@"intial_login" sender:self];
-=======
                 [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
              // [self  presentViewController:QT animated:NO completion:nil];
              //[self performSegueWithIdentifier:@"intial_login" sender:self];
->>>>>>> master
                
              }
     
@@ -308,10 +270,6 @@
     
     [[NSUserDefaults  standardUserDefaults] setValue:_TXT_language.text forKey:@"languge"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-<<<<<<< HEAD
-
-    
-=======
     }
 
     if(msg)
@@ -320,7 +278,6 @@
         [alert show];
 
     }
->>>>>>> master
 }
 #pragma textfield delegates
 

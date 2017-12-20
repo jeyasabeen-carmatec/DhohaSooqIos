@@ -22,11 +22,8 @@
 @property(nonatomic,weak) IBOutlet UIButton *BTN_back_modal;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_cart_list;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_wish_list;
-<<<<<<< HEAD
-=======
 //@property(nonatomic,weak) IBOutlet UIButton *header_name;
 
->>>>>>> master
 
 //first view
 @property(nonatomic,weak) IBOutlet UIView *VW_First;
@@ -68,11 +65,8 @@
 
 //fifth_view
 @property(nonatomic,retain) IBOutlet UIView *VW_fifth;
-<<<<<<< HEAD
-=======
 @property(nonatomic,retain) IBOutlet UICollectionView  *collection_related_products;
 
->>>>>>> master
 @property(nonatomic,weak) IBOutlet UILabel *TXTVW_description;
 
 @property(nonatomic,weak) IBOutlet UIView *VW_filter;

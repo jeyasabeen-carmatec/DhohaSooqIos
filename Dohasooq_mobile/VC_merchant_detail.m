@@ -62,11 +62,7 @@
       _LBL_phone_mail.numberOfLines = 0;
     [_LBL_phone_mail sizeToFit];
     
-<<<<<<< HEAD
-    NSString *img_url = [NSString stringWithFormat:@"%@%@",IMG_URL,[dict valueForKey:@"image"]];
-=======
     NSString *img_url = [NSString stringWithFormat:@"%@%@",SERVER_URL,[dict valueForKey:@"image"]];
->>>>>>> master
     
     [_IMG_first sd_setImageWithURL:[NSURL URLWithString:img_url]
                      placeholderImage:[UIImage imageNamed:@"logo.png"]
@@ -163,15 +159,9 @@
     pro_cell.LBL_rating.text = [NSString stringWithFormat:@"%@  ",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"rating"]];
     pro_cell.LBL_current_price.text = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
     
-<<<<<<< HEAD
-    NSString *current_price = [NSString stringWithFormat:@"QR %@", [[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
-    
-    NSString *prec_price = [NSString stringWithFormat:@"QR %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
-=======
     NSString *current_price = [NSString stringWithFormat:@"%@ %@", [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
     
     NSString *prec_price = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
->>>>>>> master
     NSString *text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
     
     if ([pro_cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
@@ -294,12 +284,8 @@
 {
     NSUserDefaults *userDflts = [NSUserDefaults standardUserDefaults];
     [userDflts setObject:[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"url_key"] forKey:@"product_list_key_sub"];
-<<<<<<< HEAD
-
-=======
     [userDflts setValue:[[[NSUserDefaults standardUserDefaults] valueForKey:@"merchant_data"] valueForKey:@"id"]  forKey:@"Mercahnt_ID"];
     [userDflts synchronize];
->>>>>>> master
     [self performSegueWithIdentifier:@"merchant_detail_product_detail" sender:self];
 }
 
@@ -318,18 +304,10 @@
         
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-<<<<<<< HEAD
-        NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
-        
-        NSString *url_key = [NSString stringWithFormat:@"%@",[[[NSUserDefaults standardUserDefaults] valueForKey:@"merchant_data"] valueForKey:@"url_key"]];
-        
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/merchantDetails/%@/%@/%@/%@/Customer.json",SERVER_URL,url_key,country,languge,user_id];
-=======
         NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"merchant_data"] valueForKey:@"id"];
         NSString *url_key = [NSString stringWithFormat:@"%@",[[[NSUserDefaults standardUserDefaults] valueForKey:@"merchant_data"] valueForKey:@"url_key"]];
         
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/merchantDetails/%@/%@/%@/%@/Customer.json",SERVER_URL,url_key,user_id,country,languge];
->>>>>>> master
         //NSString *urlGetuser = @"http://192.168.0.171/dohasooq/apis/productList/All/0/1/1/27/Customer.json";
         
         
@@ -428,11 +406,7 @@
                                 [cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
 
                                 [cell.BTN_fav setTitleColor:[UIColor colorWithRed:244.f/255.f green:176.f/255.f blue:77.f/255.f alpha:1] forState:UIControlStateNormal];
-<<<<<<< HEAD
-                                [HttpClient createaAlertWithMsg:@"Item added successfully" andTitle:@""];
-=======
                                 [HttpClient createaAlertWithMsg:@"Added to your wishlist" andTitle:@""];
->>>>>>> master
                                 
                                 
                             }

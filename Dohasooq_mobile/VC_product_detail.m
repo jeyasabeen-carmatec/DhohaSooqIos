@@ -18,17 +18,10 @@
 #import "product_cell.h"
 
 
-<<<<<<< HEAD
-@interface VC_product_detail ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UITextFieldDelegate,UIWebViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,UITextViewDelegate>
-{
-    NSMutableArray   *images_arr,*color_arr,*size_arr,*indexPaths,*variant_arr;
-    NSArray *keys;
-=======
 @interface VC_product_detail ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UITextFieldDelegate,UIWebViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,UITextViewDelegate,UIAlertViewDelegate>
 {
     NSMutableArray   *images_arr,*color_arr,*size_arr,*indexPaths, *noDuplicates,*variant_arr;
     NSArray *keys,*variant_arr1;
->>>>>>> master
     NSArray *picker_arr;
     
     HCSStarRatingView *starRatingView;
@@ -54,12 +47,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     json_Response_Dic = [[NSMutableDictionary alloc]init];
-<<<<<<< HEAD
-    images_arr = [[NSMutableArray alloc]init];
-    variant_arr = [[NSMutableArray alloc]init];
-
-    [self addSEgmentedControl];
-=======
     temp_DICT = [[NSMutableDictionary alloc]init];
 
 
@@ -70,10 +57,7 @@
 
     [self.collection_images registerNib:[UINib nibWithNibName:@"product_detail_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
     [self.collection_related_products registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
->>>>>>> master
 
-    [self.collection_images registerNib:[UINib nibWithNibName:@"product_detail_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
-   
     
     
     
@@ -134,49 +118,12 @@
 
     
     
-<<<<<<< HEAD
-    
-//    [_Btn_addto_wish addTarget:self action:@selector(add_to_wish_list:) forControlEvents:UIControlEventTouchUpInside];
-//    [_Btn_addto_cart addTarget:self action:@selector(add_to_cart:) forControlEvents:UIControlEventTouchUpInside];
-    
-    
-//    _BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
-//                 @selector(btnfav_action:)];
-//    _BTN_cart = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain   target:self action:@selector(btn_cart_action:)];
-//    
-//       NSString *badge_value = @"25";
-//    
-//    
-//    if(badge_value.length > 2)
-//    {
-//        self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
-//        
-//    }
-//    else{
-//        self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
-//        
-//    }
-    
-//    CGRect frame_set = _Scroll_content.frame;
-  //  frame_set.origin.y = self.navigationController.navigationBar.frame.origin.y +  self.navigationController.navigationBar.frame.size.height;
- //   frame_set.size.width = self.Scroll_content.frame.size.width;
-//_Scroll_content.frame = frame_set;
-    
-    
    CGRect  frame_set = _VW_First.frame;
- //   frame_set.origin.y = -(self.navigationController.navigationBar.frame.origin.y +  self.navigationController.navigationBar.frame.size.height);
-=======
-   CGRect  frame_set = _VW_First.frame;
->>>>>>> master
    frame_set.size.height = _custom_story_page_controller.frame.origin.y + _custom_story_page_controller.frame.size.height;
     frame_set.size.width = self.Scroll_content.frame.size.width;
     _VW_First.frame = frame_set;
     [self.Scroll_content addSubview:_VW_First];
-<<<<<<< HEAD
-    
-=======
   //  [self set_Data_to_UIElements];
->>>>>>> master
     _LBL_item_name.numberOfLines = 0;
     [_LBL_item_name sizeToFit];
     
@@ -189,11 +136,7 @@
     starRatingView.value = 0;
     starRatingView.tintColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
     starRatingView.allowsHalfStars = YES;
-<<<<<<< HEAD
-    starRatingView.value = 2.5f;
-=======
   //  starRatingView.value = 2.5f;
->>>>>>> master
     [self.VW_second addSubview:starRatingView];
     
     
@@ -218,59 +161,6 @@
     frame_set.origin.y = (self.VW_second.frame.origin.y - _BTN_play.frame.size.height / 2) - 4 ;
     _BTN_play.frame = frame_set;
     [self.Scroll_content addSubview:_BTN_play];
-<<<<<<< HEAD
-    
-    
-    @try
-    {
-     
-    
-    if([[json_Response_Dic valueForKey:@"getVariantNames"] isEqualToString:@""])
-    {
-        
-        frame_set = _VW_third.frame;
-        frame_set.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height + 3;
-        frame_set.size.height =_TXT_count.frame.origin.y +_TXT_count.frame.size.height + 10;
-        frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
-        _VW_third.frame = frame_set;
-
-    
-    
-    }
-    }
-    @catch(NSException *exception)
-    {
-       
-        if([[json_Response_Dic valueForKey:@"getVariantNames"] count] < 1)
-        {
-            
-            frame_set = _VW_third.frame;
-            frame_set.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height + 3;
-            frame_set.size.height =_TXT_count.frame.origin.y +_TXT_count.frame.size.height + 10;
-            frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
-            _VW_third.frame = frame_set;
-            
-            
-        }
-        else
-        {
-             [self.collectionview_variants reloadData];
-            frame_set = _collectionview_variants.frame;
-            frame_set.size.height = _collectionview_variants.frame.origin.y + _collectionview_variants.collectionViewLayout.collectionViewContentSize.height;
-            _collectionview_variants.frame = frame_set;
-            
-            frame_set = _VW_third.frame;
-            frame_set.origin.y = _VW_second.frame.origin.y + _VW_second.frame.size.height + 3;
-            frame_set.size.height =_collectionview_variants.frame.origin.y + _collectionview_variants.frame.size.height;
-            frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
-            _VW_third.frame = frame_set;
-            
-        }
-        
-        
-
-    }
-=======
     
     frame_set = _BTN_share.frame;
     frame_set.origin.x = 20;
@@ -413,7 +303,6 @@
     }
     
    
->>>>>>> master
     [self.Scroll_content addSubview:_VW_third];
     
     
@@ -432,8 +321,6 @@
     _TXTVW_description.text = str;
     
     [_TXTVW_description sizeToFit];*/
-<<<<<<< HEAD
-=======
     
     
     frame_set = _VW_fourth.frame;
@@ -443,7 +330,6 @@
     frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
     _VW_fourth.frame = frame_set;
     [self.Scroll_content addSubview:_VW_fourth];
->>>>>>> master
     
     @try
     {
@@ -492,17 +378,6 @@
     }
 
     
-<<<<<<< HEAD
-    frame_set = _VW_fourth.frame;
-    frame_set.origin.y = _VW_third.frame.origin.y + _VW_third.frame.size.height + 3;
-    frame_set.size.height = _VW_segemnt.frame.origin.y + _VW_segemnt.frame.size.height;
-    //_TXTVW_description.frame.origin.y +  _TXTVW_description.frame.size.height;
-    frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
-    _VW_fourth.frame = frame_set;
-    [self.Scroll_content addSubview:_VW_fourth];
-    
-=======
->>>>>>> master
 
     
    // frame_set = _TXTVW_description.frame;
@@ -536,12 +411,9 @@
     _BTN_play.layer.cornerRadius = self.BTN_play.frame.size.width / 2;
     _BTN_play.layer.masksToBounds = YES;
     
-<<<<<<< HEAD
-=======
     _BTN_share.layer.cornerRadius = self.BTN_play.frame.size.width / 2;
     _BTN_share.layer.masksToBounds = YES;
     
->>>>>>> master
     UIImage *newImage = [_IMG_cart.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIGraphicsBeginImageContextWithOptions(_IMG_cart.image.size, NO, newImage.scale);
     [[UIColor whiteColor] set];
@@ -549,30 +421,9 @@
     newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     _IMG_cart.image = newImage;
-<<<<<<< HEAD
-    @try
-    {
-        if([[json_Response_Dic valueForKey:@"getVariantNames"] isEqualToString:@""])
-        {
-            
-        }
-    }
-    @catch(NSException *exception)
-    {
-    data_arr = [[NSMutableArray alloc]init];
-    for(int i = 0; i<[[json_Response_Dic valueForKey:@"getVariantNames"] count];i++)
-    {
-        [data_arr insertObject:@"" atIndex:i];
-
-    }
-    }
-    // + self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height ;
-    scroll_ht = _VW_fourth.frame.origin.y+ _VW_fourth.frame.size.height;
-=======
     [_BTN_share addTarget:self action:@selector(share_action) forControlEvents:UIControlEventTouchUpInside];
        // + self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height ;
    
->>>>>>> master
 //    frame_set = _Scroll_content.frame;
 //    frame_set.origin.y = - (self.navigationController.navigationBar.frame.size.height +50);
 //    frame_set.size.height = scroll_ht;
@@ -736,19 +587,6 @@
                     
                     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                     
-<<<<<<< HEAD
-                            NSRange ename = [text rangeOfString:special_price];
-                            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:25.0]}
-                                                        range:ename];
-                            }
-                            else
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0],NSForegroundColorAttributeName:[UIColor redColor]}
-                                                        range:ename];
-                            }
-=======
                     NSRange ename = [text rangeOfString:special_price];
                     if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
                     {
@@ -760,49 +598,10 @@
                         [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0],NSForegroundColorAttributeName:[UIColor redColor]}
                                                 range:ename];
                     }
->>>>>>> master
                     
                     
                     
                     
-<<<<<<< HEAD
-                            NSRange cmp = [text rangeOfString:actuel_price];
-                            //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
-                            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0]}
-                                                        range:cmp];
-                            }
-                            else
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0]}
-                                                        range:cmp];
-                            }
-                    
-                            NSRange miles_price = [text rangeOfString:doha_miles];
-                            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0]}
-                                                        range:miles_price];
-                            }
-                            else
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:19.0],NSForegroundColorAttributeName:[UIColor redColor]}
-                                                        range:miles_price];
-                            }
-                            NSRange miles = [text rangeOfString:mils];
-                            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0]}
-                                                        range:miles];
-                            }
-                            else
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0]}
-                                                        range:miles];
-                            }
-                            
-=======
                     NSRange cmp = [text rangeOfString:actuel_price];
                     //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
                     if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
@@ -839,7 +638,6 @@
                                                 range:miles];
                     }
                     
->>>>>>> master
                     [attributedText addAttribute:NSStrikethroughStyleAttributeName
                                            value:@2
                                            range:NSMakeRange([special_price length]+currency.length+2, [actuel_price length])];
@@ -958,19 +756,6 @@
         NSInteger count = 0;
         @try
         {
-<<<<<<< HEAD
-        if([[json_Response_Dic valueForKey:@"getVariantNames"] isEqualToString:@""])
-        {
-            count = 0;
-        }
-        }
-        @catch(NSException *exception)
-        {
-            count =[[json_Response_Dic valueForKey:@"getVariantNames"] count];
-        }
-        
-        return count;
-=======
             if([[json_Response_Dic valueForKey:@"relatedProducts"] isKindOfClass:[NSArray class]])
             {
                 count =[[json_Response_Dic valueForKey:@"relatedProducts"] count];
@@ -983,7 +768,6 @@
         @catch(NSException *exception)
         {
         }
->>>>>>> master
         
         return count;
 
@@ -1034,15 +818,7 @@
                 _variant_picker = [[UIPickerView alloc] init];
                 _variant_picker.delegate = self;
                 
-<<<<<<< HEAD
-                UITapGestureRecognizer *tapToSelect = [[UITapGestureRecognizer alloc]initWithTarget:self
-                                                                                             action:@selector(tappedToSelectRow:)];
-                tapToSelect.delegate = self;
-                [_variant_picker addGestureRecognizer:tapToSelect];
-                
-=======
                            
->>>>>>> master
                 UIToolbar* conutry_close = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
                 conutry_close.barStyle = UIBarStyleBlackTranslucent;
                 [conutry_close sizeToFit];
@@ -1326,11 +1102,7 @@
         return CGSizeMake(_collection_images.frame.size.width ,_collection_images.frame.size.height);
 
     }
-<<<<<<< HEAD
-    else{
-=======
     if(collectionView == _collectionview_variants){
->>>>>>> master
         return CGSizeMake(_collectionview_variants.frame.size.width/3, 64);
     }
     else
@@ -1532,13 +1304,6 @@
 
          CGRect  frame_set = _VW_fourth.frame;
         frame_set.size.height = _TXTVW_description.frame.origin.y + _TXTVW_description.frame.size.height;
-<<<<<<< HEAD
-        frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
-        _VW_fourth.frame = frame_set;
-
-        
-        scroll_ht = _VW_fourth.frame.origin.y+ _VW_fourth.frame.size.height;// + self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height + _VW_filter.frame.size.height;
-=======
         frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
         _VW_fourth.frame = frame_set;
         
@@ -1570,7 +1335,6 @@
 
              
          }// + self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height + _VW_filter.frame.size.height;
->>>>>>> master
          [self viewDidLayoutSubviews];
         _TBL_reviews.hidden = YES;
        
@@ -1594,12 +1358,6 @@
         frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
         _VW_fourth.frame = frame_set;
         
-<<<<<<< HEAD
-        
-        
-        scroll_ht = _VW_fourth.frame.origin.y+ _VW_fourth.frame.size.height ;// + self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height+_VW_filter.frame.size.height;
-         [self viewDidLayoutSubviews];
-=======
         [_collection_related_products reloadData];
         if([[json_Response_Dic valueForKey:@"relatedProducts"] isKindOfClass:[NSArray class]])
         {
@@ -1829,22 +1587,8 @@
         
     }
 }
->>>>>>> master
 
 
-<<<<<<< HEAD
-}
--(void)picker_selection:(UITextField *)sender
-{
-  picker_arr = [[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:sender.tag] valueForKey:@"0"] allObjects];
-    NSLog(@"variant_count%lu",(unsigned long)picker_arr.count);
-    tag = [sender tag];
-    
-    
-   
-}
-=======
->>>>>>> master
 -(void)set_data_to_ThirdView{
     //[json_Response_Dic valueForKey:@"getVariantNames"] ,[[json_Response_Dic valueForKey:@"getVariantNames"] count]
     if ([[json_Response_Dic valueForKey:@"getVariantNames"] isKindOfClass:[NSArray class]]) {
@@ -1964,35 +1708,6 @@
 
  #pragma mark add_to_cart_API_calling
 
-<<<<<<< HEAD
- -(void)add_to_cart_API_calling{
-     
-     
-     //apis/addcartapi.json
-     
-     //    this->request->data['pdtId'];
-     //    $userId = $this->request->data['userId'];
-     //    $qtydtl = $this->request->data['quantity'];
-     //    $custom = $this->request->data['custom'];
-     //    $variant = $this->request->data['variant'];
-  @try
-     {
- NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
- NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
- NSString *items_count = [[NSUserDefaults standardUserDefaults]valueForKey:@"item_count"];
- NSError *error;
- NSHTTPURLResponse *response = nil;
- NSString *pdId = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"];
-     NSString *variant = [[json_Response_Dic valueForKey:@"products"] valueForKey:@"customOption"];
-     NSString *custom = [[json_Response_Dic valueForKey:@"products"] valueForKey:@"variant"];
-     NSString *variant_stat; NSDictionary *parameters;
-     NSString *variant_str = [variant_arr componentsJoinedByString:@","];
-     
-     if([custom isEqualToString:@"Yes"] && [variant isEqualToString:@"No"])
-     {
-         variant_stat = @"custom";
-         parameters = @{@"pdtId":pdId,@"userId":user_id,@"quantity":items_count,variant_stat:variant_str};
-=======
  -(void)add_to_cart_API_calling
 {
      
@@ -2075,29 +1790,16 @@
      {
          variant_stat = @"custom";
          parameters = @{@"pdtId":pdId,@"userId":user_id,@"quantity":items_count,variant_stat:variant_str,@"varaint":@""};
->>>>>>> master
 
      }
      else if([custom isEqualToString:@"No"] && [variant isEqualToString:@"Yes"])
      {
          variant_stat = @"variant";
-<<<<<<< HEAD
-         parameters = @{@"pdtId":pdId,@"userId":user_id,@"quantity":items_count,variant_stat:variant_str};
-=======
          parameters = @{@"pdtId":pdId,@"userId":user_id,@"quantity":items_count,variant_stat:variant_str,@"custom":@""};
->>>>>>> master
 
      }
      else
      {
-<<<<<<< HEAD
-         variant_stat = @"";
-         parameters = @{@"pdtId":pdId,@"userId":user_id,@"quantity":items_count,variant_stat:variant_stat};
-
-     }
-
- NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&error];
-=======
          variant_stat = @"variant";
          parameters = @{@"pdtId":pdId,@"userId":user_id,@"quantity":items_count,@"custom":@"",@"variant":@""};
 
@@ -2244,7 +1946,6 @@
     
 
 /* NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&error];
->>>>>>> master
  NSURL *urlProducts=[NSURL URLWithString:[NSString stringWithFormat:@"%@apis/addcartapi.json",SERVER_URL]];
  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
  [request setURL:urlProducts];
@@ -2276,24 +1977,17 @@
          [activityIndicatorView stopAnimating];
      }
  }
-<<<<<<< HEAD
-=======
  }
      }
->>>>>>> master
      }
      @catch(NSException *exception)
      {
          VW_overlay.hidden=YES;
          [activityIndicatorView stopAnimating];
      }
-<<<<<<< HEAD
- 
-=======
      */
          }
     
->>>>>>> master
  }
 
 /*-(void)add_cart_action
@@ -2375,10 +2069,6 @@
         NSString *country = [user_dflts valueForKey:@"country_id"];
         NSString *languge = [user_dflts valueForKey:@"language_id"];
         NSString *mercahnt_ID = [NSString stringWithFormat:@"%@",[user_dflts valueForKey:@"Mercahnt_ID"]];
-<<<<<<< HEAD
-        
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/details/%@/%@/%@/%@/Customer.json",SERVER_URL,[user_dflts valueForKey:@"product_list_key_sub"],mercahnt_ID,country,languge];
-=======
      
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
         NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
@@ -2405,7 +2095,6 @@
 
         
      
->>>>>>> master
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -2481,29 +2170,18 @@
                         [self set_Data_to_UIElements];
                         [self.collection_images reloadData];
                         [self.collectionview_variants reloadData];
-<<<<<<< HEAD
-                        [self set_UP_VIEW];
-                            
-                        
-                        self.segmentedControl4.selectedSegmentIndex = 0;
-                            [self segmentedControlChangedValue:self.segmentedControl4];
-=======
                         [_collection_related_products reloadData];
                         [self set_UP_VIEW];
                         self.segmentedControl4.selectedSegmentIndex = 0;
                         [self segmentedControlChangedValue:self.segmentedControl4];
                             
->>>>>>> master
                         }
                         else
                         {
                             [self set_Data_to_UIElements];
                             [self.collection_images reloadData];
                              [self.collectionview_variants reloadData];
-<<<<<<< HEAD
-=======
                              [_collection_related_products reloadData];
->>>>>>> master
                             [self set_UP_VIEW];
                             self.segmentedControl4.selectedSegmentIndex = 0;
                             [self segmentedControlChangedValue:self.segmentedControl4];
@@ -2697,30 +2375,6 @@
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:tag inSection:
                               0];
     
-<<<<<<< HEAD
-    NSArray *key_arr = [[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:indexPath.row] valueForKey:@"0"] allKeys];
-   
-    for(int i=0;i<key_arr.count;i++)
-    {
-        NSLog(@"The seperated :%@",[[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:indexPath.row] valueForKey:@"0"] allObjects] objectAtIndex:i]);
-
-        if([[[[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:indexPath.row] valueForKey:@"0"] allObjects]objectAtIndex:i] isEqualToString:picker_arr[row]])
-        {
-              NSLog(@"Variant ID:%@,Color_ID:%@",[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:indexPath.row] valueForKey:@"variant_id"],[key_arr objectAtIndex:i]);
-            
-            NSDictionary *temp_dict;
-            @try {
-            temp_dict = @{[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:indexPath.row] valueForKey:@"variant_id"]:[key_arr objectAtIndex:i]};
-            }
-            @catch(NSException *exception)
-            {
-                temp_dict = @{[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:indexPath.row] valueForKey:@"custom_option_id"]:[key_arr objectAtIndex:i]};
-            }
-            [variant_arr addObject:temp_dict];
-        }
-    }
-=======
->>>>>>> master
     
     indexPaths = [[NSMutableArray alloc] initWithObjects:indexPath, nil];
    
@@ -2826,30 +2480,6 @@
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 100;
-<<<<<<< HEAD
-}
-
-#pragma Button ACIONS
-
--(void)Close_action
-{
-     [self.view endEditing:YES];
-    
-}
--(void)countrybuttonClick:(UIButton *)sender
-{
-    [self.view endEditing:YES];
-    NSLog(@"The variant ARR:%@",variant_arr);
-    
-    BOOL animationsEnabled = [UIView areAnimationsEnabled];
-    [UIView setAnimationsEnabled:NO];
-    [_collectionview_variants reloadItemsAtIndexPaths:indexPaths];
-    [UIView setAnimationsEnabled:animationsEnabled];
-    
-    NSLog(@"%@",data_arr);
-    
-=======
->>>>>>> master
 }
 
 #pragma Button ACIONS
@@ -3053,31 +2683,6 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         activityViewController.popoverPresentationController.sourceView = self.view;
         [self presentViewController:activityViewController animated:YES completion:nil];
    // }
-}
-- (IBAction)BTN_back_action:(id)sender
-{
-    
-    [self dismissViewControllerAnimated:NO completion:nil];
-    
-}
-- (IBAction)BTN_cart_action:(id)sender
-{
-    [self performSegueWithIdentifier:@"productDetail_to_wishList" sender:self];
-
-}
-- (IBAction)BTN_wish_list:(id)sender
-{
-    if ([[[json_Response_Dic valueForKey:@"products"] valueForKey:@"wishStatus"] isEqualToString:@"No"]) {
-        
-        [HttpClient createaAlertWithMsg:@"already added" andTitle:@""];
-        
-    }
-    else{
-        [self performSelector:@selector(wish_list_API) withObject:activityIndicatorView afterDelay:0.01];
-        
-        
-    }
-
 }
 
 // product Detail to Wish List

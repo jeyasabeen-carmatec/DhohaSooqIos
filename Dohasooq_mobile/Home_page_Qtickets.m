@@ -29,22 +29,15 @@
 #import "upcoming_cell.h"
 #import "product_cell.h"
 #import "VC_intial.h"
-<<<<<<< HEAD
-=======
 #import "collection_MENU.h"
 #import "ViewController.h"
->>>>>>> master
 
 
 
 
 
 
-<<<<<<< HEAD
-@interface Home_page_Qtickets ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,UITabBarDelegate,UIPickerViewDelegate, UIPickerViewDataSource,UIAlertViewDelegate>
-=======
 @interface Home_page_Qtickets ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,UITabBarDelegate,UIPickerViewDelegate, UIPickerViewDataSource,UIAlertViewDelegate,UITextFieldDelegate>
->>>>>>> master
 {
     NSMutableArray *temp_arr,*temp_hot_deals,*fashion_categirie_arr,*brands_arr,*ARR_category,*lang_arr,*image_Top_ARR,*search_ARR;
     NSIndexPath *INDX_selected;
@@ -77,12 +70,7 @@
     // Do any additional setup after loading the view.
     _Scroll_contents.delegate =self;
     
-<<<<<<< HEAD
-  
-  
-=======
    search_ARR =  [[NSMutableArray alloc]init];
->>>>>>> master
     [self.collection_images registerNib:[UINib nibWithNibName:@"cell_image" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
     [self.collection_features registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"features_cell"];
     [self.collection_showing_movies registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"showing_movies_cell"];
@@ -108,8 +96,6 @@
     
     tag =0;
     
-    tag =0;
-    
     leng_text = @"LANGUAGES";
     halls_text =@"THEATERS";
     _Hot_deals.text = @"WOMEN'S FASHION ACCESORIES";
@@ -129,14 +115,11 @@
     _BTN_leisure_venues.text = _BTN_venues.text;
     _BTN_sports_venues.text = _BTN_venues.text;
      brands_arr = [[NSMutableArray alloc]init];
-<<<<<<< HEAD
-=======
     _TXT_search.delegate =self;
     
     _TXT_search.layer.borderColor = [UIColor lightGrayColor].CGColor;
     _TXT_search.layer.borderWidth = 0.2f;
 
->>>>>>> master
     
     
     
@@ -160,14 +143,7 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     
-<<<<<<< HEAD
-    self.navigationController.navigationBar.hidden = NO;
-    
-   
-    
-=======
        
->>>>>>> master
     //[self Sports_API_call];
    //[self Leisure_API_call];
     
@@ -194,13 +170,8 @@
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
     [self performSelector:@selector(API_call_total) withObject:activityIndicatorView afterDelay:0.01];
-<<<<<<< HEAD
-    [self menu_set_UP];
-    [self tab_BAR_set_UP];
-=======
   
   
->>>>>>> master
     [self set_up_VIEW];
     
 
@@ -789,13 +760,8 @@
      @{NSForegroundColorAttributeName:[UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:1.0],
        NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:20.0f]
        } forState:UIControlStateNormal];
-<<<<<<< HEAD
-//    _BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
-//                 @selector(btnfav_action)];
-=======
    _BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
                  @selector(btnfav_action)];
->>>>>>> master
     
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
@@ -814,13 +780,6 @@
     
     [self  cart_count];
     
-<<<<<<< HEAD
-       
-    _LBL_best_selling.text = @"BEST SELLING\nPRODUCTS";
-    _LBL_fashio.text = @"FASHION\nACCSESORIES";
-    
-  
-=======
     @try
     {
     _LBL_best_selling.text = [NSString stringWithFormat:@"%@",[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:0]valueForKey:@"Widgets"] valueForKey:@"title"]];
@@ -849,7 +808,6 @@
     }
     
 
->>>>>>> master
     
    
     menu_arr = [NSArray arrayWithObjects:@"Movies.png",@"Events.png",@"Sports.png",@"leisure.png",nil];
@@ -878,15 +836,9 @@
     
     CGRect setupframe = _Scroll_contents.frame;
     setupframe.origin.y = self.navigationController.navigationBar.frame.origin.y +  self.navigationController.navigationBar.frame.size.height;
-<<<<<<< HEAD
     
     _Scroll_contents.frame = setupframe;
     
-=======
-    
-    _Scroll_contents.frame = setupframe;
-    
->>>>>>> master
      setupframe = _VW_First.frame;
     //setupframe.origin.y = _Tab_MENU.frame.origin.y + _Tab_MENU.frame.size.height ;
     setupframe.size.width = _Scroll_contents.frame.size.width;
@@ -1105,15 +1057,9 @@
                     
                 }
             }
-<<<<<<< HEAD
             
             
             
-=======
-            
-            
-            
->>>>>>> master
         }
         
         
@@ -1121,12 +1067,6 @@
     if(_VW_second.hidden == YES)
     {
         if(_VW_third.hidden == YES)
-<<<<<<< HEAD
-        {
-            if(_VW_Fourth.hidden == YES)
-            {
-                scroll_ht = _VW_First.frame.origin.y + _VW_First.frame.size.height;
-=======
         {
             if(_VW_Fourth.hidden == YES)
             {
@@ -1162,7 +1102,6 @@
             if(_VW_Fourth.hidden == YES)
             {
                 scroll_ht = _VW_second.frame.origin.y + _VW_second.frame.size.height;
->>>>>>> master
             }
             else
             {
@@ -1179,40 +1118,6 @@
             }
             else
             {
-<<<<<<< HEAD
-                scroll_ht = _VW_Fourth.frame.origin.y + _VW_Fourth.frame.size.height;
-                
-            }
-            
-            
-        }
-        
-    }
-    else
-    {
-        if(_VW_third.hidden == YES)
-        {
-            if(_VW_Fourth.hidden == YES)
-            {
-                scroll_ht = _VW_second.frame.origin.y + _VW_second.frame.size.height;
-            }
-            else
-            {
-                scroll_ht = _VW_Fourth.frame.origin.y + _VW_Fourth.frame.size.height;
-                
-            }
-        }
-        else
-        {
-            if(_VW_Fourth.hidden == YES)
-            {
-                scroll_ht = _VW_third.frame.origin.y + _VW_third.frame.size.height;
-                
-            }
-            else
-            {
-=======
->>>>>>> master
                 
                 scroll_ht = _VW_Fourth.frame.origin.y + _VW_Fourth.frame.size.height;
                 
@@ -1223,11 +1128,7 @@
     
     
     self.page_controller_movies.numberOfPages =[[temp_dicts valueForKey:@"movie"] count];
-<<<<<<< HEAD
-    self.custom_story_page_controller.numberOfPages=[[json_Response_Dic valueForKey:@"banners"] count];
-=======
     self.custom_story_page_controller.numberOfPages=[image_Top_ARR count];
->>>>>>> master
     _BTN_left.layer.cornerRadius = _BTN_left.frame.size.width/2;
     _BTN_left.layer.masksToBounds = YES;
     _BTN_right.layer.cornerRadius = _BTN_right.frame.size.width/2;
@@ -1255,7 +1156,7 @@
     [super viewDidLayoutSubviews];
     [_Scroll_contents layoutIfNeeded];
     
-    _Scroll_contents.contentSize = CGSizeMake(_Scroll_contents.frame.size.width,scroll_ht + 10);
+    _Scroll_contents.contentSize = CGSizeMake(_Scroll_contents.frame.size.width,scroll_ht);
 
 
 }
@@ -1314,9 +1215,6 @@
     {
         
         collection_img_cell *img_cell = (collection_img_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"collection_image" forIndexPath:indexPath];
-<<<<<<< HEAD
-        NSString *url_Img_FULL = [NSString stringWithFormat:@"%@uploads/banners/%@",SERVER_URL,[[[json_Response_Dic valueForKey:@"banners"] objectAtIndex:indexPath.row] valueForKey:@"banner"]];
-=======
         @try
         {
         if(indexPath.row == 0)
@@ -1326,16 +1224,10 @@
         else
         {
         NSString *url_Img_FULL = [NSString stringWithFormat:@"%@uploads/banners/%@",SERVER_URL,[[image_Top_ARR objectAtIndex:indexPath.row] valueForKey:@"banner"]];
->>>>>>> master
         url_Img_FULL  =[url_Img_FULL stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [img_cell.img sd_setImageWithURL:[NSURL URLWithString:url_Img_FULL]
                         placeholderImage:[UIImage imageNamed:@"logo.png"]
                                  options:SDWebImageRefreshCached];
-<<<<<<< HEAD
-        
-
-        
-=======
         }
         
 
@@ -1344,7 +1236,6 @@
         {
             
         }
->>>>>>> master
 
         
         return img_cell;
@@ -1353,25 +1244,18 @@
     else if(collectionView == _collection_showing_movies)
     {
         cell_features *img_cell = (cell_features *)[collectionView dequeueReusableCellWithReuseIdentifier:@"showing_movies_cell" forIndexPath:indexPath];
-<<<<<<< HEAD
-        NSString *img_url = [[[temp_dicts valueForKey:@"movie"]objectAtIndex:indexPath.row]valueForKey:@"_thumbURL"];
-=======
         @try
         {
         NSString *img_url = [[[temp_dicts valueForKey:@"movie"]objectAtIndex:indexPath.row]valueForKey:@"_iphonethumb"];
->>>>>>> master
         img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
         [img_cell.img sd_setImageWithURL:[NSURL URLWithString:img_url]
                         placeholderImage:[UIImage imageNamed:@"upload-8.png"]
                                  options:SDWebImageRefreshCached];
-<<<<<<< HEAD
-=======
         }
         @catch(NSException *exception)
         {
             
         }
->>>>>>> master
         
 
         
@@ -1384,21 +1268,13 @@
         //cell.img.image = [UIImage imageNamed:[temp_arr objectAtIndex:indexPath.row]];
         
         @try {
-<<<<<<< HEAD
-            NSString *url_Img_FULL = [NSString stringWithFormat:@"%@uploads/banners_ads/%@",SERVER_URL,[[[json_Response_Dic valueForKey:@"bannerLarge"] objectAtIndex:indexPath.row] valueForKey:@"banner"]];
-=======
             NSString *url_Img_FULL = [NSString stringWithFormat:@"%@uploads/banners_ads/%@",SERVER_URL,[[[json_Response_Dic valueForKey:@"bannerLarge"] objectAtIndex:indexPath.row] valueForKey:@"mobile_banner"]];
->>>>>>> master
             url_Img_FULL  =[url_Img_FULL stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
             
             [cell.img sd_setImageWithURL:[NSURL URLWithString:url_Img_FULL]
                         placeholderImage:[UIImage imageNamed:@"logo.png"]];
             
-<<<<<<< HEAD
-            _LBL_featured.text = [[[json_Response_Dic valueForKey:@"bannerLarge"] objectAtIndex:indexPath.row] valueForKey:@"title"];
-=======
 //            _LBL_featured.text = [[[json_Response_Dic valueForKey:@"bannerLarge"] objectAtIndex:indexPath.row] valueForKey:@"title"];
->>>>>>> master
         } @catch (NSException *exception) {
             NSLog(@"Exception from cell item indexpath %@",exception);
         }
@@ -1417,38 +1293,6 @@
         @try
         {
             
-<<<<<<< HEAD
-           
-            #pragma Webimage URl Cachee
-            
-             NSString *url_Img_FULL =[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_image"]];
-            [pro_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:url_Img_FULL]
-                                 placeholderImage:[UIImage imageNamed:@"logo.png"]
-                                          options:SDWebImageRefreshCached];
-            
-            
-            
-            pro_cell.LBL_item_name.text = [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"ProductDescriptions"] valueForKey:@"title"];
-            
-            pro_cell.LBL_rating.text = [NSString stringWithFormat:@"%@  ",[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_reviews"] valueForKey:@"rating"]];
-            int rating = [[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_reviews"] valueForKey:@"rating"] intValue];
-            if(rating <= 1)
-            {
-                pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.92 green:0.39 blue:0.25 alpha:1.0];
-            }
-            else if(rating <= 2)
-            {
-                pro_cell.LBL_rating.backgroundColor =[UIColor colorWithRed:0.96 green:0.69 blue:0.24 alpha:1.0];
-            }
-            else if(rating <= 3)
-            {
-                pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.19 green:0.56 blue:0.78 alpha:1.0];
-            }
-            else
-            {
-                pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.25 green:0.80 blue:0.51 alpha:1.0];
-            }
-=======
             
 #pragma Webimage URl Cachee
             
@@ -1622,120 +1466,6 @@
             [pro_cell.BTN_fav addTarget:self action:@selector(hot_dels_wishlist:) forControlEvents:UIControlEventTouchUpInside];
             
             
->>>>>>> master
-            
-
-            pro_cell.LBL_current_price.text = [NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"]];
-            
-            NSString *current_price = [NSString stringWithFormat:@"QR %@", [[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"]];
-            
-            NSString *prec_price = [NSString stringWithFormat:@"QR %@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_price"]];
-            NSString *text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
-            
-            if ([pro_cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
-                
-                
-                NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-                [paragraphStyle setAlignment:NSTextAlignmentCenter];
-                
-                if ([current_price isEqualToString:@"QR <null>"]) {
-                    
-                    
-                    NSString *text = [NSString stringWithFormat:@" %@",prec_price];
-                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
-                    
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor],}range:[text rangeOfString:prec_price] ];
-                    
-                    [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
-                    //NSParagraphStyleAttributeName
-                    pro_cell.LBL_current_price.attributedText = attributedText;
-                    
-                    
-                    
-                }
-                
-                else{
-                    
-                    // Define general attributes for the entire text
-                    //        NSDictionary *attribs = @{
-                    //                                  NSForegroundColorAttributeName:pro_cell.LBL_current_price.textColor,
-                    //                                  NSFontAttributeName:pro_cell.LBL_current_price.font
-                    //                                  };
-                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
-                    
-                    
-                    
-                    NSRange ename = [text rangeOfString:current_price];
-                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0],NSForegroundColorAttributeName:[UIColor redColor]}
-                                                range:ename];
-                    }
-                    else
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
-                                                range:ename];
-                    }
-                    
-                    NSRange cmp = [text rangeOfString:prec_price];
-                    //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
-                    
-                    
-                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0],NSForegroundColorAttributeName:[UIColor grayColor]}
-                                                range:cmp];
-                    }
-                    else
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
-                    }
-                    [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
-                    [attributedText addAttribute:NSStrikethroughStyleAttributeName
-                                           value:@2
-                                           range:NSMakeRange([prec_price length]+4, [current_price length]-3)];
-                    pro_cell.LBL_current_price.attributedText = attributedText;
-                    
-                }
-            }
-            else
-            {
-                pro_cell.LBL_current_price.text = text;
-            }
-            if([prec_price isEqualToString:@"QR (null)"])
-            {
-                prec_price = 0;
-            }
-            else if([current_price isEqualToString:@"QR (null)"])
-            {
-                current_price =0;
-            }
-
-            int prev_pricee = [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_price"] intValue];
-            int current_pricee =  [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"] intValue];
-            
-            int  n = prev_pricee-current_pricee;
-            float discount = (n*100)/prev_pricee;
-
-            NSString *str = @"% off";
-           pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%.0f%@",discount,str];
-           [pro_cell.BTN_fav setTag:indexPath.row];//wishListStatus
-        
-            
-            if ([[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"wishListStatus"] isEqualToString:@"Yes"]) {
-                
-                [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
-                [pro_cell.BTN_fav setTitleColor:[UIColor colorWithRed:244.f/255.f green:176.f/255.f blue:77.f/255.f alpha:1] forState:UIControlStateNormal];
-            }
-            else{
-                [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
-                
-                [pro_cell.BTN_fav setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            }
-            
-            [pro_cell.BTN_fav addTarget:self action:@selector(hot_dels_wishlist:) forControlEvents:UIControlEventTouchUpInside];
-            
-           
             
         }
         @catch(NSException *exception)
@@ -1746,17 +1476,10 @@
         
         NSLog(@"The cell frame is :%@",NSStringFromCGRect(pro_cell.frame));
         NSLog(@"The hot_deals frame is :%@",NSStringFromCGRect(_collection_hot_deals.frame));
-<<<<<<< HEAD
-
-        return pro_cell;
-    }
-   
-=======
         
         return pro_cell;
     }
     
->>>>>>> master
     //collection Best deals
     else if(collectionView == _collection_best_deals)
     {
@@ -1764,76 +1487,6 @@
         
         @try
         {
-<<<<<<< HEAD
-        NSString *url_Img_FULL =[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_image"]];
-        url_Img_FULL = [url_Img_FULL stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-        
-        [pro_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:url_Img_FULL]
-                             placeholderImage:[UIImage imageNamed:@"logo.png"]
-                                      options:SDWebImageRefreshCached];
-        
-        
-        
-        pro_cell.LBL_item_name.text = [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"ProductDescriptions"] valueForKey:@"title"];
-        
-        pro_cell.LBL_rating.text = [NSString stringWithFormat:@"%@  ",[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_reviews"] valueForKey:@"rating"]];
-            int rating = [[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_reviews"] valueForKey:@"rating"] intValue];
-            if(rating <= 1)
-            {
-                pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.92 green:0.39 blue:0.25 alpha:1.0];
-            }
-            else if(rating <= 2)
-            {
-                pro_cell.LBL_rating.backgroundColor =[UIColor colorWithRed:0.96 green:0.69 blue:0.24 alpha:1.0];
-            }
-            else if(rating <= 3)
-            {
-                pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.19 green:0.56 blue:0.78 alpha:1.0];
-            }
-            else
-            {
-                pro_cell.LBL_rating.backgroundColor = [UIColor colorWithRed:0.25 green:0.80 blue:0.51 alpha:1.0];
-            }
-            
-
-        pro_cell.LBL_current_price.text = [NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"]];
-        
-        NSString *current_price = [NSString stringWithFormat:@"QR %@", [[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"]];
-        
-        NSString *prec_price = [NSString stringWithFormat:@"QR %@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_price"]];
-        NSString *text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
-        
-        if ([pro_cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
-            
-            
-            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-            [paragraphStyle setAlignment:NSTextAlignmentCenter];
-            
-            if ([current_price isEqualToString:@"QR <null>"]) {
-                
-                
-                NSString *text = [NSString stringWithFormat:@" %@",prec_price];
-                NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
-                
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor],}range:[text rangeOfString:prec_price] ];
-                
-                [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
-                //NSParagraphStyleAttributeName
-                pro_cell.LBL_current_price.attributedText = attributedText;
-                
-                
-                
-            }
-            
-            else{
-                
-                // Define general attributes for the entire text
-                //        NSDictionary *attribs = @{
-                //                                  NSForegroundColorAttributeName:pro_cell.LBL_current_price.textColor,
-                //                                  NSFontAttributeName:pro_cell.LBL_current_price.font
-                //                                  };
-                NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
-=======
             NSString *url_Img_FULL =[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_image"]];
             url_Img_FULL = [url_Img_FULL stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
             
@@ -1894,45 +1547,11 @@
             NSString *text;
             
             if ([pro_cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
->>>>>>> master
                 
                 
                 NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
                 [paragraphStyle setAlignment:NSTextAlignmentCenter];
                 
-<<<<<<< HEAD
-                NSRange ename = [text rangeOfString:current_price];
-                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0],NSForegroundColorAttributeName:[UIColor redColor]}
-                                            range:ename];
-                }
-                else
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
-                                            range:ename];
-                }
-                
-                NSRange cmp = [text rangeOfString:prec_price];
-                //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
-                
-                
-                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0],NSForegroundColorAttributeName:[UIColor grayColor]}
-                                            range:cmp];
-                }
-                else
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
-                }
-                [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
-                [attributedText addAttribute:NSStrikethroughStyleAttributeName
-                                       value:@2
-                                       range:NSMakeRange([prec_price length]+4, [current_price length]-3)];
-                pro_cell.LBL_current_price.attributedText = attributedText;
-                
-=======
                 if ([current_price isEqualToString:@"<null>"] || [current_price isEqualToString:@"<nil>"]) {
                     
                     
@@ -2001,42 +1620,12 @@
                     pro_cell.LBL_current_price.attributedText = attributedText;
                     
                 }
->>>>>>> master
             }
-        }
-        else
-        {
-            pro_cell.LBL_current_price.text = text;
-        }
-            if([prec_price isEqualToString:@"QR (null)"])
+            else
             {
-                prec_price = 0;
-            }
-            else if([current_price isEqualToString:@"QR (null)"])
-            {
-<<<<<<< HEAD
-                current_price =0;
-=======
                 pro_cell.LBL_current_price.text = text;
->>>>>>> master
             }
-
-        
-            int prev_pricee = [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"product_price"] intValue];
-            int current_pricee =  [[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"special_price"] intValue];
             
-<<<<<<< HEAD
-            int  n = prev_pricee-current_pricee;
-            float discount = (n*100)/prev_pricee;
-        NSString *str = @"% off";
-        pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%.0f%@",discount,str];
-        [pro_cell.BTN_fav setTag:indexPath.row];//wishListStatus
-        
-        if ([[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] objectAtIndex:indexPath.row]valueForKey:@"wishListStatus"] isEqualToString:@"Yes"]) {
-            
-            [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
-            [pro_cell.BTN_fav setTitleColor:[UIColor colorWithRed:244.f/255.f green:176.f/255.f blue:77.f/255.f alpha:1] forState:UIControlStateNormal];
-=======
             
             [pro_cell.BTN_fav setTag:indexPath.row];//wishListStatus
             
@@ -2055,35 +1644,15 @@
             
             
             
->>>>>>> master
         }
-        else{
-            [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
+        @catch(NSException *exception)
+        {
             
-            [pro_cell.BTN_fav setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         }
-<<<<<<< HEAD
-        
-        [pro_cell.BTN_fav addTarget:self action:@selector(best_dels_wishlist:) forControlEvents:UIControlEventTouchUpInside];
-        
-        
-        
-    }
-    @catch(NSException *exception)
-    {
-        
-    }
-        return pro_cell;
-    
-    
-    }
-    else if(collectionView == _collection_brands)
-=======
         return pro_cell;
         
         
     }      else if(collectionView == _collection_brands)
->>>>>>> master
     {
         cell_brands *cell = (cell_brands *)[collectionView dequeueReusableCellWithReuseIdentifier:@"brands_cell" forIndexPath:indexPath];
         
@@ -2114,19 +1683,6 @@
     else if(collectionView == _collection_fashion_categirie)
     {
         Fashion_categorie_cell *pro_cell = (Fashion_categorie_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"fashion_categorie" forIndexPath:indexPath];
-<<<<<<< HEAD
-        
-        @try
-        {
-            NSString *url_Img_FULL =[NSString stringWithFormat:@"%@uploads/banners_ads/%@",SERVER_URL,[[[json_Response_Dic valueForKey:@"bannerFashion"] objectAtIndex:indexPath.row] valueForKey:@"banner"]];
-            url_Img_FULL = [url_Img_FULL stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-
-
-            
-            [pro_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:url_Img_FULL]
-                                 placeholderImage:[UIImage imageNamed:@"logo.png"]
-                                          options:SDWebImageRefreshCached];
-=======
         
         @try
         {
@@ -2162,18 +1718,12 @@
             pro_cell.IMG_menu.image = [UIImage imageNamed:[menu_arr objectAtIndex:indexPath.row]];
             
             
->>>>>>> master
             
         }
         @catch(NSException *exception)
         {
             
         }
-<<<<<<< HEAD
-        
-        return pro_cell;
-=======
->>>>>>> master
         
         return pro_cell;
 
@@ -2752,11 +2302,8 @@
         
         NSString *url_key = [NSString stringWithFormat:@"%@",[[brands_arr objectAtIndex:indexPath.row] valueForKey:@"url_key"]];
         NSString *list_TYPE = @"brandsList";
-<<<<<<< HEAD
-=======
         [[NSUserDefaults standardUserDefaults] setValue:url_key forKey:@"product_list_key"];
         [[NSUserDefaults standardUserDefaults] synchronize];
->>>>>>> master
         NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,url_key,country,languge,user_id];
         
         
@@ -2791,15 +2338,12 @@
         NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
         
         NSString *list_TYPE = @"productList";
-<<<<<<< HEAD
-=======
         NSString *url_key_val =[[[json_Response_Dic valueForKey:@"bannerLarge"] objectAtIndex:indexPath.row] valueForKey:@"url"];
         url_key_val = [url_key_val stringByReplacingOccurrencesOfString:@"catalog/" withString:@""];
         
         [[NSUserDefaults standardUserDefaults] setValue:url_key_val forKey:@"product_list_key"];
         [[NSUserDefaults standardUserDefaults] synchronize];
 
->>>>>>> master
         NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,url_key,country,languge,user_id];
         
         
@@ -2812,43 +2356,6 @@
         
     }
     else if(collectionView == _collection_images)
-<<<<<<< HEAD
-    {
-        
-        NSString *hot_deals_url = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"banners"] objectAtIndex:indexPath.row] valueForKey:@"url"]];
-        hot_deals_url = [hot_deals_url stringByReplacingOccurrencesOfString:@"catalog/" withString:@""];
-        hot_deals_url = [hot_deals_url stringByReplacingOccurrencesOfString:@"discount/" withString:@""];
-        NSString *url_key;
-        if([hot_deals_url containsString:@"/"])
-        {
-            url_key = [NSString stringWithFormat:@"%@",hot_deals_url];
-            
-        }
-        else
-        {
-            url_key =[NSString stringWithFormat:@"%@/0",hot_deals_url];
-        }
-        [[NSUserDefaults standardUserDefaults] setValue:[[[json_Response_Dic valueForKey:@"banners"] objectAtIndex:indexPath.row] valueForKey:@"title"] forKey:@"item_name"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
-        NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-        NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
-        
-        NSString *list_TYPE = @"productList";
-        NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,url_key,country,languge,user_id];
-        
-        
-        [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        
-        [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
-
-    }
-    
-    else if(collectionView == _collection_fashion_categirie)
-    {
-=======
     {
         @try
         {
@@ -2902,7 +2409,6 @@
     
     else if(collectionView == _collection_fashion_categirie)
     {
->>>>>>> master
         NSString *fashion_deals_url = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"bannerFashion"] objectAtIndex:indexPath.row] valueForKey:@"url"]];
         fashion_deals_url = [fashion_deals_url stringByReplacingOccurrencesOfString:@"catalog/" withString:@""];
         fashion_deals_url = [fashion_deals_url stringByReplacingOccurrencesOfString:@"discount/" withString:@""];
@@ -2923,8 +2429,6 @@
         NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
         
         NSString *list_TYPE = @"productList";
-<<<<<<< HEAD
-=======
         
         
         NSString *url_key_val =[[[json_Response_Dic valueForKey:@"bannerFashion"] objectAtIndex:indexPath.row] valueForKey:@"url"];
@@ -2933,7 +2437,6 @@
         [[NSUserDefaults standardUserDefaults] setValue:url_key_val forKey:@"product_list_key"];
         [[NSUserDefaults standardUserDefaults] synchronize];
 
->>>>>>> master
         NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,url_key,country,languge,user_id];
         
         
@@ -2943,17 +2446,6 @@
         
         [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
 
-<<<<<<< HEAD
-    }
-    else if(collectionView == _collection_showing_movies)
-    {
-        [[NSUserDefaults standardUserDefaults]  setValue:[[[temp_dicts valueForKey:@"movie"] objectAtIndex:indexPath.row] valueForKey:@"_id"]  forKey:@"id"];
-        [[NSUserDefaults standardUserDefaults]  synchronize];
-        [self performSegueWithIdentifier:@"Movies_Booking" sender:self];
-    }
-
-    
-=======
     }
     else if(collectionView == _collection_showing_movies)
     {
@@ -2994,7 +2486,6 @@
 
     
     }
->>>>>>> master
 
     else if(collectionView == _Collection_movies)
     {
@@ -3117,14 +2608,10 @@
         nib = [[NSBundle mainBundle] loadNibNamed:@"categorie_cell" owner:self options:nil];
         cell = [nib objectAtIndex:1];
     }
-<<<<<<< HEAD
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-=======
         CGRect frameset = cell.frame;
         frameset.size.width = _TBL_menu.frame.size.width;
         cell.frame = frameset;
     //cell.selectionStyle = UITableViewCellSelectionStyleNone;
->>>>>>> master
     cell.LBL_arrow.hidden = YES;
    
     if(indexPath.section == 0)
@@ -3525,9 +3012,6 @@
             }
             if(indexPath.row == 1)
             {
-<<<<<<< HEAD
-                [self performSegueWithIdentifier:@"edot_profile_VC" sender:self];
-=======
                 NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
                 NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
                 if([user_id isEqualToString:@"(null)"])
@@ -3543,7 +3027,6 @@
 
                 [self performSegueWithIdentifier:@"edot_profile_VC" sender:self];
                 }
->>>>>>> master
   
             }
 
@@ -3585,11 +3068,7 @@
                 if(tag == 0)
                 {
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:@"If you want to change the languge you need to login agian.Would you like to do?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
-<<<<<<< HEAD
-                    alert.tag = 1;
-=======
                     alert.tag = 2;
->>>>>>> master
                     [alert show];
                    
                     
@@ -4413,11 +3892,8 @@
 #pragma Button ACTIONS
 -(void)movies_ACTIOn
 {
-<<<<<<< HEAD
-=======
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"header_name"];
     [[NSUserDefaults standardUserDefaults] synchronize];
->>>>>>> master
     [self performSegueWithIdentifier:@"QTickets_identifier" sender:self];
     
 }
@@ -4647,7 +4123,6 @@
         Movies_arr = [new_arr mutableCopy];
         [_Collection_movies reloadData];
         [_collection_showing_movies reloadData];
-<<<<<<< HEAD
         
         NSLog(@"%lu",(unsigned long)Movies_arr.count);
     }
@@ -4700,8 +4175,6 @@
         [Movies_arr removeAllObjects];
         Movies_arr = [new_arr mutableCopy];
         [_Collection_movies reloadData];
-=======
->>>>>>> master
         
         NSLog(@"%lu",(unsigned long)Movies_arr.count);
     }
@@ -4709,58 +4182,6 @@
     {
         NSLog(@"Exception%@",exception);
     }
-    
-}
--(void)Top_movies_API
-{
-    @try {
-        NSURL *URL = [[NSURL alloc] initWithString:@"http://api.q-tickets.com/V4.0/gettopfivemovies"];
-        NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
-        NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
-        //NSLog(@"Response dictionary: %@", xmlDoc);
-        
-        temp_dicts = [xmlDoc valueForKey:@"Movies"];
-        NSMutableArray *tmp_arr = [temp_dicts valueForKey:@"movie"];
-        NSArray *old_arr = tmp_arr;//[json_RESULT mutableCopy];
-        
-        NSMutableArray *new_arr = [[NSMutableArray alloc]init];
-        
-        int count = (int)[old_arr count];
-        int index = 0;
-        
-        int tags = 0;
-        
-        for (int i = 0; i < count; )
-        {
-            i= i+1;
-            if ((i % 5) == 0 && i != 0)
-            {
-                NSDictionary *tmp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Qtickets",@"Movies", nil];
-                [new_arr addObject:tmp_dictin];
-                count = count + 1;
-                tags = tags + 1;
-            }
-            else
-            {
-                index = i - tags - 1;
-                [new_arr addObject:[old_arr objectAtIndex:index]];
-            }
-        }
-        
-        
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
-        [Movies_arr removeAllObjects];
-        Movies_arr = [new_arr mutableCopy];
-        [_Collection_movies reloadData];
-        
-        NSLog(@"%lu",(unsigned long)Movies_arr.count);
-    }
-    @catch(NSException *exception)
-    {
-        NSLog(@"Exception%@",exception);
-    }
-
     
 }
 -(void)Top_movies_API
@@ -4999,16 +4420,6 @@
                 if (data) {
                     
                     @try {
-<<<<<<< HEAD
-                       
-                        [self brands_API_call];
-                        json_Response_Dic = data;
-                        [self movie_API_CALL];
-                        [self Events_API_CALL];
-                        [self Event_API_CALL];
-                        [self picker_view_set_UP];
-                       
-=======
                        @try
                         {
                           [self MENU_api_call];
@@ -5040,21 +4451,12 @@
 
                         [[NSUserDefaults standardUserDefaults] setValue:currency forKey:@"currency"];
                         [[NSUserDefaults standardUserDefaults] synchronize];
->>>>>>> master
                         [_collection_images reloadData];
                           [self set_timer_to_collection_images];
                         [_collection_features reloadData];
                         [_collection_hot_deals reloadData];
                         [_collection_best_deals reloadData];
                         [_collection_fashion_categirie reloadData];
-<<<<<<< HEAD
-                         [self set_up_VIEW];
-                        
-                        VW_overlay.hidden=YES;
-                        [activityIndicatorView stopAnimating];
-
-                        
-=======
                         [self menu_set_UP];
                          [self set_up_VIEW];
                       
@@ -5063,7 +4465,6 @@
                         [activityIndicatorView stopAnimating];
 
                         
->>>>>>> master
                        
 
                         NSLog(@"the api_collection_product%@",json_Response_Dic);
@@ -5586,12 +4987,8 @@
     NSString *url_key = [NSString stringWithFormat:@"%@",[[[[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-0"] objectAtIndex:0]objectAtIndex:0] valueForKey:@"Widgets"] valueForKey:@"title"]];
     NSString *list_TYPE = @"dealsList";
     NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,url_key,country,languge,user_id];
-<<<<<<< HEAD
-    
-=======
   
      [[NSUserDefaults standardUserDefaults] setValue:url_key forKey:@"product_list_key"];
->>>>>>> master
     
     [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -5614,11 +5011,7 @@
     NSString *list_TYPE = @"dealsList";
     NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,url_key,country,languge,user_id];
     
-<<<<<<< HEAD
-    
-=======
      [[NSUserDefaults standardUserDefaults] setValue:url_key forKey:@"product_list_key"];
->>>>>>> master
     [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 
@@ -5823,22 +5216,12 @@
 
 - (void)alertView:(UIAlertView *)alertView
 clickedButtonAtIndex:(NSInteger)buttonIndex{
-<<<<<<< HEAD
-    if(alertView.tag == 1)
-=======
     if(alertView.tag == 2)
->>>>>>> master
     {
     if (buttonIndex == [alertView cancelButtonIndex])
     {
         NSLog(@"cancel:");
         
-<<<<<<< HEAD
-    }
-    else{
-        VC_intial *intial = [self.storyboard instantiateViewControllerWithIdentifier:@"intial_VC"];
-        [self presentViewController:intial animated:NO completion:nil];
-=======
    
     }
 
@@ -6022,31 +5405,8 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     
 }
->>>>>>> master
 
-        
-    }
-    }
-}
--(void)Total_search
-{
-    NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
-    NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"customer_id"];
-    
-    NSString *list_TYPE = @"productList";
-    NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/0/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,country,languge,user_id];
-    
-    
-    [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    
-    [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
-    
 
-    
-}
 /*
 #pragma mark - Navigation
 

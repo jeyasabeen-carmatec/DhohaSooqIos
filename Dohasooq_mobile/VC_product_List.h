@@ -8,10 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "VC_filter_product_list.h"
-<<<<<<< HEAD
-=======
 #import "MIBadgeButton.h"
->>>>>>> master
 
 @interface VC_product_List : UIViewController <filter_protocol>
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_product;

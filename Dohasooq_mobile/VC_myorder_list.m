@@ -10,13 +10,6 @@
 #import "orders_list_cell.h"
 #import "HttpClient.h"
 
-<<<<<<< HEAD
-@interface VC_myorder_list ()<UITableViewDelegate,UITableViewDataSource>
-{
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
-   NSMutableDictionary *json_DATA;
-=======
 @interface VC_myorder_list ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 {
     UIView *VW_overlay;
@@ -25,7 +18,6 @@
     NSArray *search_arr;
     UIImageView *image_empty;
     
->>>>>>> master
 }
 @end
 
@@ -34,10 +26,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-<<<<<<< HEAD
-=======
     [_TXT_search addTarget:self action:@selector(search_ORDERS) forControlEvents:UIControlEventEditingChanged];
->>>>>>> master
 }
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -54,10 +43,7 @@
     VW_overlay.center = self.view.center;
     [self.view addSubview:VW_overlay];
     VW_overlay.hidden = YES;
-<<<<<<< HEAD
-=======
     _TXT_search.delegate = self;
->>>>>>> master
     
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
@@ -67,9 +53,6 @@
     
     
 }
-<<<<<<< HEAD
-
-=======
 -(void)search_ORDERS
 {
     @try {
@@ -108,19 +91,11 @@
     [textField resignFirstResponder];
     return YES;
 }
->>>>>>> master
 - (IBAction)back_ACTIon:(id)sender {
     [self.navigationController popViewControllerAnimated:NO];
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-<<<<<<< HEAD
-    return [[json_DATA valueForKey:@"Orders"] count];
-}
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return 1;
-=======
     return 1;
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -138,7 +113,6 @@
 //    NSLog(@"Temp store array %@",json_DATA);
     return [json_DATA count];
     
->>>>>>> master
     
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -151,12 +125,8 @@
         nib = [[NSBundle mainBundle] loadNibNamed:@"orders_list_cell" owner:self options:nil];
         order_cell = [nib objectAtIndex:0];
     }
-<<<<<<< HEAD
-    NSString *str = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Orders"] objectAtIndex:indexPath.section] valueForKey:@"order_number"]];
-=======
   
     NSString *str = [NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:indexPath.row] valueForKey:@"order_number"]];
->>>>>>> master
     str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
     NSString *text = [NSString stringWithFormat:@"ORDER ID : %@",str];
     
@@ -188,11 +158,7 @@
     {
         [order_cell.BTN_order_ID setTitle:text forState:UIControlStateNormal];
     }
-<<<<<<< HEAD
-    NSString *date = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Orders"] objectAtIndex:indexPath.section] valueForKey:@"order_created"]];
-=======
     NSString *date = [NSString stringWithFormat:@"%@",[[json_DATA  objectAtIndex:indexPath.row] valueForKey:@"order_created"]];
->>>>>>> master
     date = [date stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
     NSString *date_text = [NSString stringWithFormat:@"Order on: %@",date];
     
@@ -206,20 +172,6 @@
         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:date_text attributes:attribs];
         
         
-<<<<<<< HEAD
-        
-        NSRange ename = [date_text rangeOfString:date];
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-                                    range:ename];
-        }
-        else
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor blackColor]}
-                                    range:ename];
-        }
-=======
         CGSize result = [[UIScreen mainScreen] bounds].size;
           NSRange ename = [date_text rangeOfString:date];
         if(result.height <= 480)
@@ -242,22 +194,15 @@
 
         
         
->>>>>>> master
         order_cell.LBL_order_date.attributedText = attributedText;
     }
     else
     {
         order_cell.LBL_order_date.text = text;
     }
-<<<<<<< HEAD
-    NSString *qr = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Orders"] objectAtIndex:indexPath.section] valueForKey:@"order_total"]];
-    qr = [qr stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-    NSString *price = [NSString stringWithFormat:@"QR %@",qr];
-=======
     NSString *qr = [NSString stringWithFormat:@"%@",[[json_DATA  objectAtIndex:indexPath.row] valueForKey:@"order_total"]];
     qr = [qr stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
     NSString *price = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],qr];
->>>>>>> master
     
     if ([order_cell.LBL_price respondsToSelector:@selector(setAttributedText:)]) {
         
@@ -287,22 +232,6 @@
     }
     order_cell.VW_content.layer.borderWidth = 0.5f;
     order_cell.VW_content.layer.borderColor = [UIColor grayColor].CGColor;
-<<<<<<< HEAD
-
-    return order_cell;
-}
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
-    return 5;
-}
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-      
-    [[NSUserDefaults standardUserDefaults] setValue:[[[json_DATA valueForKey:@"Orders"] objectAtIndex:indexPath.section] valueForKey:@"id"] forKey:@"order_ID"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
-  
-=======
     
 //    else
 //    {
@@ -427,14 +356,10 @@
    // }
 
     
->>>>>>> master
     [self performSegueWithIdentifier:@"order_list_detail" sender:self];
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-<<<<<<< HEAD
-  return 85;
-=======
   return 92;
 }
 -(void)move_to_detail:(UIButton *)sender
@@ -445,18 +370,12 @@
       [self performSegueWithIdentifier:@"order_list_detail" sender:self];
         
    
->>>>>>> master
 }
 -(void)Orders_list_API
 {
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
-<<<<<<< HEAD
-    
-    @try
-=======
        @try
->>>>>>> master
     {
     
         NSDictionary *parameters = @{
@@ -481,10 +400,6 @@
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         if(aData)
         {
-<<<<<<< HEAD
-           json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
-            NSLog(@"The response Api post sighn up API %@",json_DATA);
-=======
           NSMutableDictionary *json_DAT = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             json_DATA = [json_DAT valueForKey:@"Orders"];
             NSLog(@"The response Api post sighn up API %@",json_DATA);
@@ -513,7 +428,6 @@
                 
 
             }
->>>>>>> master
             [self.TBL_orders reloadData];
             [activityIndicatorView stopAnimating];
             VW_overlay.hidden = YES;
@@ -537,10 +451,7 @@
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
     }
-<<<<<<< HEAD
-=======
     
->>>>>>> master
 }
 
 - (void)didReceiveMemoryWarning {

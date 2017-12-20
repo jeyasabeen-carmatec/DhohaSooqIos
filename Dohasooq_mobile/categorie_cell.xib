@@ -63,11 +63,7 @@
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="keo-Ah-313">
                         <rect key="frame" x="282" y="9" width="31" height="27"/>
-<<<<<<< HEAD
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-=======
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
->>>>>>> master
                         <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="24"/>
                         <state key="normal" title="">
                             <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>

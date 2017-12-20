@@ -20,10 +20,7 @@
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
     NSString *product_id;
-<<<<<<< HEAD
-=======
     UIImageView *image_empty;
->>>>>>> master
 
 }
 
@@ -38,9 +35,6 @@
 //    UINib *nib = [UINib nibWithNibName:@"wish_list_cell" bundle:nil];
 //    [_TBL_wish_list_items registerNib:nib forCellReuseIdentifier:@"wish_list_cell"];
 //    [_TBL_wish_list_items registerNib:nib forCellReuseIdentifier:@"Qwish_list_cell"];
-<<<<<<< HEAD
-    
-=======
     @try
     {
     [_BTN_cart setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
@@ -50,7 +44,6 @@
         
     }
 
->>>>>>> master
     [self set_UP_VIEW];
 }
 -(void)viewWillAppear:(BOOL)animated{
@@ -185,15 +178,9 @@
     
     
     
-<<<<<<< HEAD
-    NSString *currency_code = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.row] valueForKey:@"currency_code"]];
-         NSString *current_price = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.row] valueForKey:@"special_price"] ];
-           NSString *prec_price = [NSString stringWithFormat:@"%@", [[response_Arr objectAtIndex:indexPath.row] valueForKey:@"product_price"] ];
-=======
     NSString *currency_code = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
          NSString *current_price = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"special_price"] ];
            NSString *prec_price = [NSString stringWithFormat:@"%@", [[response_Arr objectAtIndex:indexPath.section] valueForKey:@"product_price"] ];
->>>>>>> master
     
 //    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
 //    [paragraphStyle setAlignment:NSTextAlignmentCenter];
@@ -346,13 +333,8 @@
 {
     [[NSUserDefaults standardUserDefaults]setObject:[NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"id"]] forKey:@"product_id"];
     
-<<<<<<< HEAD
-    [[NSUserDefaults standardUserDefaults]setObject:[[response_Arr objectAtIndex:indexPath.row] valueForKey:@"url_key"] forKey:@"product_list_key_sub"];
-    [[NSUserDefaults standardUserDefaults] setValue:[[response_Arr objectAtIndex:indexPath.row] valueForKey:@"merchant_id"]forKey:@"Mercahnt_ID"];
-=======
     [[NSUserDefaults standardUserDefaults]setObject:[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"url_key"] forKey:@"product_list_key_sub"];
     [[NSUserDefaults standardUserDefaults] setValue:[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"merchant_id"]forKey:@"Mercahnt_ID"];
->>>>>>> master
    
     wish_list_cell *cell = (wish_list_cell *)[self.TBL_wish_list_items cellForRowAtIndexPath:indexPath];
 
@@ -472,22 +454,6 @@
                           [self performSelector:@selector(cart_count) withObject:nil afterDelay:0.01];
                       });
                 if (data) {
-<<<<<<< HEAD
-                    @try {
-                        VW_overlay.hidden = YES;
-                        [activityIndicatorView stopAnimating];
-                        
-                        if ([data isKindOfClass:[NSArray class]]) {
-                            response_Arr = data;
-                            NSLog(@"Wish List Data*******%@*********",response_Arr);
-                            [self.TBL_wish_list_items reloadData];
-                        }
-                        else{
-                            [HttpClient createaAlertWithMsg:@"The data is in Unknown format" andTitle:@""];
-                        }
-                       
-                    } @catch (NSException *exception) {
-=======
                   
                         VW_overlay.hidden = YES;
                         [activityIndicatorView stopAnimating];
@@ -531,7 +497,6 @@
                     VW_overlay.hidden=YES;
                     [activityIndicatorView stopAnimating];
 
->>>>>>> master
                         NSLog(@"%@",exception);
                     }
                     
@@ -546,10 +511,7 @@
         [activityIndicatorView stopAnimating];
         NSLog(@"%@",exception);
     }
-<<<<<<< HEAD
-=======
         }
->>>>>>> master
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     }
@@ -619,11 +581,6 @@
             NSLog(@"%@",data);
             NSDictionary *dict = data;
             @try {
-<<<<<<< HEAD
-                NSString *badge_value = [NSString stringWithFormat:@"%@",[data valueForKey:@"count"]];
-                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-                {
-=======
                 NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
                 NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
                 
@@ -632,34 +589,12 @@
                 {
                     [_BTN_cart setBadgeString:[NSString stringWithFormat:@"%@+",badge_value]];
                     
->>>>>>> master
                     
-                    if(badge_value.length > 2)
-                    {
-                        self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
-                        
-                    }
-                    else{
-                        self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
-                        
-                    }
                 }
                 else{
-<<<<<<< HEAD
-                    if(badge_value.length > 2)
-                    {
-                        self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
-                        
-                    }
-                    else{
-                        self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
-                        
-                    }
-=======
                     [_BTN_cart setBadgeString: [NSString stringWithFormat:@"%@",badge_value]];
                     
                     
->>>>>>> master
                 }
                 
             } @catch (NSException *exception) {
@@ -670,12 +605,7 @@
     }];
 }
 
-<<<<<<< HEAD
-
-#pragma mark delete_from_wishList_API_calling
-=======
 #pragma mark Set_Badge_value
->>>>>>> master
 
 -(void)set_Data_to_badge_value:(NSString *)badge_value{
     
@@ -707,16 +637,6 @@
     
 }
 
-<<<<<<< HEAD
-*/
-    
-    @try {
-    
-    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    NSString *user_ID = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
-    
-    NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/delFromWishList/%@/%@.json",SERVER_URL,product_id,user_ID];
-=======
 
 
 #pragma mark delete_from_wishList_API_calling
@@ -732,22 +652,8 @@
      User_Id = 24
      
      */
->>>>>>> master
     
     @try {
-<<<<<<< HEAD
-        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (error) {
-                    NSLog(@"%@",[error localizedDescription]);
-                }
-                if (data) {
-                    NSLog(@"%@",data);
-                    
-                    
-                    @try {
-                        [HttpClient createaAlertWithMsg:[data valueForKey:@"msg"] andTitle:@""];
-=======
         
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
         NSString *user_ID = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
@@ -767,7 +673,6 @@
                         {
                              [HttpClient createaAlertWithMsg:[data valueForKey:@"msg"] andTitle:@""];
                         }
->>>>>>> master
                         
                         else
                         {
@@ -792,22 +697,11 @@
             NSLog(@"%@",exception);
              [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
             
-<<<<<<< HEAD
-        }];
-         } @catch (NSException *exception) {
-                        NSLog(@"%@",exception);
-
-    }
-        
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-=======
         }
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
          [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
->>>>>>> master
     }
 }
 
@@ -891,8 +785,6 @@
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     }
-<<<<<<< HEAD
-=======
 }
 - (void)alertView:(UIAlertView *)alertView
 clickedButtonAtIndex:(NSInteger)buttonIndex{
@@ -914,7 +806,6 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             
         }
     }
->>>>>>> master
 }
 
 

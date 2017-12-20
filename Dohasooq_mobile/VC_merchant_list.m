@@ -226,7 +226,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return 100.0;
+    return 10.0;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -235,11 +235,6 @@
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-<<<<<<< HEAD
-   [[NSUserDefaults standardUserDefaults] setObject:[arr_product objectAtIndex:indexPath.row] forKey:@"merchant_data"];
-    
-    [[NSUserDefaults standardUserDefaults] synchronize];
-=======
 //    if(indexPath.section == 0)
 //    {
 //   [[NSUserDefaults standardUserDefaults] setObject:[search_arr objectAtIndex:indexPath.row] forKey:@"merchant_data"];
@@ -252,7 +247,6 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
 
   //  }
->>>>>>> master
     
     
     

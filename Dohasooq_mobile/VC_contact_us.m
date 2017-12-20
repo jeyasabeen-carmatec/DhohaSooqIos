@@ -15,6 +15,7 @@
     float scroll_ht;
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
+    NSDictionary *json_dic;
     
     
 
@@ -31,14 +32,37 @@
 -(void)set_up_VIEW
 {
 //    _LBL_address.text = @"Doha Bank\n13th Floor,Doha Bank Tower,Near Sheraton\nCorniche Street,West Bay\nPO BOX 3818\nDoha,Qatar";
-    [_LBL_address sizeToFit];
+   
+    
+    _VW_contact.layer.shadowColor = [UIColor lightGrayColor].CGColor;
+    _VW_contact.layer.shadowOffset = CGSizeMake(0.0, 0.0);
+    _VW_contact.layer.shadowOpacity = 1.0;
+    _VW_contact.layer.shadowRadius = 4.0;
     
     _VW_address.layer.shadowColor = [UIColor lightGrayColor].CGColor;
     _VW_address.layer.shadowOffset = CGSizeMake(0.0, 0.0);
     _VW_address.layer.shadowOpacity = 1.0;
     _VW_address.layer.shadowRadius = 4.0;
     
-    CGRect frameset = _VW_address.frame;
+    NSString *description =[NSString stringWithFormat:@"%@",[json_dic valueForKey:@"content"]];
+    description = [description stringByAppendingString:[NSString stringWithFormat:@"<style>body{font-family: 'Poppins-Regular'; font-size:%dpx;}</style>",17]];
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithData:[description dataUsingEncoding:NSUTF8StringEncoding]options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}documentAttributes:nil error:nil];
+    _TXT_text.attributedText = attributedString;
+    NSString *str = _TXT_text.text;
+    str = [str stringByReplacingOccurrencesOfString:@"/" withString:@"\n"];
+    _TXT_text.text = str;
+    
+
+    [_TXT_text sizeToFit];
+    CGRect frameset = _VW_contact.frame;
+    frameset.size.height = _TXT_text.frame.origin.y + _TXT_text.frame.size.height;
+    _VW_contact.frame =frameset;
+    
+      _LBL_address.text = [json_dic valueForKey:@"fullAdress"];
+     [_LBL_address sizeToFit];
+   
+     frameset = _VW_address.frame;
+    frameset.origin.y  = _VW_contact.frame.origin.y + _VW_contact.frame.size.height + 20;
     frameset.size.height = _LBL_address.frame.origin.y + _LBL_address.frame.size.height;
     _VW_address.frame = frameset;
     
@@ -57,7 +81,8 @@
     frameset.size.width = _Scroll_contents.frame.size.width;
     _VW_contents.frame = frameset;
     [self.Scroll_contents addSubview:_VW_contents];
-    scroll_ht = _BTN_submit.frame.origin.y + _BTN_submit.frame.size.height;
+    
+    scroll_ht = _VW_contents.frame.size.height + _BTN_submit.frame.size.height;
     [_BTN_submit addTarget:self action:@selector(contact_SUBMIT) forControlEvents:UIControlEventTouchUpInside];
     
   
@@ -101,19 +126,39 @@
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
     
-    if(textField)
+    if(textField == _TXT_phone || _TXT_organisation)
     {
-        scroll_ht = scroll_ht + 100;
+        scroll_ht = scroll_ht + 120;
         [self viewDidLayoutSubviews];
+    }
+    if(textField == _TXT_organisation)
+    {
+        [UIView beginAnimations:nil context:NULL];
+        self.view.frame = CGRectMake(0,-110,self.view.frame.size.width,self.view.frame.size.height);
+        [UIView commitAnimations];
+
     }
     
 }
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
-    if(textField)
+     if(textField == _TXT_phone || _TXT_organisation)
     {
-        scroll_ht = scroll_ht - 100;
+        scroll_ht = scroll_ht - 120;
         [self viewDidLayoutSubviews];
+    }
+    if(textField == _TXT_organisation)
+    {
+        
+        [UIView beginAnimations:nil context:NULL];
+        
+        self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+        [UIView commitAnimations];
+        [UIView beginAnimations:nil context:NULL];
+        self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+        [UIView commitAnimations];
+        
+
     }
     
     
@@ -178,6 +223,11 @@
         msg = @"Please enter Message";
         
     }
+    else if(_TXT_message.text.length < 64)
+    {
+        [_TXT_message becomeFirstResponder];
+        msg = @" Message length should be more than 64 characters";
+    }
     else{
         VW_overlay.hidden = NO;
         [activityIndicatorView startAnimating];
@@ -197,16 +247,21 @@
 {
     @try {
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
 
-    NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/contactInfo/%@.json",SERVER_URL,country];
+
+    NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/contactInfo/%@/%@.json",SERVER_URL,country,languge];
 
     NSURL *URL = [[NSURL alloc] initWithString:urlGetuser];
     
     NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
-        char double_qode = '"';
-        NSString *double_q = [NSString stringWithFormat:@"%c",double_qode];
-        xmlString = [xmlString stringByReplacingOccurrencesOfString:double_q withString:@""];
-    _LBL_address.text = xmlString;
+//        char double_qode = '"';
+//        NSString *double_q = [NSString stringWithFormat:@"%c",double_qode];
+    //    xmlString = [xmlString stringByReplacingOccurrencesOfString:double_q withString:@""];
+        NSString *jsonString = xmlString;
+        NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+        json_dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+   
      [self set_up_VIEW];
     VW_overlay.hidden = YES;
     [activityIndicatorView stopAnimating];
@@ -223,6 +278,8 @@
     @try
     {
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+       // NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+
         NSString *fname = _TXT_F_name.text;
         NSString *email = _TXT_email.text;
         NSString *phone = _TXT_phone.text;
@@ -261,7 +318,7 @@
             NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
             NSLog(@"%@",error);
             NSLog(@"The response Api   sighn up API %@",json_DATA);
-            NSString *msg = [json_DATA valueForKey:@"message"];
+            NSString *msg = [json_DATA valueForKey:@"msg"];
             
             
             

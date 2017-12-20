@@ -837,8 +837,6 @@
 
 
             NSLog(@"Selected Time Detail %@",[ARR_temp objectAtIndex:collectionView.tag]);
-<<<<<<< HEAD
-=======
                 NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
                 
                 NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
@@ -849,7 +847,6 @@
               //  [self performSegueWithIdentifier:@"booking_seat" sender:self];
 
             }
->>>>>>> master
             
         }
         else{
@@ -867,8 +864,6 @@
             
             [[NSUserDefaults standardUserDefaults] setValue:[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"theatre"] forKey:@"theatre"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-<<<<<<< HEAD
-=======
                 
                 NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
                 
@@ -882,21 +877,10 @@
                 
 
             }
->>>>>>> master
           
 
           
         }
-<<<<<<< HEAD
-        NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
-
-        NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
-          [self performSegueWithIdentifier:@"booking_seat" sender:self];
-=======
->>>>>>> master
         
   
         
@@ -996,15 +980,11 @@
 //        [[NSUserDefaults standardUserDefaults] setObject:[[xmlDoc valueForKey:@"Movies"] valueForKey:@"movie"] forKey:@"Movie_detail"];
 //        [[NSUserDefaults standardUserDefaults] synchronize];
         
-<<<<<<< HEAD
-        detail_dict = [[xmlDoc valueForKey:@"Movies"] valueForKey:@"movie"] ;
-=======
         detail_dict = [[xmlDoc valueForKey:@"Movies"] valueForKey:@"movie"] ;//
         [[NSUserDefaults standardUserDefaults]setObject:detail_dict forKey:@"Movie_detail"] ;
         [[NSUserDefaults standardUserDefaults] synchronize];
 
         
->>>>>>> master
         [self filtering_date];
         [self getResponse_detail];
     }
@@ -1015,10 +995,6 @@
     }
     
     
-<<<<<<< HEAD
-    
-}
-=======
 }
 
 - (void)alertView:(UIAlertView *)alertView
@@ -1056,7 +1032,6 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
 
 }
 
->>>>>>> master
 
 /*
 #pragma mark - Navigation
