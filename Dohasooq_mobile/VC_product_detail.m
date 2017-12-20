@@ -83,6 +83,7 @@
     [self performSelector:@selector(cart_count) withObject:nil afterDelay:0.01];
      });
     [self performSelector:@selector(product_detail_API) withObject:activityIndicatorView afterDelay:0.01];
+    [self set_UP_VIEW];
     
 }
 
@@ -219,12 +220,14 @@
     
     frame_set = _IMG_merchant.frame;
     frame_set.origin.y = _LBL_sold_by.frame.origin.y + _LBL_sold_by.frame.size.height +5;
+    frame_set.size.width= self.LBL_item_name.frame.size.width;
+
     _IMG_merchant.frame = frame_set;
     
     [_LBL_merchant_sellers sizeToFit];
     
     frame_set = _LBL_merchant_sellers.frame;
-    frame_set.origin.y = _LBL_sold_by.frame.origin.y + _LBL_sold_by.frame.size.height + 5;
+    frame_set.origin.y = _LBL_delivery_cod.frame.origin.y + _LBL_delivery_cod.frame.size.height + 5;
      _LBL_merchant_sellers.frame = frame_set;
     
     frame_set = _LBL_more_sellers.frame;
@@ -453,9 +456,10 @@
                 str_srock = [str_srock stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
 
                 _LBL_stock.text = str_srock;
+                NSString *string = [NSString stringWithFormat:@"%@",[[json_Response_Dic valueForKey:@"multipleSellers"]valueForKey:@"min_amount"]];
                 if([[json_Response_Dic valueForKey:@"multipleSellers"] isKindOfClass:[NSDictionary class]])
                 {
-                    NSString *str_sellers =[NSString stringWithFormat:@"%lu more Sellers",[[[json_Response_Dic valueForKey:@"multipleSellers"] allKeys] count] - 1];
+                    NSString *str_sellers =[NSString stringWithFormat:@"%lu more Sellers(above %@)",[[[json_Response_Dic valueForKey:@"multipleSellers"] allKeys] count] - 1,string];
                     [_LBL_more_sellers setTitle:str_sellers forState:UIControlStateNormal];
                    
                 }
@@ -1155,6 +1159,8 @@
 //    
 //    NSLog(@"THE iD:%c",firstLetter);
     
+    if(collectionView == _collection_related_products)
+    {
     
     NSUserDefaults *userDflts = [NSUserDefaults standardUserDefaults];
   //  NSString *merchant_ID = [NSString stringWithFormat:@"%c",firstLetter];
@@ -1163,6 +1169,7 @@
     [userDflts synchronize];
     
     [self product_detail_API];
+    }
     
     
     
@@ -1721,7 +1728,9 @@
     
          if([user_id isEqualToString:@"(null)"])
          {
-             
+             VW_overlay.hidden=YES;
+             [activityIndicatorView stopAnimating];
+
              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login First" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
              alert.tag = 1;
              [alert show];

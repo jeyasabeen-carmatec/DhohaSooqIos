@@ -797,7 +797,8 @@
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
     if([user_id isEqualToString:@"(null)"])
     {
-        
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login First" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
         alert.tag = 1;
         [alert show];
@@ -812,6 +813,8 @@
 
     if(_BTN_calneder.hidden == NO)
     {
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
     if([_BTN_calneder.text isEqualToString:@"Calendar"])
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please selct Date" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
