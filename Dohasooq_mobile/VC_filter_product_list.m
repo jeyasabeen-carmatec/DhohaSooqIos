@@ -37,22 +37,54 @@
     
     
     
-    
-    self.LBL_slider.minimumValue = 1;
-    self.LBL_slider.maximumValue = 3000;
-    
-    self.LBL_slider.lowerValue = 1;
-    self.LBL_slider.upperValue = 3000;
-    
-    self.LBL_slider.minimumRange = 1;
-    
-   
-    
-    lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
-    upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];
-    
+    @try
+    {
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"max_min"];
+        NSString *min = [NSString stringWithFormat:@"%@",[dict valueForKey:@"min"]];
+        NSString *max =[NSString stringWithFormat:@"%@",[dict valueForKey:@"max"]];
+        
+        max = [max stringByReplacingOccurrencesOfString:@"<nil>" withString:@"10"];
+        max = [max stringByReplacingOccurrencesOfString:@"<null>" withString:@"10"];
+        
+        if ([max isEqualToString:@"0"]) {
+            max = @"10";
+        }
+        // max = [max stringByReplacingOccurrencesOfString:@"0" withString:@"10"];
+        
+        
+        
+        min = [min stringByReplacingOccurrencesOfString:@"<nil>" withString:@"0"];
+        min = [min stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
+        
+        
+        
+        self.LBL_slider.minimumValue = [min floatValue];
+        self.LBL_slider.maximumValue = [max floatValue];
+        
+        self.LBL_slider.lowerValue = [min floatValue];
+        self.LBL_slider.upperValue = [max floatValue];
+        
+        
+        //self.LBL_slider.minimumRange = 1;
+        
+        
+        lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
+        upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];
+        
+        
+        
+        
+        self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"], (int)self.LBL_slider.maximumValue];
+        self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d", [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],(int)self.LBL_slider.minimumValue];
+        NSLog(@"%@ /n %@",lower,upper);
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
     
     [_BTN_submit addTarget:self action:@selector(submit_ACTION) forControlEvents:UIControlEventTouchUpInside];
+        
     
     _BTN_ten.tag = 1;
     _BTN_twenty.tag = 1;
@@ -129,7 +161,7 @@
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
 
     
-    NSString *url_str = [NSString stringWithFormat:@"%@apis/productList/%@/0/%@/%@/%@/Customer.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"product_list_key"],country,languge,user_id,discount,min,max,brands];
+    NSString *url_str = [NSString stringWithFormat:@"%@apis/productList/%@/%@/%@/%@/Customer.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"product_list_key"],country,languge,user_id,discount,min,max,brands];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
     

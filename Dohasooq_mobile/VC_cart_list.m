@@ -867,15 +867,19 @@ params.put("customerId",customerid);
     
     
     @try {
-    NSString *qr = [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"];
-    NSString *price = [NSString stringWithFormat:@"%@",[json_dict valueForKey:@"sub_total"]];
-    if ([price isEqualToString:@""]||[price isEqualToString:@"null"]||[price isEqualToString:@"<null>"]) {
-        price = @"0";
-    }
-   // NSString *plans = @"VIEW PRICE DETAILS";
-        NSString *plans = [NSString stringWithFormat:@"%ld Doha Miles",doha_miles_value];
+        NSString *qr = [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"];
+        NSString *price = [NSString stringWithFormat:@"%@",[json_dict valueForKey:@"sub_total"]];
+        //        NSString *dohamls = doha_miles_value
+        //
         
-        NSString *text =  [NSString stringWithFormat:@"%@ %@\n%@",qr,price,plans];
+        
+        if ([price isEqualToString:@""]||[price isEqualToString:@"null"]||[price isEqualToString:@"<null>"]) {
+            price = @"0";
+        }
+        // NSString *plans = @"VIEW PRICE DETAILS";
+        NSString *plans = [NSString stringWithFormat:@"%ld",doha_miles_value];
+        
+        NSString *text =  [NSString stringWithFormat:@"%@ %@ or\n Doha Miles %@",qr,price,plans];
         if ([_LBL_price respondsToSelector:@selector(setAttributedText:)]) {
             
             // Define general attributes for the entire text
@@ -911,9 +915,28 @@ params.put("customerId",customerid);
             }
             else
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
                                         range:cmp ];
             }
+            NSRange prc = [text rangeOfString:plans];
+            //        [attributedText addAttribute: NSStrikethroughStyleAttributeName value:[NSNumber numberWithInteger: NSUnderlineStyleSingle] range: NSMakeRange(0, [prec_price length])];
+            //
+            
+            
+            //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
+            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+            {
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
+                                        range:prc];
+            }
+            else
+            {
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
+                                        range:prc ];
+            }
+            
+            
+            
             _LBL_price.attributedText = attributedText;
         }
         else

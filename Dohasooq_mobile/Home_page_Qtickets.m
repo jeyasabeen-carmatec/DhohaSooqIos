@@ -1188,6 +1188,8 @@
     else if( collectionView == _collection_best_deals)
     {
         //return temp_hot_deals.count; dealWidget-1
+        
+    
         return [[[[json_Response_Dic valueForKey:@"deal"] valueForKey:@"dealWidget-1"] objectAtIndex:0] count];
         
     }
@@ -2301,8 +2303,9 @@
         NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
         
         NSString *url_key = [NSString stringWithFormat:@"%@",[[brands_arr objectAtIndex:indexPath.row] valueForKey:@"url_key"]];
+        NSString *urlkeyval = [NSString stringWithFormat:@"%@/0",url_key];
         NSString *list_TYPE = @"brandsList";
-        [[NSUserDefaults standardUserDefaults] setValue:url_key forKey:@"product_list_key"];
+        [[NSUserDefaults standardUserDefaults] setValue:urlkeyval forKey:@"product_list_key"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,url_key,country,languge,user_id];
         
@@ -2341,7 +2344,9 @@
         NSString *url_key_val =[[[json_Response_Dic valueForKey:@"bannerLarge"] objectAtIndex:indexPath.row] valueForKey:@"url"];
         url_key_val = [url_key_val stringByReplacingOccurrencesOfString:@"catalog/" withString:@""];
         
-        [[NSUserDefaults standardUserDefaults] setValue:url_key_val forKey:@"product_list_key"];
+
+        
+        [[NSUserDefaults standardUserDefaults] setValue:url_key forKey:@"product_list_key"];
         [[NSUserDefaults standardUserDefaults] synchronize];
 
         NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,url_key,country,languge,user_id];
@@ -2387,7 +2392,7 @@
         NSString *list_TYPE = @"productList";
             NSString *url_key_val =[[image_Top_ARR objectAtIndex:indexPath.row] valueForKey:@"url"];
             url_key_val = [url_key_val stringByReplacingOccurrencesOfString:@"catalog/" withString:@""];
-            [[NSUserDefaults standardUserDefaults] setValue:url_key_val forKey:@"product_list_key"];
+            [[NSUserDefaults standardUserDefaults] setValue:url_key forKey:@"product_list_key"];
             [[NSUserDefaults standardUserDefaults] synchronize];
 
         NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,url_key,country,languge,user_id];
@@ -2434,7 +2439,7 @@
         NSString *url_key_val =[[[json_Response_Dic valueForKey:@"bannerFashion"] objectAtIndex:indexPath.row] valueForKey:@"url"];
         url_key_val = [url_key_val stringByReplacingOccurrencesOfString:@"catalog/" withString:@""];
          url_key_val = [url_key_val stringByReplacingOccurrencesOfString:@"discount/" withString:@""];
-        [[NSUserDefaults standardUserDefaults] setValue:url_key_val forKey:@"product_list_key"];
+        [[NSUserDefaults standardUserDefaults] setValue:url_key forKey:@"product_list_key"];
         [[NSUserDefaults standardUserDefaults] synchronize];
 
         NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,url_key,country,languge,user_id];
@@ -2978,7 +2983,7 @@
         case 0:
         {
              [self swipe_left];
-            NSString *list_key = [[ARR_category objectAtIndex:indexPath.row] valueForKey:@"url_key"];
+            NSString *list_key =[NSString stringWithFormat:@"%@/0",[[ARR_category objectAtIndex:indexPath.row] valueForKey:@"url_key"]];
             [[NSUserDefaults standardUserDefaults] setValue:list_key forKey:@"product_list_key"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             
@@ -2987,7 +2992,7 @@
             NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
             
             NSString *list_TYPE = @"productList";
-            NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/0/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,list_key,country,languge,user_id];
+            NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/%@/Customer.json",SERVER_URL,list_TYPE,list_key,country,languge,user_id];
             
             
             [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
@@ -3067,7 +3072,7 @@
                 languages = [[[NSUserDefaults standardUserDefaults] valueForKey:@"languages"] mutableCopy];
                 if(tag == 0)
                 {
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:@"If you want to change the languge you need to login agian.Would you like to do?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:@"Do you want to change the languge?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
                     alert.tag = 2;
                     [alert show];
                    
@@ -3402,7 +3407,7 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
     [[NSUserDefaults standardUserDefaults] setObject:[ARR_category objectAtIndex:sender.tag] forKey:@"product_sub_list"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    NSString *list_key = [[ARR_category objectAtIndex:sender.tag] valueForKey:@"url_key"];
+    NSString *list_key = [NSString stringWithFormat:@"%@/0",[[ARR_category objectAtIndex:sender.tag] valueForKey:@"url_key"]];
     [[NSUserDefaults standardUserDefaults] setValue:list_key forKey:@"product_list_key"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [self swipe_left];
@@ -5373,7 +5378,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
 -(void)set_timer_to_collection_images{
     
     
-    [NSTimer scheduledTimerWithTimeInterval:8
+    [NSTimer scheduledTimerWithTimeInterval:10
                                      target:self
                                    selector:@selector(scrolling_image:)
                                    userInfo:nil
