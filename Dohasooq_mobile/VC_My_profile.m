@@ -10,8 +10,14 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import  <AssetsLibrary/AssetsLibrary.h>
 #import <Photos/Photos.h>
+<<<<<<< HEAD
 
 @interface VC_My_profile ()<UITextFieldDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
+=======
+#import "HttpClient.h"
+
+@interface VC_My_profile ()<UITextFieldDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
+>>>>>>> master
 {
     float scroll_ht;
     NSMutableArray *countrypicker,*statepicker;
@@ -20,6 +26,18 @@
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
     NSString *state_val,*group_val,*country_val;
+<<<<<<< HEAD
+=======
+    
+    
+    
+    
+    
+    
+    NSData *pngData;
+    NSData *syncResData;
+    NSMutableURLRequest *requesti;
+>>>>>>> master
 }
 
 @end
@@ -29,10 +47,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+<<<<<<< HEAD
     [self set_UP_VIEW];
 }
 -(void)viewWillAppear:(BOOL)animated{
     
+=======
+>>>>>>> master
     
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
@@ -51,6 +72,16 @@
     [activityIndicatorView startAnimating];
     
     [self performSelector:@selector(View_user_data) withObject:nil afterDelay:0.01];
+<<<<<<< HEAD
+=======
+    
+    [self set_UP_VIEW];
+}
+-(void)viewWillAppear:(BOOL)animated{
+    
+    
+    
+>>>>>>> master
 
     
 }
@@ -539,7 +570,11 @@
 }
 
 
+<<<<<<< HEAD
 #pragma states API
+=======
+#pragma mark states API
+>>>>>>> master
 -(void)states_API :(NSString *)country_id
 {
     //http://192.168.0.171/dohasooq/apis/getstatebyconapi/countryid.json
@@ -582,6 +617,11 @@
     }
 
 }
+<<<<<<< HEAD
+=======
+
+#pragma mark customer_GROUP_API
+>>>>>>> master
 -(void)customer_GROUP_API
 {
     //http://192.168.0.171/dohasooq/apis/getstatebyconapi/countryid.json
@@ -708,6 +748,16 @@
     STR_zip_code = [STR_zip_code stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
     
     
+<<<<<<< HEAD
+=======
+    NSString *img_url = [NSString stringWithFormat:@"%@%@%@",SERVER_URL,[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_path"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_img"]];
+    
+    [_IMG_Profile_pic sd_setImageWithURL:[NSURL URLWithString:img_url]
+                        placeholderImage:[UIImage imageNamed:@"logo.png"]
+                                 options:SDWebImageRefreshCached];
+    
+    
+>>>>>>> master
     
     _TXT_first_name.text = STR_fname;
     _TXT_last_name.text = STR_lname;
@@ -715,7 +765,11 @@
     _TXT_mobile_phone.text = STR_mobile;
     _TXT_Dob.text = STR_dob;
     _TXT_group.text = STR_customer_group;
+<<<<<<< HEAD
     _TXT_name.text = [NSString stringWithFormat:@"%@%@",STR_fname,STR_lname];
+=======
+    _TXT_name.text = [NSString stringWithFormat:@"%@ %@",STR_fname,STR_lname];
+>>>>>>> master
     _TXT_country.text = STR_country;
     _TXT_state.text = STR_state;
     _TXT_address1.text = STR_address;
@@ -770,12 +824,15 @@
     }
    [self BTN_female_action];
 
+<<<<<<< HEAD
     
     NSString *img_url = [NSString stringWithFormat:@"%@%@%@",SERVER_URL,[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_path"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_img"]];
     
     [_IMG_Profile_pic sd_setImageWithURL:[NSURL URLWithString:img_url]
                      placeholderImage:[UIImage imageNamed:@"logo.png"]
                               options:SDWebImageRefreshCached];
+=======
+>>>>>>> master
 
     
     VW_overlay.hidden = YES;
@@ -1206,15 +1263,29 @@
     if (buttonIndex == 0)
     {
         
+<<<<<<< HEAD
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         [self presentViewController:picker animated:YES completion:NULL];
     }
+=======
+        if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]){
+            picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+            [self presentViewController:picker animated:YES completion:NULL];
+
+        }
+        else{
+            [HttpClient createaAlertWithMsg:@"Camera is not Available" andTitle:@""];
+        }
+        
+           }
+>>>>>>> master
     else if (buttonIndex == 1)
     {
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         [self presentViewController:picker animated:YES completion:nil];
     }
 }
+<<<<<<< HEAD
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
 
     UIImage *chosenImage = info[UIImagePickerControllerOriginalImage];
@@ -1227,15 +1298,87 @@
     [picker dismissViewControllerAnimated:YES completion:NULL];
     
 }
+=======
+
+
+/*- (void)imagePickerController:(UIImagePickerController *)picker
+didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
+
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    UIImage *chosenImage = info[UIImagePickerControllerOriginalImage];
+    
+//    if (chosenImage) {
+//        NSURL *refURL = [info valueForKey:UIImagePickerControllerReferenceURL];
+//        PHFetchResult *result = [PHAsset fetchAssetsWithALAssetURLs:@[refURL] options:nil];
+//        NSString *filename = [[result firstObject] filename];
+//        [self send_Image:filename];
+//    }
+    
+    _IMG_Profile_pic.image = chosenImage;
+    
+    
+//    pngData = UIImagePNGRepresentation(chosenImage);
+    
+    
+    
+}*/
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(nullable NSDictionary<NSString *,id> *)editingInfo
+{
+    _IMG_Profile_pic.image = image;
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+    UIImage *chosenImage = _IMG_Profile_pic.image;
+    _IMG_Profile_pic.image = chosenImage;
+    
+   [self uploadImage:image];
+    
+//    // get the ref url
+//    NSURL *refURL = [editingInfo valueForKey:UIImagePickerControllerReferenceURL];
+//    
+//    // define the block to call when we get the asset based on the url (below)
+//    ALAssetsLibraryAssetForURLResultBlock resultblock = ^(ALAsset *imageAsset)
+//    {
+//        ALAssetRepresentation *imageRep = [imageAsset defaultRepresentation];
+//        NSLog(@"[imageRep filename] : %@", [imageRep filename]);
+//    };
+//    
+//    
+//    ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
+//    [assetslibrary assetForURL:refURL resultBlock:resultblock failureBlock:nil];
+//
+
+    
+    
+    
+    //Send Image
+    
+    //        if (chosenImage) {
+    //            NSURL *refURL = [editingInfo valueForKey:UIImagePickerControllerReferenceURL];
+    //            PHFetchResult *result = [PHAsset fetchAssetsWithALAssetURLs:@[refURL] options:nil];
+    //            NSString *filename = [[result firstObject] filename];
+    //            [self send_Image:filename];
+    //        }
+    }
+
+>>>>>>> master
 
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     
+<<<<<<< HEAD
     [picker dismissViewControllerAnimated:YES completion:NULL];
     
 }
 
 -(void)send_Image:(NSString *)image
+=======
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+/*-(void)send_Image:(NSString *)image
+>>>>>>> master
 {
 //    NSHTTPURLResponse *response = nil;
 //    NSDictionary *headers = @{ @"content-type": @"multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
@@ -1327,8 +1470,16 @@
         }
         [body appendFormat:@"\r\n--%@--\r\n", boundary];
         NSData *postData = [body dataUsingEncoding:NSUTF8StringEncoding];
+<<<<<<< HEAD
         
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://192.168.0.171/dohasooq/customers/my-account/4/27.json"]
+=======
+    
+     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+     NSString *urlgesture = [NSString stringWithFormat:@"%@customers/my-account/4/%@.json",SERVER_URL,[dict valueForKey:@"id"]];
+        
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlgesture]
+>>>>>>> master
                                                                cachePolicy:NSURLRequestUseProtocolCachePolicy
                                                            timeoutInterval:10.0];
         [request setHTTPMethod:@"POST"];
@@ -1356,12 +1507,19 @@
     //    {
     //        NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
 
+<<<<<<< HEAD
 }
+=======
+}*/
+>>>>>>> master
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 /*
 #pragma mark - Navigation
 
@@ -1370,6 +1528,77 @@
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }
+<<<<<<< HEAD
 */
+=======
+ */
+
+#pragma mark Post Image To Server
+
+-(void)uploadImage:(UIImage *)yourImage
+{
+    
+    
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    NSLog(@"%@",yourImage);
+    
+   
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *image_Name = [NSString stringWithFormat:@"%@.jpg",[dict valueForKey:@"firstname"]];
+
+    NSData *imageData = UIImageJPEGRepresentation(yourImage, 1.0);//UIImagePNGRepresentation(yourImage);
+    
+    NSString *urlString =  [NSString stringWithFormat:@"%@customers/my-account/4/%@.json",SERVER_URL,[dict valueForKey:@"id"]];
+
+    
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:[NSURL URLWithString:urlString]];
+    [request setHTTPMethod:@"POST"];
+    
+    NSString *boundary = @"---------------------------14737809831466499882746641449";
+    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
+    [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+    
+    NSMutableData *body = [NSMutableData data];
+    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    //[body appendData:[[NSString stringWithString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"logo\"; filename=\"%@\"\r\n", @"serser.jpg"]] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[[NSString stringWithString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"logo\"; filename=\"%@\"\r\n", image_Name]] dataUsingEncoding:NSUTF8StringEncoding]];
+
+    
+    
+    [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[NSData dataWithData:imageData]];
+    [body appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    [request setHTTPBody:body];
+    
+    NSError *err;
+    
+   NSData *data= [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&err];
+    
+    if (err) {
+        
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
+        NSLog(@"%@",[err localizedDescription]);
+    }
+    
+    if (data) {
+        NSMutableDictionary *jsonObject=[NSJSONSerialization
+                                  JSONObjectWithData:data
+                                  options:NSJSONReadingMutableLeaves
+                                  error:nil];
+        NSLog(@"jsonObject  %@",jsonObject);
+    }
+    
+    VW_overlay.hidden = YES;
+    [activityIndicatorView stopAnimating];
+}
+
+
+
+
+
+>>>>>>> master
 
 @end

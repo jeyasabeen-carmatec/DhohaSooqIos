@@ -135,6 +135,17 @@
 
 - (IBAction)BTN_save_action:(id)sender {
     
+<<<<<<< HEAD
+=======
+    [UIView beginAnimations:nil context:NULL];
+    
+    self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+    [UIView commitAnimations];
+    [UIView beginAnimations:nil context:NULL];
+    self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+    [UIView commitAnimations];
+
+>>>>>>> master
     
     NSString *msg;
 
@@ -215,6 +226,10 @@
 }
 -(void)API_CALL
 {
+<<<<<<< HEAD
+=======
+    
+>>>>>>> master
  
     @try
     {
@@ -265,6 +280,10 @@
                 VW_overlay.hidden = YES;
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 [alert show];
+<<<<<<< HEAD
+=======
+                [self performSegueWithIdentifier:@"cahnge_password_identofier" sender:self];
+>>>>>>> master
                 
             }
             else

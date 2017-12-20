@@ -10,10 +10,11 @@
 #import "Gender_cell.h"
 #import "cost_count_cell.h"
 #import "XMLDictionary/XMLDictionary.h"
+#import "ViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 
 
-@interface Event_detail ()<UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource,UIGestureRecognizerDelegate>
+@interface Event_detail ()<UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource,UIGestureRecognizerDelegate,UIAlertViewDelegate>
 {
     NSMutableDictionary *event_dtl_dict;
     NSMutableArray *event_cost_arr,*values_arr,*cost_arr,*dates_arr;
@@ -289,7 +290,7 @@
     
     UIButton *close=[[UIButton alloc]init];
     close.frame=CGRectMake(phone_close.frame.size.width - 100, 0, 100, phone_close.frame.size.height);
-    [close setTitle:@"close" forState:UIControlStateNormal];
+    [close setTitle:@"Done" forState:UIControlStateNormal];
     [close addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
     [phone_close addSubview:close];
     
@@ -460,7 +461,11 @@
       
         gcell.LBL_gender_cat.text = [[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row]valueForKey:@"_TicketName"];
             
+<<<<<<< HEAD
         gcell.LBL_price.text = [NSString stringWithFormat:@"QAR %@",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row] valueForKey:@"_TicketPrice"]];
+=======
+        gcell.LBL_price.text = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row] valueForKey:@"_TicketPrice"]];
+>>>>>>> master
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                   gcell.LBL_price.text = [NSString stringWithFormat:@"%@ QAR ",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row] valueForKey:@"_TicketPrice"]];
@@ -473,7 +478,7 @@
         @catch(NSException *exception)
         {
             gcell.LBL_gender_cat.text = [[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] valueForKey:@"_TicketName"];
-            gcell.LBL_price.text = [NSString stringWithFormat:@"QAR %@",[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] valueForKey:@"_TicketPrice"]];
+            gcell.LBL_price.text = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] valueForKey:@"_TicketPrice"]];
             gcell.LBL_result.text = [[event_cost_arr objectAtIndex:indexPath.row] valueForKey:@"quantity"];
         }
         
@@ -497,7 +502,11 @@
         {
             
             NSString *str = [cost_arr objectAtIndex:0];//gcell.LBL_result.text;
+<<<<<<< HEAD
             NSString *text = [NSString stringWithFormat:@"%@ : No of Tickets",str];
+=======
+            NSString *text = [NSString stringWithFormat:@"%@No of Tickets :",str];
+>>>>>>> master
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 text = [NSString stringWithFormat:@"%@ :No of Tickets",str];
@@ -533,11 +542,19 @@
             
          
             NSString *str1 = [cost_arr objectAtIndex:1];//gcell.LBL_price.text;
+<<<<<<< HEAD
              NSString *text1 = [NSString stringWithFormat:@"Total Price:QR  %@",str1];
             
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                  text1 = [NSString stringWithFormat:@"%@ :QR Total Price",str1];
+=======
+             NSString *text1 = [NSString stringWithFormat:@"Total Price:%@  %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],str1];
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                 text1 = [NSString stringWithFormat:@"%@ :%@ Total Price",str1,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+>>>>>>> master
             }
            
             
@@ -792,7 +809,21 @@
 }
 -(void)Book_action
 
-{
+{  NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+    if([user_id isEqualToString:@"(null)"])
+    {
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login First" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
+        alert.tag = 1;
+        [alert show];
+        
+    }
+    else
+    {
+        
+        @try{
+    
     int  i = [[cost_arr objectAtIndex:0] intValue];
 
     if(_BTN_calneder.hidden == NO)
@@ -823,6 +854,14 @@
         [[NSUserDefaults standardUserDefaults] setObject:cost_arr forKey:@"Amount_dict"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
+        if([_BTN_calneder.text isEqualToString:@"Calendar"])
+        {
+            NSLog(@"NO date:");
+        }
+        else{
+            [[NSUserDefaults standardUserDefaults] setObject:_BTN_calneder.text forKey:@"event_book_date"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
         VW_overlay.hidden = YES;
         [activityIndicatorView stopAnimating];
         [self performSegueWithIdentifier:@"event_book_user" sender:self];
@@ -848,9 +887,14 @@
         
         
     }
+        }
+        @catch(NSException *exception)
+        {
+            
+        }
 
     
-  
+    }
     
 }
 
@@ -930,6 +974,28 @@
         UIActivityViewController *activityViewController = [[UIActivityViewController alloc]                                                                initWithActivityItems:sharedObjects applicationActivities:nil];
         activityViewController.popoverPresentationController.sourceView = self.view;
         [self presentViewController:activityViewController animated:YES completion:nil];
+    }
+}
+- (void)alertView:(UIAlertView *)alertView
+clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if(alertView.tag == 1)
+    {
+        if (buttonIndex == [alertView cancelButtonIndex])
+        {
+            NSLog(@"cancel:");
+            [alertView dismissWithClickedButtonIndex:0 animated:nil];
+            
+            
+        }
+        
+        else{
+            
+            
+            ViewController *intial = [self.storyboard instantiateViewControllerWithIdentifier:@"login_VC"];
+            [self presentViewController:intial animated:NO completion:nil];
+            
+            
+        }
     }
 }
 

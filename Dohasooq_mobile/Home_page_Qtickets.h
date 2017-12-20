@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "VC_home.h"
+<<<<<<< HEAD
+=======
+#import "MIBadgeButton.h"
+>>>>>>> master
 @interface Home_page_Qtickets : UIViewController<collection_protocol>
 
 @property(nonatomic,strong) NSArray *items;
@@ -25,6 +29,11 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_address_icon;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_address;
 @property(nonatomic,strong) UIPickerView *lang_pickers;
+<<<<<<< HEAD
+=======
+@property(nonatomic,weak) IBOutlet UILabel *invisible_LBL;
+
+>>>>>>> master
 
 
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_profile;
@@ -34,10 +43,23 @@
 
 //view navigation bar
 @property(nonatomic,weak) IBOutlet UIButton *BTN_menu;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_hot_deals;
+
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_fav;
+<<<<<<< HEAD
 @property(nonatomic,weak) IBOutlet UIBarButtonItem *BTN_cart;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_QT_view;
 
+=======
+@property(nonatomic,weak) IBOutlet MIBadgeButton *BTN_cart;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_QT_view;
+@property(nonatomic,weak) IBOutlet UITextField *TXT_search;
+@property(nonatomic,weak) IBOutlet UITableView *TBL_search_results;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_badge;
+
+
+//_TBL_search_results
+>>>>>>> master
 
 
 
@@ -51,6 +73,7 @@
 @property(nonatomic,weak) IBOutlet UIImageView *BAnner_feature_offers;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_Movie_left;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_Movie_right;
+@property(nonatomic,weak) IBOutlet UICollectionView *Collection_QT_menu;
 
 // shop menu
 @property(nonatomic,weak) IBOutlet UIView *VW_First;
@@ -73,6 +96,7 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_second;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_hot_deals;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_hot_deals_banner;
+@property(nonatomic,weak) IBOutlet UILabel *Hot_deals_banner;
 
 @property(nonatomic,weak) IBOutlet UILabel *Hot_deals;
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_hot_deals;

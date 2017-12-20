@@ -63,7 +63,11 @@
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="keo-Ah-313">
                         <rect key="frame" x="282" y="9" width="31" height="27"/>
+<<<<<<< HEAD
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+=======
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+>>>>>>> master
                         <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="24"/>
                         <state key="normal" title="">
                             <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -75,6 +79,7 @@
                 <outlet property="LBL_arrow" destination="keo-Ah-313" id="LW5-tt-mPO"/>
                 <outlet property="LBL_name" destination="W62-pW-Mn8" id="LFN-7j-f4z"/>
             </connections>
+            <point key="canvasLocation" x="25" y="152"/>
         </tableViewCell>
     </objects>
 </document>

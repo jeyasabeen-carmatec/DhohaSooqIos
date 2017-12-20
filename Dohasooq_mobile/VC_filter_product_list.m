@@ -120,12 +120,25 @@
     NSDictionary *dict = [user_dflts valueForKey:@"userdata"];
     NSString *min = [NSString stringWithFormat:@"%.f",_LBL_slider.minimumValue];
     NSString *max = [NSString stringWithFormat:@"%.f",_LBL_slider.maximumValue];
+<<<<<<< HEAD
+=======
+    NSString *range = [NSString stringWithFormat:@"%@,%@",min,max];
+    [[NSUserDefaults standardUserDefaults] setValue:range  forKey:@"Range_val"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
+>>>>>>> master
     NSString *brands = [Brands_arr_post componentsJoinedByString:@","];
 
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
 
     
+<<<<<<< HEAD
     NSString *url_str = [NSString stringWithFormat:@"%@apis/productList/%@/0/%@/%@/%@/Customer.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"search_val"],country,languge,user_id,discount,min,max,brands];
+=======
+    NSString *url_str = [NSString stringWithFormat:@"%@apis/productList/%@/0/%@/%@/%@/Customer.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"product_list_key"],country,languge,user_id,discount,min,max,brands];
+    url_str = [url_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    url_str = [url_str stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+>>>>>>> master
     
     
     [[NSUserDefaults standardUserDefaults] setValue:brands forKey:@"brnds"];

@@ -22,6 +22,13 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_event;
 @property(nonatomic,weak) IBOutlet UITextField *BTN_venues;
 @property (nonatomic, strong) UIPickerView *venue_picker;
+<<<<<<< HEAD
+=======
+@property(nonatomic,weak) IBOutlet UIView *vw_events_filter;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_event_filter;
+
+
+>>>>>>> master
 
 
 //sports tab
@@ -32,6 +39,11 @@
 
 @property(nonatomic,weak) IBOutlet UITextField *BTN_sports_venues;
 @property (nonatomic, strong) UIPickerView *sports_venue_picker;
+<<<<<<< HEAD
+=======
+@property(nonatomic,weak) IBOutlet UIButton *BTN_sports_filter;
+
+>>>>>>> master
 
 
 //Movies Tab
@@ -51,6 +63,11 @@
 @property(nonatomic,weak) IBOutlet UITextField *BTN_leisure_venues;
 @property (nonatomic, strong) UIPickerView *leisure_venues;
 @property(nonatomic,weak) IBOutlet UIView *VW_leisure_filter;
+<<<<<<< HEAD
+=======
+@property(nonatomic,weak) IBOutlet UIButton *BTN_leisure_filter;
+
+>>>>>>> master
 
 
 @end

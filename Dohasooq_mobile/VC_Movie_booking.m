@@ -14,7 +14,7 @@
 #import "MZDayPickerCell.h"
 
 
-@interface VC_Movie_booking ()<UITableViewDelegate,UITableViewDataSource,MZDayPickerDelegate, MZDayPickerDataSource,UICollectionViewDelegate,UICollectionViewDataSource>
+@interface VC_Movie_booking ()<UITableViewDelegate,UITableViewDataSource,MZDayPickerDelegate, MZDayPickerDataSource,UICollectionViewDelegate,UICollectionViewDataSource,UIAlertViewDelegate>
 {
     NSMutableArray *collection_count,*table_count,*date_Arr;
     NSMutableDictionary *detail_dict;
@@ -394,7 +394,7 @@
        self.LBL_movie_name.text =  [detail_dict valueForKey:@"_name"];
         self.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[detail_dict valueForKey:@"_IMDB_rating"]];
       _LBL_censor.text = [detail_dict valueForKey:@"_Censor"];
-        NSString *img_url = [detail_dict valueForKey:@"_thumbURL"];
+        NSString *img_url = [detail_dict valueForKey:@"_iphonethumb"];
         img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
         [self.IMG_movie sd_setImageWithURL:[NSURL URLWithString:img_url]
                            placeholderImage:[UIImage imageNamed:@"upload-8.png"]
@@ -477,6 +477,7 @@
     
     self.dayPicker.dayNameLabelFontSize = 12.0f;
     self.dayPicker.dayLabelFontSize = 18.0f;
+    
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateFormat:@"EE"];
@@ -783,21 +784,25 @@
     if(result.height <= 480)
     {
         // iPhone Classic
-        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:13];
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:12];
+        cell.BTN_time.textAlignment = NSTextAlignmentJustified;
         
         
     }
     else if(result.height <= 568)
     {
         // iPhone 5
-        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:13];
-      //  cell.BTN_time.textAlignment = NSTextAlignmentLeft;
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:12];
+        cell.BTN_time.textAlignment = NSTextAlignmentJustified;
+        
         
         
     }
     else
     {
         cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:13];
+        cell.BTN_time.textAlignment = NSTextAlignmentCenter;
+
         
     }
 
@@ -811,9 +816,12 @@
     
     
     @try {
+        
+        
         if(([[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] isKindOfClass:[NSDictionary class]]))
         {
-            
+            if([[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] valueForKey:@"_type"] isEqualToString:@"available"])
+            {
             [[NSUserDefaults standardUserDefaults] setValue:[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] valueForKey:@"_id"] forKey:@"movie_id"];
             [[NSUserDefaults standardUserDefaults] synchronize];
 //            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"movie_date"];
@@ -829,10 +837,24 @@
 
 
             NSLog(@"Selected Time Detail %@",[ARR_temp objectAtIndex:collectionView.tag]);
+<<<<<<< HEAD
+=======
+                NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
+                
+                NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
+                alert.tag = 0;
+                [alert show];
+              //  [self performSegueWithIdentifier:@"booking_seat" sender:self];
+
+            }
+>>>>>>> master
             
         }
         else{
-            
+            if([[[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"]objectAtIndex:indexPath.row] valueForKey:@"_type"] isEqualToString:@"available"])
+            {
             NSLog(@"Selected Time Detail %@",[[[ARR_temp objectAtIndex:collectionView.tag]  valueForKey:@"shows"]objectAtIndex:indexPath.row]);
             [[NSUserDefaults standardUserDefaults] setValue:[[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"]objectAtIndex:indexPath.row] valueForKey:@"_id"] forKey:@"movie_id"];
              [[NSUserDefaults standardUserDefaults] synchronize];
@@ -845,10 +867,27 @@
             
             [[NSUserDefaults standardUserDefaults] setValue:[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"theatre"] forKey:@"theatre"];
             [[NSUserDefaults standardUserDefaults] synchronize];
+<<<<<<< HEAD
+=======
+                
+                NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
+                
+                NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
+                alert.tag = 1;
+
+                [alert show];
+               
+                
+
+            }
+>>>>>>> master
           
 
           
         }
+<<<<<<< HEAD
         NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
 
         NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
@@ -856,6 +895,8 @@
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
           [self performSegueWithIdentifier:@"booking_seat" sender:self];
+=======
+>>>>>>> master
         
   
         
@@ -924,7 +965,7 @@
 {
     if([[detail_dict valueForKey:@"_TrailerURL"] isEqualToString:@""])
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Trailer video is not available" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No video available to share" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
         
         
@@ -955,7 +996,15 @@
 //        [[NSUserDefaults standardUserDefaults] setObject:[[xmlDoc valueForKey:@"Movies"] valueForKey:@"movie"] forKey:@"Movie_detail"];
 //        [[NSUserDefaults standardUserDefaults] synchronize];
         
+<<<<<<< HEAD
         detail_dict = [[xmlDoc valueForKey:@"Movies"] valueForKey:@"movie"] ;
+=======
+        detail_dict = [[xmlDoc valueForKey:@"Movies"] valueForKey:@"movie"] ;//
+        [[NSUserDefaults standardUserDefaults]setObject:detail_dict forKey:@"Movie_detail"] ;
+        [[NSUserDefaults standardUserDefaults] synchronize];
+
+        
+>>>>>>> master
         [self filtering_date];
         [self getResponse_detail];
     }
@@ -966,8 +1015,48 @@
     }
     
     
+<<<<<<< HEAD
     
 }
+=======
+}
+
+- (void)alertView:(UIAlertView *)alertView
+clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if(alertView.tag == 1)
+    {
+        if (buttonIndex == [alertView cancelButtonIndex])
+        {
+            NSLog(@"cancel:");
+            [alertView dismissWithClickedButtonIndex:0 animated:nil];
+            
+        }
+        
+        else{
+            
+            
+            [self performSegueWithIdentifier:@"booking_seat" sender:self];
+        }
+    }
+    if(alertView.tag == 0)
+    {
+        if (buttonIndex == [alertView cancelButtonIndex])
+        {
+            NSLog(@"cancel:");
+            [alertView dismissWithClickedButtonIndex:0 animated:nil];
+            
+        }
+        
+        else{
+            
+            
+            [self performSegueWithIdentifier:@"booking_seat" sender:self];
+        }
+    }
+
+}
+
+>>>>>>> master
 
 /*
 #pragma mark - Navigation

@@ -189,8 +189,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "563"
             endingLineNumber = "563"
-            landmarkName = "-tapGesture_close:"
-            landmarkType = "7">
+            landmarkName = "@implementation VC_cart_list"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -205,8 +205,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "564"
             endingLineNumber = "564"
-            landmarkName = "-tapGesture_close:"
-            landmarkType = "7">
+            landmarkName = "@implementation VC_cart_list"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -221,7 +221,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1028"
             endingLineNumber = "1028"
-            landmarkName = "-alertView:clickedButtonAtIndex:"
+            landmarkName = "-cart_count"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -541,7 +541,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "488"
             endingLineNumber = "488"
-            landmarkName = "-Facebook_login"
+            landmarkName = "-Google_plus_login:::"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -573,7 +573,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "380"
             endingLineNumber = "380"
-            landmarkName = "-loginButton:didCompleteWithResult:error:"
+            landmarkName = "-getFacebookProfileInfo:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

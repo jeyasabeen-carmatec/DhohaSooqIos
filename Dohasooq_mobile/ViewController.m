@@ -177,6 +177,11 @@
     
     [_BTN_facebook addTarget:self action:@selector(facebook_action:) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_Google_PLUS addTarget:self action:@selector(Google_PLUS_ACTIOn) forControlEvents:UIControlEventTouchUpInside];
+<<<<<<< HEAD
+=======
+    [_BTN_guest addTarget:self action:@selector(guest_action) forControlEvents:UIControlEventTouchUpInside];
+
+>>>>>>> master
 
     
     
@@ -308,7 +313,11 @@
     }
 
     FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
+<<<<<<< HEAD
    // login.loginBehavior = FBSDKLoginBehaviorWeb;
+=======
+    login.loginBehavior = FBSDKLoginBehaviorWeb;
+>>>>>>> master
     [login
      logInWithReadPermissions: @[@"email",@"public_profile"]
      fromViewController:self
@@ -332,6 +341,7 @@
          }
      }];
 
+<<<<<<< HEAD
 }
 -(void)getFacebookProfileInfo:(NSString *)user_ID {
     
@@ -576,6 +586,252 @@ error:(NSError *)error{
     
     
 }
+=======
+}
+-(void)getFacebookProfileInfo:(NSString *)user_ID {
+    
+//    
+//    NSMutableDictionary* parameters = [NSMutableDictionary dictionary];
+//    [parameters setValue:@"id,name,email" forKey:@"fields"];
+//    
+//    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:parameters]
+//     startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
+//                                  id result, NSError *error) {
+//         NSLog(@"result:%@",result);
+//        // aHandler(result, error);
+//     }];
+//    
+    if([FBSDKAccessToken currentAccessToken])
+    {
+        [[[FBSDKGraphRequest alloc]initWithGraphPath:@"me" parameters:@{@"fields":@"id,name,first_name,last_name,picture,email"}] startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error)
+        {
+            if(!error)
+            {
+                NSLog(@"THE RESPOBSE - :%@",result);
+                [[NSUserDefaults standardUserDefaults] setObject:result forKey:@"login_details"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+                
+                
+                social_dictl = [[NSUserDefaults standardUserDefaults] objectForKey:@"login_details"];
+                NSLog(@"dict ------ %@",social_dictl);
+                VW_overlay.hidden = NO;
+                [activityIndicatorView startAnimating];
+                [self performSelector:@selector(Facebook_login) withObject:activityIndicatorView afterDelay:0.01];
+
+               // [self Facebook_login];
+                
+
+                
+            }
+        }];
+        
+    }
+    
+        
+}
+    - (void)  loginButton:(FBSDKLoginButton *)loginButton
+didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
+error:(NSError *)error{
+    NSLog(@"LOGGED IN TO FACEBOOK");
+   // [self fetchUserInfo];
+}
+-(void)google_LOGIN
+{
+    
+}
+-(void)Google_plus_login:(NSString *)f_name :(NSString *)l_name :(NSString *)e_mail
+{
+    
+        NSString *type = @"Google_Plus";
+        NSString *first_name = f_name;
+        NSString *last_name = l_name;
+        NSString *email = e_mail;
+
+        NSDictionary *parameters = @{
+                                     @"login_type": type,
+                                     @"email": email,
+                                     @"first_name": first_name,
+                                     @"last_name": last_name
+
+                                     };
+        
+        @try
+        {
+        NSError *error;
+        NSError *err;
+        NSHTTPURLResponse *response = nil;
+        
+        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
+        NSLog(@"the posted data is:%@",parameters);
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/login/1.json",SERVER_URL];
+        // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:urlProducts];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:postData];
+        //[request setAllHTTPHeaderFields:headers];
+        [request setHTTPShouldHandleCookies:NO];
+        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if(aData)
+        {
+            NSMutableDictionary *json_DATA = [[NSMutableDictionary alloc]init];
+            
+           json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            NSLog(@"The response Api post sighn up API %@",json_DATA);
+            NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
+            NSString *msg = [json_DATA valueForKey:@"message"];
+            
+            
+            if([status isEqualToString:@"1"])
+            {
+                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
+                [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
+                
+                 [[NSUserDefaults standardUserDefaults] setValue:dictMutable forKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+
+                
+                [self MENU_api_call];
+                
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                
+            }
+            else
+            {
+                if ([msg isEqualToString:@"User already exists"])
+                { 
+                    msg = @"Email address already in use, Please try with different email.";
+                }
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+            }
+            
+        }
+        else
+        {
+            [activityIndicatorView stopAnimating];
+            VW_overlay.hidden = YES;
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+        }
+        
+    }
+    
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+        [activityIndicatorView stopAnimating];
+        VW_overlay.hidden = YES;
+    }
+
+    
+}
+
+-(void)Facebook_login
+{
+    @try
+    {
+        NSString *type = @"Facebook";
+        NSString *first_name = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"first_name"]];
+        NSString *last_name = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"last_name"]];
+        NSString *email = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"email"]];
+        
+        NSDictionary *parameters = @{
+                                     @"login_type": type,
+                                     @"email": email,
+                                     @"first_name": first_name,
+                                     @"last_name": last_name
+                                     
+                                     };
+        NSError *error;
+        NSError *err;
+        NSHTTPURLResponse *response = nil;
+        
+        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
+        NSLog(@"the posted data is:%@",parameters);
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/login/1.json",SERVER_URL];
+        // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:urlProducts];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:postData];
+        //[request setAllHTTPHeaderFields:headers];
+        [request setHTTPShouldHandleCookies:NO];
+        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if(aData)
+        {
+            NSMutableDictionary *json_DATA = [[NSMutableDictionary alloc]init];
+            
+            json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            NSLog(@"The response Api post sighn up API %@",json_DATA);
+            NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
+            NSString *msg = [json_DATA valueForKey:@"message"];
+            
+            
+            if([status isEqualToString:@"1"])
+            {
+                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
+                [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
+                
+                [[NSUserDefaults standardUserDefaults] setValue:dictMutable forKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+
+                
+                
+                
+                
+                [self MENU_api_call];
+                
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                
+            }
+            else
+            {
+                if ([msg isEqualToString:@"User already exists"])
+                {
+                    msg = @"Email address already in use, Please try with different email.";
+                }
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+            }
+            
+        }
+        else
+        {
+            [activityIndicatorView stopAnimating];
+            VW_overlay.hidden = YES;
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+        }
+        
+    }
+    
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+        [activityIndicatorView stopAnimating];
+        VW_overlay.hidden = YES;
+    }
+    
+    
+}
+>>>>>>> master
 
     
 -(void)login_home
@@ -660,8 +916,17 @@ error:(NSError *)error{
             
             if([status isEqualToString:@"1"])
             {
+                [activityIndicatorView stopAnimating];
+                VW_overlay.hidden = YES;
                 
-                [[NSUserDefaults standardUserDefaults] setObject:[json_DATA valueForKey:@"detail"] forKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+
+                
+                NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
+                [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
+                
+                [[NSUserDefaults standardUserDefaults] setObject:dictMutable forKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 [[NSUserDefaults standardUserDefaults]setObject:self.TXT_username.text forKey:@"email"];
                 [[NSUserDefaults standardUserDefaults] setObject:email forKey:@"user_email"];
@@ -739,8 +1004,9 @@ error:(NSError *)error{
             
             [[NSUserDefaults standardUserDefaults] setObject:json_DATA forKey:@"menu_detail"];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            [self dismissViewControllerAnimated:NO completion:nil];
             
-            [self performSegueWithIdentifier:@"logint_to_home" sender:self];
+           // [self performSegueWithIdentifier:@"logint_to_home" sender:self];
             
             NSLog(@"the api_collection_product%@",json_DATA);
             [activityIndicatorView stopAnimating];
@@ -760,7 +1026,12 @@ error:(NSError *)error{
     //    [alert show];
     
 }
+-(void)guest_action
+{
+    [self performSegueWithIdentifier:@"logint_to_home" sender:self];
 
+    
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

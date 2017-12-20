@@ -150,6 +150,17 @@
 {
     //product-reviews/add-review/"+product_id+"/"+userid+"/
    
+<<<<<<< HEAD
+=======
+    if(_TXT_review_review.text.length < 32)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Length should be More " delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
+        alert.tag = 1;
+        [alert show];
+    }
+    else
+    {
+>>>>>>> master
     
     @try
     {
@@ -242,7 +253,11 @@
     {
         
     }
+<<<<<<< HEAD
     
+=======
+    }
+>>>>>>> master
 
     
     
