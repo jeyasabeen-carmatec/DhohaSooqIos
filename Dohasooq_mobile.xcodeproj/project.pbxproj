@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		1F13698181D01B6EFE99B076 /* libPods-Dohasooq_mobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C41277D23F1B32E27A37F90E /* libPods-Dohasooq_mobile.a */; };
 		7727555F1FB0517500989CB6 /* VC_Movie_booking.m in Sources */ = {isa = PBXBuildFile; fileRef = 7727555E1FB0517500989CB6 /* VC_Movie_booking.m */; };
-		778B81FA1FEA4A830061B2AB /* VC_cart_list.m in Sources */ = {isa = PBXBuildFile; fileRef = 778B81F91FEA4A830061B2AB /* VC_cart_list.m */; };
+		778B81FC1FEA7E3B0061B2AB /* VC_product_detail.m in Sources */ = {isa = PBXBuildFile; fileRef = 778B81FB1FEA7E3B0061B2AB /* VC_product_detail.m */; };
 		BE04D8A51FBDB082008926F6 /* Search_cell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE04D8A21FBDB082008926F6 /* Search_cell.xib */; };
 		BE04D8A61FBDB082008926F6 /* Search_cell.m in Sources */ = {isa = PBXBuildFile; fileRef = BE04D8A31FBDB082008926F6 /* Search_cell.m */; };
 		BE04D8D91FC02000008926F6 /* orders_cell.m in Sources */ = {isa = PBXBuildFile; fileRef = BE04D8D71FC02000008926F6 /* orders_cell.m */; };
@@ -182,6 +182,8 @@
 		BE5CBED71F9DF00300268383 /* VC_about_us.m in Sources */ = {isa = PBXBuildFile; fileRef = BE5CBED61F9DF00300268383 /* VC_about_us.m */; };
 		BE5CBEDB1F9DF22B00268383 /* VC_Terms.m in Sources */ = {isa = PBXBuildFile; fileRef = BE5CBEDA1F9DF22B00268383 /* VC_Terms.m */; };
 		BE5CBEE01F9DF26900268383 /* VC_privacy_policy.m in Sources */ = {isa = PBXBuildFile; fileRef = BE5CBEDF1F9DF26900268383 /* VC_privacy_policy.m */; };
+		BE6043BB1FEA7083007F9BC1 /* VC_cart_list.m in Sources */ = {isa = PBXBuildFile; fileRef = BE6043BA1FEA7083007F9BC1 /* VC_cart_list.m */; };
+		BE6043BD1FEA70A1007F9BC1 /* VC_order_detail.m in Sources */ = {isa = PBXBuildFile; fileRef = BE6043BC1FEA70A1007F9BC1 /* VC_order_detail.m */; };
 		BE6422FF1F7CEE1700BB1E02 /* order_cell.m in Sources */ = {isa = PBXBuildFile; fileRef = BE6422FD1F7CEE1700BB1E02 /* order_cell.m */; };
 		BE64232F1F849C2E00BB1E02 /* checked_order.png in Resources */ = {isa = PBXBuildFile; fileRef = BE64232D1F849C2E00BB1E02 /* checked_order.png */; };
 		BE6423301F849C2E00BB1E02 /* uncheked_order.png in Resources */ = {isa = PBXBuildFile; fileRef = BE64232E1F849C2E00BB1E02 /* uncheked_order.png */; };
@@ -226,7 +228,6 @@
 		BE72D8811FC3F8F40082E8D2 /* upload-11.png in Resources */ = {isa = PBXBuildFile; fileRef = BE72D87E1FC3F8F40082E8D2 /* upload-11.png */; };
 		BE72D8821FC3F8F40082E8D2 /* upload-10.png in Resources */ = {isa = PBXBuildFile; fileRef = BE72D87F1FC3F8F40082E8D2 /* upload-10.png */; };
 		BE72D8851FC53DA70082E8D2 /* collection_variants_cell.m in Sources */ = {isa = PBXBuildFile; fileRef = BE72D8841FC53DA60082E8D2 /* collection_variants_cell.m */; };
-		BE72D8871FC540C90082E8D2 /* VC_product_detail.m in Sources */ = {isa = PBXBuildFile; fileRef = BE72D8861FC540C90082E8D2 /* VC_product_detail.m */; };
 		BE72D88B1FC58FDD0082E8D2 /* review_cell.m in Sources */ = {isa = PBXBuildFile; fileRef = BE72D8891FC58FDD0082E8D2 /* review_cell.m */; };
 		BE72D88C1FC58FDD0082E8D2 /* review_cell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE72D88A1FC58FDD0082E8D2 /* review_cell.xib */; };
 		BE72D8BD1FCC3DCB0082E8D2 /* upload-15.png in Resources */ = {isa = PBXBuildFile; fileRef = BE72D8BA1FCC3DCB0082E8D2 /* upload-15.png */; };
@@ -276,7 +277,6 @@
 		BE8EAC511FE9185000F4CFF8 /* VC_DS_Checkout.m in Sources */ = {isa = PBXBuildFile; fileRef = BE8EAC501FE9185000F4CFF8 /* VC_DS_Checkout.m */; };
 		BE8EAC531FE9188200F4CFF8 /* VC_My_profile.m in Sources */ = {isa = PBXBuildFile; fileRef = BE8EAC521FE9188200F4CFF8 /* VC_My_profile.m */; };
 		BE8EAC551FE9189100F4CFF8 /* VC_myaddress.m in Sources */ = {isa = PBXBuildFile; fileRef = BE8EAC541FE9189100F4CFF8 /* VC_myaddress.m */; };
-		BE8EAC571FE91B3B00F4CFF8 /* VC_order_detail.m in Sources */ = {isa = PBXBuildFile; fileRef = BE8EAC561FE91B3B00F4CFF8 /* VC_order_detail.m */; };
 		BE8EAC591FE93CD500F4CFF8 /* merchant_cell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE8EAC581FE93CD500F4CFF8 /* merchant_cell.xib */; };
 		BE8EAC5D1FE9461100F4CFF8 /* multiple_sellers.m in Sources */ = {isa = PBXBuildFile; fileRef = BE8EAC5C1FE9461100F4CFF8 /* multiple_sellers.m */; };
 		BE8EAC611FE9466800F4CFF8 /* sellers_cell.m in Sources */ = {isa = PBXBuildFile; fileRef = BE8EAC5F1FE9466800F4CFF8 /* sellers_cell.m */; };
@@ -294,8 +294,7 @@
 /* Begin PBXFileReference section */
 		7727555D1FB0517500989CB6 /* VC_Movie_booking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VC_Movie_booking.h; sourceTree = "<group>"; };
 		7727555E1FB0517500989CB6 /* VC_Movie_booking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_Movie_booking.m; sourceTree = "<group>"; };
-		778B81F81FEA4A830061B2AB /* VC_cart_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VC_cart_list.h; sourceTree = "<group>"; };
-		778B81F91FEA4A830061B2AB /* VC_cart_list.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_cart_list.m; sourceTree = "<group>"; };
+		778B81FB1FEA7E3B0061B2AB /* VC_product_detail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_product_detail.m; sourceTree = "<group>"; };
 		77BD48C61FA2FB3600602AF8 /* HttpClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HttpClient.h; sourceTree = "<group>"; };
 		81AB41A92C59F23F463B0423 /* Pods-Dohasooq_mobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dohasooq_mobile.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Dohasooq_mobile/Pods-Dohasooq_mobile.debug.xcconfig"; sourceTree = "<group>"; };
 		BE04D8A21FBDB082008926F6 /* Search_cell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Search_cell.xib; sourceTree = "<group>"; };
@@ -541,6 +540,8 @@
 		BE5CBEDA1F9DF22B00268383 /* VC_Terms.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_Terms.m; sourceTree = "<group>"; };
 		BE5CBEDE1F9DF26900268383 /* VC_privacy_policy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VC_privacy_policy.h; sourceTree = "<group>"; };
 		BE5CBEDF1F9DF26900268383 /* VC_privacy_policy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_privacy_policy.m; sourceTree = "<group>"; };
+		BE6043BA1FEA7083007F9BC1 /* VC_cart_list.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_cart_list.m; sourceTree = "<group>"; };
+		BE6043BC1FEA70A1007F9BC1 /* VC_order_detail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_order_detail.m; sourceTree = "<group>"; };
 		BE6422FC1F7CEE1700BB1E02 /* order_cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = order_cell.h; sourceTree = "<group>"; };
 		BE6422FD1F7CEE1700BB1E02 /* order_cell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = order_cell.m; sourceTree = "<group>"; };
 		BE64232D1F849C2E00BB1E02 /* checked_order.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checked_order.png; sourceTree = "<group>"; };
@@ -599,7 +600,6 @@
 		BE72D87F1FC3F8F40082E8D2 /* upload-10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "upload-10.png"; sourceTree = "<group>"; };
 		BE72D8831FC53DA50082E8D2 /* collection_variants_cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = collection_variants_cell.h; sourceTree = "<group>"; };
 		BE72D8841FC53DA60082E8D2 /* collection_variants_cell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = collection_variants_cell.m; sourceTree = "<group>"; };
-		BE72D8861FC540C90082E8D2 /* VC_product_detail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_product_detail.m; sourceTree = "<group>"; };
 		BE72D8881FC58FDD0082E8D2 /* review_cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = review_cell.h; sourceTree = "<group>"; };
 		BE72D8891FC58FDD0082E8D2 /* review_cell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = review_cell.m; sourceTree = "<group>"; };
 		BE72D88A1FC58FDD0082E8D2 /* review_cell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = review_cell.xib; sourceTree = "<group>"; };
@@ -623,6 +623,7 @@
 		BE7B9ACA1F7B882200715216 /* VC_forgot_PWD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_forgot_PWD.m; sourceTree = "<group>"; };
 		BE7B9ACD1F7B946000715216 /* VC_change_Password.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VC_change_Password.h; sourceTree = "<group>"; };
 		BE7B9ACE1F7B946000715216 /* VC_change_Password.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_change_Password.m; sourceTree = "<group>"; };
+		BE7B9AD11F7BA8D900715216 /* VC_cart_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VC_cart_list.h; sourceTree = "<group>"; };
 		BE7B9ADB1F7BC27200715216 /* tbl_amount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tbl_amount.h; sourceTree = "<group>"; };
 		BE7B9ADC1F7BC27200715216 /* tbl_amount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tbl_amount.m; sourceTree = "<group>"; };
 		BE7B9AE11F7BD21600715216 /* VC_wish_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VC_wish_list.h; sourceTree = "<group>"; };
@@ -670,7 +671,6 @@
 		BE8EAC501FE9185000F4CFF8 /* VC_DS_Checkout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_DS_Checkout.m; sourceTree = "<group>"; };
 		BE8EAC521FE9188200F4CFF8 /* VC_My_profile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_My_profile.m; sourceTree = "<group>"; };
 		BE8EAC541FE9189100F4CFF8 /* VC_myaddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_myaddress.m; sourceTree = "<group>"; };
-		BE8EAC561FE91B3B00F4CFF8 /* VC_order_detail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_order_detail.m; sourceTree = "<group>"; };
 		BE8EAC581FE93CD500F4CFF8 /* merchant_cell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = merchant_cell.xib; sourceTree = "<group>"; };
 		BE8EAC5B1FE9461100F4CFF8 /* multiple_sellers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = multiple_sellers.h; sourceTree = "<group>"; };
 		BE8EAC5C1FE9461100F4CFF8 /* multiple_sellers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = multiple_sellers.m; sourceTree = "<group>"; };
@@ -1450,7 +1450,7 @@
 			isa = PBXGroup;
 			children = (
 				BE1C84A51FE10724002B9116 /* VC_order_detail.h */,
-				BE8EAC561FE91B3B00F4CFF8 /* VC_order_detail.m */,
+				BE6043BC1FEA70A1007F9BC1 /* VC_order_detail.m */,
 				BE1D110C1F84F6D6003A3954 /* Shipping */,
 				BE1D11301F864A33003A3954 /* Payment_cell */,
 				BE1D110B1F84F6C9003A3954 /* Order_detail_cell */,
@@ -1607,7 +1607,7 @@
 			isa = PBXGroup;
 			children = (
 				BEE0FB471FA4455A009C1856 /* VC_product_detail.h */,
-				BE72D8861FC540C90082E8D2 /* VC_product_detail.m */,
+				778B81FB1FEA7E3B0061B2AB /* VC_product_detail.m */,
 				BE8EAC5B1FE9461100F4CFF8 /* multiple_sellers.h */,
 				BE8EAC5C1FE9461100F4CFF8 /* multiple_sellers.m */,
 				BE8EAC5E1FE9466800F4CFF8 /* sellers_cell.h */,
@@ -1692,8 +1692,8 @@
 		BE7B9AD41F7BA8E300715216 /* Cart_list */ = {
 			isa = PBXGroup;
 			children = (
-				778B81F81FEA4A830061B2AB /* VC_cart_list.h */,
-				778B81F91FEA4A830061B2AB /* VC_cart_list.m */,
+				BE7B9AD11F7BA8D900715216 /* VC_cart_list.h */,
+				BE6043BA1FEA7083007F9BC1 /* VC_cart_list.m */,
 				BE7B9ADA1F7BA99C00715216 /* Cart_cell */,
 			);
 			name = Cart_list;
@@ -2152,7 +2152,7 @@
 				BE1C84941FE10425002B9116 /* address_cell.m in Sources */,
 				BE84C50A1F9AE21B00210ACC /* Movies_cell.m in Sources */,
 				BE339AE81FD7E46500FC80DC /* filter_cell.m in Sources */,
-				778B81FA1FEA4A830061B2AB /* VC_cart_list.m in Sources */,
+				BE6043BB1FEA7083007F9BC1 /* VC_cart_list.m in Sources */,
 				BE7DA3EA1FD50CE300295F77 /* VC_myorder_list.m in Sources */,
 				BE84C5101F9B089100210ACC /* qtickets_cell.m in Sources */,
 				BE5CBEDB1F9DF22B00268383 /* VC_Terms.m in Sources */,
@@ -2165,7 +2165,6 @@
 				BE04D8E11FC026CC008926F6 /* first_top_cell.m in Sources */,
 				BE4EB90F1FB5D3FD00DE4317 /* ZSeat.m in Sources */,
 				BE3068EE1F7625E4003F6C40 /* collection_img_cell.m in Sources */,
-				BE72D8871FC540C90082E8D2 /* VC_product_detail.m in Sources */,
 				BE4EB9101FB5D3FD00DE4317 /* STRING_seat.m in Sources */,
 				BE6796A01F97183F007C45EC /* DhohasOOQtabbar.m in Sources */,
 				BE53F7061FBB335300891E4F /* VC_upcoming_movies.m in Sources */,
@@ -2225,6 +2224,7 @@
 				BE30662E1F752AC0003F6C40 /* VC_sign_up.m in Sources */,
 				BE3068FF1F78B057003F6C40 /* Fashion_categorie_cell.m in Sources */,
 				BE3066071F74B920003F6C40 /* CCTextField.m in Sources */,
+				BE6043BD1FEA70A1007F9BC1 /* VC_order_detail.m in Sources */,
 				BE1F11781FAAF1C200551645 /* VC_sports.m in Sources */,
 				BE6796921F960BD3007C45EC /* menu_cell.m in Sources */,
 				BE3068FA1F78A706003F6C40 /* Best_deals_cell.m in Sources */,
@@ -2247,13 +2247,13 @@
 				BE16DF711FA1C65600D20D4E /* MZDay.m in Sources */,
 				BE1D11B81F887F40003A3954 /* UIView+Shadow.m in Sources */,
 				BEE0FB621FA708D3009C1856 /* cell_title_theatre.m in Sources */,
-				BE8EAC571FE91B3B00F4CFF8 /* VC_order_detail.m in Sources */,
 				BE7B9ADE1F7BC27200715216 /* tbl_amount.m in Sources */,
 				BE04D8A61FBDB082008926F6 /* Search_cell.m in Sources */,
 				BE16DF651FA1A8A500D20D4E /* Gender_cell.m in Sources */,
 				BE72D8761FC3D3F30082E8D2 /* VC_merchant_detail.m in Sources */,
 				BE7B9AB71F7A123100715216 /* product_detail_cell.m in Sources */,
 				BE1F117C1FAAF71400551645 /* VC_leisure.m in Sources */,
+				778B81FC1FEA7E3B0061B2AB /* VC_product_detail.m in Sources */,
 				BE6BA4051FDB8EC200E41B2E /* Home_page_Qtickets.m in Sources */,
 				BE1C84A91FE108FD002B9116 /* VC_wish_list.m in Sources */,
 				BE3069081F78C5E2003F6C40 /* product_cell.m in Sources */,
@@ -2372,7 +2372,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Dohasooq_mobile/Dohasooq_mobile.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEVELOPMENT_TEAM = 4MCGAH3G26;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2386,8 +2386,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.carmatec.Dohasooq;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "3e38271a-193c-4132-9122-07fb78afa253";
-				PROVISIONING_PROFILE_SPECIFIER = dhohasooq_DEV;
+				PROVISIONING_PROFILE = "788fda71-975a-490c-92ae-9a36bdb60a68";
+				PROVISIONING_PROFILE_SPECIFIER = dhohasooq_dep;
 			};
 			name = Debug;
 		};
@@ -2397,7 +2397,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Dohasooq_mobile/Dohasooq_mobile.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEVELOPMENT_TEAM = 4MCGAH3G26;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2411,8 +2411,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.carmatec.Dohasooq;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "3e38271a-193c-4132-9122-07fb78afa253";
-				PROVISIONING_PROFILE_SPECIFIER = dhohasooq_DEV;
+				PROVISIONING_PROFILE = "788fda71-975a-490c-92ae-9a36bdb60a68";
+				PROVISIONING_PROFILE_SPECIFIER = dhohasooq_dep;
 			};
 			name = Release;
 		};
