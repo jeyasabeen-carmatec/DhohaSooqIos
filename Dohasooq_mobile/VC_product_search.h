@@ -16,7 +16,9 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_navMenu;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_search;
 
-
+//EMPTY VIEW
+@property(nonatomic,weak)IBOutlet UIView *VW_empty;
+@property(nonatomic,weak)IBOutlet UIButton *BTN_empty;
 
 
 @end

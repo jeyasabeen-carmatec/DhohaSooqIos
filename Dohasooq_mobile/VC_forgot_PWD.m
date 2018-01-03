@@ -118,6 +118,9 @@
     
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+- (IBAction)home_action:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 #pragma textfield delegates
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {

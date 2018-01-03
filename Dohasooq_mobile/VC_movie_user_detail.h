@@ -6,7 +6,7 @@
 //  Copyright © 2017 Test User. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>#import "ACFloatingTextField.h"
+#import <UIKit/UIKit.h>
 
 @interface VC_movie_user_detail : UIViewController<UIGestureRecognizerDelegate>
 
@@ -19,6 +19,7 @@
 
 @property(nonatomic,weak) IBOutlet UIImageView *LBL_stat;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_check;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_terms;
 
 @property(nonatomic,weak) IBOutlet UIButton *BTN_apply;
 @property (nonatomic, strong) UIPickerView *phone_picker_view;
@@ -31,5 +32,10 @@
 @property(nonatomic,weak) IBOutlet UITextField *TXT_code;
 @property(nonatomic,weak) IBOutlet UITextField *TXT_voucher;
 
+//terms and conditions
+@property(nonatomic,weak) IBOutlet UIButton *BTN_ok_terms;
+
+@property(nonatomic,weak) IBOutlet UIView *VW_terms;
+@property(nonatomic,weak) IBOutlet UIWebView *web_terms;
 
 @end

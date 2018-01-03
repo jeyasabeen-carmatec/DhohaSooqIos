@@ -14,6 +14,7 @@
     NSString *lower,*upper,*discount;
     NSDictionary *product_arr;
     NSMutableArray *Brands_arr_post;
+    BOOL filter_val;
     
 }
 
@@ -37,52 +38,75 @@
     
     
     
+    
     @try
     {
-    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"max_min"];
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"max_min"];
         NSString *min = [NSString stringWithFormat:@"%@",[dict valueForKey:@"min"]];
         NSString *max =[NSString stringWithFormat:@"%@",[dict valueForKey:@"max"]];
+        
+        if ([max isEqualToString:min]) {
+            
+            
+            min = @"0";
+        }
+        
+        
+        
         
         max = [max stringByReplacingOccurrencesOfString:@"<nil>" withString:@"10"];
         max = [max stringByReplacingOccurrencesOfString:@"<null>" withString:@"10"];
         
-        if ([max isEqualToString:@"0"]) {
+        if ([max isEqualToString:@"1"]) {
+            
             max = @"10";
         }
         // max = [max stringByReplacingOccurrencesOfString:@"0" withString:@"10"];
         
         
         
-        min = [min stringByReplacingOccurrencesOfString:@"<nil>" withString:@"0"];
-        min = [min stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
-        
-        
-        
-        self.LBL_slider.minimumValue = [min floatValue];
-        self.LBL_slider.maximumValue = [max floatValue];
-        
-        self.LBL_slider.lowerValue = [min floatValue];
-        self.LBL_slider.upperValue = [max floatValue];
+        @try
+        {
+            
+            
+            min = [min stringByReplacingOccurrencesOfString:@"<nil>" withString:@"0"];
+            min = [min stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
+            
+            self.LBL_slider.minimumValue = [min floatValue];
+            self.LBL_slider.maximumValue = [max floatValue];
+            
+            self.LBL_slider.lowerValue = [min floatValue];
+            self.LBL_slider.upperValue = [max floatValue];
+            
+            
+            lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
+            upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];
+        }
+        @catch(NSException *exceprtion)
+        {
+            
+        }
         
         
         //self.LBL_slider.minimumRange = 1;
         
         
-        lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
-        upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];
+        
+        @try {
+            
+            self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"], (int)self.LBL_slider.maximumValue];
+            self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d", [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],(int)self.LBL_slider.minimumValue];
+            NSLog(@"%@ /n %@",lower,upper);
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        }
         
         
-        
-        
-        self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"], (int)self.LBL_slider.maximumValue];
-        self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d", [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],(int)self.LBL_slider.minimumValue];
-        NSLog(@"%@ /n %@",lower,upper);
     }
     @catch(NSException *exception)
     {
         
     }
-    
     [_BTN_submit addTarget:self action:@selector(submit_ACTION) forControlEvents:UIControlEventTouchUpInside];
         
     
@@ -144,14 +168,13 @@
 
 -(void)submit_ACTION
 {
-    //url = "apis/productList/" + search_value + "/0/" + country_val + "/" + language_val + "/" + userid + "/Customer.json?discountValue=" + discountval + "&range=" + min_price + "," + max_price + "&brand=" + brandsval + "&sortKeyword=";
     NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
 
     NSString *country = [user_dflts valueForKey:@"country_id"];
     NSString *languge = [user_dflts valueForKey:@"language_id"];
     NSDictionary *dict = [user_dflts valueForKey:@"userdata"];
-    NSString *min = [NSString stringWithFormat:@"%.f",_LBL_slider.minimumValue];
-    NSString *max = [NSString stringWithFormat:@"%.f",_LBL_slider.maximumValue];
+    NSString *min = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"min"]];
+    NSString *max = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"max"]];
     NSString *range = [NSString stringWithFormat:@"%@,%@",min,max];
     [[NSUserDefaults standardUserDefaults] setValue:range  forKey:@"Range_val"];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -161,19 +184,21 @@
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
 
     
-    NSString *url_str = [NSString stringWithFormat:@"%@apis/productList/%@/%@/%@/%@/Customer.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"product_list_key"],country,languge,user_id,discount,min,max,brands];
+    NSString *url_str = [NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/Customer.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"product_list_key"],country,languge,user_id,discount,min,max,brands];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
     
     
     [[NSUserDefaults standardUserDefaults] setValue:brands forKey:@"brnds"];
     [[NSUserDefaults standardUserDefaults] setValue:discount forKey:@"discount_val"];
-
-    [self.delegate filetr_URL:url_str];
-    
-   [[NSUserDefaults standardUserDefaults] setValue:url_str forKey:@"product_list_url"];
+    [[NSUserDefaults standardUserDefaults] setValue:url_str forKey:@"product_list_url_filter"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    [self.delegate filetr_URL:url_str];
+
     [self.navigationController popViewControllerAnimated:NO];
+
+  
+    
     
     
     NSLog(@"the filter_ticked");
@@ -305,7 +330,6 @@
 
 }
 
-
 #pragma collection arguments
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -324,7 +348,7 @@
 }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(self.collection_produtcs.bounds.size.width/2.5, 50);
+    return CGSizeMake(self.collection_produtcs.bounds.size.width/2.2, 50);
 }
 -(void)check_action:(UIButton *)sender
 {
@@ -337,7 +361,7 @@
 
     if([data1 isEqual:data2])
     {
-        cell.IMG_check.image = [UIImage imageNamed:@"checked_order"];
+        cell.IMG_check.image = [UIImage imageNamed:@"checkbox_select.png"];
         
         [Brands_arr_post addObject:temp_str];
         

@@ -26,6 +26,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *LBL_shipping;
 @property (weak, nonatomic) IBOutlet UILabel *LBL_Blng_title;
 @property (weak, nonatomic) IBOutlet UIButton *Btn_save;
+@property (weak, nonatomic) IBOutlet UITextField *TXT_cntry_code;
 
 
 @end

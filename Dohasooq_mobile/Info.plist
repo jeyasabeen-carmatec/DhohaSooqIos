@@ -67,30 +67,13 @@
 	<string>Dohasooq wants to access your Media</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Roboto-Black_1</string>
-		<string>Roboto-BlackItalic_1</string>
-		<string>Roboto-Bold_1</string>
-		<string>Roboto-BoldItalic_1</string>
-		<string>Roboto-Italic_1</string>
-		<string>Roboto-Light_1</string>
-		<string>Roboto-LightItalic_1</string>
-		<string>Roboto-Medium_1</string>
-		<string>Roboto-MediumItalic_1</string>
-		<string>Roboto-Regular_0</string>
-		<string>Roboto-Thin_1</string>
-		<string>Roboto-ThinItalic_1</string>
-		<string>RobotoCondensed-Bold</string>
-		<string>RobotoCondensed-BoldItalic</string>
-		<string>RobotoCondensed-Italic</string>
-		<string>RobotoCondensed-Light</string>
-		<string>RobotoCondensed-LightItalic</string>
-		<string>RobotoCondensed-Regular</string>
 		<string>FontAwesome</string>
 		<string>Poppins-Light</string>
 		<string>Poppins-Bold</string>
 		<string>Poppins-Regular</string>
 		<string>Poppins-Medium</string>
 		<string>Poppins-SemiBold</string>
+		<string>Poppins-Italic</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

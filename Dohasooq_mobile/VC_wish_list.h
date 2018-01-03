@@ -13,7 +13,12 @@
 @property(nonatomic,strong) IBOutlet MIBadgeButton *BTN_cart;
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_fav;
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_back;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_header;
 
 - (IBAction)wishList_to_cartPage:(id)sender;
 @property(nonatomic,weak) IBOutlet UITableView *TBL_wish_list_items;
+//EMPTY VIEW
+@property(nonatomic,weak)IBOutlet UIView *VW_empty;
+@property(nonatomic,weak)IBOutlet UIButton *BTN_empty;
+
 @end

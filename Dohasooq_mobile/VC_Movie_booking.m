@@ -839,11 +839,12 @@
             NSLog(@"Selected Time Detail %@",[ARR_temp objectAtIndex:collectionView.tag]);
                 NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
                 
-                NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
+                NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie.\nEntrance is not allowed for person below %@ years old.\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
                 alert.tag = 0;
                 [alert show];
+               
               //  [self performSegueWithIdentifier:@"booking_seat" sender:self];
 
             }
@@ -867,7 +868,7 @@
                 
                 NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
                 
-                NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
+                NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie.\nEntrance is not allowed for person below %@ years old.\nSupervisor Reserves the Right to Reject Without Refund. \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
                 alert.tag = 1;

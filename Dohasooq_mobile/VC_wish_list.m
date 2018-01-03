@@ -80,33 +80,24 @@
 //    _TBL_wish_list_items.frame = set_frame;
     
     
-//    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
-//                                                  forBarMetrics:UIBarMetricsDefault];
+
     
-    self.navigationController.navigationBar.shadowImage = [UIImage new];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTitleTextAttributes:
+       [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTitleTextAttributes:
      @{NSForegroundColorAttributeName:[UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:1.0],
        NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:20.0f]
        } forState:UIControlStateNormal];
     
     
-
-//    _BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
-//                 @selector(btnfav_action:)];
+    CGRect frameset = _VW_empty.frame;
+    frameset.size.width = 200;
+    frameset.size.height = 200;
+    _VW_empty.frame = frameset;
+    _VW_empty.center = self.view.center;
+    [self.view addSubview:_VW_empty];
+    _VW_empty.hidden = YES;
     
-//    _BTN_cart = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain   target:self action:@selector(btn_cart_action:)];
-    //NSString *badge_value = @"25";
-    
-    
-//    if(badge_value.length > 2)
-//    {
-//        self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
-//        
-//    }
-//    else{
-//        self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
-//        
-//    }
+    _BTN_empty.layer.cornerRadius = self.BTN_empty.frame.size.width / 2;
+    _BTN_empty.layer.masksToBounds = YES;
 
 }
 
@@ -202,8 +193,9 @@
                 
                 NSString *text = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
+                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}range:[text rangeOfString:currency_code] ];
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor],}range:[text rangeOfString:prec_price] ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}range:[text rangeOfString:prec_price] ];
                 
 //                [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
                 //NSParagraphStyleAttributeName
@@ -217,18 +209,18 @@
             prec_price = [currency_code stringByAppendingString:prec_price];
             text = [NSString stringWithFormat:@"%@ %@ %@",currency_code,current_price,prec_price];
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
-            
+              [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0],}range:[text rangeOfString:currency_code] ];
             
             
             NSRange ename = [text rangeOfString:current_price];
             if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                         range:ename];
             }
             else
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:13.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                         range:ename];
             }
             NSRange cmp = [text rangeOfString:prec_price];
@@ -416,23 +408,13 @@
 -(void)wish_list_api_calling{
     
     
-    
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
     @try {
     response_Arr = [[NSMutableArray alloc]init];
 
     
-    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
-        if([user_id isEqualToString:@"(null)"])
-        {
-            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login First" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
-             alert.tag = 1;
-            [alert show];
-
-        }
-        else
-        {
+   
         
     //http://192.168.0.171/dohasooq/apis/customerWishList/46/1/1
     NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
@@ -458,20 +440,21 @@
                         VW_overlay.hidden = YES;
                         [activityIndicatorView stopAnimating];
                        response_Arr = data;
-                    image_empty.hidden = YES;
+                        image_empty.hidden = YES;
+                     _VW_empty.hidden = YES;
                         
                         if (response_Arr.count == 0)
                         {
-                            
+                             _VW_empty.hidden = NO;
                             _TBL_wish_list_items.hidden =  YES;
-                           image_empty = [[UIImageView alloc]init];
-                            CGRect frame_image = image_empty.frame;
-                            frame_image.size.height = 200;
-                            frame_image.size.width = 200;
-                            image_empty.frame = frame_image;
-                            image_empty.center = self.view.center;
-                            [self.view addSubview:image_empty];
-                            image_empty.image = [UIImage imageNamed:@"wish_list_not"];
+//                           image_empty = [[UIImageView alloc]init];
+//                            CGRect frame_image = image_empty.frame;
+//                            frame_image.size.height = 200;
+//                            frame_image.size.width = 200;
+//                            image_empty.frame = frame_image;
+//                            image_empty.center = self.view.center;
+//                            [self.view addSubview:image_empty];
+//                            image_empty.image = [UIImage imageNamed:@"wish_list_not"];
                             
 
                             
@@ -491,11 +474,18 @@
 
                             [HttpClient createaAlertWithMsg:@"The data is in Unknown format" andTitle:@""];
                         }
-                       
+                      
+                      NSString *str_header_title = [NSString stringWithFormat:@"MY WISHLIST(%lu)",(unsigned long)response_Arr.count];
+                      [_BTN_header setTitle:str_header_title forState:UIControlStateNormal];
+
+                      
                     }
                 @catch (NSException *exception) {
                     VW_overlay.hidden=YES;
                     [activityIndicatorView stopAnimating];
+                    _TBL_wish_list_items.hidden =  YES;
+                    _VW_empty.hidden = NO;
+
 
                         NSLog(@"%@",exception);
                     }
@@ -512,7 +502,7 @@
         NSLog(@"%@",exception);
     }
         }
-    } @catch (NSException *exception) {
+     @catch (NSException *exception) {
         NSLog(@"%@",exception);
     }
 }
@@ -529,7 +519,7 @@
         
         NSError *error;
         NSHTTPURLResponse *response = nil;
-        NSString *pdId = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"];
+        //NSString *pdId = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"];
         NSDictionary *parameters = @{@"pdtId":product_id
                                      ,@"userId":user_id,@"quantity":items_count,@"custom":@"",@"variant":@""};
         
@@ -585,9 +575,11 @@
                 NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
                 
                 //NSString *badge_value = @"11";
+                if([badge_value intValue]>0)
+                {
                 if(badge_value.length > 99 || wishlist.length > 99)
                 {
-                    [_BTN_cart setBadgeString:[NSString stringWithFormat:@"%@+",badge_value]];
+                    [_BTN_cart setBadgeString:[NSString stringWithFormat:@"%@",badge_value]];
                     
                     
                 }
@@ -596,7 +588,7 @@
                     
                     
                 }
-                
+                }
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
             }

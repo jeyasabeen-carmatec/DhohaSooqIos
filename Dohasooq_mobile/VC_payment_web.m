@@ -80,6 +80,9 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+- (IBAction)back_action:(id)sender {
+    [self dismissViewControllerAnimated:NO completion:nil];
+}
 
 /*
 #pragma mark - Navigation

@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "VC_home.h"
 #import "MIBadgeButton.h"
-@interface Home_page_Qtickets : UIViewController<collection_protocol>
+@interface Home_page_Qtickets : UIViewController
 
 @property(nonatomic,strong) NSArray *items;
 @property(nonatomic,weak)IBOutlet UITabBar *Tab_MENU;
+
 //side bar
 @property (nonatomic, strong) IBOutlet UIView *VW_swipe;
 @property (readonly, nonatomic) int menyDraw_X,menuDraw_width;
@@ -30,6 +31,7 @@
 
 
 
+
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_profile;
 @property(nonatomic,weak) IBOutlet UITableView *TBL_menu;
 
@@ -38,6 +40,9 @@
 //view navigation bar
 @property(nonatomic,weak) IBOutlet UIButton *BTN_menu;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_hot_deals;
+@property(nonatomic,weak) IBOutlet UIView *VW_nav;
+@property(nonatomic,weak) IBOutlet UIButton *logo;
+
 
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_fav;
 @property(nonatomic,weak) IBOutlet MIBadgeButton *BTN_cart;
@@ -45,6 +50,8 @@
 @property(nonatomic,weak) IBOutlet UITextField *TXT_search;
 @property(nonatomic,weak) IBOutlet UITableView *TBL_search_results;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_badge;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_search;
+
 
 
 //_TBL_search_results
@@ -95,6 +102,10 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_third;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_Best_deals;
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_best_deals;
+@property(nonatomic,weak) IBOutlet UIButton *hot_deals_more;
+@property(nonatomic,weak) IBOutlet UIButton *best_deals_more;
+
+
 
 //Fourth  view
 @property(nonatomic,weak) IBOutlet UIView *VW_Fourth;
@@ -110,6 +121,8 @@
 @property(nonatomic,weak) IBOutlet UIButton *BTN_fashion;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_Person_banner;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_Things_banner;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_TOP;
+
 
 
 

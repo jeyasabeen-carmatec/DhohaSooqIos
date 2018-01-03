@@ -85,7 +85,8 @@
     self.navigationController.navigationBar.tintColor = [UIColor clearColor];
     self.navigationItem.hidesBackButton = YES;
     
-    
+    _BTN_guest.layer.cornerRadius = self.BTN_guest.frame.size.width/2;
+    _BTN_guest.layer.masksToBounds  = YES;
     
     _VW_fields.center = self.view.center;
     
@@ -172,16 +173,12 @@
     [_BTN_sign_up addTarget:self action:@selector(sign_up_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_login addTarget:self action:@selector(login_home) forControlEvents:UIControlEventTouchUpInside];
     
-    _TXT_username.text = @"venugopal@mailinator.com";
-    _TXT_password.text = @"qazplm123";
+    _TXT_username.text = @"";
+    _TXT_password.text = @"";
     
     [_BTN_facebook addTarget:self action:@selector(facebook_action:) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_Google_PLUS addTarget:self action:@selector(Google_PLUS_ACTIOn) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_guest addTarget:self action:@selector(guest_action) forControlEvents:UIControlEventTouchUpInside];
-
-
-    
-    
     
 }
 

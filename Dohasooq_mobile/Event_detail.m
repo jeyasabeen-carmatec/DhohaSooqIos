@@ -114,7 +114,7 @@
     
     frameset = _IMG_back_ground.frame;
     frameset.size.height = _LBL_event_time.frame.origin.y + _LBL_event_time.frame.size.height;
-    frameset.size.width = _LBL_event_name.frame.size.width;
+    frameset.size.width = _Scroll_contents.frame.size.width;
     _IMG_back_ground.frame = frameset;
 
 
@@ -149,12 +149,14 @@
     {
         NSLog(@"%@",exception);
     }
+      [_LBL_data sizeToFit];
+    
         frameset = _LBL_data.frame;
-        frameset.size.height = _LBL_data.frame.origin.y + _LBL_data.contentSize.height;
+        frameset.size.height = _LBL_data.frame.origin.y + _LBL_data.frame.size.height;
         _LBL_data.frame = frameset;
     
-    [_LBL_data layoutIfNeeded];
-     // [_LBL_data sizeToFit];
+    //[_LBL_data layoutIfNeeded];
+    
     
 
     
@@ -228,7 +230,7 @@
     _VW_author.frame = frameset;
     }
 
-    [_TBL_quantity reloadData];
+   // [_TBL_quantity reloadData];
   //  [_TBL_quantity reloadData];
 
     
@@ -236,16 +238,15 @@
 //    frameset = _BTN_book.frame;
 //    frameset.origin.y = _TBL_quantity.frame.origin.y + _TBL_quantity.frame.size.height;
 //    _BTN_book.frame = frameset;
+    [_TBL_quantity reloadData];
     frameset = _TBL_quantity.frame;
     frameset.size.height = _TBL_quantity.frame.origin.y + _TBL_quantity.contentSize.height+50 ;
     _TBL_quantity.frame = frameset;
-
-//    
+    
     CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = CGRectMake(_VW_Quantity.frame.origin.x, _VW_Quantity.frame.origin.y, [UIScreen mainScreen].bounds.size.width, _TBL_quantity.frame.size.height -50);
+    gradient.frame = CGRectMake(_VW_Quantity.frame.origin.x, _VW_Quantity.frame.origin.y, [UIScreen mainScreen].bounds.size.width, _TBL_quantity.contentSize.height -50);
     gradient.colors = @[(id)[UIColor colorWithRed:0.24 green:0.19 blue:0.15 alpha:1.0].CGColor, (id)[UIColor colorWithRed:0.55 green:0.46 blue:0.41 alpha:1.0].CGColor];
     [_VW_Quantity.layer insertSublayer:gradient atIndex:0];
-    
 
     
     frameset = _VW_Quantity.frame;
@@ -255,12 +256,13 @@
     _VW_Quantity.frame = frameset;
     
     
+   
     
     [self.Scroll_contents addSubview:_VW_event_dtl];
     [self.Scroll_contents addSubview:_VW_author];
     [self.Scroll_contents addSubview:_VW_Quantity];
     [_BTN_book addTarget:self action:@selector(BTN_book_action) forControlEvents:UIControlEventTouchUpInside];
-    
+     [self viewDidLayoutSubviews];
        // [self ATTRIBUTED_TEXT];
    
     
@@ -323,7 +325,9 @@
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
     [self performSelector:@selector(getData) withObject:activityIndicatorView afterDelay:0.01];
+   
     [self picker_set_UP];
+   
     
 
 }
@@ -378,10 +382,14 @@
     
     VW_overlay.hidden = YES;
     [activityIndicatorView stopAnimating];
+      [self set_UP_VIEW];
     [_TBL_quantity reloadData];
     [self set_UP_VIEW];
+    [self set_UP_VIEW];
+
+
     
-    [self viewDidLayoutSubviews];
+   
     
 }
 
@@ -498,12 +506,17 @@
         {
             
             NSString *str = [cost_arr objectAtIndex:0];//gcell.LBL_result.text;
-            NSString *text = [NSString stringWithFormat:@"%@No of Tickets :",str];
+            NSString *text = [NSString stringWithFormat:@"No of Tickets :%@",str];
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 text = [NSString stringWithFormat:@"%@ :No of Tickets",str];
             }
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                text = [NSString stringWithFormat:@"%@ : عدد التذاكر",str];
+            }
             
+
             
             if ([ccell.LBL_no_tickets respondsToSelector:@selector(setAttributedText:)]) {
                 
@@ -518,12 +531,12 @@
                 NSRange ename = [text rangeOfString:str];
                 if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:25.0]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
                                             range:ename];
                 }
                 else
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Medium" size:17.0]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0]}
                                             range:ename];
                 }
                 ccell.LBL_no_tickets.attributedText = attributedText;
@@ -535,6 +548,11 @@
          
             NSString *str1 = [cost_arr objectAtIndex:1];//gcell.LBL_price.text;
              NSString *text1 = [NSString stringWithFormat:@"Total Price:%@  %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],str1];
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                text1 = [NSString stringWithFormat:@"%@ :%@ السعر الكلي ",str1,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+            }
             
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
@@ -555,12 +573,12 @@
                 NSRange ename = [text1 rangeOfString:str1];
                 if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:25.0]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
                                             range:ename];
                 }
                 else
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Medium" size:17.0]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0]}
                                             range:ename];
                 }
                 ccell.LBL_total_price.attributedText = attributedText;

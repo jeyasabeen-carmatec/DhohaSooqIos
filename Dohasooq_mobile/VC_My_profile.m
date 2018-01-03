@@ -15,7 +15,7 @@
 @interface VC_My_profile ()<UITextFieldDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
 {
     float scroll_ht;
-    NSMutableArray *countrypicker,*statepicker;
+    NSMutableArray *countrypicker,*statepicker,*phone_code_arr;
     NSDictionary *grouppicker;
     NSDictionary *user_dictionary;
     UIView *VW_overlay;
@@ -23,13 +23,10 @@
     NSString *state_val,*group_val,*country_val;
     
     
-    
-    
-    
-    
     NSData *pngData;
     NSData *syncResData;
     NSMutableURLRequest *requesti;
+    
 }
 
 @end
@@ -38,6 +35,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    phone_code_arr = [[NSMutableArray alloc]init];
     // Do any additional setup after loading the view.
     
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -57,7 +55,7 @@
     [activityIndicatorView startAnimating];
     
     [self performSelector:@selector(View_user_data) withObject:nil afterDelay:0.01];
-    
+    [self phone_code_view];
     [self set_UP_VIEW];
 }
 -(void)viewWillAppear:(BOOL)animated{
@@ -146,45 +144,68 @@
     _contry_pickerView = [[UIPickerView alloc] init];
     _contry_pickerView.delegate = self;
     _contry_pickerView.dataSource = self;
+    
     _state_pickerView = [[UIPickerView alloc] init];
     _state_pickerView.delegate = self;
     _state_pickerView.dataSource = self;
+    
     _group_pickerVIEW = [[UIPickerView alloc] init];
     _group_pickerVIEW.delegate = self;
     _group_pickerVIEW.dataSource = self;
+    
     _date_picker = [[UIDatePicker alloc] init];
     _date_picker.datePickerMode = UIDatePickerModeDate;
-
+    
+    
+    _flag_contry_pickerCiew = [[UIPickerView alloc]init];
+    _flag_contry_pickerCiew.delegate = self;
+    _flag_contry_pickerCiew.dataSource=self;
+    
+//    UIToolbar* conutry_close = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
+//    conutry_close.barStyle = UIBarStyleBlackTranslucent;
+//    [conutry_close sizeToFit];
+//    
+//    UIButton *Done=[[UIButton alloc]init];
+//    Done.frame=CGRectMake(conutry_close.frame.size.width - 100, 0, 100, conutry_close.frame.size.height);
+//    [Done setTitle:@"Done" forState:UIControlStateNormal];
+//    [Done addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
+//    [conutry_close addSubview:Done];
+//    
+//    UIButton *close=[[UIButton alloc]init];
+//    close.frame=CGRectMake(conutry_close.frame.size.width - 20 , 0, 100, conutry_close.frame.size.height);
+//    [close setTitle:@"Close" forState:UIControlStateNormal];
+//    [close addTarget:self action:@selector(close_ACTION) forControlEvents:UIControlEventTouchUpInside];
+//    [conutry_close addSubview:close];
     
     
     
+    UIToolbar  *phone_close = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
+    phone_close.barStyle = UIBarStyleBlackTranslucent;
+    [phone_close sizeToFit];
     
+    UIButton *done=[[UIButton alloc]init];
+    done.frame=CGRectMake(phone_close.frame.size.width - 100, 0, 100, phone_close.frame.size.height);
+    [done setTitle:@"Done" forState:UIControlStateNormal];
+    [done addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
+    [phone_close addSubview:done];
     
-    
-    UIToolbar* conutry_close = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
-    conutry_close.barStyle = UIBarStyleBlackTranslucent;
-    [conutry_close sizeToFit];
-    
-    UIButton *Done=[[UIButton alloc]init];
-    Done.frame=CGRectMake(conutry_close.frame.size.width - 100, 0, 100, conutry_close.frame.size.height);
-    [Done setTitle:@"Done" forState:UIControlStateNormal];
-    [Done addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
-    [conutry_close addSubview:Done];
     
     UIButton *close=[[UIButton alloc]init];
-    close.frame=CGRectMake(conutry_close.frame.size.width , 0, 100, conutry_close.frame.size.height);
+    close.frame=CGRectMake(phone_close.frame.origin.x -20, 0, 100, phone_close.frame.size.height);
     [close setTitle:@"Close" forState:UIControlStateNormal];
     [close addTarget:self action:@selector(close_ACTION) forControlEvents:UIControlEventTouchUpInside];
-    [conutry_close addSubview:close];
+    [phone_close addSubview:close];
     
 
     
     
-    _TXT_country.inputAccessoryView=conutry_close;
-    _TXT_state.inputAccessoryView=conutry_close;
-    _TXT_group.inputAccessoryView=conutry_close;
-    _TXT_Dob.inputAccessoryView =conutry_close;
+    _TXT_country_fld.inputAccessoryView = phone_close;
+    _TXT_country.inputAccessoryView=phone_close;
+    _TXT_state.inputAccessoryView=phone_close;
+    _TXT_group.inputAccessoryView=phone_close;
+    _TXT_Dob.inputAccessoryView =phone_close;
 
+    _TXT_country_fld.inputView=_flag_contry_pickerCiew;
     self.TXT_country.inputView = _contry_pickerView;
     self.TXT_state.inputView=_state_pickerView;
     _TXT_group.inputView = _group_pickerVIEW;
@@ -221,9 +242,11 @@
 }
 -(void)close_ACTION
 {
+    [_TXT_country_fld resignFirstResponder];
     [_TXT_state resignFirstResponder];
     [_TXT_country resignFirstResponder];
     [_TXT_group resignFirstResponder];
+    [_TXT_Dob resignFirstResponder];
     [_TXT_Dob resignFirstResponder];
     
 }
@@ -238,10 +261,7 @@
     [_TXT_group resignFirstResponder];
     [_TXT_Dob resignFirstResponder];
     [_TXT_state resignFirstResponder];
-    
-    
-
-
+    [_TXT_country_fld resignFirstResponder];
     
 }
 -(void)viewDidLayoutSubviews
@@ -278,8 +298,9 @@
       
       scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height;
 
-
-    //  [self viewDidLayoutSubviews];
+      _TXT_first_name.backgroundColor = [UIColor whiteColor];
+      _TXT_last_name.backgroundColor = [UIColor whiteColor];
+     
       
   }
   else
@@ -308,11 +329,13 @@
       scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height;
 
 
-
+      _TXT_first_name.backgroundColor = [UIColor colorWithRed:240.0/255.0 green:240.0/255.0 blue:240.0/255.0 alpha:1];
+      _TXT_last_name.backgroundColor = [UIColor colorWithRed:240.0/255.0 green:240.0/255.0 blue:240.0/255.0 alpha:1];
       
      //  [self viewDidLayoutSubviews];
       
   }
+    [self viewDidLayoutSubviews];
      [self TEXT_hidden];
   
 }
@@ -329,11 +352,12 @@
 
         if(_BTN_save.hidden == YES)
         {
-            scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height -_BTN_save.frame.size.height;
+            scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height;
             
         }
         else
         {
+            
             scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height +_BTN_save.frame.size.height+10;
         }
 
@@ -354,16 +378,18 @@
         
         if(_BTN_save.hidden == YES)
         {
-            scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height -_BTN_save.frame.size.height;
+            scroll_ht = _BTN_save_billing.frame.origin.y + _BTN_save_billing.frame.size.height +_BTN_save.frame.size.height;
  
         }
         else
         {
-        scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height +_BTN_save.frame.size.height-40;
+        scroll_ht = _BTN_save_billing.frame.origin.y + _BTN_save_billing.frame.size.height+80;
+
         }
 
 
     }
+  //  [self viewDidLayoutSubviews];
     [self TEXT_billing_hidden];
 }
 -(void)BTN_bank_customer_action
@@ -494,6 +520,9 @@
     {
         return 1;
     }
+    if (pickerView == _flag_contry_pickerCiew) {
+        return 1;
+    }
     
     return 0;
 }
@@ -509,7 +538,9 @@
     {
         return [[grouppicker allValues] count];
     }
-    
+    if (pickerView == _flag_contry_pickerCiew) {
+        return phone_code_arr.count;
+    }
     
     return 0;
 }
@@ -523,6 +554,9 @@
     if(pickerView == _group_pickerVIEW)
     {
         return [grouppicker allValues][row];
+    }
+    if (pickerView == _flag_contry_pickerCiew) {
+        return [NSString stringWithFormat:@"%@   %@",[phone_code_arr[row] valueForKey:@"name"],[phone_code_arr[row] valueForKey:@"dial_code"]];
     }
     
     return nil;
@@ -539,15 +573,19 @@
     }
     if (pickerView == _state_pickerView) {
         
-               self.TXT_email.enabled=YES;
+        self.TXT_email.enabled=YES;
         state_val = statepicker[row];
 
     }
     if(pickerView == _group_pickerVIEW)
     {
-        group_val = [grouppicker allKeys][row];
+        group_val = [grouppicker allValues][row];
+        
         [[NSUserDefaults standardUserDefaults] setValue:[grouppicker allKeys][row] forKey:@"groupid"];
         [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    if (pickerView == _flag_contry_pickerCiew) {
+       self.TXT_country_fld.text = [phone_code_arr[row] valueForKey:@"dial_code"];
     }
 }
 
@@ -581,6 +619,7 @@
             {
                 [statepicker addObject:[[json_DATA objectAtIndex:i] valueForKey:@"value"]];
             }
+            
             
             
             
@@ -681,7 +720,7 @@
      NSString *STR_mobile = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"mnumber"]];
      NSString *STR_dob = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"bdate"]];
     NSArray *temp_arr = [STR_dob componentsSeparatedByString:@"T"];
-    STR_dob = [temp_arr objectAtIndex:0];
+      STR_dob = [temp_arr objectAtIndex:0];
      NSString *STR_customer_group = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"customer_grp_name"]];
      NSString *STR_bank_customer = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"doha_bank_customer"]];
      NSString *STR_bank_employee = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"doha_bank_employee"]];
@@ -808,6 +847,7 @@
         _TXT_name.enabled = NO;
         _TXT_land_phone.enabled = NO;
         _TXT_mobile_phone.enabled = NO;
+        _TXT_country_fld.enabled = NO;
         _TXT_group.enabled = NO;
         _TXT_Dob.enabled = NO;
         _TXT_email.enabled = NO;
@@ -824,6 +864,8 @@
         _TXT_name.enabled = NO;
         _TXT_land_phone.enabled = YES;
         _TXT_mobile_phone.enabled = YES;
+        _TXT_country_fld.enabled = YES;
+
         _TXT_group.enabled = YES;
         _TXT_Dob.enabled = YES;
         _TXT_email.enabled = NO;
@@ -944,7 +986,7 @@
     }
   else if( _BTN_male.tag == 1 && _BTN_feamle.tag == 1)
    {
-    msg = @"Please select gender";
+    msg = @"Please select Gender";
    }
   else
   {
@@ -1085,7 +1127,7 @@
     else if(_TXT_city.text.length < 1)
     {
         [_TXT_city becomeFirstResponder];
-        msg = @"Please enter city";
+        msg = @"Please enter City";
         
         
     }
@@ -1509,8 +1551,44 @@ didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
     [activityIndicatorView stopAnimating];
 }
 
+#pragma mark PhoneCodeView
+-(void)phone_code_view
+{
+    
+    
+    NSData *data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"countries" ofType:@"json"]];
+    NSError *localError = nil;
+    NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
+    
+    if (localError != nil) {
+        NSLog(@"%@", [localError userInfo]);
+    }
+    phone_code_arr = (NSMutableArray *)parsedObject;
+    
+    NSSortDescriptor *sortDescriptor;
+    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name"
+                                                 ascending:YES];
+    [phone_code_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
+    
+//    for(int k = 0; k < phone_code_arr.count;k++)
+//    {
+//        if([[[phone_code_arr objectAtIndex:k] valueForKey:@"name"] isEqualToString:@"Qatar"])
+//        {
+//            [self.flag_contry_pickerCiew selectRow:k inComponent:0 animated:NO];
+//            
+//            [self pickerView:self.flag_contry_pickerCiew didSelectRow:k inComponent:0];
+//            
+//            
+//        }
+//    }
+//    
 
+    
+    }
 
+- (IBAction)home_action:(id)sender {
+     [self.navigationController popViewControllerAnimated:NO];
+}
 
 
 

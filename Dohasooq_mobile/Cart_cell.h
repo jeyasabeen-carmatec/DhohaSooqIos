@@ -15,6 +15,8 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_prev_price;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_discount;
 @property(nonatomic,weak) IBOutlet UIImageView *BTN_close;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_combo;
+
 
 @property(nonatomic,strong) IBOutlet UIButton *BTN_plus;
 @property(nonatomic,strong) IBOutlet UIButton *BTN_minus;

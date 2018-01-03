@@ -407,15 +407,19 @@
                 NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
                 
                 //NSString *badge_value = @"11";
-                if(badge_value.length > 99 || wishlist.length > 99)
+                if([badge_value intValue] > 0 ||[wishlist intValue] > 0)
                 {
-                    [_BTN_cart setBadgeString:[NSString stringWithFormat:@"%@+",badge_value]];
-                    [_BTN_fav setBadgeString:[NSString stringWithFormat:@"%@+",wishlist]];
+                    @try
+                    {
+                        [_BTN_fav setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
+                        [_BTN_cart setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
+                    }
+                    @catch(NSException *Exception)
+                    {
+                        
+                    }
                     
-                    
-                }
-                else{
-                    [_BTN_cart setBadgeString: [NSString stringWithFormat:@"%@",badge_value]];
+                    [_BTN_cart setBadgeString:[NSString stringWithFormat:@"%@",badge_value]];
                     [_BTN_fav setBadgeString:[NSString stringWithFormat:@"%@",wishlist]];
                     
                     
