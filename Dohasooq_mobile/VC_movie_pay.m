@@ -8,11 +8,13 @@
 
 #import "VC_movie_pay.h"
 #import "XMLDictionary/XMLDictionary.h"
+#import "HttpClient.h"
 
 @interface VC_movie_pay ()
 {
     UIActivityIndicatorView *activityIndicatorView;
     UIView *VW_overlay;
+    NSString *booking_info;
 }
 
 
@@ -44,10 +46,10 @@
     [_LBL_event_name sizeToFit];
     
     
-    
-    CGRect framseset = _LBL_location.frame ;
-    framseset.origin.y = _LBL_event_name.frame.origin.y+ _LBL_event_name.frame.size.height + 3;
-    _LBL_location.frame = framseset;
+//    
+//    CGRect framseset = _LBL_location.frame ;
+//    framseset.origin.y = _LBL_event_name.frame.origin.y+ _LBL_event_name.frame.size.height + 3;
+//    _LBL_location.frame = framseset;
     @try
     {
         _LBL_location.text = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"theatre"]];
@@ -65,9 +67,9 @@
     
     
     
-    framseset = _LBL_time.frame ;
-    framseset.origin.y = _LBL_location.frame.origin.y+ _LBL_location.frame.size.height + 3;
-    _LBL_time.frame = framseset;
+//    framseset = _LBL_time.frame ;
+//    framseset.origin.y = _LBL_location.frame.origin.y+ _LBL_location.frame.size.height + 3;
+//    _LBL_time.frame = framseset;
     @try
     {
         NSDateFormatter *df = [[NSDateFormatter alloc]init];
@@ -88,14 +90,14 @@
     // [_LBL_persons sizeToFit];
     
     
-    framseset = _LBL_persons.frame ;
-    framseset.origin.y = _LBL_time.frame.origin.y+ _LBL_time.frame.size.height ;
-    _LBL_persons.frame = framseset;
-    
-    framseset = _LBL_seat.frame ;
-    framseset.origin.y = _LBL_persons.frame.origin.y+ _LBL_persons.frame.size.height ;
-    _LBL_seat.frame = framseset;
-    
+//    framseset = _LBL_persons.frame ;
+//    framseset.origin.y = _LBL_time.frame.origin.y+ _LBL_time.frame.size.height ;
+//    _LBL_persons.frame = framseset;
+//    
+//    framseset = _LBL_seat.frame ;
+//    framseset.origin.y = _LBL_persons.frame.origin.y+ _LBL_persons.frame.size.height ;
+//    _LBL_seat.frame = framseset;
+//    
     
     @try
     {
@@ -107,23 +109,23 @@
         NSLog(@"%@",exception);
     }
     
-    framseset = _LBL_service_charges.frame ;
-    framseset.origin.y = _LBL_persons.frame.origin.y + 3;
-    _LBL_service_charges.frame = framseset;
-    
-    framseset = _VW_contents.frame ;
-    framseset.size.height = _LBL_seat.frame.origin.y + _LBL_seat.frame.size.height +20;
-    _VW_contents.frame = framseset;
-    
-    
-    framseset = _BTN_pay.frame ;
-    framseset.origin.y = _VW_contents.frame.origin.y + _VW_contents.frame.size.height +15;
-    _BTN_pay.frame = framseset;
+//    framseset = _LBL_service_charges.frame ;
+//    framseset.origin.y = _LBL_persons.frame.origin.y + 3;
+//    _LBL_service_charges.frame = framseset;
+//    
+//    framseset = _VW_contents.frame ;
+//    framseset.size.height = _LBL_seat.frame.origin.y + _LBL_seat.frame.size.height +20;
+//    _VW_contents.frame = framseset;
+//    
+//    
+//    framseset = _BTN_pay.frame ;
+//    framseset.origin.y = _VW_contents.frame.origin.y + _VW_contents.frame.size.height +15;
+//    _BTN_pay.frame = framseset;
     @try
     {
         
         
-    NSString *text = [NSString stringWithFormat:@"Total Price \n%@ QAR",[[NSUserDefaults standardUserDefaults] valueForKey:@"charges"]];
+    NSString *text = [NSString stringWithFormat:@"Total Price \n%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"charges"],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
         _LBL_service_charges.text = text;
     }
     @catch(NSException *exception)
@@ -140,6 +142,7 @@
 {
     
     self.navigationController.navigationBar.hidden = NO;
+    self.navigationItem.hidesBackButton = YES;
 
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
@@ -154,23 +157,24 @@
     
     VW_overlay.hidden = YES;
     
-    
-    
-    
 }
 
     - (IBAction)back_action:(id)sender
     {
         [self.navigationController popToRootViewControllerAnimated:NO];
     }
-    -(void)pay_action_checked
+-(void)pay_action_checked
 {
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
     [self performSelector:@selector(get_order_iD) withObject:activityIndicatorView afterDelay:0.01];
 }
+#pragma mark Generating Booking ID
+
 -(void)get_order_iD
 {
+
+   
     
     NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/lock_confirm_request?Transaction_Id=%@&AppSource=3&AppVersion=1.0",[[NSUserDefaults standardUserDefaults] valueForKey:@"TID"]];
 
@@ -179,23 +183,119 @@
     NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
     //NSLog(@"string: %@", xmlString);
     NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
-    NSLog(@"dictionary: %@", xmlDoc);
+   
+    
     NSLog(@"The Order Data is:%@",xmlDoc);
+    
+    
     [[NSUserDefaults standardUserDefaults] setObject:xmlDoc forKey:@"order_details"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     
     VW_overlay.hidden = YES;
     [activityIndicatorView stopAnimating];
+    
+    NSString *tr_id = [[NSUserDefaults standardUserDefaults] valueForKey:@"TID"];
+    
+    
+    if ([[[xmlDoc valueForKey:@"result"] valueForKey:@"_Transaction_Id"] isEqualToString:tr_id]) {
+        
+        
+         NSLog(@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_OrderInfo"]);
+        booking_info =[NSString stringWithFormat:@"%@", [[xmlDoc valueForKey:@"result"] valueForKey:@"_OrderInfo"]];
+        
+        [self performSelector:@selector(save_bookings) withObject:activityIndicatorView afterDelay:0.0001];
+        
+        
+        // Move to Next Page
+       // [self performSegueWithIdentifier:@"Movie_pay_selection" sender:self];
+        
+    }
+    else{
+        [HttpClient createaAlertWithMsg:@"Please Conform Booking ID" andTitle:@""];
+    }
 
     
-        [self performSegueWithIdentifier:@"Movie_pay_selection" sender:self];
     }
  
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark Save Bookings
+
+//http://192.168.0.171/dohasooq/apis/savebooking.json
+//full_name, email, mobile, bookingId, movie_event,user_id
+
+-(void)save_bookings{
+    @try {
+        
+        
+        /*saveBookings_dic {
+         email = "ysushmalatha@gmail.com";
+         "full_name" = sushma;
+         mobile = 9177288200;
+         }*/
+        
+        NSString *user_ID =[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+        
+        NSDictionary *saveBookings_dic = [[NSUserDefaults standardUserDefaults] valueForKey:@"savebooking"];
+        NSLog(@"saveBookings_dic %@",saveBookings_dic);
+        
+        NSString *order_ID = [booking_info substringWithRange:NSMakeRange(1, booking_info.length-1)];
+        
+        
+        NSDictionary *params=@{@"full_name":[saveBookings_dic valueForKey:@"full_name"],@"email":[saveBookings_dic valueForKey:@"email"],@"mobile":[saveBookings_dic valueForKey:@"mobile"],@"bookingId":order_ID,@"movie_event":@"movie",@"user_id":user_ID};
+        
+        
+        NSLog(@"Params %@",params);
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/savebooking.json",SERVER_URL];
+        
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        @try {
+           [HttpClient api_with_post_params:urlGetuser andParams:params completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   if (error) {
+                       NSLog(@"%@",[error localizedDescription]);
+                   }
+                   if (data) {
+                       NSLog(@"After Saving %@",data);
+                       
+                       if ([data isKindOfClass:[NSDictionary class]]) {
+                           
+                           if ([[data valueForKey:@"success"] isEqualToString:@"success"]) {
+                               
+                               // Move to Next Page
+                                [self performSegueWithIdentifier:@"Movie_pay_selection" sender:self];
+                               
+                           }
+                           else{
+                                 [HttpClient createaAlertWithMsg:@"Some thing wen wrong ,Check The mail " andTitle:@""];
+                           }
+                          
+                           
+                           
+                       }
+                    
+                       
+                   }
+                   
+               });
+           }];
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+            [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+            
+        }
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+        [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+    }
+}
+
 
 /*
 #pragma mark - Navigation

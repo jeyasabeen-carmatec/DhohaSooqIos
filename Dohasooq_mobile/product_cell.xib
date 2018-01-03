@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -29,49 +29,54 @@
                 <rect key="frame" x="0.0" y="0.0" width="180" height="281"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="4 " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GiC-7S-434">
-                        <rect key="frame" x="11" y="12" width="31" height="22"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4  " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GiC-7S-434">
+                        <rect key="frame" x="11" y="12" width="30" height="22"/>
                         <color key="backgroundColor" red="0.27058823529411763" green="0.80784313725490198" blue="0.52156862745098043" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="22" id="VSw-91-ouZ"/>
+                            <constraint firstAttribute="width" constant="30" id="kg9-Oz-29y"/>
+                        </constraints>
                         <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="12"/>
                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2LO-xv-BVk">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="2LO-xv-BVk">
                         <rect key="frame" x="30" y="36" width="120" height="120"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="120" id="IpI-2t-f3Z"/>
+                            <constraint firstAttribute="width" constant="120" id="Kk9-8Y-yAl"/>
+                        </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K2K-gH-Fhf">
-                        <rect key="frame" x="0.0" y="188" width="180" height="26"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K2K-gH-Fhf">
+                        <rect key="frame" x="11" y="165" width="157" height="0.0"/>
                         <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="12"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vQ2-UZ-DSL">
-                        <rect key="frame" x="0.0" y="247" width="180" height="24"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vQ2-UZ-DSL">
+                        <rect key="frame" x="11" y="202" width="157" height="0.0"/>
                         <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="12"/>
                         <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <button opaque="NO" alpha="0.55000000000000004" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aMr-zE-2wU">
+                    <button opaque="NO" alpha="0.55000000000000004" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aMr-zE-2wU">
                         <rect key="frame" x="144" y="12" width="24" height="22"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="22" id="f7p-Oz-HVQ"/>
+                            <constraint firstAttribute="width" constant="24" id="xgk-tH-ZpK"/>
+                        </constraints>
                         <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="18"/>
                         <state key="normal" title="">
                             <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         </state>
                     </button>
-                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" scrollEnabled="NO" editable="NO" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LSR-3f-BaR">
-                        <rect key="frame" x="0.0" y="212" width="180" height="26"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" scrollEnabled="NO" editable="NO" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LSR-3f-BaR">
+                        <rect key="frame" x="11" y="168" width="157" height="36"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="12"/>
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oKY-8d-x16">
-                        <rect key="frame" x="11" y="163" width="157" height="21"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oKY-8d-x16">
+                        <rect key="frame" x="11" y="163" width="157" height="0.0"/>
                         <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
                         <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
@@ -79,6 +84,28 @@
                 </subviews>
             </view>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="oKY-8d-x16" secondAttribute="trailing" constant="12" id="4FJ-zY-Ggu"/>
+                <constraint firstItem="GiC-7S-434" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="12" id="D1Z-N8-LhJ"/>
+                <constraint firstItem="GiC-7S-434" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="11" id="Jhc-YD-RwM"/>
+                <constraint firstItem="oKY-8d-x16" firstAttribute="top" secondItem="2LO-xv-BVk" secondAttribute="bottom" constant="7" id="K7C-fH-2zZ"/>
+                <constraint firstItem="LSR-3f-BaR" firstAttribute="leading" secondItem="K2K-gH-Fhf" secondAttribute="leading" id="PJp-7c-rDt"/>
+                <constraint firstItem="K2K-gH-Fhf" firstAttribute="top" secondItem="oKY-8d-x16" secondAttribute="bottom" constant="2" id="QY2-RT-os7"/>
+                <constraint firstItem="2LO-xv-BVk" firstAttribute="top" secondItem="GiC-7S-434" secondAttribute="bottom" constant="2" id="VLr-29-Y0f"/>
+                <constraint firstItem="LSR-3f-BaR" firstAttribute="trailing" secondItem="K2K-gH-Fhf" secondAttribute="trailing" id="Wrh-cr-ylb"/>
+                <constraint firstItem="oKY-8d-x16" firstAttribute="centerX" secondItem="2LO-xv-BVk" secondAttribute="centerX" id="X4E-ON-pka"/>
+                <constraint firstItem="oKY-8d-x16" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="11" id="ZWO-UP-AZz"/>
+                <constraint firstItem="K2K-gH-Fhf" firstAttribute="centerX" secondItem="oKY-8d-x16" secondAttribute="centerX" id="Zhg-3f-JYi"/>
+                <constraint firstItem="K2K-gH-Fhf" firstAttribute="trailing" secondItem="oKY-8d-x16" secondAttribute="trailing" id="cMh-vk-4KS"/>
+                <constraint firstItem="vQ2-UZ-DSL" firstAttribute="leading" secondItem="LSR-3f-BaR" secondAttribute="leading" id="cnv-Xc-dBt"/>
+                <constraint firstAttribute="trailing" secondItem="aMr-zE-2wU" secondAttribute="trailing" constant="12" id="fTw-0s-jtG"/>
+                <constraint firstItem="LSR-3f-BaR" firstAttribute="top" secondItem="K2K-gH-Fhf" secondAttribute="bottom" constant="3" id="lr0-Ks-jhN"/>
+                <constraint firstItem="aMr-zE-2wU" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="12" id="lzU-iF-jOg"/>
+                <constraint firstItem="vQ2-UZ-DSL" firstAttribute="trailing" secondItem="LSR-3f-BaR" secondAttribute="trailing" id="sJY-9o-BMv"/>
+                <constraint firstItem="K2K-gH-Fhf" firstAttribute="leading" secondItem="oKY-8d-x16" secondAttribute="leading" id="vUL-iI-f5t"/>
+                <constraint firstItem="2LO-xv-BVk" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="via-in-GXQ"/>
+                <constraint firstItem="vQ2-UZ-DSL" firstAttribute="top" secondItem="LSR-3f-BaR" secondAttribute="bottom" constant="-2" id="wXQ-pj-Sg5"/>
+            </constraints>
             <size key="customSize" width="180" height="281"/>
             <connections>
                 <outlet property="BTN_fav" destination="aMr-zE-2wU" id="RAo-ih-diF"/>

@@ -8,6 +8,7 @@
 
 #import "VC_sign_up.h"
 #import "Home_page_Qtickets.h"
+#import "HttpClient.h"
 
 @interface VC_sign_up ()<UIGestureRecognizerDelegate,UITextFieldDelegate,UIAlertViewDelegate>
 {
@@ -145,8 +146,58 @@
         [self viewDidLayoutSubviews];
     }
     
+    if (textField == _TXT_password) {
+        
+        BOOL lowerCaseLetter = false,upperCaseLetter = false,digit = false,specialCharacter = 0;
+        if([textField.text length] >= 8)
+        {
+            for (int i = 0; i < [textField.text length]; i++)
+            {
+                unichar c = [textField.text characterAtIndex:i];
+                if(!lowerCaseLetter)
+                {
+                    lowerCaseLetter = [[NSCharacterSet lowercaseLetterCharacterSet] characterIsMember:c];
+                }
+                if(!upperCaseLetter)
+                {
+                    upperCaseLetter = [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:c];
+                }
+                if(!digit)
+                {
+                    digit = [[NSCharacterSet decimalDigitCharacterSet] characterIsMember:c];
+                }
+                if(!specialCharacter)
+                {
+                    specialCharacter = [[NSCharacterSet symbolCharacterSet] characterIsMember:c];
+                }
+            }
+            
+            if( digit && lowerCaseLetter )
+            {
+                NSLog(@"Valid Password");
+            }
+            else
+            {
+                [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+                [textField becomeFirstResponder];
+            }
+            
+        }
+        else
+        {
+           [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+            [textField becomeFirstResponder];
+        }
+        
+        
+        
+        
+        
+    }
     
 }
+
+
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     if(textField.tag==1)
@@ -391,7 +442,7 @@
         if([status isEqualToString:@"1"])
         {
            
-                       NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
+            NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
             [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
             
             [[NSUserDefaults standardUserDefaults] setObject:dictMutable forKey:@"userdata"];

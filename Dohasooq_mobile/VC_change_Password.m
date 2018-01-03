@@ -7,6 +7,8 @@
 //
 
 #import "VC_change_Password.h"
+#import "HttpClient.h"
+#import "ViewController.h"
 
 @interface VC_change_Password ()
 {
@@ -22,7 +24,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    _vw_align.center = self.view.center;
+    //_vw_align.center = self.view.center;
     
 }
 -(void)viewWillAppear:(BOOL)animated{
@@ -54,7 +56,7 @@
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
     
-    if(textField == _TXT_new_pwd || textField == _TXT_new_pwd)
+    if( textField == _TXT_new_pwd)
     {
         [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
         
@@ -68,11 +70,152 @@
 {
     [UIView beginAnimations:nil context:NULL];
     
+    if (textField == _TXT_old_pwd)
+    {
+        BOOL lowerCaseLetter = false,upperCaseLetter = false,digit = false,specialCharacter = 0;
+        if([textField.text length] >= 8)
+        {
+            for (int i = 0; i < [textField.text length]; i++)
+            {
+                unichar c = [textField.text characterAtIndex:i];
+                if(!lowerCaseLetter)
+                {
+                    lowerCaseLetter = [[NSCharacterSet lowercaseLetterCharacterSet] characterIsMember:c];
+                }
+                if(!upperCaseLetter)
+                {
+                    upperCaseLetter = [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:c];
+                }
+                if(!digit)
+                {
+                    digit = [[NSCharacterSet decimalDigitCharacterSet] characterIsMember:c];
+                }
+                if(!specialCharacter)
+                {
+                    specialCharacter = [[NSCharacterSet symbolCharacterSet] characterIsMember:c];
+                }
+            }
+            
+            if( digit && lowerCaseLetter )
+            {
+                NSLog(@"Valid Password");
+            }
+            else
+            {
+                [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+                [textField becomeFirstResponder];
+            }
+            
+        }
+        else
+        {
+            [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+            [textField becomeFirstResponder];
+        }
+        
+        
+        
+    }
+    if (textField == _TXT_new_pwd)
+    {
+        
+        BOOL lowerCaseLetter = false,upperCaseLetter = false,digit = false,specialCharacter = 0;
+        if([textField.text length] >= 8)
+        {
+            for (int i = 0; i < [textField.text length]; i++)
+            {
+                unichar c = [textField.text characterAtIndex:i];
+                if(!lowerCaseLetter)
+                {
+                    lowerCaseLetter = [[NSCharacterSet lowercaseLetterCharacterSet] characterIsMember:c];
+                }
+                if(!upperCaseLetter)
+                {
+                    upperCaseLetter = [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:c];
+                }
+                if(!digit)
+                {
+                    digit = [[NSCharacterSet decimalDigitCharacterSet] characterIsMember:c];
+                }
+                if(!specialCharacter)
+                {
+                    specialCharacter = [[NSCharacterSet symbolCharacterSet] characterIsMember:c];
+                }
+            }
+            
+            if( digit && lowerCaseLetter )
+            {
+                NSLog(@"Valid Password");
+            }
+            else
+            {
+                [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+                [textField becomeFirstResponder];
+            }
+            
+        }
+        else
+        {
+            [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+            [textField becomeFirstResponder];
+        }
+        
+        
+    }
+    if (textField == _TXT_confirm_pwd)
+    {
+        BOOL lowerCaseLetter = false,upperCaseLetter = false,digit = false,specialCharacter = 0;
+        if([textField.text length] >= 8)
+        {
+            for (int i = 0; i < [textField.text length]; i++)
+            {
+                unichar c = [textField.text characterAtIndex:i];
+                if(!lowerCaseLetter)
+                {
+                    lowerCaseLetter = [[NSCharacterSet lowercaseLetterCharacterSet] characterIsMember:c];
+                }
+                if(!upperCaseLetter)
+                {
+                    upperCaseLetter = [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:c];
+                }
+                if(!digit)
+                {
+                    digit = [[NSCharacterSet decimalDigitCharacterSet] characterIsMember:c];
+                }
+                if(!specialCharacter)
+                {
+                    specialCharacter = [[NSCharacterSet symbolCharacterSet] characterIsMember:c];
+                }
+            }
+            
+            if( digit && lowerCaseLetter )
+            {
+                NSLog(@"Valid Password");
+            }
+            else
+            {
+                [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+                [textField becomeFirstResponder];
+            }
+            
+        }
+        else
+        {
+            [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+            [textField becomeFirstResponder];
+        }
+        
+        
+    }
+
+    if( textField == _TXT_new_pwd)
+    {
     self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
     [UIView commitAnimations];
     [UIView beginAnimations:nil context:NULL];
     self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
     [UIView commitAnimations];
+    }
     
 }
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
@@ -115,22 +258,20 @@
         NSInteger inte = textField.text.length;
         if(inte >= 64)
         {
-            if ([string isEqualToString:@""])
-            {
+            if ([string isEqualToString:@""]) {
                 return YES;
             }
             else
             {
                 return NO;
             }
+            
         }
         
-        return YES;
-    }
-
-
-    
+     
+       }
     return YES;
+
 }
 
 - (IBAction)BTN_save_action:(id)sender {
@@ -167,14 +308,14 @@
    else if([_TXT_new_pwd.text isEqualToString:@""])
     {
         [_TXT_new_pwd becomeFirstResponder];
-        msg = @"Please enter Password";
+        msg = @"Please enter New Password";
         
         
     }
     else if(_TXT_new_pwd.text.length < 8)
     {
         [_TXT_new_pwd becomeFirstResponder];
-        msg = @"Short passwords are easy to guess. Try one with at least 8 characters";
+        msg = @"Short Passwords are easy to guess. Try one with at least 8 characters";
         
     }
     else if(_TXT_new_pwd.text.length > 64)
@@ -185,7 +326,7 @@
     else if([_TXT_confirm_pwd.text isEqualToString:@""])
     {
         [_TXT_new_pwd becomeFirstResponder];
-        msg = @"Please enter Password";
+        msg = @"Please enter Confirm Password";
         
         
     }
@@ -272,9 +413,11 @@
                 
                 [activityIndicatorView stopAnimating];
                 VW_overlay.hidden = YES;
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"The new password has been saved" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
                 [alert show];
-                [self performSegueWithIdentifier:@"cahnge_password_identofier" sender:self];
+//                ViewController *login = [self.storyboard instantiateViewControllerWithIdentifier:@"login_VC"];
+//                [self presentViewController:login animated:NO completion:nil];
+               // [self performSegueWithIdentifier:@"cahnge_password_identofier" sender:self];
                 
             }
             else
@@ -283,6 +426,7 @@
                 VW_overlay.hidden = YES;
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 [alert show];
+             
             }
             
         }
@@ -303,11 +447,32 @@
 
     
 }
+- (void)alertView:(UIAlertView *)alertView
+clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if(alertView.tag == 1)
+    {
+        if (buttonIndex == [alertView cancelButtonIndex])
+        {
+            NSLog(@"cancel:");
+            
+        }
+        else{
+            
+             NSLog(@"Ok:");
+           // [self.navigationController popViewControllerAnimated:YES];
 
-- (IBAction)back_action:(id)sender {
+            
+        }
+    }
+}
+
+- (IBAction)back_action:(id)sender
+{
     
-    [self.navigationController popViewControllerAnimated:YES];
-
+     [self.navigationController popViewControllerAnimated:YES];
+}
+- (IBAction)home_action:(id)sender {
+    [self.navigationController popViewControllerAnimated:NO];
 }
 
 - (void)didReceiveMemoryWarning {
