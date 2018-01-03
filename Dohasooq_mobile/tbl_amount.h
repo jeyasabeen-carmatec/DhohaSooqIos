@@ -15,5 +15,7 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_total_amount;
 @property (weak, nonatomic) IBOutlet UILabel *redempion_lbl;
 @property (weak, nonatomic) IBOutlet UILabel *redemption_amt;
+@property (weak, nonatomic) IBOutlet UILabel *LBL_dohamiles;
+
 
 @end

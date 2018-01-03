@@ -18,6 +18,8 @@
 @property(nonatomic,weak) IBOutlet UIImageView *LBL_stat;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_check;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_total_charge;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_terms;
+
 
 
 @property(nonatomic,weak) IBOutlet UIButton *BTN_apply;
@@ -31,6 +33,11 @@
 @property(nonatomic,weak) IBOutlet UITextField *TXT_code;
 @property(nonatomic,weak) IBOutlet UITextField *TXT_voucher;
 
+//terms and conditions
+@property(nonatomic,weak) IBOutlet UIButton *BTN_ok_terms;
+
+@property(nonatomic,weak) IBOutlet UIView *VW_terms;
+@property(nonatomic,weak) IBOutlet UIWebView *web_terms;
 
 
 @end

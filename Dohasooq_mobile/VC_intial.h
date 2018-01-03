@@ -13,8 +13,14 @@
 @property(nonatomic,weak) IBOutlet UITextField *TXT_country;
 @property(nonatomic,weak) IBOutlet UITextField *TXT_language;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_next;
-@property(nonatomic,weak)IBOutlet  UITableView *TBL_list_coutry;
+@property(nonatomic,weak)IBOutlet  UIImageView *IMG_logo;
+@property(nonatomic,weak)IBOutlet  UIImageView *IMG_back_otal;
+
 @property(nonatomic,weak) IBOutlet UITableView *TBL_list_lang;
+@property(nonatomic,strong)  UIPickerView *country_lang_picker;
+@property(nonatomic,strong)  UIPickerView *lang_picker;
+
+
 @property(nonatomic,weak) IBOutlet UIView *VW_ceter;
 
 

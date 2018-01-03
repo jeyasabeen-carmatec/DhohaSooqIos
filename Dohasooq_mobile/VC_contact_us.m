@@ -10,7 +10,7 @@
 #import "UIView+Shadow.h"
 #import "HttpClient.h"
 
-@interface VC_contact_us ()<UITextFieldDelegate>
+@interface VC_contact_us ()<UITextFieldDelegate,UIAlertViewDelegate>
 {
     float scroll_ht;
     UIView *VW_overlay;
@@ -73,7 +73,7 @@
     _VW_contact_us.frame = frameset;
     
     frameset = _BTN_submit.frame;
-    frameset.origin.y = _VW_contact_us.frame.origin.y + _VW_contact_us.frame.size.height + 10;
+    frameset.origin.y = _TXT_message.frame.origin.y + _TXT_message.frame.size.height + 20;
     _BTN_submit.frame = frameset;
     
     frameset = _VW_contents.frame;
@@ -82,7 +82,7 @@
     _VW_contents.frame = frameset;
     [self.Scroll_contents addSubview:_VW_contents];
     
-    scroll_ht = _VW_contents.frame.size.height + _BTN_submit.frame.size.height;
+    scroll_ht = _VW_contents.frame.size.height +_VW_contents .frame.size.height;
     [_BTN_submit addTarget:self action:@selector(contact_SUBMIT) forControlEvents:UIControlEventTouchUpInside];
     
   
@@ -166,6 +166,10 @@
 - (IBAction)back_action:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
+- (IBAction)home_action:(id)sender {
+    [self.navigationController popViewControllerAnimated:NO];
+}
+
 -(void)contact_SUBMIT
 {
     NSString *text_to_compare_email = _TXT_email.text;
@@ -231,13 +235,12 @@
     else{
         VW_overlay.hidden = NO;
         [activityIndicatorView startAnimating];
-        [self performSelector:@selector(address_post_API) withObject:activityIndicatorView afterDelay:0.01];
+        [self performSelector:@selector(online_enquiry_API_calling) withObject:activityIndicatorView afterDelay:0.01];
 
     }
        if(msg)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+        [HttpClient createaAlertWithMsg:msg andTitle:@""];
         
     }
 
@@ -273,79 +276,189 @@
     
 
 }
--(void)address_post_API
-{
-    @try
-    {
-        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
-       // NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+//-(void)address_post_API
+//{
+//    @try
+//    {
+//        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+//       // NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+//
+//        NSString *fname = _TXT_F_name.text;
+//        NSString *email = _TXT_email.text;
+//        NSString *phone = _TXT_phone.text;
+//        NSString *company = _TXT_organisation.text;
+//        NSString *msg = _TXT_message.text;
+//
+//        NSDictionary *parameters = @{
+//                                     @"name":fname,
+//                                     @"email":email,
+//                                     @"phnumber":phone,
+//                                     @"company":company,
+//                                     @"message":msg
+//                                     };
+//        NSError *error;
+//        NSError *err;
+//        NSHTTPURLResponse *response = nil;
+//        
+//        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
+//        NSLog(@"the posted data is:%@",parameters);
+//        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/contactus/%@.json",SERVER_URL,country];
+//         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@"" withString:@"%20"];
+//        
+//      
+//        
+//        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+//        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+//        [request setURL:urlProducts];
+//        [request setHTTPMethod:@"POST"];
+//        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+//        [request setHTTPBody:postData];
+//        [request setHTTPShouldHandleCookies:NO];
+//        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+//        
+//        if(aData)
+//        {
+//            
+//            VW_overlay.hidden = YES;
+//            [activityIndicatorView stopAnimating];
+//            NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+//            NSLog(@"%@",error);
+//            NSLog(@"The response Api   sighn up API %@",json_DATA);
+//            NSString *msg = [json_DATA valueForKey:@"msg"];
+//            
+//            
+//            
+//                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//                [alert show];
+//                
+//            
+//        
+//        }
+//        else
+//        {
+//            [activityIndicatorView stopAnimating];
+//            VW_overlay.hidden = YES;
+//            
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//            [alert show];
+//        }
+//        
+//    }
+//    
+//    @catch(NSException *exception)
+//    {
+//        NSLog(@"The error is:%@",exception);
+//    }
+//    
+//
+//}
 
-        NSString *fname = _TXT_F_name.text;
-        NSString *email = _TXT_email.text;
-        NSString *phone = _TXT_phone.text;
-        NSString *company = _TXT_organisation.text;
-        NSString *msg = _TXT_message.text;
 
-        NSDictionary *parameters = @{
-                                     @"name":fname,
-                                     @"email":email,
-                                     @"phnumber":phone,
-                                     @"company":company,
-                                     @"message":msg
-                                     };
-        NSError *error;
-        NSError *err;
-        NSHTTPURLResponse *response = nil;
-        
-        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
-        NSLog(@"the posted data is:%@",parameters);
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/contactus/%@.json",SERVER_URL,country];
-         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@"" withString:@"%20"];
-        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
-        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-        [request setURL:urlProducts];
-        [request setHTTPMethod:@"POST"];
-        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-        [request setHTTPBody:postData];
-        [request setHTTPShouldHandleCookies:NO];
-        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-        
-        if(aData)
+#pragma  Online Enquiry API Calling
+
+-(void)online_enquiry_API_calling{
+        @try
         {
             
-            VW_overlay.hidden = YES;
-            [activityIndicatorView stopAnimating];
-            NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
-            NSLog(@"%@",error);
-            NSLog(@"The response Api   sighn up API %@",json_DATA);
-            NSString *msg = [json_DATA valueForKey:@"msg"];
+            NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+
+            NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/contactus/%@.json",SERVER_URL,country];
+            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+            [request setURL:[NSURL URLWithString:urlGetuser]];
+            [request setHTTPMethod:@"POST"];
+            
+            NSString *boundary = @"---------------------------14737809831466499882746641449";
+            NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
+            [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+            
+            NSMutableData *body = [NSMutableData data];
+            //    [request setHTTPBody:body];
+            
+            
+            NSString *fname = _TXT_F_name.text;
+            NSString *email = _TXT_email.text;
+            NSString *phone = _TXT_phone.text;
+            NSString *company = _TXT_organisation.text;
+            NSString *msg = _TXT_message.text;
             
             
             
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
+            
+            // text parameter
+            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"name\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]]; //venu1@carmatec.com
+            [body appendData:[[NSString stringWithFormat:@"%@",fname]dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+            
+            // another text parameter
+            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"email\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[[NSString stringWithFormat:@"%@",email]dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+            
+            
+            
+            //Phnumber
+            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"phnumber\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[[NSString stringWithFormat:@"%@",phone]dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+            
+            
+            
+            //message
+            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"message\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[[NSString stringWithFormat:@"%@",msg]dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+            
+            
+            //organization
+            
+            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"company\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[[NSString stringWithFormat:@"%@",company]dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+
+            
+            
+            //
+            NSError *er;
+            //    NSHTTPURLResponse *response = nil;
+            
+            // close form
+            [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+            
+            // set request body
+            [request setHTTPBody:body];
+            
+            NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+            
+            if (returnData) {
                 
+                NSMutableDictionary *json_DATA = [[NSMutableDictionary alloc]init];
+                json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
+                NSLog(@"%@", [NSString stringWithFormat:@"JSON DATA OF ORDER DETAIL: %@", json_DATA]);
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                alert.tag = 1;
+                [alert show];
+            }
             
-        
         }
-        else
+        @catch(NSException *exception)
         {
             [activityIndicatorView stopAnimating];
             VW_overlay.hidden = YES;
+            NSLog(@"THE EXception:%@",exception);
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-            [alert show];
         }
-        
+    [activityIndicatorView stopAnimating];
+    VW_overlay.hidden = YES;
     }
-    
-    @catch(NSException *exception)
-    {
-        NSLog(@"The error is:%@",exception);
-    }
-    
 
-}
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

@@ -20,6 +20,10 @@
 
 @property(nonatomic,weak) IBOutlet UILabel *LBL_price;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_next;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_miles;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_header;
+
+
 
 
 @property(nonatomic,strong) IBOutlet UIButton *BTN_view_price;
@@ -30,6 +34,9 @@
 @property(nonatomic,strong) IBOutlet UIImageView *IMG_cart;
 - (IBAction)wishListAction:(id)sender;
 
+//EMPTY VIEW
+@property(nonatomic,weak)IBOutlet UIView *VW_empty;
+@property(nonatomic,weak)IBOutlet UIButton *BTN_empty;
 
 
 

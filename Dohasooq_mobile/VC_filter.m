@@ -50,8 +50,8 @@
 {
     lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
     upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];
-    self.LBL_max.text = [NSString stringWithFormat:@"Max QAR %d", (int)self.LBL_slider.upperValue];
-    self.LBL_min.text = [NSString stringWithFormat:@"Min QAR %d", (int)self.LBL_slider.lowerValue];
+    self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],(int)self.LBL_slider.upperValue];
+    self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"], (int)self.LBL_slider.lowerValue];
 
   
 }
@@ -368,12 +368,13 @@ else{
             {
                 [[NSUserDefaults standardUserDefaults] setObject:[[xmlDoc valueForKey:@"EventDetails"]valueForKey:@"eventdetail"] forKey:@"Events_arr"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
-                [self.navigationController popViewControllerAnimated:NO];
                 
             }
         }
             else
             {
+                [self.navigationController popViewControllerAnimated:NO];
+
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Events Found"delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
                 [alert show];
 

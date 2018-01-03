@@ -89,25 +89,8 @@ int j ,i;
             
         }
      
-        return count;//[[[json_DATA valueForKey:@"Order"] valueForKey:[key objectAtIndex:0]] valueForKey:@"Products"] count];
+        return count;
     }
-    
-//    if(section == 2)
-//    {
-//        return 1;
-//    }
-//    
-//    if(section == 3)
-//    {
-//        return 1 ;
-//        
-//    }
-//    
-//    if(section == 4)
-//    {
-//        return 1;
-//        
-//    }
   
         return 1;
     
@@ -118,93 +101,7 @@ int j ,i;
     NSArray *keys_arr = [[json_DATA valueForKey:@"Order"] allKeys];
     
     switch (indexPath.section) {
-//        case 0:
-//        {
-//            first_top_cell *top_cell = (first_top_cell *)[tableView dequeueReusableCellWithIdentifier:@"first_cell1"];
-//            if (top_cell == nil)
-//            {
-//                NSArray *nib;
-//                nib = [[NSBundle mainBundle] loadNibNamed:@"first_top_cell" owner:self options:nil];
-//                top_cell = [nib objectAtIndex:0];
-//            }
-//            
-//            NSString *str = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_number"]];
-//            str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-//            str = [str stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
-//            
-//            NSString *text = [NSString stringWithFormat:@"ORDER ID : %@",str];
-//            
-//            
-//            if ([top_cell.LBL_order_ID respondsToSelector:@selector(setAttributedText:)]) {
-//                
-//                NSDictionary *attribs = @{
-//                                          NSForegroundColorAttributeName:top_cell.LBL_order_ID.textColor,
-//                                          NSFontAttributeName: top_cell.LBL_order_ID.font
-//                                          };
-//                NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
-//                
-//                
-//                
-//                NSRange ename = [text rangeOfString:str];
-//                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-//                {
-//                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-//                                            range:ename];
-//                }
-//                else
-//                {
-//                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName :[UIColor blueColor]}
-//                                            range:ename];
-//                }
-//                top_cell.LBL_order_ID.attributedText = attributedText;
-//            }
-//            else
-//            {
-//                top_cell.LBL_order_ID.text = text;
-//            }
-//            NSString *date = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_created"]];
-//            date = [date stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-//            date = [date stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
-//            
-//            
-//            NSString *date_text = [NSString stringWithFormat:@"Order on: %@",date];
-//            
-//            
-//            if ([top_cell.LBL_order_ID respondsToSelector:@selector(setAttributedText:)]) {
-//                
-//                NSDictionary *attribs = @{
-//                                          NSForegroundColorAttributeName:top_cell.LBL_order_Date.textColor,
-//                                          NSFontAttributeName: top_cell.LBL_order_Date.font
-//                                          };
-//                NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:date_text attributes:attribs];
-//                
-//                
-//                
-//                NSRange ename = [date_text rangeOfString:date];
-//                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-//                {
-//                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-//                                            range:ename];
-//                }
-//                else
-//                {
-//                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName :[UIColor blackColor]}
-//                                            range:ename];
-//                }
-//                top_cell.LBL_order_Date.attributedText = attributedText;
-//            }
-//            else
-//            {
-//                top_cell.LBL_order_Date.text = text;
-//            }
-//            
-//            
-//            
-//            
-//            return top_cell;
-//        }
-//            break;
-//            
+           
         case 0:
         {
             orders_cell *order_cell = (orders_cell *)[tableView dequeueReusableCellWithIdentifier:@"orders_cell"];
@@ -232,53 +129,10 @@ int j ,i;
             item_seller = [item_seller stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
             
             
-//NSString *name_text = [NSString stringWithFormat:@"%@\n%@",item_name,item_seller];
             order_cell.LBL_item_name.numberOfLines = 0;
             order_cell.LBL_item_name.text = item_name;
             order_cell.LBL_seller.text = item_seller;
             
-//            
-//            if ([order_cell.LBL_item_name respondsToSelector:@selector(setAttributedText:)]) {
-//                
-//                // Define general attributes for the entire text
-//                NSDictionary *attribs = @{
-//                                          NSForegroundColorAttributeName:order_cell.LBL_item_name.textColor,
-//                                          NSFontAttributeName:order_cell.LBL_item_name.font
-//                                          };
-//                NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:name_text attributes:attribs];
-//                
-//                
-//                
-//                NSRange ename = [name_text rangeOfString:item_name];
-//                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-//                {
-//                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-//                                            range:ename];
-//                }
-//                else
-//                {
-//                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0]}
-//                                            range:ename];
-//                }
-//                NSRange cmp = [name_text rangeOfString:item_seller];
-//                
-//                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-//                {
-//                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0]}
-//                                            range:cmp];
-//                }
-//                else
-//                {
-//                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:13.0]}
-//                                            range:cmp ];
-//                }
-//                order_cell.LBL_item_name.attributedText = attributedText;
-//            }
-//            else
-//            {
-//                order_cell.LBL_item_name.text = name_text;
-//            }
-//            
             NSString *qr =[NSString stringWithFormat:@"%@",[[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Products"] objectAtIndex:indexPath.row] valueForKey:@"product_subtotal"]];
             qr = [qr stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             qr = [qr stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
@@ -287,9 +141,7 @@ int j ,i;
             
             if ([order_cell.LBL_price respondsToSelector:@selector(setAttributedText:)]) {
                 
-                // Define general attributes for the entire text
-                NSDictionary *attribs = @{
-                                          NSForegroundColorAttributeName:order_cell.LBL_price.textColor,
+            NSDictionary *attribs = @{NSForegroundColorAttributeName:order_cell.LBL_price.textColor,
                                           NSFontAttributeName:order_cell.LBL_price .font
                                           };
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:price attributes:attribs];
@@ -302,7 +154,7 @@ int j ,i;
                 }
                 else
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0]}
                                             range:qrs];
                 }
                 order_cell.LBL_price.attributedText = attributedText;
@@ -318,11 +170,15 @@ int j ,i;
             qty = [qty stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
             
             order_cell.LBL_QTY.text = [NSString stringWithFormat:@"QTY:%@",qty];
-            NSString *date =[NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_created"]];
-            date = [date stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-            date = [date stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
             
-            NSString *date_text = [NSString stringWithFormat:@"Order on: %@",date];
+            
+             NSString *date =[NSString stringWithFormat:@"%@",[[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Products"] objectAtIndex:indexPath.row] valueForKey:@"delivery_time"]];
+            
+            date = [date stringByReplacingOccurrencesOfString:@"<null>" withString:@"No delivery time allocated "];
+            date = [date stringByReplacingOccurrencesOfString:@"" withString:@"No delivery time allocated "];
+            NSString *expect_text = @"Expected Delivary Date  ";
+            
+            NSString *date_text = [NSString stringWithFormat:@"%@%@",expect_text,date];
             
             
             if ([order_cell.LBL_Deliver_on respondsToSelector:@selector(setAttributedText:)]) {
@@ -339,21 +195,31 @@ int j ,i;
                 CGSize result = [[UIScreen mainScreen] bounds].size;
                 if(result.height <= 480)
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:11.0],NSForegroundColorAttributeName :[UIColor grayColor]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                                            range:[date_text rangeOfString:expect_text]];
+
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor grayColor]}
                                             range:ename];
 
                     
                 }
                 else if(result.height <= 568)
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor grayColor]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                                            range:[date_text rangeOfString:expect_text]];
+                    
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor grayColor]}
                                             range:ename];
 
                 }
                 else
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor grayColor]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                                            range:[date_text rangeOfString:expect_text]];
+                    
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor grayColor]}
                                             range:ename];
+                    
                     
 
              
@@ -372,8 +238,8 @@ int j ,i;
             status = [status stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
             status = [status stringByReplacingOccurrencesOfString:@"null" withString:@""];
             status = [status stringByReplacingOccurrencesOfString:@"" withString:@""];
-
-
+           order_cell.BTN_rating.hidden = YES;
+          
             if([status isEqualToString:@""])
             {
                 order_cell.IMG_track_image.image = [UIImage imageNamed:@"5"];
@@ -392,6 +258,9 @@ int j ,i;
             }
             else  if([status isEqualToString:@"Delivered"])
             {
+                order_cell.LBL_Deliver_on.text = @"Delivered";
+                order_cell.BTN_rating.hidden = NO;
+                
                 order_cell.IMG_track_image.image = [UIImage imageNamed:@"1"];
             }
 
@@ -414,11 +283,11 @@ int j ,i;
             NSString *item = [NSString stringWithFormat:@"%lu",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Products"] count]];
             item = [item stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             item = [item stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
-            cost_cell.LBL_Total_items.text = [NSString stringWithFormat:@"TOTAL ITEMS: %@",item];
+            cost_cell.LBL_Total_items.text = [NSString stringWithFormat:@"Total Items: %@",item];
             
             NSString *qr = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_total"]];
             qr = [qr stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-            qr = [qr stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];        NSString *price = [NSString stringWithFormat:@"%@ :%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],qr];
+            qr = [qr stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];        NSString *price = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],qr];
             
             if ([cost_cell.LBL_cost respondsToSelector:@selector(setAttributedText:)]) {
                 
@@ -437,7 +306,7 @@ int j ,i;
                 }
                 else
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0]}
                                             range:qrs];
                 }
                 cost_cell.LBL_cost.attributedText = attributedText;
@@ -463,6 +332,7 @@ int j ,i;
             }
             cell.BTN_edit_addres.hidden = YES;
             cell.BTN_edit.hidden = YES;
+             cell.Btn_close.hidden =  YES;
             
             cell.VW_layer.layer.borderColor = [UIColor lightGrayColor].CGColor;
             cell.VW_layer.layer.borderWidth = 0.5f;
@@ -472,17 +342,19 @@ int j ,i;
             name_str = [name_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             cell.LBL_name.text = name_str;
             
-            NSString *adddress1 = [NSString stringWithFormat:@"%@,%@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Billing"] valueForKey:@"billing_address1"],[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Billing"] valueForKey:@"billing_address2"]];
+            NSString *adddress1 = [NSString stringWithFormat:@"%@ , %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Billing"] valueForKey:@"billing_address1"],[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Billing"] valueForKey:@"billing_address2"]];
             adddress1 = [adddress1 stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             
-            NSString *city = [NSString stringWithFormat:@"%@,%@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Billing"] valueForKey:@"billing_city"],[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Billing"] valueForKey:@"billing_state"]];
+            NSString *city = [NSString stringWithFormat:@"%@ , %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Billing"] valueForKey:@"billing_city"],[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Billing"] valueForKey:@"billing_state"]];
             city = [city stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             
-            NSString *country = [NSString stringWithFormat:@"%@,%@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Billing"] valueForKey:@"billing_country"],[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Billing"] valueForKey:@"billing_zip_code"]];
+            NSString *country = [NSString stringWithFormat:@"%@ , %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Billing"] valueForKey:@"billing_country"],[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Billing"] valueForKey:@"billing_zip_code"]];
             country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-            NSString *phone = @"";
             
-            NSString *address_str = [NSString stringWithFormat:@"%@\n%@\n%@\nph:%@",adddress1,city,country,phone];
+            NSString *phone = [NSString stringWithFormat:@"Mobile : %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Billing"] valueForKey:@"customermobile"]];
+            phone = [phone stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+            
+            NSString *address_str = [NSString stringWithFormat:@"%@\n%@\n%@\n%@",adddress1,city,country,phone];
             
             address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             
@@ -508,6 +380,7 @@ int j ,i;
             
             cell.BTN_edit_addres.hidden = YES;
             cell.BTN_edit.hidden = YES;
+            cell.Btn_close.hidden =  YES;
             
             cell.VW_layer.layer.borderColor = [UIColor lightGrayColor].CGColor;
             cell.VW_layer.layer.borderWidth = 0.5f;
@@ -516,17 +389,19 @@ int j ,i;
             name_str = [name_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             cell.LBL_name.text = name_str;
             
-            NSString *adddress1 = [NSString stringWithFormat:@"%@,%@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Shipping"] valueForKey:@"shipping_address1"],[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Shipping"] valueForKey:@"shipping_address2"]];
+            NSString *adddress1 = [NSString stringWithFormat:@"%@ , %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Shipping"] valueForKey:@"shipping_address1"],[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Shipping"] valueForKey:@"shipping_address2"]];
             adddress1 = [adddress1 stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             
-            NSString *city = [NSString stringWithFormat:@"%@,%@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Shipping"] valueForKey:@"shipping_city"],[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Shipping"] valueForKey:@"shipping_state"]];
+            NSString *city = [NSString stringWithFormat:@"%@ , %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Shipping"] valueForKey:@"shipping_city"],[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Shipping"] valueForKey:@"shipping_state"]];
             city = [city stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             
-            NSString *country = [NSString stringWithFormat:@"%@,%@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Shipping"] valueForKey:@"shipping_country"],[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Shipping"] valueForKey:@"shipping_zip_code"]];
+            NSString *country = [NSString stringWithFormat:@"%@ , %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Shipping"] valueForKey:@"shipping_country"],[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Shipping"] valueForKey:@"shipping_zip_code"]];
             country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-            NSString *phone = @"";
+            NSString *phone = [NSString stringWithFormat:@"Mobile : %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Shipping"] valueForKey:@"shipping_mobile"]];
+            phone = [phone stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+
             
-            NSString *address_str = [NSString stringWithFormat:@"%@\n%@\n%@\nph:%@",adddress1,city,country,phone];
+            NSString *address_str = [NSString stringWithFormat:@"%@\n%@\n%@\n%@",adddress1,city,country,phone];
             
             address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             
@@ -551,13 +426,50 @@ int j ,i;
             
             NSString *shipping = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"shipping_amount"]];
             shipping = [shipping stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
-//              shipping = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],sub_total];
             
             NSString *discount = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"discount"]];
             discount = [discount stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
-//             discount = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"], discount];
+            NSString *str_disc =[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"discount"];
             
-            cell.LBL_discount.text = discount;
+            if([str_disc isKindOfClass:[NSNull class]])
+            {
+                cell.LBL_discount.text = @"";
+                cell.LBL_discount_TXT.text = @"";
+            }
+            else
+            {
+            @try
+            {
+            str_disc = [str_disc stringByReplacingOccurrencesOfString:@"<nil>" withString:@"0"];
+
+            str_disc = [str_disc stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
+
+            }
+            @catch(NSException *exception)
+            {
+                cell.LBL_discount.text = @"";
+                cell.LBL_discount_TXT.text = @"";
+            }
+            cell.LBL_discount.text = @"";
+            if([str_disc isEqualToString:@"0"])
+            {
+                
+                cell.LBL_discount.text = @"";
+                cell.LBL_discount_TXT.text = @"";
+            }
+            else if(!str_disc)
+            {
+                cell.LBL_discount.text = @"";
+                cell.LBL_discount_TXT.text = @"";
+                
+            }
+            else{
+               
+                 cell.LBL_discount.text = discount;
+                cell.LBL_discount_TXT.text = @"Discount";
+            }
+            }
+           
             cell.LBL_sub_total.text = sub_total;
             cell.LBL_ship_charge.text = shipping;
             
@@ -590,21 +502,10 @@ int j ,i;
                                             range:ename];
                 }
                 NSRange cmp = [text rangeOfString:prec_price];
-                //        [attributedText addAttribute: NSStrikethroughStyleAttributeName value:[NSNumber numberWithInteger: NSUnderlineStyleSingle] range: NSMakeRange(0, [prec_price length])];
-                //
-                
-                
-                //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
-                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:21.0],NSForegroundColorAttributeName:[UIColor redColor]}
-                                            range:cmp];
-                }
-                else
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor redColor],}
+            
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor redColor],}
                                             range:cmp ];
-                }
+                
                 cell.LBL_total.attributedText = attributedText;
             }
             else
@@ -618,42 +519,7 @@ int j ,i;
             break;
                }
     
-    /*if(indexPath.section == 0)
-    {
-        
-        
     }
-    else if(indexPath.section == 1)
-    {
-        
-    }
-    
-    else if(indexPath.section == 2)
-    {
-        
-
-    }
-    if(indexPath.section == 3)
-    {
-        
-        
-    }
-    if(indexPath.section == 4)
-    {
-        
-        
-    }
-    else{
-        
-        
-
-        
-    }*/
-
-    
-    
-    
-}
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
@@ -691,34 +557,57 @@ int j ,i;
         return 30;
     }
 }
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (section == 2)
+    {
+        return @"BILLING ADDRESS";
+    }
+    if (section == 3)
+    {
+        return @"SHIPPING ADDRESS";
+    }
+    else{
+        return @"";
+    }
+}
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-UILabel *label = [[UILabel alloc] init];
-if (section == 2)
-{
-    label.text=@"BILLING ADDRESS";
+  
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.TBL_orders.frame.size.width, 60)];
+    headerView.backgroundColor = [UIColor clearColor];
     
-    label.backgroundColor=[UIColor whiteColor];
+    UILabel *label = [[UILabel alloc] initWithFrame: CGRectMake(10,0, self.TBL_orders.frame.size.width, 30)];
+    label.backgroundColor = [UIColor whiteColor];
+    label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+    
+    [headerView addSubview:label];
     label.textColor = [UIColor lightGrayColor];
     [label setFont:[UIFont fontWithName:@"Poppins-Regular" size:15]];
+    if(section == 2)
+    {
     
-    label.textAlignment = NSTextAlignmentLeft;
-    return label;
-}
-else if (section == 3)
-{
-    label.text= @"SHIPPING ADDRESS";
-    label.backgroundColor=[UIColor whiteColor];
-    label.textColor = [UIColor lightGrayColor];
-    [label setFont:[UIFont fontWithName:@"Poppins-Regular" size:15]];
+        label.text=@"BILLING ADDRESS";
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            label.text = @"عنوان الفاتورة ";
+            label.textAlignment = NSTextAlignmentRight;
+        }
+        
     
-    label.textAlignment = NSTextAlignmentLeft;
+    }
+    if(section == 3)
+    {
+        label.text= @"SHIPPING ADDRESS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            label.text = @"عنوان الشحن";
+            label.textAlignment = NSTextAlignmentRight;
+        }
+    }
     
-    return label;
-}
-else{
-    return nil;
-}
+    
+    return headerView;
 }
 
 -(void)orders_LIST_Detail
@@ -775,7 +664,7 @@ else{
     
     if (returnData) {
         json_DATA = [[NSMutableDictionary alloc]init];
-  json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
+    json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
                NSLog(@"%@", [NSString stringWithFormat:@"JSON DATA OF ORDER DETAIL: %@", json_DATA]);
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.TBL_orders reloadData];
@@ -787,8 +676,9 @@ else{
         NSString *str = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_number"]];
         str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
         str = [str stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
+        NSString *od_id = @"ORDER ID: ";
         
-        NSString *text = [NSString stringWithFormat:@"ORDER ID : %@",str];
+        NSString *text = [NSString stringWithFormat:@"%@%@",od_id,str];
         
         
         if ([_LBL_order_ID respondsToSelector:@selector(setAttributedText:)]) {
@@ -805,18 +695,27 @@ else{
             CGSize result = [[UIScreen mainScreen] bounds].size;
             if(result.height <= 480)
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor blueColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor grayColor]}
+                                        range:[text rangeOfString:od_id]];
+
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor blueColor]}
                                         range:ename];
  
             }
             else if(result.height <= 568)
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName :[UIColor blueColor]}
-                                      range:ename];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor grayColor]}
+                                        range:[text rangeOfString:od_id]];
+                
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor blueColor]}
+                                        range:ename];
 
             }
             else
             {
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName :[UIColor grayColor]}
+                                        range:[text rangeOfString:od_id]];
+
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName :[UIColor blueColor]}
                                         range:ename];
                 
@@ -835,11 +734,11 @@ else{
         date = [date stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
         date = [date stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
         
+        NSString *date_txt= @"Ordered On:";
+        NSString *date_text = [NSString stringWithFormat:@"%@%@",date_txt,date];
         
-        NSString *date_text = [NSString stringWithFormat:@"Order on: %@",date];
         
-        
-        if ([_LBL_order_ID respondsToSelector:@selector(setAttributedText:)]) {
+        if ([_LBL_order_date respondsToSelector:@selector(setAttributedText:)]) {
             
             NSDictionary *attribs = @{
                                       NSForegroundColorAttributeName:_LBL_order_date.textColor,
@@ -854,21 +753,32 @@ else{
             CGSize result = [[UIScreen mainScreen] bounds].size;
             if(result.height <= 480)
             {
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                                        range:[date_text rangeOfString:date_txt]];
+
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor blackColor]}
                                         range:ename];
                 
                 
             }
             else if(result.height <= 568)
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                                        range:[date_text rangeOfString:date_txt]];
+                
+                
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor blackColor]}
                                         range:ename];
                 
             }
             else
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                                        range:[date_text rangeOfString:date_txt]];
+                
+                
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor blackColor]}
                                         range:ename];
             }
             

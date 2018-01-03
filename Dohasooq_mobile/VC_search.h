@@ -10,7 +10,7 @@
 
 @interface VC_search : UIViewController
 @property(nonatomic,weak) IBOutlet UITextField *TXT_search;
-@property(nonatomic,weak) IBOutlet UIButton *BN_close;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_search;
 @property(nonatomic,weak) IBOutlet UITableView *TBL_results;
 
 

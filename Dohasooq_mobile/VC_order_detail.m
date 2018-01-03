@@ -37,24 +37,21 @@
     NSString *cntry_selection,*state_selection;//*selection_str,
     NSIndexPath *textfield_indexpath;
     
-    
+    int total;
     int charge_ship; //For lbl shipping charge
     //payment parameters
-    NSDictionary *shippinglatlog_dic,*billiinglatlog_dic;
+    NSMutableDictionary *shippinglatlog_dic,*billiinglatlog_dic;
     NSString *payment_type_str,*billcheck_clicked,*blng_cntry_ID,*ship_cntry_ID,*blng_state_ID,*ship_state_ID;
     NSMutableArray *date_time_merId_Arr;
     BOOL select_blng_ctry_state; // finding which state/country selected instead of creating new pickerview
     
-    
     NSString *title_page_str;
     
+    //Country Code
+    NSMutableArray *phone_code_arr;
+    NSString *flag;
+    
 }
-//@property(nonatomic,strong) NSMutableDictionary *data_dict;
-//@property(nonatomic,strong) NSMutableDictionary *address_new_dict;
-//@property(nonatomic,strong) NSMutableDictionary *edit_addr_dict;
-
-
-
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @end
@@ -65,8 +62,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    
     
     
     title_page_str = @"ORDER DETAIL";
@@ -84,29 +79,22 @@
     //[apply_promo_action
    
     [_BTN_close addTarget:self action:@selector(close_ACTION) forControlEvents:UIControlEventTouchUpInside];
-    [self set_UP_VIEW];
+  
     jsonresponse_dic  = [[NSMutableDictionary alloc]init];
     jsonresponse_dic_address = [[NSMutableDictionary alloc]init];
     
     response_picker_arr = [NSMutableArray array];
     
-    @try
-    {
-        [_BTN_fav setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
-        [_BTN_cart setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
-    }
-    @catch(NSException *exception)
-    {
-        
-    }
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(order_detail_API_call) withObject:activityIndicatorView afterDelay:0.01];
-    [self Shipp_address_API];
-    [self set_UP_VIEW];
+   
+  
     
     
     [_BTN_apply_promo addTarget:self action:@selector(apply_promo_action) forControlEvents:UIControlEventTouchUpInside];
+    
+    //Country Code Related
+    [self phone_code_view];
+    
+    
     
     
 }
@@ -117,13 +105,18 @@
     CGRect vwframe;
     vwframe = VW_overlay.frame;
     vwframe.origin.y = self.navigationController.navigationBar.frame.origin.y;
-    vwframe.size.height = self.view.frame.size.height - _VW_next.frame.size.height - self.navigationController.navigationBar.frame.size.height;
+    vwframe.size.height = self.view.frame.size.height;
     vwframe.size.width = self.view.frame.size.width;
     VW_overlay.frame = vwframe;
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]; //[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     // VW_overlay.center = self.view.center;
     [self.view addSubview:VW_overlay];
-    // VW_overlay.hidden = YES;
+   //  VW_overlay.hidden = YES;
+    
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(order_detail_API_call) withObject:activityIndicatorView afterDelay:0.01];
+   
     
     
     
@@ -134,10 +127,7 @@
     isfirstTimeTransform = YES;
     
     _LBL_stat.tag = 0;
-    
-//    _data_dict = [[NSMutableDictionary alloc]init]; // for paramaters
-//    _edit_addr_dict = [[NSMutableDictionary alloc]init];
-//    _address_new_dict = [[NSMutableDictionary alloc]init];
+
     
     temp_arr = [[NSMutableArray alloc]init];
     arr_product = [[NSMutableArray alloc]init];
@@ -244,9 +234,9 @@
     
     
     
-    _BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
-                 @selector(btnfav_action)];
-    _BTN_cart = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain   target:self action:@selector(btn_cart_action)];
+//    _BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
+//                 @selector(btnfav_action)];
+//    _BTN_cart = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain   target:self action:@selector(btn_cart_action)];
    
 //    NSString *badge_value = @"25";
 //    if(badge_value.length > 2)
@@ -302,7 +292,6 @@
 
     
     
-    
     NSString *next = @"";
     
     NSString *next_text = [NSString stringWithFormat:@"NEXT %@",next];
@@ -310,7 +299,7 @@
     if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
     {
         next  = @"";
-        next_text = [NSString stringWithFormat:@"%@ NEXT",next];
+        next_text = [NSString stringWithFormat:@"%@ التالي ",next];
     }
     
     if ([_LBL_next respondsToSelector:@selector(setAttributedText:)]) {
@@ -332,7 +321,7 @@
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:12.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:12.0],NSForegroundColorAttributeName:[UIColor whiteColor]}
                                     range:ename];
         }
         
@@ -395,6 +384,8 @@
     _TXT_Date.inputView = self.pickerView;
     _TXT_Time.inputView = self.pickerView;
     
+    
+    // TollBar For PickerView
     accessoryView = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
     accessoryView.barStyle = UIBarStyleBlackTranslucent;
     [accessoryView sizeToFit];
@@ -407,12 +398,36 @@
     _TXT_ship_country.inputView =_staes_country_pickr;
     _TXT_ship_state.inputView =_staes_country_pickr;
 
-
+   //  Done Button  For Tool Bar
+    UIButton *done=[[UIButton alloc]init];
+    done.frame=CGRectMake(accessoryView.frame.size.width - 100, 0, 100, accessoryView.frame.size.height);
+    [done setTitle:@"Done" forState:UIControlStateNormal];
+    [done addTarget:self action:@selector(picker_done_btn_action:) forControlEvents:UIControlEventTouchUpInside];
+    [accessoryView addSubview:done];
+    
+    
+    //Close ButtonFor ToolBar
     UIButton *close=[[UIButton alloc]init];
-    close.frame=CGRectMake(accessoryView.frame.size.width - 100, 0, 100, accessoryView.frame.size.height);
-    [close setTitle:@"DONE" forState:UIControlStateNormal];
-    [close addTarget:self action:@selector(picker_done_btn_action:) forControlEvents:UIControlEventTouchUpInside];
+    close.frame=CGRectMake(accessoryView.frame.origin.x -20, 0, 100, accessoryView.frame.size.height);
+    [close setTitle:@"Close" forState:UIControlStateNormal];
+    [close addTarget:self action:@selector(picker_close_action) forControlEvents:UIControlEventTouchUpInside];
     [accessoryView addSubview:close];
+    
+    
+    // Country Code Picker
+    self.country_code_Pickerview = [[UIPickerView alloc]init];
+    _country_code_Pickerview.delegate = self;
+    _country_code_Pickerview.dataSource = self;
+    
+    
+    //Shipping Address Textfield
+    _TXT_ship_cntry_code.inputView = self.country_code_Pickerview;
+    _TXT_ship_cntry_code.inputAccessoryView = accessoryView;
+    
+    //Billing Address Textfield
+    _TXT_Cntry_code.inputAccessoryView=accessoryView;
+    _TXT_Cntry_code.inputView=_country_code_Pickerview;
+    
     
     _TXT_Time.inputAccessoryView = accessoryView;
     _TXT_Date.inputAccessoryView = accessoryView;
@@ -458,8 +473,8 @@
         
         //cell.Btn_save.hidden = YES;
         
-        blng_cntry_ID = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"country_id"];
-        blng_state_ID = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"state_id"];
+        blng_cntry_ID = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"country_id"]];
+        blng_state_ID = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"state_id"]];
         
         
         str_fname = [str_fname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
@@ -515,7 +530,7 @@
     
     
     
-    int total = [sub_total intValue]+ charge_ship;
+    total = [sub_total intValue]+ charge_ship;
         
     int doha_val = [qar_miles_value intValue]*total;
    
@@ -543,7 +558,7 @@
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:19.0]}
                                     range:ename];
         }
         NSRange cmp = [text rangeOfString:price];
@@ -559,7 +574,7 @@
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:19.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
                                     range:cmp ];
         }
         
@@ -591,7 +606,7 @@
     {
         _LBL_product_summary.text = text;
     }
-    _LBL_product_summary.numberOfLines = 0;
+    _LBL_product_summary.numberOfLines = 1;
     [_LBL_product_summary sizeToFit];
     
     //        frame_set = _LBL_arrow.frame;
@@ -602,6 +617,11 @@
     
     
 //    NSString *current_price = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+        
+        
+    self.LBL_shipping_charge.text = [NSString stringWithFormat:@"%@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],charge_ship];
+        
+
     NSString *prec_price = [NSString stringWithFormat:@"%d",total];
     NSString *summary_text = [NSString stringWithFormat:@"%@ %@/Dohamiles %d",currency,prec_price,doha_val];
     
@@ -645,17 +665,17 @@
         }
         
         
-        NSRange doha_val = [summary_text rangeOfString:[NSString stringWithFormat:@"%d",total]];
+        NSRange doha_va = [summary_text rangeOfString:[NSString stringWithFormat:@"%d",doha_val]];
         
         if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
         {
             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:21.0],NSForegroundColorAttributeName:[UIColor redColor]}
-                                    range:cmp];
+                                    range:doha_va];
         }
         else
         {
             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:20.0],NSForegroundColorAttributeName:[UIColor redColor],}
-                                    range:doha_val ];
+                                    range:doha_va ];
         }
         
         
@@ -825,22 +845,6 @@
         NSLog(@"IndexPatha :: %@",indexPath);
         
         
-        //NSInteger totalRow = [tableView numberOfRowsInSection:indexPath.section];//first get total rows in that section by current indexPath.
-//        if(indexPath.row == totalRow -1){
-//            
-//            cell.LBL_charge.hidden = NO;
-//            cell.LBL_stat.hidden = NO;
-//            cell.BTN_stat.hidden = NO;
-//            cell.BTN_calendar.hidden =NO;
-//            
-//        }
-//        else{
-//            cell.LBL_charge.hidden = YES;
-//            cell.LBL_stat.hidden = YES;
-//            cell.BTN_stat.hidden = YES;
-//            cell.BTN_calendar.hidden =YES;
-//        }
-        
         if([[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] isKindOfClass:[NSDictionary class]])
         {
             
@@ -851,7 +855,7 @@
             
             @try
             {
-                NSString *str = [[arr_product objectAtIndex:indexPath.row] valueForKey:@"merchantId"];
+                NSString *str = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"merchantId"]];
                 //  str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
                 NSString *img_url = [NSString stringWithFormat:@"%@Merchant%@/Small/%@",MERCHANT_URL,str,[[arr_product objectAtIndex:indexPath.row] valueForKey:@"productimage"]];
                 [cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:img_url]
@@ -873,49 +877,6 @@
                 
                 
 #pragma mark LBL_item_name Attributed Text
-                
-//                if ([cell.LBL_item_name respondsToSelector:@selector(setAttributedText:)]) {
-//                    
-//                    // Define general attributes for the entire text
-//                    NSDictionary *attribs = @{
-//                                              NSForegroundColorAttributeName:cell.LBL_item_name.textColor,
-//                                              NSFontAttributeName:cell.LBL_item_name.font
-//                                              };
-//                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:name_text attributes:attribs];
-//                    
-//                    
-//                    
-//                    NSRange ename = [name_text rangeOfString:item_name];
-//                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-//                    {
-//                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-//                                                range:ename];
-//                    }
-//                    else
-//                    {
-//                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0]}
-//                                                range:ename];
-//                    }
-//                    NSRange cmp = [name_text rangeOfString:item_seller];
-//                    
-//                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-//                    {
-//                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0]}
-//                                                range:cmp];
-//                    }
-//                    else
-//                    {
-//                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:13.0]}
-//                                                range:cmp ];
-//                    }
-//                    cell.LBL_item_name.attributedText = attributedText;
-//                }
-//                else
-//                {
-//                    cell.LBL_item_name.text = name_text;
-//                }
-//                
-//                
                 
                 NSString *qr = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"currencycode"]];
                 qr_code = qr;
@@ -961,7 +922,7 @@
                                                 range:qrs];
                         
                         NSRange ename = [only_price rangeOfString:prev_price];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                 range:ename];
                         NSRange miles_price = [only_price rangeOfString:doha_miles];
                         if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
@@ -971,7 +932,7 @@
                         }
                         else
                         {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                     range:miles_price];
                         }
                         
@@ -995,7 +956,7 @@
                                                 range:ename];
                         
                         NSRange ePrice = [india_currency rangeOfString:price];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                 range:ePrice];
                         
                         cell.LBL_current_price.attributedText = attributedText;
@@ -1010,7 +971,7 @@
                         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                         
                         NSRange qrs = [text rangeOfString:prev_price];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                 range:qrs];
                         cell.LBL_current_price.attributedText = attributedText;
                         cell.LBL_discount.text = @"0 %off";
@@ -1057,7 +1018,7 @@
                         }
                         else
                         {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                     range:ename];
                         }
                         
@@ -1094,7 +1055,7 @@
                         }
                         else
                         {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                     range:miles_price];
                         }
                         NSRange miles = [text rangeOfString:mils];
@@ -1158,7 +1119,9 @@
                 cell.BTN_minus.layer.borderWidth = 0.4f;
                 cell.BTN_minus.layer.borderColor = [UIColor grayColor].CGColor;
                 
-                //Delivary Slot checking Condition
+
+                
+    //Delivary Slot checking Condition
                 
                 
         NSString *delivery_slot_available  =[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"delivery_slot_available"]];
@@ -1184,7 +1147,8 @@
                 }
                 
                 
-               //Expected Delivary Date customization
+     //Expected Delivary Date customization
+                
                 NSString *expected_delivary_date  =[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"expecteddelivery"]];
                 
                 if ([expected_delivary_date isEqualToString:@"No delivery date allocated"]) {
@@ -1243,28 +1207,68 @@
                 }
             
                 
-                // PickUp from merchant location condition checking
+    // PickUp from merchant location condition checking
+                
+//                if(indexPath.row == totalRow -1){ //last row
+//                    
+//                    if ([[jsonresponse_dic valueForKey:@"pickup"] isKindOfClass:[NSDictionary class]]) {
+//                        NSArray *pickUpkeys = [[jsonresponse_dic valueForKey:@"pickup"]allKeys];
+//                        
+//                        @try {
+//                            
+//                            for (int k=0; k<pickUpkeys.count; k++) {
+//                                // if([str intValue] == [[key_ship_arr objectAtIndex:m] intValue])
+//                                if([str intValue] == [[pickUpkeys objectAtIndex:k] intValue]) {
+//                                   
+//                                    NSLog(@"My Merchant PickUp %@ selected",str);
+//                                    
+//                                    cell.LBL_stat.hidden = NO;
+//                                    cell.BTN_stat.hidden = NO;
+//                                }
+//                                else{
+//                                    
+//                                    cell.LBL_stat.hidden = YES;
+//                                    cell.BTN_stat.hidden = YES;
+//                                }
+//                                
+//                            }
+//                            
+//                            
+//                        } @catch (NSException *exception) {
+//                            cell.LBL_stat.hidden = YES;
+//                            cell.BTN_stat.hidden = YES;
+//                            NSLog(@"%@",exception);
+//                        }
+//                        
+//                    }
+//                    else{ //Not Dictionary
+//                        cell.LBL_stat.hidden = YES;
+//                        cell.BTN_stat.hidden = YES;
+//                    }
+//                }
+//                else{ // not last row
+//                    cell.LBL_stat.hidden = YES;
+//                    cell.BTN_stat.hidden = YES;
+//                }
+                
                 
                 if(indexPath.row == totalRow -1){ //last row
+                    
                     if ([[jsonresponse_dic valueForKey:@"pickup"] isKindOfClass:[NSDictionary class]]) {
                         NSArray *pickUpkeys = [[jsonresponse_dic valueForKey:@"pickup"]allKeys];
                         
                         @try {
                             
-                            for (int k=0; k<pickUpkeys.count; k++) {
-                                // if([str intValue] == [[key_ship_arr objectAtIndex:m] intValue])
-                                if([str intValue] == [[pickUpkeys objectAtIndex:k] intValue]) {
-                                    NSLog(@"selected");
-                                    
-                                    cell.LBL_stat.hidden = NO;
-                                    cell.BTN_stat.hidden = NO;
-                                }
-                                else{
-                                    cell.LBL_stat.hidden = YES;
-                                    cell.BTN_stat.hidden = YES;
-                                }
+                            if ([pickUpkeys containsObject:str]) {
                                 
+                                NSLog(@"Available %@",str);
+                                cell.LBL_stat.hidden = NO;
+                                cell.BTN_stat.hidden = NO;
+                            }else{
+                                cell.LBL_stat.hidden = YES;
+                                cell.BTN_stat.hidden = YES;
                             }
+                            
                             
                             
                         } @catch (NSException *exception) {
@@ -1274,37 +1278,87 @@
                         }
                         
                     }
-                    else{ // not last row
+                    else{ //Not Dictionary
                         cell.LBL_stat.hidden = YES;
                         cell.BTN_stat.hidden = YES;
                     }
                 }
-                else{
+                else{ // not last row
                     cell.LBL_stat.hidden = YES;
                     cell.BTN_stat.hidden = YES;
                 }
+
                 
                 
-                // Shipping Charge labelcustomization
+                
+                
+                
+                
+                
+// Shipping Charge labelcustomization
                 NSString *CHRGE;
                 NSString *qrcode = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"currencycode"]];
                 NSString *shipping_type;
+                
+//                if(indexPath.row == totalRow -1){
+//            @try
+//                    {
+//                        NSArray *key_ship_arr =[[jsonresponse_dic valueForKey:@"shipcharge"] allKeys];
+//                        
+//                        for(int m =0 ;m< key_ship_arr.count;m++)
+//                        {
+//                            if([str intValue] == [[key_ship_arr objectAtIndex:m] intValue])
+//                            {
+//                                
+//                                @try {
+//                                    cell.LBL_charge.hidden = NO;
+//                                    
+//                                    CHRGE = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic valueForKey:@"shipcharge"] valueForKey:[key_ship_arr objectAtIndex:m]] valueForKey:@"charge"]];
+//                                    
+//                                    shipping_type = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic valueForKey:@"shipcharge"] valueForKey:[key_ship_arr objectAtIndex:m]] valueForKey:@"methodname"]];
+//                                    
+//                                } @catch (NSException *exception) {
+//                                    
+//                                    CHRGE = @"";
+//                                    shipping_type =@"";
+//                                    
+//                                    NSLog(@"%@",exception);
+//                                }
+//                            }
+//                            else{
+//                                cell.LBL_charge.hidden = YES;
+//                            }
+//                        }
+//                    }
+//                    @catch(NSException *exception)
+//                    {
+//                        CHRGE = [NSString stringWithFormat:@"%@", [jsonresponse_dic valueForKey:@"shipcharge"]];
+//                        
+//                    }
+//                    
+//                    
+//                }
+//                else{
+//                    cell.LBL_charge.hidden = YES;
+//                }
+
+                //    *******or********
+                NSArray *key_ship_arr;
                 if(indexPath.row == totalRow -1){
-                    
-                    
                     @try
                     {
-                        NSArray *key_ship_arr =[[jsonresponse_dic valueForKey:@"shipcharge"] allKeys];
+                      key_ship_arr =[[jsonresponse_dic valueForKey:@"shipcharge"] allKeys];
                         
-                        for(int m =0 ;m< key_ship_arr.count;m++)
-                        {
-                            if([str intValue] == [[key_ship_arr objectAtIndex:m] intValue])
+                    
+                            if([key_ship_arr containsObject:str])
                             {
                                 
                                 @try {
                                     cell.LBL_charge.hidden = NO;
-                                    CHRGE = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic valueForKey:@"shipcharge"] valueForKey:[key_ship_arr objectAtIndex:m]] valueForKey:@"charge"]];
-                                    shipping_type = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic valueForKey:@"shipcharge"] valueForKey:[key_ship_arr objectAtIndex:m]] valueForKey:@"methodname"]];
+                                    
+                                    CHRGE = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic valueForKey:@"shipcharge"] valueForKey:str] valueForKey:@"charge"]];
+                                    
+                                    shipping_type = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic valueForKey:@"shipcharge"] valueForKey:str] valueForKey:@"methodname"]];
                                     
                                 } @catch (NSException *exception) {
                                     
@@ -1317,7 +1371,7 @@
                             else{
                                 cell.LBL_charge.hidden = YES;
                             }
-                        }
+                        
                     }
                     @catch(NSException *exception)
                     {
@@ -1332,40 +1386,8 @@
                 }
 
                 
+                
             
-//                @try
-//                {
-//                    NSArray *key_ship_arr =[[jsonresponse_dic valueForKey:@"shipcharge"] allKeys];
-//                    
-//                    for(int m =0 ;m< key_ship_arr.count;m++)
-//                    {
-//                        if([str intValue] == [[key_ship_arr objectAtIndex:m] intValue])
-//                        {
-//                            
-//                            @try {
-//                                NSLog(@"???????      :: %@",str);
-//                                  cell.LBL_charge.hidden = NO;
-//                                CHRGE = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic valueForKey:@"shipcharge"] valueForKey:[key_ship_arr objectAtIndex:m]] valueForKey:@"charge"]];
-//                                shipping_type = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic valueForKey:@"shipcharge"] valueForKey:[key_ship_arr objectAtIndex:m]] valueForKey:@"methodname"]];
-//                                
-//                            } @catch (NSException *exception) {
-//                                
-//                                CHRGE = @"";
-//                                shipping_type =@"";
-//                                
-//                                NSLog(@"%@",exception);
-//                            }
-//                        }
-//                        else{
-//                            cell.LBL_charge.hidden = YES;
-//                        }
-//                    }
-//                }
-//                @catch(NSException *exception)
-//                {
-//                    CHRGE = [NSString stringWithFormat:@"%@", [jsonresponse_dic valueForKey:@"shipcharge"]];
-//                    
-//                }
                 CHRGE = [CHRGE stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
                 NSString *text2 = [NSString stringWithFormat:@"%@  Shipping Charge %@ %@",shipping_type,qr,CHRGE]
                 ;
@@ -1411,12 +1433,12 @@
                     NSRange chrge = [text2 rangeOfString:CHRGE];
                     if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
                     {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                 range:chrge];
                     }
                     else
                     {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                 range:chrge];
                     }
                     
@@ -1428,12 +1450,61 @@
                     cell.LBL_charge .text = text2;
                 }
                 
+           // CheckBox customization
+                
+                if (indexPath.row == totalRow-1) {
+                    
+                    if ([[[date_time_merId_Arr objectAtIndex:indexPath.section] valueForKey:@"pickMethod"]isEqualToString:@"1"]) {
+                     cell.LBL_stat.image = [UIImage imageNamed:@"checkbox_select.png"];
+                        
+                      // Calander
+                        if ([delivery_slot_available isEqualToString:@"Yes"]) {
+                            
+                            cell.BTN_calendar.hidden = YES;
+                        }
+                      //Ship Charge
+                        if([key_ship_arr containsObject:str])
+                        {
+                            cell.LBL_charge.hidden = YES;
+                        }
+                        
+                    }
+                    else{
+                       
+                        cell.LBL_stat.image = [UIImage imageNamed:@"profile_checkbox.png"];
+                        
+                        //Calender
+                        if ([delivery_slot_available isEqualToString:@"Yes"]) {
+                            
+                            cell.BTN_calendar.hidden = NO;
+                        }
+                        //Chgarge 
+                        if([key_ship_arr containsObject:str])
+                        {
+                            cell.LBL_charge.hidden = NO;
+                        }
+
+
+                    }
+                    
+                    
+            
+
+                }
+                
+                
             }
             
             @catch(NSException *exception)
             {
                 NSLog(@"%@",exception);
             }
+            
+            
+            
+            
+            
+            
         }
         
         else{
@@ -1441,24 +1512,8 @@
             [HttpClient createaAlertWithMsg:@"No orders Found" andTitle:@""];
             
         }
-        if(!orderCheckSelected)
-        {
-            cell.LBL_stat.image = [UIImage imageNamed:@"profile_checkbox.png"];
-            //[cell.LBL_stat setTag:1];
-            //cell.BTN_calendar.hidden = NO;
-        }
-        else
-            
-        {
-            
-            cell.LBL_stat.image = [UIImage imageNamed:@"checkbox_select.png"];
-            //[cell.LBL_stat setTag:0];
         
-            
-            
-            cell.LBL_charge.text = @"";
-            
-        }
+        
         
         
         
@@ -1988,7 +2043,12 @@
         if([[jsonresponse_dic_address valueForKey:@"shipaddress"] isKindOfClass:[NSDictionary class]]){
             _TBL_address.hidden = NO;
             [_TBL_address reloadData];
+             CGRect frame_set = _TBL_address.frame;
+            frame_set.size.height = _TBL_address.frame.origin.y + _TBL_address.contentSize.height;
+            _TBL_address.frame= frame_set;
             shiiping_ht = _TBL_address.frame.origin.y + _TBL_address.frame.size.height;
+             [self viewDidLayoutSubviews];
+            
         }
         else{ //shipping address is nil load billing address
             _TBL_address.hidden = YES;
@@ -2013,7 +2073,8 @@
 -(void)calendar_action:(UIButton *)sender
 {
     merchent_id = [NSString stringWithFormat:@"%ld",(long)sender.tag];
-    [self delivary_slot_API];
+    //[self delivary_slot_API];
+    [self performSelector:@selector(delivary_slot_API) withObject:activityIndicatorView afterDelay:0.001];
 
     VW_overlay.hidden = NO;
     
@@ -2034,8 +2095,6 @@
 -(void)next_page
 {
     
-    
-    
     if([title_page_str isEqualToString:@"ORDER DETAIL"])
     {
         
@@ -2046,28 +2105,11 @@
         }
         else
         {
-            
-            _TBL_orders.hidden = YES;
-            
-            title_page_str = @"SHIPPING";
-            //_LBL_navigation.title = @"SHIPPING";
-            
-            _TBL_address.estimatedRowHeight = 4.0;
-            _TBL_address.rowHeight = UITableViewAutomaticDimension;
-            
-            
-            [self.TBL_address reloadData];
-            _TBL_address.hidden = YES;
-            
-            //[_TBL_orders removeFromSuperview];
-            CGRect frame_set = _VW_shipping.frame;
-            frame_set.origin.y = _VW_top.frame.origin.y + _VW_top.frame.size.height;
-            frame_set.size.width = _TBL_orders.frame.size.width;
-            frame_set.size.height = _VW_next.frame.origin.y - _TBL_orders.frame.origin.y;
-            _VW_shipping.frame = frame_set;
-            [self.view addSubview:_VW_shipping];
-            _TXT_first.backgroundColor = _LBL_order_detail.backgroundColor;
-            
+            VW_overlay.hidden = NO;
+            [activityIndicatorView startAnimating];
+            [self performSelector:@selector(move_to_shipping) withObject:activityIndicatorView afterDelay:0.01];
+
+           
         }
         
     }
@@ -2081,27 +2123,72 @@
             
         }
         else
+            
         {
-            [self validatingTextField];
+            
+            VW_overlay.hidden = NO;
+            [activityIndicatorView startAnimating];
+            [self performSelector:@selector(validatingTextField) withObject:activityIndicatorView afterDelay:0.01];
+           
         }
     }
     
       else if ([title_page_str isEqualToString:@"PAYMENT"] && _VW_payment.hidden == NO) {
+          VW_overlay.hidden = NO;
+          [activityIndicatorView startAnimating];
+          [self performSelector:@selector(move_to_payment_integration) withObject:activityIndicatorView afterDelay:0.01];
           
-          [self move_to_payment_integration]; // load web view page
+        // [self move_to_payment_integration]; // load web view page
     }
     
 }
+
+-(void)move_to_shipping
+{
+    _TBL_orders.hidden = YES;
+    
+    title_page_str = @"SHIPPING";
+    //_LBL_navigation.title = @"SHIPPING";
+    
+    _TBL_address.estimatedRowHeight = 4.0;
+    _TBL_address.rowHeight = UITableViewAutomaticDimension;
+    
+    
+    [self.TBL_address reloadData];
+    _TBL_address.hidden = YES;
+    
+    //[_TBL_orders removeFromSuperview];
+    CGRect frame_set = _VW_shipping.frame;
+    frame_set.origin.y = _VW_top.frame.origin.y + _VW_top.frame.size.height;
+    frame_set.size.width = _TBL_orders.frame.size.width;
+    frame_set.size.height = _VW_next.frame.origin.y - _TBL_orders.frame.origin.y;
+    _VW_shipping.frame = frame_set;
+    [self.view addSubview:_VW_shipping];
+    _TXT_first.backgroundColor = _LBL_order_detail.backgroundColor;
+    
+    VW_overlay.hidden = YES;
+    [activityIndicatorView stopAnimating];
+
+    
+}
+
 -(void)move_to_payment_integration{
    
-        
-        
+    
+    
         NSLog(@"%@",payment_type_str);
-        
+    VW_overlay.hidden = YES;
+    [activityIndicatorView stopAnimating];
+    
         if ([payment_type_str isEqualToString:@"1"]||[payment_type_str isEqualToString:@"2"] ||[payment_type_str isEqualToString:@"3"] ||[payment_type_str isEqualToString:@"4"] || [payment_type_str isEqualToString:@"5"]) {
             
-            
-            [self place_oredr_API];
+           
+            [self.view addSubview:VW_overlay];
+            VW_overlay.hidden = NO;
+            [activityIndicatorView startAnimating];
+            [self performSelector:@selector(place_oredr_API) withObject:activityIndicatorView afterDelay:0.01];
+
+            //[self place_oredr_API];
             
             
         }
@@ -2162,6 +2249,9 @@
     if([_LBL_arrow.text isEqualToString:@""])
     {
         _LBL_arrow.text = @"";
+        CGRect frameset = VW_overlay.frame;
+        frameset.size.height = self.view.frame.size.height - _VW_next.frame.size.height-20;
+        VW_overlay.frame = frameset;
         VW_overlay.hidden = NO;
         _VW_summary.hidden = NO;
         
@@ -2170,6 +2260,10 @@
     else
     {
         _LBL_arrow.text =@"";
+        CGRect frameset = VW_overlay.frame;
+        frameset.size.height = self.view.frame.size.height;
+        VW_overlay.frame = frameset;
+
         VW_overlay.hidden = YES;
         _VW_summary.hidden =  YES;
         
@@ -2213,7 +2307,7 @@
     
     _VW_SHIIPING_ADDRESS.hidden = NO;
     CGRect frameset = _VW_SHIIPING_ADDRESS.frame;
-    frameset.origin.y = _TBL_address.frame.origin.y + _TBL_address.frame.size.height;
+    frameset.origin.y = _TBL_address.frame.origin.y + _TBL_address.contentSize.height;
     frameset.size.width = _VW_shipping.frame.size.width;
     _VW_SHIIPING_ADDRESS.frame = frameset;
     [self.scroll_shipping addSubview:_VW_SHIIPING_ADDRESS];
@@ -2221,8 +2315,8 @@
     shiiping_ht = _VW_SHIIPING_ADDRESS.frame.origin.y + _VW_SHIIPING_ADDRESS.frame.size.height;
     [self viewDidLayoutSubviews];
     
-    isAddClicked = NO;
-    i = 3;
+//    isAddClicked = NO;
+//    i = 3;
     edit_tag = [sender tag];
     
     @try {
@@ -2338,9 +2432,33 @@
 }
 -(void)add_new_address:(UIButton*)sender{
     
-    i = 3;
-    isAddClicked = YES;
-    [self.TBL_address reloadData];
+//    i = 3;
+//    isAddClicked = YES;
+//    [self.TBL_address reloadData];
+    
+    
+    _VW_SHIIPING_ADDRESS.hidden = NO;
+    CGRect frameset = _VW_SHIIPING_ADDRESS.frame;
+    frameset.origin.y = _TBL_address.frame.origin.y + _TBL_address.contentSize.height;
+    frameset.size.width = _VW_shipping.frame.size.width;
+    _VW_SHIIPING_ADDRESS.frame = frameset;
+    [self.scroll_shipping addSubview:_VW_SHIIPING_ADDRESS];
+    
+    shiiping_ht = _VW_SHIIPING_ADDRESS.frame.origin.y + _VW_SHIIPING_ADDRESS.frame.size.height;
+    [self viewDidLayoutSubviews];
+    
+    _TXT_ship_fname.text =  nil;
+    _TXT_ship_lname.text =  nil;
+    _TXT_ship_addr1.text =  nil;
+    _TXT_ship_addr2.text =  nil;
+    _TXT_ship_city.text =  nil;
+    _TXT_ship_state.text =  nil;
+    _TXT_ship_zip.text =  nil;
+    _TXT_ship_country.text =  nil;
+    _TXT_ship_email.text =  nil;
+    _TXT_ship_phone.text =  nil;
+    
+    
     
 }
 
@@ -2497,18 +2615,10 @@
         orderCheckSelected = YES;
     }
     
-    
     CGPoint buttonPosition = [sender convertPoint:CGPointZero toView:self.TBL_orders];
     NSIndexPath *indexPathsec = [self.TBL_orders indexPathForRowAtPoint:buttonPosition];
-    
-    
-    NSLog(@"******%@",indexPathsec);
-    
-    [self.TBL_orders beginUpdates];
-    
-    [self.TBL_orders reloadSections:[NSIndexSet indexSetWithIndex:indexPathsec.section] withRowAnimation:UITableViewRowAnimationNone];
-    
-    [self.TBL_orders endUpdates];
+
+   
     
     
     merchent_id = [NSString stringWithFormat:@"%ld",(long)sender.tag];
@@ -2534,6 +2644,13 @@
          }
 
      [date_time_merId_Arr replaceObjectAtIndex:m withObject:dic];
+         
+         
+         [self.TBL_orders beginUpdates];
+         
+         [self.TBL_orders reloadSections:[NSIndexSet indexSetWithIndex:indexPathsec.section] withRowAnimation:UITableViewRowAnimationNone];
+         
+         [self.TBL_orders endUpdates];
      
      }
      }
@@ -2743,10 +2860,10 @@
         
     }
     
-    if(textField == _TXT_phone || _TXT_email || _TXT_country || _TXT_state)
+    if(textField == _TXT_phone || _TXT_ship_cntry_code || _TXT_country || _TXT_state)
     {
         [UIView beginAnimations:nil context:NULL];
-        self.view.frame = CGRectMake(0,-120,self.view.frame.size.width,self.view.frame.size.height);
+        self.view.frame = CGRectMake(0,-170,self.view.frame.size.width,self.view.frame.size.height);
         [UIView commitAnimations];
 
     }
@@ -2770,191 +2887,16 @@
     
     [textField resignFirstResponder];
     
-    
-    
-   
-//    if (textField == _TXT_Time || textField == _TXT_Date) {
-//        [self.pickerView resignFirstResponder];
-//    }
-    
-    
-//    billing_address *textFieldRowCell;
-//    textFieldRowCell = (billing_address *) textField.superview.superview.superview;
-//    NSIndexPath *indexPath = [self.TBL_address indexPathForCell:textFieldRowCell];
-//    
-//    switch (textField.tag)
-//    {
-//        case 1:
-//            
-//            if ([textField.text isEqualToString:@""]) {
-//                [HttpClient createaAlertWithMsg:@"Name should not be empty at least two characters " andTitle:@""];
-//            }
-//            else if ([textField.text length]<2 || [textField.text length]>30){
-//                [HttpClient createaAlertWithMsg:@"Name length should be between 2 and 30 characters " andTitle:@""];
-//            }
-//            else{
-//                
-//                if (isAddClicked) {
-//                  [_address_new_dict setValue:textField.text forKey:@"fname"];
-//                }
-//                else if (indexPath.row == 0 && indexPath.section == 0){
-//                    [_data_dict setValue:textField.text forKey:@"fname"];
-//
-//                }
-//                
-//                
-//                else{
-//                    [_edit_addr_dict setValue:textField.text forKey:@"fname"];
-//                }
-//              
-//            }
-//            break;
-//            
-//        case 2:
-//            
-//            if ([textField.text isEqualToString:@""]) {
-//                [HttpClient createaAlertWithMsg:@"Name should not be empty at least two characters " andTitle:@""];
-//            }
-//            else if ([textField.text length]<2 || [textField.text length]>30){
-//                [HttpClient createaAlertWithMsg:@"Name length should be between 2 and 30 characters " andTitle:@""];
-//            }
-//            else{
-//                if (isAddClicked) {
-//                    [_address_new_dict setValue:textField.text forKey:@"lname"];
-//                }
-//                else if (indexPath.row == 0 && indexPath.section == 0){
-//                    [_data_dict setValue:textField.text forKey:@"lname"];
-//                    
-//                }
-//                else{
-//                    [_edit_addr_dict setValue:textField.text forKey:@"lname"];
-//                }
-//                
-//            }
-//            
-//            break;
-//            
-//        case 3:
-//            if ([textField.text isEqualToString:@""]) {
-//                [HttpClient createaAlertWithMsg:@"Name should not be empty at least two characters " andTitle:@""];
-//            }
-//            else{
-//                if (isAddClicked) {
-//                    [_address_new_dict setValue:textField.text forKey:@"address1"];
-//                }
-//                else if (indexPath.row == 0 && indexPath.section == 0){
-//                    [_data_dict setValue:textField.text forKey:@"address1"];
-//                    
-//                }
-//                else{
-//                    [_edit_addr_dict setValue:textField.text forKey:@"address1"];
-//                }
-//            }
-//            
-//            break;
-//            
-//        case 4:
-//            
-//            [_data_dict setValue:textField.text forKey:@"address2"];
-//            
-//            break;
-//            
-//            
-//        case 5:
-//            if ([textField.text isEqualToString:@""]) {
-//                [HttpClient createaAlertWithMsg:@"city should not be empty at least two characters " andTitle:@""];
-//            }
-//            else if ([textField.text length]<2 || [textField.text length]>30){
-//                [HttpClient createaAlertWithMsg:@"city length should be between 2 and 30 characters " andTitle:@""];
-//            }
-//            else{
-//                if (isAddClicked) {
-//                    [_address_new_dict setValue:textField.text forKey:@"city"];
-//                }
-//                else{
-//                    [_edit_addr_dict setValue:textField.text forKey:@"city"];
-//                }
-//            }
-//            
-//            break;
-//            
-//        case 6:
-//            textField.text = state_selection;
-//            
-//                        if ([textField.text isEqualToString:@""]) {
-//                            [HttpClient createaAlertWithMsg:@"Please select state " andTitle:@""];
-//                        }
-//                        else{
-//            
-//                            if (isAddClicked) {
-//                                [_address_new_dict setValue:textField.text forKey:@"state"];
-//                            }
-//                            else{
-//                                [_edit_addr_dict setValue:textField.text forKey:@"state"];
-//                            }
-//                        }
-//            
-//            break;
-//            
-//        case 7:
-//            if ([textField.text isEqualToString:@""]) {
-//                [HttpClient createaAlertWithMsg:@"Please enter Zip code " andTitle:@""];
-//            }
-//            else if ([textField.text length]<3 || [textField.text length]>8){
-//                [HttpClient createaAlertWithMsg:@"Please enter valid Zip code" andTitle:@""];
-//            }
-//            else{
-//                if (isAddClicked) {
-//                    [_address_new_dict setValue:textField.text forKey:@"zip_code"];
-//                }
-//                else{
-//                    [_edit_addr_dict setValue:textField.text forKey:@"zip_code"];
-//                }
-//            }
-//            
-//            break;
-//            
-//        case 8:
-//            
-//            break;
-//        case 9:
-//            
-//            if (![textField.text isEqualToString:[[NSUserDefaults standardUserDefaults]valueForKey:@"email"]]) {
-//                
-//                [HttpClient createaAlertWithMsg:@"Sorry u r email id is wrong" andTitle:@""];
-//            }
-//            
-//            break;
-//        case 10:
-//            
-//            if ([textField.text isEqualToString:@""]) {
-//                [HttpClient createaAlertWithMsg:@"Please enter Mobile No " andTitle:@""];
-//            }
-//            else if ([textField.text length]<5 || [textField.text length]>15){
-//                [HttpClient createaAlertWithMsg:@"Please enter valid Mobile No" andTitle:@""];
-//            }
-//            else{
-//                if (isAddClicked) {
-//                    [_address_new_dict setValue:textField.text forKey:@"phone"];
-//                }
-//                else{
-//                    [_edit_addr_dict setValue:textField.text forKey:@"phone"];
-//                }            }
-//           
-//            break;
-//        default:
-//            break;
-//    }
-    
-    
-    
+    if (textField == _TXT_ship_cntry_code) {
+        textField.text = flag;
+    }
+    if (textField == _TXT_Cntry_code) {
+         textField.text = flag;
+    }
     
     if (textField.tag == 6) {
         
         textField.text = state_selection;
-//                if ([textField.text isEqualToString:@""]) {
-//                [HttpClient createaAlertWithMsg:@"Please select state " andTitle:@""];
-//        }
         
     }
     if (textField.tag == 8) {
@@ -2974,16 +2916,7 @@
         if ([textField.text isEqualToString:@""]) {
             [HttpClient createaAlertWithMsg:@"Please Select Country " andTitle:@""];
        }
-          //  else{
-//            if (isAddClicked) {
-//                [_address_new_dict setValue:textField.text forKey:@"country"];
-//            }
-//            else{
-//                [_edit_addr_dict setValue:textField.text forKey:@"country"];
-//            }
-//        }
-//
-   }
+}
     
 }
 
@@ -3036,9 +2969,11 @@
             
         }
     }
+      [_TBL_orders reloadData];
+     [self set_data_to_product_Summary_View];
     
     //Product Summary View setting Ship Charge
-    self.LBL_shipping_charge.text = [NSString stringWithFormat:@"%@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],charge_ship];
+   // self.LBL_shipping_charge.text = [NSString stringWithFormat:@"%@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],charge_ship];
     
     NSLog(@"charge for all products%d %@",charge_ship,date_time_merId_Arr);
 }
@@ -3056,37 +2991,33 @@
         
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/orderdetailsapi/%@/%@/%@.json",SERVER_URL,user_id,country,languge];
+       
+         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/orderdetailsapi/%@/%@/%@.json",SERVER_URL,user_id,languge,country];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         @try {
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
                         NSLog(@"%@",[error localizedDescription]);
+                        VW_overlay.hidden = YES;
+                        [activityIndicatorView stopAnimating];
+
                     }
                     if (data) {
                         
-                        VW_overlay.hidden = YES;
-                        [activityIndicatorView stopAnimating];
-                        if (data) {
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [self cart_count];
-                            });
-                            
-                            
+                        
                             
                             @try {
+                                
+                               
                                 if ([data isKindOfClass:[NSDictionary class]]) {
                                     jsonresponse_dic = data;
                                     
-                                    
-                                    
-                                    [self set_UP_VIEW];
-                                    [self set_data_to_product_Summary_View];
+                                  
                                     NSLog(@"order_detail_API Response:::%@*********",data);
                                     [self filtering_MerchantId];
-                                    [_TBL_orders reloadData];
                                     [self Shipp_address_API];
+                                    [self set_UP_VIEW];
                                     [self cart_count];
                                     VW_overlay.hidden = YES;
                                     [activityIndicatorView stopAnimating];
@@ -3108,7 +3039,7 @@
                         
                         
                         
-                    }
+                    
                     
                 });
                 
@@ -3119,10 +3050,13 @@
             [activityIndicatorView stopAnimating];
         }
         
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+      
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
+
+        
     }
     
 }
@@ -3135,7 +3069,7 @@
         
         jsonresponse_dic_address = [[NSMutableDictionary alloc]init];
         
-        isAddClicked = NO;
+        //isAddClicked = NO;
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
         NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
         
@@ -3245,51 +3179,68 @@
 #pragma mark  cart_count_api
 
 -(void)cart_count{
-    @try {
-        NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
-        [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-            if (error) {
-                [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
-                 ];
-            }
-            if (data) {
-                NSLog(@"%@",data);
-                @try {
-                    NSString *badge_value = [NSString stringWithFormat:@"%@",[data valueForKey:@"cartcount"]];
-                    if ([[NSUserDefaults standardUserDefaults]integerForKey:@"language_id"] == 2) {
+    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        if (error) {
+            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
+             ];
+            
+            VW_overlay.hidden=YES;
+            [activityIndicatorView stopAnimating];
+        }
+        if (data) {
+            
+            VW_overlay.hidden=YES;
+            [activityIndicatorView stopAnimating];
+            NSLog(@"%@",data);
+            NSDictionary *dict = data;
+            @try {
+                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
+                NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
+                
+                
+                //NSString *badge_value = @"11";
+                if([wishlist intValue] > 0)
+                {
+                    
+                    @try
+                    {
+                        [_BTN_fav setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
+                        [_BTN_fav setBadgeString:[NSString stringWithFormat:@"%@",wishlist]];
+                    }
+                    @catch(NSException *Exception)
+                    {
                         
-                        if(badge_value.length > 2)
-                        {
-                            self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
-                            
-                        }
-                        else{
-                            self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
-                            
-                        }
                     }
-                    else{
-                        if(badge_value.length > 2)
-                        {
-                            self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
-                            
-                        }
-                        else{
-                            self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
-                            
-                        }
-                    }
-                } @catch (NSException *exception) {
-                    NSLog(@"%@",exception);
+                    
                 }
                 
+                if([badge_value intValue] > 0 )
+                {
+                    @try
+                    {
+                        
+                        [_BTN_cart setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
+                    }
+                    @catch(NSException *Exception)
+                    {
+                        
+                    }
+                    
+                    [_BTN_cart setBadgeString:[NSString stringWithFormat:@"%@",badge_value]];
+                    
+                    
+                }
+                
+            } @catch (NSException *exception) {
+                NSLog(@"%@",exception);
+                
+                VW_overlay.hidden=YES;
+                [activityIndicatorView stopAnimating];
             }
-        }];
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-        
-    }
-    
+            
+        }
+    }];
 }
 #pragma mark Delivary_slot_API
 
@@ -3328,8 +3279,8 @@
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     }
-    
-    
+    VW_overlay.hidden = YES;
+    [activityIndicatorView stopAnimating];
 }
 #pragma mark CountryAPI Call
 //http://192.168.0.171/dohasooq/'apis/countriesapi.json
@@ -3449,6 +3400,9 @@
     if (pickerView == _staes_country_pickr) {
         return response_picker_arr.count;
     }
+    else if (pickerView == _country_code_Pickerview){
+        return phone_code_arr.count;
+    }
     else{
         return picker_Arr.count;
     }
@@ -3466,6 +3420,17 @@
             return [[response_picker_arr objectAtIndex:row] valueForKey:@"value"];
         }
     }
+    else if (pickerView ==_country_code_Pickerview){
+       
+        @try {
+              return [NSString stringWithFormat:@"%@   %@",[phone_code_arr[row] valueForKey:@"name"],[phone_code_arr[row] valueForKey:@"dial_code"]];
+            
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        }
+        
+        
+        }
     else{
         
         return [picker_Arr objectAtIndex:row];
@@ -3473,19 +3438,31 @@
 }
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
     
+    if (pickerView == _country_code_Pickerview) {
+        
+        flag = [NSString stringWithFormat:@"%@",[phone_code_arr[row] valueForKey:@"dial_code"]];
+    }
+    
+    
+    
+    
+    
     if (pickerView == _pickerView) {
         
-        if (is_Txt_date) {
-            _TXT_Date.text = [picker_Arr objectAtIndex:row];
-            date_str = [NSString stringWithFormat:@"%@",[slot_keys_arr objectAtIndex:row]];
-            
-        }
-        else{
-            _TXT_Time.text = [picker_Arr objectAtIndex:row];
-            time_str = [NSString stringWithFormat:@"%@",[slot_keys_arr objectAtIndex:row]];
-            
-        }
-    }
+        @try {
+            if (is_Txt_date) {
+                _TXT_Date.text = [picker_Arr objectAtIndex:row];
+                date_str = [NSString stringWithFormat:@"%@",[slot_keys_arr objectAtIndex:row]];
+                
+            }
+            else{
+                _TXT_Time.text = [picker_Arr objectAtIndex:row];
+                time_str = [NSString stringWithFormat:@"%@",[slot_keys_arr objectAtIndex:row]];
+                
+            }
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        }     }
     if (pickerView == _staes_country_pickr) {
         
         if (isCountrySelected) {
@@ -3512,7 +3489,7 @@
                 state_selection = [[response_picker_arr objectAtIndex:row] valueForKey:@"value"];
                 
                 if (select_blng_ctry_state) {
-                    blng_cntry_ID = [[response_picker_arr objectAtIndex:row] valueForKey:@"key"];
+                    blng_state_ID = [[response_picker_arr objectAtIndex:row] valueForKey:@"key"];
                 }
                 else{
                     ship_state_ID = [[response_picker_arr objectAtIndex:row] valueForKey:@"key"];
@@ -3535,6 +3512,12 @@
     self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
     [UIView commitAnimations];
 }
+#pragma mark picker_close_action
+-(void)picker_close_action{
+    [self.view endEditing:YES];
+}
+
+
 
 #pragma mark Payment method API Types
 
@@ -3647,7 +3630,7 @@
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
         NSString *msg;
   
-    NSString *text_to_compare_email = _TXT_email.text;
+   
        
        if ([_TXT_fname.text isEqualToString:@""])
        {
@@ -3729,22 +3712,7 @@
        
 
 
-       else if([_TXT_email.text isEqualToString:@""])
-       {
-           [_TXT_email becomeFirstResponder];
-           msg = @"Please enter Email";
-           
-       }
-       
-       else if([emailTest evaluateWithObject:text_to_compare_email] == NO)
-       {
-           [_TXT_email becomeFirstResponder];
-           msg = @"Please enter valid email address";
-           
-           
-           
-       }
-       else if ([_TXT_phone.text isEqualToString:@""])
+    else if ([_TXT_phone.text isEqualToString:@""])
        {
            [_TXT_phone becomeFirstResponder];
            msg = @"Please enter Phone Number";
@@ -3834,7 +3802,7 @@
   
       if(  _VW_SHIIPING_ADDRESS.hidden == NO)
     {
-        NSString *text_to_compare_email = _TXT_ship_email.text;
+       
         
         if ([_TXT_ship_fname.text isEqualToString:@""])
         {
@@ -3916,21 +3884,7 @@
         
         
         
-        else if([_TXT_ship_email.text isEqualToString:@""])
-        {
-            [_TXT_ship_email becomeFirstResponder];
-            msg = @"Please enter Email";
-            
-        }
-        
-        else if([emailTest evaluateWithObject:text_to_compare_email] == NO)
-        {
-            [_TXT_ship_email becomeFirstResponder];
-            msg = @"Please enter valid email address";
-            
-            
-            
-        }
+       
         else if ([_TXT_ship_phone.text isEqualToString:@""])
         {
             [_TXT_ship_phone becomeFirstResponder];
@@ -4046,6 +4000,9 @@
      
         
         }
+    VW_overlay.hidden = YES;
+    [activityIndicatorView stopAnimating];
+
 
 }
 
@@ -4224,11 +4181,17 @@
 -(void)checking_address:(NSString *)zip_Code{
     
     @try {
-    
+     
+        
+        
         //http://maps.google.com/maps/api/geocode/json?address="+s_user_zip_code+"&sensor=false
         
-        //zip_codeDic = [[NSMutableDictionary alloc]init];
+        
+        shippinglatlog_dic = [[NSMutableDictionary alloc]init];
+        billiinglatlog_dic = [[NSMutableDictionary alloc]init];
+        
         NSLog(@".......%@",zip_Code);
+        
         NSString *urlGetuser =[NSString stringWithFormat:@"http://maps.google.com/maps/api/geocode/json?address=%@&sensor=false",zip_Code];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         NSLog(@"%@",urlGetuser);
@@ -4253,18 +4216,30 @@
                                 if (self.VW_SHIIPING_ADDRESS.hidden == YES && [[data valueForKey:@"status"] isEqualToString:@"OK"]) {
                                     
                                     
-                                     billiinglatlog_dic = [[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"];
+                                    // billiinglatlog_dic = [[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"];
+                                    
+                                    [billiinglatlog_dic addEntriesFromDictionary:[[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"]];
+                                    
+                                    
                                     NSLog(@"billing lat and lan %@",[[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"]);
                                     
                                     
-                                    shippinglatlog_dic = [[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"];
+                                    //shippinglatlog_dic = [[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"];
+                                    [shippinglatlog_dic addEntriesFromDictionary:[[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"]];
+                                    
+                                    
+                                    
                                     NSLog(@"billing lat and lan %@",[[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"]);
                                    
                                     [self move_to_payment_types];
                                 }
                                 else if (self.VW_SHIIPING_ADDRESS.hidden == NO && [[data valueForKey:@"status"] isEqualToString:@"OK"])
                                 {
-                                    billiinglatlog_dic = [[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"];
+                                   // billiinglatlog_dic = [[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"];
+                                    
+                                    [billiinglatlog_dic addEntriesFromDictionary:[[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"]];
+                                    
+                                    
                                  [self checking_shipping_address_zipcode:_TXT_ship_zip.text];
                                 
                                 }
@@ -4306,7 +4281,7 @@
         
         //http://maps.google.com/maps/api/geocode/json?address="+s_user_zip_code+"&sensor=false
         
-        
+        shippinglatlog_dic = [[NSMutableDictionary alloc]init];
         NSLog(@".......%@",zip_Code);
         NSString *urlGetuser =[NSString stringWithFormat:@"http://maps.google.com/maps/api/geocode/json?address=%@&sensor=false",zip_Code];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
@@ -4325,9 +4300,12 @@
                                 if ([[data valueForKey:@"status"] isEqualToString:@"OK"]) {
                                     
                                     
-                                    shippinglatlog_dic = [[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"];
+                                    //shippinglatlog_dic = [[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"];
                                     
-                                     NSLog(@"shipping lat and lan %@",[[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"]);
+                                    
+                                    [shippinglatlog_dic addEntriesFromDictionary:[[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"]];
+                                    
+                                     //NSLog(@"shipping lat and lan %@",[[[[data valueForKey:@"results"] objectAtIndex:0] valueForKey:@"geometry"] valueForKey:@"location"]);
                                     
                                     [self move_to_payment_types];
                                 }
@@ -4360,27 +4338,37 @@
   }
 
 #pragma mark Place Order API Integration
+
 -(void)place_oredr_API{
     @try {
         
    
    NSString *ctry_id = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
     
-     NSMutableArray *form_arr = [NSMutableArray array];
+    // NSMutableArray *form_arr = [NSMutableArray array];
         
-    NSString *sub_total = [NSString stringWithFormat:@"%@",[jsonresponse_dic valueForKey:@"subsum"]];
+//    NSString *sub_total = [NSString stringWithFormat:@"%@",[jsonresponse_dic valueForKey:@"subsum"]];
+//        
+//        sub_total = [sub_total stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
+        
+        
+        NSString *sub_total = [NSString stringWithFormat:@"%d",total];
+        
         sub_total = [sub_total stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
         
         NSDictionary *Formpaymenthidden;
         @try {
-             Formpaymenthidden = @{@"amount":sub_total,@"locale":@"en",@"version":@"1"};
+            
+            Formpaymenthidden = @{@"amount":sub_total,@"locale":@"en",@"version":@"1"};
+            
         } @catch (NSException *exception) {
             
         }
-        [form_arr removeAllObjects];
-        [form_arr addObject:Formpaymenthidden];
-        NSString * Formpaymenthidden_str = [form_arr componentsJoinedByString:@","];
-
+        
+        NSData *data = [NSJSONSerialization dataWithJSONObject:Formpaymenthidden options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *Formpaymenthidden_str = [[NSString alloc] initWithData:data
+                                                      encoding:NSUTF8StringEncoding];
+      
         
         
    
@@ -4417,15 +4405,16 @@
         
         NSDictionary *FormBilling;
         @try {
-            FormBilling = @{@"FirstName":fname,@"LastName":lname,@"address1":addr1,@"address2":addr2,@"city":city,@"state":state,@"country":country,@"phone":phone,@"zipcode":zip_code,@"userId":[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"]};
+            FormBilling = @{@"FirstName":fname,@"LastName":lname,@"address1":addr1,@"address2":addr2,@"city":city,@"state":state,@"country":country,@"phone":phone,@"zipcode":zip_code,@"userId":[NSString stringWithFormat:@"%@",[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"]]};
         } @catch (NSException *exception) {
             
         }
-        [form_arr removeAllObjects];
-        [form_arr addObject:FormBilling];
-        NSString * form_billing_str = [form_arr componentsJoinedByString:@","];
 
         
+        data = [NSJSONSerialization dataWithJSONObject:FormBilling options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *form_billing_str = [[NSString alloc] initWithData:data
+                                                                encoding:NSUTF8StringEncoding];
+       
         
           NSString *sfname,*slname,*saddr1,*saddr2,*scity,*sstate,*szip_code,*scountry,*sphone;
         
@@ -4438,7 +4427,7 @@
         szip_code = _TXT_zip.text;
         scountry = ship_cntry_ID;
         sphone = _TXT_ship_phone.text;
-//        NSMutableArray *Formshipping_arr = [[NSMutableArray alloc]init];
+
         NSDictionary *Formshipping;
         if ([billcheck_clicked isEqualToString:@"0"]) {
             
@@ -4462,10 +4451,13 @@
            
             
         }
-        [form_arr removeAllObjects];
-          [form_arr addObject:Formshipping];
+
         
-        NSString *form_shipping_str = [form_arr componentsJoinedByString:@","];
+        data = [NSJSONSerialization dataWithJSONObject:Formshipping options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *form_shipping_str = [[NSString alloc] initWithData:data
+                                                           encoding:NSUTF8StringEncoding];
+        
+       
        
         
        // NSLog(@"THe single string:Form shipping%@",[form_arr componentsJoinedByString:@","]);
@@ -4572,52 +4564,68 @@
             NSLog(@"%@",exception);
         }
         NSDictionary *FormpickupMethod = @{@"pickMethod":pickMethod};
-        [form_arr removeAllObjects];
-        [form_arr addObject:FormpickupMethod];
-        NSString *FormpickupMethod_str = [form_arr componentsJoinedByString:@","];
+        
+        data = [NSJSONSerialization dataWithJSONObject:FormpickupMethod options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *FormpickupMethod_str = [[NSString alloc] initWithData:data
+                                                            encoding:NSUTF8StringEncoding];
+        
+        
         
         
         NSDictionary *FormPayment = @{@"paymenttype":payment_type_str};
-        [form_arr removeAllObjects];
-        [form_arr addObject:FormPayment];
-        NSString *FormPayment_str = [form_arr componentsJoinedByString:@","];
+        data = [NSJSONSerialization dataWithJSONObject:FormPayment options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *FormPayment_str = [[NSString alloc] initWithData:data
+                                                               encoding:NSUTF8StringEncoding];
         
         
-        //hot coding "payment_type_str"
+        
         NSDictionary  *FormshipMethod = @{@"charge":shiip_charge,@"shipmethod":ship_method};
-        [form_arr removeAllObjects];
-        [form_arr addObject:FormshipMethod];
-        NSString *FormshipMethod_str = [form_arr componentsJoinedByString:@","];
+
+        data = [NSJSONSerialization dataWithJSONObject:FormshipMethod options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *FormshipMethod_str = [[NSString alloc] initWithData:data
+                                                          encoding:NSUTF8StringEncoding];
+      
+        
         
         
         NSDictionary *FormDeliverySlot = @{@"deliveydate":deliveydate,@"deliveytime":deliveytime};
-        [form_arr removeAllObjects];
-        [form_arr addObject:FormDeliverySlot];
-        NSString *FormDeliverySlot_str = [form_arr componentsJoinedByString:@","];
+        data = [NSJSONSerialization dataWithJSONObject:FormDeliverySlot options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *FormDeliverySlot_str = [[NSString alloc] initWithData:data
+                                                             encoding:NSUTF8StringEncoding];
+        
         
         
         NSDictionary *FormSameasBilling = @{@"check":billcheck_clicked};
-        [form_arr removeAllObjects];
-        [form_arr addObject:FormSameasBilling];
-        NSString *FormSameasBilling_str = [form_arr componentsJoinedByString:@","];
-        
+        data = [NSJSONSerialization dataWithJSONObject:FormSameasBilling options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *FormSameasBilling_str = [[NSString alloc] initWithData:data
+                                                               encoding:NSUTF8StringEncoding];
+      
         
         NSDictionary *Formcouponcode = @{@"couponcode":@""};
-        [form_arr removeAllObjects];
-        [form_arr addObject:Formcouponcode];
-        NSString *Formcouponcode_str = [form_arr componentsJoinedByString:@","];
+        data = [NSJSONSerialization dataWithJSONObject:Formcouponcode options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *Formcouponcode_str = [[NSString alloc] initWithData:data
+                                                                encoding:NSUTF8StringEncoding];
         
         
         
-        [form_arr removeAllObjects];
-        [form_arr addObject:shippinglatlog_dic];
-        NSString *shippinglatlog_str = [form_arr componentsJoinedByString:@","];
+//        [shippinglatlog_dic removeObjectForKey:@"lat"];
+//        [shippinglatlog_dic removeObjectForKey:@"lng"];
+        [shippinglatlog_dic removeAllObjects];
+        
+        data = [NSJSONSerialization dataWithJSONObject:shippinglatlog_dic options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *shippinglatlog_str = [[NSString alloc] initWithData:data
+                                                             encoding:NSUTF8StringEncoding];
         
         
         
-        [form_arr removeAllObjects];
-        [form_arr addObject:billiinglatlog_dic];
-        NSString *billiinglatlog_str = [form_arr componentsJoinedByString:@","];
+//        [billiinglatlog_dic removeObjectForKey:@"lat"];
+//        [billiinglatlog_dic removeObjectForKey:@"lng"];
+        
+        [billiinglatlog_dic removeAllObjects];
+        
+        data = [NSJSONSerialization dataWithJSONObject:billiinglatlog_dic options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *billiinglatlog_str = [[NSString alloc] initWithData:data
+                                                             encoding:NSUTF8StringEncoding];
 
         
         NSDictionary *params;
@@ -4626,31 +4634,29 @@
             
             
             
-             params = @{@"countryId":ctry_id,@"Formpaymenthidden":FormPayment_str,@"FormpickupMethod":FormpickupMethod_str,@"FormPayment":FormPayment_str,@"Formshipping":form_shipping_str,@"FormshipMethod":FormshipMethod_str,@"FormBilling":form_billing_str,@"billinglatlog":billiinglatlog_str,@"FormDeliverySlot":FormDeliverySlot_str,@"FormSameasBilling":FormSameasBilling_str,@"shippinglatlog":shippinglatlog_str,@"Formcouponcode":Formcouponcode_str};
+             params = @{@"countryId":ctry_id,@"Formpaymenthidden":Formpaymenthidden_str,@"FormpickupMethod":FormpickupMethod_str,@"FormPayment":FormPayment_str,@"Formshipping":form_shipping_str,@"FormshipMethod":FormshipMethod_str,@"FormBilling":form_billing_str,@"billinglatlog":billiinglatlog_str,@"FormDeliverySlot":FormDeliverySlot_str,@"FormSameasBilling":FormSameasBilling_str,@"shippinglatlog":shippinglatlog_str,@"Formcouponcode":Formcouponcode_str};
             
-            
-            
-            
-            
-//             params = @{@"countryId":ctry_id,@"Formpaymenthidden":Formpaymenthidden,@"FormpickupMethod":FormpickupMethod,@"FormPayment":FormPayment,@"Formshipping":form_shipping_str,@"FormshipMethod":FormshipMethod,@"FormBilling":form_billing_str,@"billinglatlog":billiinglatlog_dic,@"FormDeliverySlot":FormDeliverySlot,@"FormSameasBilling":FormSameasBilling,@"shippinglatlog":shippinglatlog_dic,@"Formcouponcode":Formcouponcode};
             
             
         } @catch (NSException *exception) {
             NSLog(@"Some values are missing in dic");
             NSLog(@"%@",exception);
         }
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
         
-        NSLog(@"%@",params);
+        // Calling Place Order API
+        [self place_order_One_more_method:params];
         
         
-       // NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/placeorderapi.json",SERVER_URL];
+    /*   // This is Calling Place Order API with diffirent method likeForm Data
     
         @try
         {
             
             NSString *urlString =[NSString stringWithFormat:@"%@apis/placeorderapi.json",SERVER_URL];
             NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:[NSURL URLWithString:urlString]];
-           // [request setURL:[NSURL URLWithString:urlString]];
+           
             [request setHTTPMethod:@"POST"];
             
             NSString *boundary = @"---------------------------14737809831466499882746641449";
@@ -4658,7 +4664,7 @@
             [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
             
             NSMutableData *body = [NSMutableData data];
-            //    [request setHTTPBody:body];
+          
             
             
             
@@ -4767,7 +4773,7 @@
 
             
                         NSError *er;
-            //    NSHTTPURLResponse *response = nil;
+           
             
             // close form
             [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
@@ -4788,11 +4794,6 @@
                 }
                 
                      NSLog(@"%@", [NSString stringWithFormat:@"JSON DATA OF ORDER DETAIL: %@", json_DATA]);
-                //            dispatch_async(dispatch_get_main_queue(), ^{
-                //                [self.TBL_orders reloadData];
-                
-                // });
-                
                 
             }
             
@@ -4803,141 +4804,388 @@
             VW_overlay.hidden = YES;
             NSLog(@"THE EXception:%@",exception);
             
-        }
-
-        
-        
-        
-        
-        
+        }*/
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     }
-    
+
+   
 }
-
-
-
-
-/*-(void)orders_LIST_Detail
-{
-    @try
-    {
-       
-        
-        
-        NSString *urlString =[NSString stringWithFormat:@"%@Apis/orderviewapi.json",SERVER_URL];
-        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-        [request setURL:[NSURL URLWithString:urlString]];
-        [request setHTTPMethod:@"POST"];
-        
-        NSString *boundary = @"---------------------------14737809831466499882746641449";
-        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
-        [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
-        
-        NSMutableData *body = [NSMutableData data];
-        //    [request setHTTPBody:body];
-        
-        
-        
-        
-        // text parameter
-        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"customerId\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]]; //venu1@carmatec.com
-        [body appendData:[[NSString stringWithFormat:@"%@",user_id]dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-        
-        // another text parameter
-        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"orderId\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[[NSString stringWithFormat:@"%@",ORDER_ID]dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-        
-        
-        
-        
-        
-        
-        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"langId\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[[NSString stringWithFormat:@"%@",languge]dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-        
-        
-        
-        
-        //    [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        //    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"id\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-        //    [body appendData:[[NSString stringWithFormat:@"%@",GET_prof_ID]dataUsingEncoding:NSUTF8StringEncoding]];
-        //    [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-        //
-        //
-        //    NSData *webData = UIImageJPEGRepresentation(_img_Profile.image, 100);
-        //    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        //    NSString *documentsDirectory = [paths objectAtIndex:0];//@"sample.png"
-        //    NSString *localFilePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg",[self randomStringWithLength:7]]];
-        //    [webData writeToFile:localFilePath atomically:YES];
-        //    NSLog(@"localFilePath.%@",localFilePath);
-        //
-        //    [[NSUserDefaults standardUserDefaults]setValue:localFilePath forKey:@"new_PP"];
-        //    [[NSUserDefaults standardUserDefaults]synchronize];
-        //
-        //    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        //    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: multipart/form-data; name=\"uploaded_file\"; filename=\"%@\"\r\n",localFilePath] dataUsingEncoding:NSUTF8StringEncoding]];
-        //    [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-        //    [body appendData:[NSData dataWithData:imageData]];
-        //    [body appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        
-        //
-        NSError *er;
-        //    NSHTTPURLResponse *response = nil;
-        
-        // close form
-        [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        
-        // set request body
-        [request setHTTPBody:body];
-        
-        NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-        
-        if (returnData) {
-        
-//            json_DATA = [[NSMutableDictionary alloc]init];
-//            json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
-//            NSLog(@"%@", [NSString stringWithFormat:@"JSON DATA OF ORDER DETAIL: %@", json_DATA]);
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                [self.TBL_orders reloadData];
-            
-           // });
-            
-            
-        }
-        
-    }
-    @catch(NSException *exception)
-    {
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
-        NSLog(@"THE EXception:%@",exception);
-        
-    }
-    
-}
-*/
 
  #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
+
  - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
      
      VC_DS_Checkout *check_out_cntroller = [segue destinationViewController];
+     
+     check_out_cntroller.rec_dic = sender;
+     
     
  }
 -(void)close_ACTION
 {
     VW_overlay.hidden = YES;
     _VW_delivery_slot.hidden = YES;
+}
+
+#pragma mark Place Order Method API Implementation
+
+-(void)place_order_One_more_method:(NSDictionary *)params{
+    @try
+        {
+           
+    
+       
+            NSError *error;
+            NSError *err;
+            NSHTTPURLResponse *response = nil;
+    
+            NSData *postData = [NSJSONSerialization dataWithJSONObject:params options:NSASCIIStringEncoding error:&err];
+            NSLog(@"the posted data is:%@",params);
+            //NSString *urlString =[NSString stringWithFormat:@"%@apis/placeorderapi.json",SERVER_URL];
+
+            NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/placeorderapi.json",SERVER_URL];
+             urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@"" withString:@"%20"];
+    
+    
+    
+            NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+            [request setURL:urlProducts];
+            [request setHTTPMethod:@"POST"];
+            
+    
+            [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+            [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+
+            [request setHTTPBody:postData];
+            [request setHTTPShouldHandleCookies:NO];
+            NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            if (err) {
+                [err localizedDescription];
+            }
+            
+    
+            if(aData)
+            {
+    
+                VW_overlay.hidden = YES;
+                [activityIndicatorView stopAnimating];
+                NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+                NSLog(@"%@",error);
+                NSLog(@"The response Api   sighn up API %@",json_DATA);
+                NSString *msg = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
+                
+                if ([msg isEqualToString:@"1"]) {
+                    
+                
+                    
+                    //NSString *url_str = [json_DATA valueForKey:@"url"];
+                   
+                    NSLog(@"%@",msg);
+                    [self performSegueWithIdentifier:@"move_to_pay" sender:json_DATA];
+                }
+            }
+            else
+            {
+                [activityIndicatorView stopAnimating];
+                VW_overlay.hidden = YES;
+    
+                
+                [HttpClient createaAlertWithMsg:@"Something went to wrong Please Try again later" andTitle:@""];
+                
+            }
+            
+        }
+        
+        @catch(NSException *exception)
+        {
+            NSLog(@"The error is:%@",exception);
+        }
+    
+    [activityIndicatorView stopAnimating];
+    VW_overlay.hidden = YES;
+
+}
+#pragma mark Country Code Related
+-(void)phone_code_view
+{
+    /*  NSDictionary *codes = @{
+     @"Canada"                                       : @"+1",
+     @"China"                                        : @"+86",
+     @"France"                                       : @"+33",
+     @"Germany"                                      : @"+49",
+     @"India"                                        : @"+91",
+     @"Japan"                                        : @"+81",
+     @"Pakistan"                                     : @"+92",
+     @"United Kingdom"                               : @"+44",
+     @"United States"                                : @"+1",
+     @"Abkhazia"                                     : @"+7 840",
+     @"Abkhazia"                                     : @"+7 940",
+     @"Afghanistan"                                  : @"+93",
+     @"Albania"                                      : @"+355",
+     @"Algeria"                                      : @"+213",
+     @"American Samoa"                               : @"+1 684",
+     @"Andorra"                                      : @"+376",
+     @"Angola"                                       : @"+244",
+     @"Anguilla"                                     : @"+1 264",
+     @"Antigua and Barbuda"                          : @"+1 268",
+     @"Argentina"                                    : @"+54",
+     @"Armenia"                                      : @"+374",
+     @"Aruba"                                        : @"+297",
+     @"Ascension"                                    : @"+247",
+     @"Australia"                                    : @"+61",
+     @"Australian External Territories"              : @"+672",
+     @"Austria"                                      : @"+43",
+     @"Azerbaijan"                                   : @"+994",
+     @"Bahamas"                                      : @"+1 242",
+     @"Bahrain"                                      : @"+973",
+     @"Bangladesh"                                   : @"+880",
+     @"Barbados"                                     : @"+1 246",
+     @"Barbuda"                                      : @"+1 268",
+     @"Belarus"                                      : @"+375",
+     @"Belgium"                                      : @"+32",
+     @"Belize"                                       : @"+501",
+     @"Benin"                                        : @"+229",
+     @"Bermuda"                                      : @"+1 441",
+     @"Bhutan"                                       : @"+975",
+     @"Bolivia"                                      : @"+591",
+     @"Bosnia and Herzegovina"                       : @"+387",
+     @"Botswana"                                     : @"+267",
+     @"Brazil"                                       : @"+55",
+     @"British Indian Ocean Territory"               : @"+246",
+     @"British Virgin Islands"                       : @"+1 284",
+     @"Brunei"                                       : @"+673",
+     @"Bulgaria"                                     : @"+359",
+     @"Burkina Faso"                                 : @"+226",
+     @"Burundi"                                      : @"+257",
+     @"Cambodia"                                     : @"+855",
+     @"Cameroon"                                     : @"+237",
+     @"Canada"                                       : @"+1",
+     @"Cape Verde"                                   : @"+238",
+     @"Cayman Islands"                               : @"+ 345",
+     @"Central African Republic"                     : @"+236",
+     @"Chad"                                         : @"+235",
+     @"Chile"                                        : @"+56",
+     @"China"                                        : @"+86",
+     @"Christmas Island"                             : @"+61",
+     @"Cocos-Keeling Islands"                        : @"+61",
+     @"Colombia"                                     : @"+57",
+     @"Comoros"                                      : @"+269",
+     @"Congo"                                        : @"+242",
+     @"Congo, Dem. Rep. of (Zaire)"                  : @"+243",
+     @"Cook Islands"                                 : @"+682",
+     @"Costa Rica"                                   : @"+506",
+     @"Ivory Coast"                                  : @"+225",
+     @"Croatia"                                      : @"+385",
+     @"Cuba"                                         : @"+53",
+     @"Curacao"                                      : @"+599",
+     @"Cyprus"                                       : @"+537",
+     @"Czech Republic"                               : @"+420",
+     @"Denmark"                                      : @"+45",
+     @"Diego Garcia"                                 : @"+246",
+     @"Djibouti"                                     : @"+253",
+     @"Dominica"                                     : @"+1 767",
+     @"Dominican Republic"                           : @"+1 809",
+     @"Dominican Republic"                           : @"+1 829",
+     @"Dominican Republic"                           : @"+1 849",
+     @"East Timor"                                   : @"+670",
+     @"Easter Island"                                : @"+56",
+     @"Ecuador"                                      : @"+593",
+     @"Egypt"                                        : @"+20",
+     @"El Salvador"                                  : @"+503",
+     @"Equatorial Guinea"                            : @"+240",
+     @"Eritrea"                                      : @"+291",
+     @"Estonia"                                      : @"+372",
+     @"Ethiopia"                                     : @"+251",
+     @"Falkland Islands"                             : @"+500",
+     @"Faroe Islands"                                : @"+298",
+     @"Fiji"                                         : @"+679",
+     @"Finland"                                      : @"+358",
+     @"France"                                       : @"+33",
+     @"French Antilles"                              : @"+596",
+     @"French Guiana"                                : @"+594",
+     @"French Polynesia"                             : @"+689",
+     @"Gabon"                                        : @"+241",
+     @"Gambia"                                       : @"+220",
+     @"Georgia"                                      : @"+995",
+     @"Germany"                                      : @"+49",
+     @"Ghana"                                        : @"+233",
+     @"Gibraltar"                                    : @"+350",
+     @"Greece"                                       : @"+30",
+     @"Greenland"                                    : @"+299",
+     @"Grenada"                                      : @"+1 473",
+     @"Guadeloupe"                                   : @"+590",
+     @"Guam"                                         : @"+1 671",
+     @"Guatemala"                                    : @"+502",
+     @"Guinea"                                       : @"+224",
+     @"Guinea-Bissau"                                : @"+245",
+     @"Guyana"                                       : @"+595",
+     @"Haiti"                                        : @"+509",
+     @"Honduras"                                     : @"+504",
+     @"Hong Kong SAR China"                          : @"+852",
+     @"Hungary"                                      : @"+36",
+     @"Iceland"                                      : @"+354",
+     @"India"                                        : @"+91",
+     @"Indonesia"                                    : @"+62",
+     @"Iran"                                         : @"+98",
+     @"Iraq"                                         : @"+964",
+     @"Ireland"                                      : @"+353",
+     @"Israel"                                       : @"+972",
+     @"Italy"                                        : @"+39",
+     @"Jamaica"                                      : @"+1 876",
+     @"Japan"                                        : @"+81",
+     @"Jordan"                                       : @"+962",
+     @"Kazakhstan"                                   : @"+7 7",
+     @"Kenya"                                        : @"+254",
+     @"Kiribati"                                     : @"+686",
+     @"North Korea"                                  : @"+850",
+     @"South Korea"                                  : @"+82",
+     @"Kuwait"                                       : @"+965",
+     @"Kyrgyzstan"                                   : @"+996",
+     @"Laos"                                         : @"+856",
+     @"Latvia"                                       : @"+371",
+     @"Lebanon"                                      : @"+961",
+     @"Lesotho"                                      : @"+266",
+     @"Liberia"                                      : @"+231",
+     @"Libya"                                        : @"+218",
+     @"Liechtenstein"                                : @"+423",
+     @"Lithuania"                                    : @"+370",
+     @"Luxembourg"                                   : @"+352",
+     @"Macau SAR China"                              : @"+853",
+     @"Macedonia"                                    : @"+389",
+     @"Madagascar"                                   : @"+261",
+     @"Malawi"                                       : @"+265",
+     @"Malaysia"                                     : @"+60",
+     @"Maldives"                                     : @"+960",
+     @"Mali"                                         : @"+223",
+     @"Malta"                                        : @"+356",
+     @"Marshall Islands"                             : @"+692",
+     @"Martinique"                                   : @"+596",
+     @"Mauritania"                                   : @"+222",
+     @"Mauritius"                                    : @"+230",
+     @"Mayotte"                                      : @"+262",
+     @"Mexico"                                       : @"+52",
+     @"Micronesia"                                   : @"+691",
+     @"Midway Island"                                : @"+1 808",
+     @"Micronesia"                                   : @"+691",
+     @"Moldova"                                      : @"+373",
+     @"Monaco"                                       : @"+377",
+     @"Mongolia"                                     : @"+976",
+     @"Montenegro"                                   : @"+382",
+     @"Montserrat"                                   : @"+1664",
+     @"Morocco"                                      : @"+212",
+     @"Myanmar"                                      : @"+95",
+     @"Namibia"                                      : @"+264",
+     @"Nauru"                                        : @"+674",
+     @"Nepal"                                        : @"+977",
+     @"Netherlands"                                  : @"+31",
+     @"Netherlands Antilles"                         : @"+599",
+     @"Nevis"                                        : @"+1 869",
+     @"New Caledonia"                                : @"+687",
+     @"New Zealand"                                  : @"+64",
+     @"Nicaragua"                                    : @"+505",
+     @"Niger"                                        : @"+227",
+     @"Nigeria"                                      : @"+234",
+     @"Niue"                                         : @"+683",
+     @"Norfolk Island"                               : @"+672",
+     @"Northern Mariana Islands"                     : @"+1 670",
+     @"Norway"                                       : @"+47",
+     @"Oman"                                         : @"+968",
+     @"Pakistan"                                     : @"+92",
+     @"Palau"                                        : @"+680",
+     @"Palestinian Territory"                        : @"+970",
+     @"Panama"                                       : @"+507",
+     @"Papua New Guinea"                             : @"+675",
+     @"Paraguay"                                     : @"+595",
+     @"Peru"                                         : @"+51",
+     @"Philippines"                                  : @"+63",
+     @"Poland"                                       : @"+48",
+     @"Portugal"                                     : @"+351",
+     @"Puerto Rico"                                  : @"+1 787",
+     @"Puerto Rico"                                  : @"+1 939",
+     @"Qatar"                                        : @"+974",
+     @"Reunion"                                      : @"+262",
+     @"Romania"                                      : @"+40",
+     @"Russia"                                       : @"+7",
+     @"Rwanda"                                       : @"+250",
+     @"Samoa"                                        : @"+685",
+     @"San Marino"                                   : @"+378",
+     @"Saudi Arabia"                                 : @"+966",
+     @"Senegal"                                      : @"+221",
+     @"Serbia"                                       : @"+381",
+     @"Seychelles"                                   : @"+248",
+     @"Sierra Leone"                                 : @"+232",
+     @"Singapore"                                    : @"+65",
+     @"Slovakia"                                     : @"+421",
+     @"Slovenia"                                     : @"+386",
+     @"Solomon Islands"                              : @"+677",
+     @"South Africa"                                 : @"+27",
+     @"South Georgia and the South Sandwich Islands" : @"+500",
+     @"Spain"                                        : @"+34",
+     @"Sri Lanka"                                    : @"+94",
+     @"Sudan"                                        : @"+249",
+     @"Suriname"                                     : @"+597",
+     @"Swaziland"                                    : @"+268",
+     @"Sweden"                                       : @"+46",
+     @"Switzerland"                                  : @"+41",
+     @"Syria"                                        : @"+963",
+     @"Taiwan"                                       : @"+886",
+     @"Tajikistan"                                   : @"+992",
+     @"Tanzania"                                     : @"+255",
+     @"Thailand"                                     : @"+66",
+     @"Timor Leste"                                  : @"+670",
+     @"Togo"                                         : @"+228",
+     @"Tokelau"                                      : @"+690",
+     @"Tonga"                                        : @"+676",
+     @"Trinidad and Tobago"                          : @"+1 868",
+     @"Tunisia"                                      : @"+216",
+     @"Turkey"                                       : @"+90",
+     @"Turkmenistan"                                 : @"+993",
+     @"Turks and Caicos Islands"                     : @"+1 649",
+     @"Tuvalu"                                       : @"+688",
+     @"Uganda"                                       : @"+256",
+     @"Ukraine"                                      : @"+380",
+     @"United Arab Emirates"                         : @"+971",
+     @"United Kingdom"                               : @"+44",
+     @"United States"                                : @"+1",
+     @"Uruguay"                                      : @"+598",
+     @"U.S. Virgin Islands"                          : @"+1 340",
+     @"Uzbekistan"                                   : @"+998",
+     @"Vanuatu"                                      : @"+678",
+     @"Venezuela"                                    : @"+58",
+     @"Vietnam"                                      : @"+84",
+     @"Wake Island"                                  : @"+1 808",
+     @"Wallis and Futuna"                            : @"+681",
+     @"Yemen"                                        : @"+967",
+     @"Zambia"                                       : @"+260",
+     @"Zanzibar"                                     : @"+255",
+     @"Zimbabwe"                                     : @"+263"
+     };*/
+    
+    //    phone_code_arr = [NSMutableArray arrayWithArray:[codes allValues]];
+    //    country_arr = [codes allKeys];
+    //    [[NSUserDefaults standardUserDefaults] setObject:country_arr forKey:@"country_array"];
+    //    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    
+    NSData *data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"countries" ofType:@"json"]];
+    NSError *localError = nil;
+    NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
+    
+    if (localError != nil) {
+        NSLog(@"%@", [localError userInfo]);
+    }
+    phone_code_arr = (NSMutableArray *)parsedObject;
+    
+    NSSortDescriptor *sortDescriptor;
+    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name"
+                                                 ascending:YES];
+    [phone_code_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
+    
+    NSLog(@"%@",phone_code_arr);
+    
 }
 
 @end

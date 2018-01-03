@@ -83,8 +83,8 @@ NSUInteger DeviceSystemMajorVersion() {
     _lowerValue = _minimumValue;
     _upperValue = _maximumValue;
     
-    _lowerMaximumValue = NAN;
-    _upperMinimumValue = NAN;
+    _lowerMaximumValue = 0;
+    _upperMinimumValue = 0;
     _upperHandleHidden = NO;
     _lowerHandleHidden = NO;
     
@@ -260,7 +260,7 @@ NSUInteger DeviceSystemMajorVersion() {
     return _trackBackgroundImage;
 }
 
-- (UIImage *)trackImage
+    - (UIImage *)trackImage
 {
     if(_trackImage==nil)
     {
@@ -279,7 +279,7 @@ NSUInteger DeviceSystemMajorVersion() {
             _trackImage = image;
         }
     }
-    
+
     return _trackImage;
 }
 

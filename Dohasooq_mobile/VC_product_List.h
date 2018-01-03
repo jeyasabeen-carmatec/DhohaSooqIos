@@ -27,6 +27,12 @@
 @property(nonatomic,weak) IBOutlet UITextField *BTN_sort;
 @property(nonatomic,strong) UIPickerView *sort_pickers;
 
+//EMPTY VIEW
+@property(nonatomic,weak)IBOutlet UIView *VW_empty;
+@property(nonatomic,weak)IBOutlet UIButton *BTN_empty;
+@property(nonatomic,weak)IBOutlet UILabel *LBL_oops;
+@property(nonatomic,weak)IBOutlet UILabel *LBL_no_products;
+
 
 - (IBAction)productList_to_cartPage:(id)sender;
 

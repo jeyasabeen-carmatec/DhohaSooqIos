@@ -57,6 +57,9 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sold_by;
 
 @property(nonatomic,weak) IBOutlet UILabel *LBL_merchant_sellers;
+@property(nonatomic,weak) IBOutlet UILabel *BTN_left;
+@property(nonatomic,weak) IBOutlet UILabel *BTN_right;
+
 
 
 //fourth view
@@ -65,13 +68,16 @@
 
 //fifth_view
 @property(nonatomic,retain) IBOutlet UIView *VW_fifth;
+
 @property(nonatomic,retain) IBOutlet UICollectionView  *collection_related_products;
 
-@property(nonatomic,weak) IBOutlet UILabel *TXTVW_description;
+@property(nonatomic,weak) IBOutlet UIWebView *TXTVW_description;
 
 @property(nonatomic,weak) IBOutlet UIView *VW_filter;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_cart;
 @property(nonatomic,weak) IBOutlet UITableView *TBL_reviews;
+
+
 
 //- (IBAction)productdetail_to_cartPage:(id)sender;
 //- (IBAction)productDetail_to_wishPage:(id)sender;

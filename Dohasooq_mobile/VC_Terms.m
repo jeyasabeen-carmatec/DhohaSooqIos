@@ -59,6 +59,10 @@
 - (IBAction)back_action:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
+- (IBAction)home_action:(id)sender {
+    [self.navigationController popViewControllerAnimated:NO];
+}
+
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     
     [loadingView setHidden:NO];
