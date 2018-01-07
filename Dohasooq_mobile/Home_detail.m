@@ -23,6 +23,7 @@
     NSArray *langugage_arr,*halls_arr,*venues_arr,*sports_venues,*leisure_venues;
     NSString *halls_text,*leng_text;
     NSDictionary *temp_dicts;
+    NSString *headre_name;
     UIButton *all;
 }
 @property (nonatomic, strong) HMSegmentedControl *segmentedControl4;
@@ -52,6 +53,19 @@
     Leisure_arr = [[NSMutableArray alloc] init];
     Sports_arr = [[NSMutableArray alloc] init];
     Events_arr = [[NSMutableArray alloc] init];
+    
+    CGRect frameset = _VW_empty.frame;
+    frameset.size.width = 200;
+    frameset.size.height = 200;
+    _VW_empty.frame = frameset;
+    _VW_empty.center = self.view.center;
+    [self.view addSubview:_VW_empty];
+    _VW_empty.hidden = YES;
+    
+    _BTN_empty.layer.cornerRadius = self.BTN_empty.frame.size.width / 2;
+    _BTN_empty.layer.masksToBounds = YES;
+    
+
    
     _BTN_leisure_venues.text = _BTN_venues.text;
     _BTN_sports_venues.text = _BTN_venues.text;
@@ -67,7 +81,8 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     NSLog(@"%@",_Header_name.titleLabel.text);
-    [_Header_name setTitle:[[NSUserDefaults standardUserDefaults] valueForKey:@"header_name"] forState:UIControlStateNormal];
+    headre_name =[[NSUserDefaults standardUserDefaults] valueForKey:@"header_name"];
+   
 
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
@@ -93,7 +108,7 @@
     _Tab_MENU.selectionIndicatorImage = img;
 
     
-   if([_Header_name.titleLabel.text isEqualToString:@"MOVIES"])
+   if([headre_name isEqualToString:@"MOVIES"])
    {
         [self Movies_view];
         [self.view addSubview:VW_overlay];
@@ -105,7 +120,7 @@
     
     
   }
-   else if([_Header_name.titleLabel.text isEqualToString:@"EVENTS"])
+   else if([headre_name isEqualToString:@"EVENTS"])
    {
        [self Events_view];
         [self.view addSubview:VW_overlay];
@@ -119,11 +134,12 @@
        
        
     }
-    else if([_Header_name.titleLabel.text isEqualToString:@"SPORTS"])
+    else if([headre_name isEqualToString:@"SPORTS"])
    {
         [self Sports_view];
         [self.view addSubview:VW_overlay];
         VW_overlay.hidden = NO;
+       _VW_sports.hidden = NO;
         [activityIndicatorView startAnimating];
         [self performSelector:@selector(Sports_API_call) withObject:activityIndicatorView afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:2]];
@@ -131,11 +147,12 @@
       
        
     }
-    else if([_Header_name.titleLabel.text isEqualToString:@"LEISURE"])
+    else if([headre_name isEqualToString:@"LEISURE"])
    {
         [self Leisure_view];
         [self.view addSubview:VW_overlay];
-       VW_overlay.hidden = NO;
+        VW_overlay.hidden = NO;
+       _VW_Leisure.hidden = NO;
         [activityIndicatorView startAnimating];
        [self performSelector:@selector(Leisure_API_call) withObject:activityIndicatorView afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:3]];
@@ -370,7 +387,12 @@
 
     if([item.title isEqualToString:@"Events"])
     {
-       
+          _VW_event.hidden = NO;
+        self.VW_sports.hidden = YES;
+        _VW_Movies.hidden = YES;
+        
+        _VW_Leisure.hidden =YES;
+
         if(_VW_sports.hidden == YES || _VW_Movies.hidden == YES ||  _VW_Leisure.hidden == YES)
         {
             
@@ -387,6 +409,7 @@
         }
       
         [self.VW_event addSubview:VW_overlay];
+       
          [_Header_name setTitle:@"EVENTS" forState:UIControlStateNormal];
       
         [user_defafults setValue:@"Events" forKey:@"header_name"];
@@ -401,7 +424,13 @@
     }
     else if([item.title isEqualToString:@"Sports"])
     {
-     
+        _VW_sports.hidden = NO;
+        self.VW_event.hidden = YES;
+        _VW_Movies.hidden = YES;
+        
+        _VW_Leisure.hidden =YES;
+
+
         if(_VW_event.hidden == YES || _VW_Movies.hidden == YES||_VW_Leisure.hidden == YES)
         {
             [self Sports_view];
@@ -418,8 +447,7 @@
         [self.VW_sports addSubview:VW_overlay];
         [_Header_name setTitle:@"SPORTS" forState:UIControlStateNormal];
         [user_defafults setValue:@"SPORTS" forKey:@"header_name"];
-
-        VW_overlay.hidden = NO;
+              VW_overlay.hidden = NO;
         [activityIndicatorView startAnimating];
         [self performSelector:@selector(Sports_API_call) withObject:activityIndicatorView afterDelay:0.01];
         
@@ -432,7 +460,12 @@
         //[self API_movie];
        
         
+          _VW_Movies.hidden = NO;
+        self.VW_event.hidden = YES;
+        _VW_sports.hidden = YES;
         
+        _VW_Leisure.hidden =YES;
+
 
         if(_VW_event.hidden == YES || _VW_sports.hidden == YES||_VW_Leisure.hidden == YES)
         {
@@ -460,8 +493,11 @@
     }
     else if([item.title isEqualToString:@"Leisure"])
     {
-       
-        
+        _VW_Leisure.hidden = NO;
+        self.VW_event.hidden = YES;
+        _VW_sports.hidden = YES;
+        _VW_Movies.hidden = YES;
+
 
         if(_VW_event.hidden == YES || _VW_sports.hidden == YES || _VW_Movies.hidden == YES)
         {
@@ -476,7 +512,7 @@
             [self Leisure_view];
             
         }
-         [self.VW_Leisure addSubview:VW_overlay];
+               [self.VW_Leisure addSubview:VW_overlay];
            [_Header_name setTitle:@"LEISURE" forState:UIControlStateNormal];
         [user_defafults setValue:@"LEISURE" forKey:@"header_name"];
 
@@ -1948,8 +1984,11 @@
     Events_arr = [[[NSUserDefaults standardUserDefaults] valueForKey:@"Events_arr"] mutableCopy];
     if(Events_arr.count<1)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//        [alert show];
+        [_BTN_empty.imageView sd_setImageWithURL:[NSURL URLWithString:@"leis.png"]
+                                placeholderImage:[UIImage imageNamed:@"upload-8.png"]
+                                         options:SDWebImageRefreshCached];
         
     }
     else
@@ -1965,20 +2004,31 @@
     Sports_arr = [[[NSUserDefaults standardUserDefaults] valueForKey:@"Sports_arr"] mutableCopy];
     if(Sports_arr.count < 1)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//        [alert show];
+      _VW_sports.hidden= YES;
+        _VW_empty.hidden = NO;
+        
         _VW_sports_filter.hidden = YES;
+        [_BTN_empty setImage:[UIImage imageNamed:@"spot.png"] forState:UIControlStateNormal];
+        _LBL_no_products.text = @"No Sporting events found";
+        
+
         
     }else
         if(Sports_arr.count == 1)
         {
+            _VW_sports.hidden= NO;
             [_TBL_sports_list reloadData];
             _VW_sports_filter.hidden = YES;
+            _VW_empty.hidden = YES;
         }
         else
         {
+            _VW_sports.hidden= NO;
             [_TBL_sports_list reloadData];
             _VW_sports_filter.hidden = NO;
+            _VW_empty.hidden = YES;
         }
     
     
@@ -1991,20 +2041,28 @@
     Leisure_arr = [[[NSUserDefaults standardUserDefaults] valueForKey:@"leisure_arr"] mutableCopy];
     if(Leisure_arr.count < 1)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//        [alert show];
         _VW_leisure_filter.hidden = YES;
+        _VW_Leisure.hidden = YES;
+        _VW_empty.hidden = NO;
+        [_BTN_empty setImage:[UIImage imageNamed:@"leis.png"] forState:UIControlStateNormal];
+               _LBL_no_products.text = @"No Leisure events found";
+
+        
         
     }else
         if(Leisure_arr.count == 1)
-        {
+        { _VW_Leisure.hidden = NO;
             [_TBL_lisure_list reloadData];
             _VW_leisure_filter.hidden = YES;
+             _VW_empty.hidden = YES;
         }
         else
-        {
+        {   _VW_Leisure.hidden = NO;
             [_TBL_lisure_list reloadData];
             _VW_leisure_filter.hidden = NO;
+             _VW_empty.hidden = YES;
         }
     
 }

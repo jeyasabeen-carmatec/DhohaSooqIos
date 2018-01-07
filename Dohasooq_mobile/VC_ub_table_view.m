@@ -61,12 +61,19 @@ UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellSty
     
     NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
     NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+    if([user_id isEqualToString:@"(null)"])
+    {
+        
+        user_id = 0;
+    }
+    
     NSString *list_TYPE = @"productList";
     NSString *url_key = [NSString stringWithFormat:@"%@/%@/0",list_TYPE,[[[sub_arr valueForKey:@"child_categories" ]objectAtIndex:indexPath.row] valueForKey:@"url_key"]];
     
     
-    NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/Customer.json",SERVER_URL,url_key,country,languge,user_id];
+    NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/Customer/1.json",SERVER_URL,url_key,country,languge,user_id];
         
     [[NSUserDefaults standardUserDefaults] setValue:@"sublist" forKey:@"list_seg"];
     [[NSUserDefaults standardUserDefaults] setValue:url_key forKey:@"product_list_key"];

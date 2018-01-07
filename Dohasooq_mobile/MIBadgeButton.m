@@ -103,7 +103,7 @@
     int vertical = self.badgeEdgeInsets.top - self.badgeEdgeInsets.bottom;
     int horizontal = self.badgeEdgeInsets.left - self.badgeEdgeInsets.right;
     
-    [badgeLabel setFrame:CGRectMake(self.bounds.size.width + horizontal - 2, -(badgeSize.height / 2) - 5 + vertical, badgeSize.width-5,  badgeSize.width > 25 ? badgeSize.height-5 : badgeSize.width-5)];
+    [badgeLabel setFrame:CGRectMake(self.bounds.size.width + horizontal - 2, -(badgeSize.height / 2) - 5 + vertical, badgeSize.width-7,  badgeSize.width > 25 ? badgeSize.height-5 : badgeSize.width-7)];
     [self setupBadgeStyle];
     [self addSubview:badgeLabel];
     

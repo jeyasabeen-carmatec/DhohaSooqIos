@@ -13,35 +13,70 @@
 #import "HttpClient.h"
 #import "ViewController.h"
 #import "VC_filter_product_list.h"
+#import "UITableView+NewCategory.h"
+
+@class FrameObservingView;
+
+@protocol FrameObservingViewDelegate <NSObject>
+- (void)frameObservingViewFrameChanged:(FrameObservingView *)view;
+@end
+
+@interface FrameObservingView : UIView
+@property (nonatomic,assign) id<FrameObservingViewDelegate>delegate;
+@end
+
+@implementation FrameObservingView
+- (void)setFrame:(CGRect)frame
+{
+    [super setFrame:frame];
+    [self.delegate frameObservingViewFrameChanged:self];
+}
+@end
 
 
-@interface VC_product_List ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIAlertViewDelegate>
+
+@interface VC_product_List ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIAlertViewDelegate,FrameObservingViewDelegate, UICollectionViewDragDelegate>
 {
     NSMutableArray *arr_product;
-    NSMutableArray *productDataArray;
+    
     CGRect frame;
     NSString *type_product,*sort_key,*currency_code,*product_id;
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
     NSMutableDictionary *json_Response_Dic,*json_DATA,*sort_array;
+    float oldwidth;
+    int page_count;
+
    
 
 }
-
 @end
 
 @implementation VC_product_List
+
+
+- (void)frameObservingViewFrameChanged:(FrameObservingView *)view
+{
+    _collection_product.frame = _collection_product.frame;
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
     [self set_appear];
-    
+    page_count = 1;
     [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"brnds"];
     [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"discount_val"];
     [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"Range_val"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    
+     productDataArray  = [[NSMutableArray alloc]init];
+    [_collection_product setDragDelegate:self refreshDatePermanentKey:@"FriendList"];
+    _collection_product.showLoadMoreView = YES;
+
     
 
 
@@ -55,7 +90,7 @@
     }
     _VW_filter.hidden = NO;
 
-    sort_array = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Best Selling",@"bestSelling",@"New Listed",@"newListed",@"High To Low",@"highToLow",@"Low To High",@"lowToHigh",@"Discount",@"discount", nil];
+    sort_array = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Best Selling",@"bestSelling",@"Latest",@"newListed",@"High To Low",@"highToLow",@"Low To High",@"lowToHigh",@"Discount",@"discount", nil];
          [self brands_STORE];
     
     CGRect frameset = _VW_empty.frame;
@@ -68,14 +103,22 @@
 
     _BTN_empty.layer.cornerRadius = self.BTN_empty.frame.size.width / 2;
     _BTN_empty.layer.masksToBounds = YES;
+    [_BTN_top addTarget:self action:@selector(scroll_top) forControlEvents:UIControlEventTouchUpInside];
+    oldwidth = _BTN_sort.frame.size.width;
     
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
    
-  
+   self.navigationItem.hidesBackButton = YES;
     
+}
+-(void)scroll_top
+{
+    [self.collection_product scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
+                                atScrollPosition:UICollectionViewScrollPositionTop
+                                        animated:YES];
 }
 -(void)set_appear
 {
@@ -276,6 +319,23 @@
     #pragma Webimage URl Cachee
     @try
     {
+        CGSize result = [[UIScreen mainScreen] bounds].size;
+
+        if(result.height <= 480)
+        {
+            pro_cell.IMG_item.contentMode =  UIViewContentModeScaleAspectFit;
+        }
+        else if(result.height <= 568)
+        {
+              pro_cell.IMG_item.contentMode =  UIViewContentModeScaleAspectFit;
+        }
+        else
+        {
+              pro_cell.IMG_item.contentMode =  UIViewContentModeScaleToFill;
+        }
+
+        
+        
         NSString *img_url = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_image"]];
         [pro_cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:img_url]
                              placeholderImage:[UIImage imageNamed:@"logo.png"]
@@ -290,7 +350,7 @@
                  pro_cell.LBL_stock.text =@"";
             }
             else{
-                pro_cell.LBL_stock.text =str;
+                pro_cell.LBL_stock.text =[str uppercaseString];
             }
 
         }
@@ -301,7 +361,9 @@
     @try
     {
         pro_cell.LBL_item_name.text = [[productDataArray objectAtIndex:indexPath.row] valueForKey:@"title"];
-              float rating = [[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"rating"] floatValue];
+        
+        
+        float rating = [[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"rating"] floatValue];
         rating =lroundf(rating);
         if(rating <= 1)
         {
@@ -327,7 +389,7 @@
         
         NSString *current_price = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"]];
         
-        NSString *prec_price = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
+        NSString *prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
         
 
 
@@ -346,11 +408,12 @@
                 
                 
                 
-                text = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
+                text = [NSString stringWithFormat:@"%@",prec_price];
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    text = [NSString stringWithFormat:@"%@ %@",prec_price,currency_code];
+                    prec_price = [NSString stringWithFormat:@"%@ %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"],currency_code];
+                    text = [NSString stringWithFormat:@"%@",prec_price];
                 }
                 
                 
@@ -358,11 +421,11 @@
                 
                 
               
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}range:[text rangeOfString:currency_code] ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
             
                 
 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}range:[text rangeOfString:prec_price] ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                 
             
                 
@@ -371,20 +434,20 @@
                 //NSParagraphStyleAttributeName
                 pro_cell.LBL_current_price.attributedText = attributedText;
                 
-                pro_cell.LBL_discount.text = @"0% off";
+                pro_cell.LBL_discount.text = @"";
                 
             }
             
             else{
                 
-                prec_price = [currency_code stringByAppendingString:prec_price];
+                //prec_price = [currency_code stringByAppendingString:prec_price];
                 
                 text = [NSString stringWithFormat:@"%@ %@ %@",currency_code,current_price,prec_price];
                 
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    prec_price = [prec_price stringByAppendingString:currency_code];
+//                    prec_price = [prec_price stringByAppendingString:currency_code];
                     text = [NSString stringWithFormat:@"%@ %@ %@",prec_price,current_price,currency_code];
                 }
                 
@@ -433,7 +496,7 @@
                 }
                 else
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
                 }
                 [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
                 
@@ -467,7 +530,7 @@
     }
     @try
     {
-        NSString *str = @"%off";
+        NSString *str = @"% off";
         NSString *str_discount = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"]];
         if([str_discount isEqualToString:@"0"])
         {
@@ -475,7 +538,7 @@
 
         }
         else{
-        pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@ %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"],str];
+        pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"],str];
         }
         
         [pro_cell.BTN_fav setTag:indexPath.row];//wishListStatus
@@ -504,7 +567,7 @@
 }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(self.view.bounds.size.width/2.011, 281);
+    return CGSizeMake(self.view.bounds.size.width/2.011, 320);
 }
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     return 1.5;
@@ -569,12 +632,12 @@
                 if (data) {
                     NSLog(@"%@",data);
                     NSDictionary *dict = data;
-                    if([[dict valueForKey:@"msg"] isEqualToString:@"del"])
+                    if(dict)
                    
                     
                     @try {
                         
-                        [HttpClient createaAlertWithMsg:@"Item deleted Succesfully"andTitle:@""];
+                        [HttpClient createaAlertWithMsg:[dict valueForKey:@"msg"]andTitle:@""];
                         [self product_list_API];
                          [self cart_count];
                         
@@ -653,8 +716,8 @@
                                 product_cell *cell = (product_cell *)[self.collection_product cellForItemAtIndexPath:index];
                                 
                                 @try {
-                                    if ([[json_Response_Dic valueForKey:@"msg"] isEqualToString:@"add"]) {
-                                        
+                                   if (json_Response_Dic ) {
+                                    
                                       //  [self product_list_API];
                                         
                                       
@@ -663,8 +726,8 @@
                                         
                                         [cell.BTN_fav setTitleColor:[UIColor colorWithRed:244.f/255.f green:176.f/255.f blue:77.f/255.f alpha:1] forState:UIControlStateNormal];
 
-                                        [HttpClient createaAlertWithMsg:@"Added to your wishlist" andTitle:@""];
-                                        [self cart_count];
+                                        [HttpClient createaAlertWithMsg:[json_Response_Dic valueForKey:@"msg"] andTitle:@""];
+                                        //[self cart_count];
                                         
                                         // [self product_list_API];
                                     }
@@ -852,8 +915,6 @@
     @try
     {
         json_DATA = [[NSMutableDictionary alloc]init];
-        productDataArray = [[NSMutableArray alloc]init];
-
         NSString *list_TYPE = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_list_url"];
         NSString *urlGetuser;
         urlGetuser =[NSString stringWithFormat:@"%@",list_TYPE];
@@ -863,6 +924,25 @@
         
 
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        
+        if([urlGetuser containsString:@"dealsList"])
+        {
+           _VW_only_filter.hidden = YES;
+            _V_line.hidden = YES;
+            CGRect frameset = _BTN_sort.frame;
+            frameset.size.width = _VW_only_filter.frame.origin.x + _BTN_sort.frame.origin.x +_BTN_sort.frame.size.width;
+            _BTN_sort.frame = frameset;
+        }
+        else
+        {
+            _VW_only_filter.hidden = NO;
+            _V_line.hidden = NO;
+            CGRect frameset = _BTN_sort.frame;
+            frameset.size.width = oldwidth;
+            _BTN_sort.frame = frameset;
+
+            
+        }
         NSLog(@"%@",urlGetuser);
 
         
@@ -910,9 +990,7 @@
                             {
                             if([[json_DATA valueForKey:@"products"] isKindOfClass:[NSArray class]])
                             {
-                                
-                                
-                                productDataArray = [json_DATA valueForKey:@"products"];
+                                 productDataArray = [json_DATA valueForKey:@"products"];
                                 if([[json_DATA valueForKey:@"brands"] isKindOfClass:[NSDictionary class]])
                                 {
                                     [[NSUserDefaults standardUserDefaults]  setObject:[json_DATA valueForKey:@"brands"] forKey:@"brands_LISTs"];
@@ -1392,5 +1470,324 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         }
     }
 }
+#pragma load more
+#pragma mark - Control datasource
+- (void)finishRefresh
+{
+    [_collection_product finishRefresh];
+}
+
+- (void)finishLoadMore
+{
+    [_collection_product finishLoadMore];
+}
+
+
+- (void)dragTableDidTriggerRefresh:(UITableView *)tableView
+{
+    //Pull up go to First Page
+//    
+    page_count = 1;
+//    NSString *url_STR = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_list_url"];
+//    NSString *str = [NSString stringWithFormat:@"Customer/%d.json",page_count];
+//    url_STR  = [url_STR stringByReplacingOccurrencesOfString:@"Customer.json" withString:str];
+//    url_STR =  [url_STR stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+//    
+//    [[NSUserDefaults standardUserDefaults] setObject:url_STR forKey:@"URL_SAVED"];
+//    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self performSelector:@selector(finishRefresh) withObject:nil afterDelay:0.01];
+
+    
+  //  [self performSelector:@selector(Firstpage_API) withObject:nil afterDelay:0.01];
+}
+
+- (void)dragTableRefreshCanceled:(UITableView *)tableView
+{
+    //cancel refresh request(generally network request) here
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(finishRefresh) object:nil];
+}
+
+- (void)dragTableDidTriggerLoadMore:(UITableView *)tableView
+{
+    //Pull up go to NextPage
+    
+    @try
+    {
+        
+        page_count =  page_count  + 1;
+            NSString *url_STR = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_list_url"];
+            NSString *str = [NSString stringWithFormat:@"Customer/%d.json",page_count];
+            url_STR  = [url_STR stringByReplacingOccurrencesOfString:@"Customer/1.json" withString:str];
+            url_STR =  [url_STR stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        
+        
+                [[NSUserDefaults standardUserDefaults] setObject:url_STR forKey:@"URL_SAVED"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                [self performSelector:@selector(NEXTpage_API) withObject:nil afterDelay:0.01];
+        
+        
+    }
+    @catch (NSException *exception)
+    {
+       
+    }
+    
+}
+
+- (void)dragTableLoadMoreCanceled:(UITableView *)tableView
+{
+    //cancel load more request(generally network request) here
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(finishLoadMore) object:nil];
+}
+
+-(void) NEXTpage_API
+{
+    NSString *urlGetuser = [[NSUserDefaults standardUserDefaults]valueForKey:@"URL_SAVED"];
+    if(urlGetuser)
+    {
+    
+    [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                
+                VW_overlay.hidden = YES;
+                [activityIndicatorView stopAnimating];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+            }
+            if (data) {
+                
+                self.collection_product.hidden = NO;
+                NSMutableDictionary *json_DATAs = [[NSMutableDictionary alloc]init];
+                json_DATAs = data;
+                
+                if([json_DATAs isKindOfClass:[NSDictionary class]])
+                {
+                    @try {
+                        _VW_empty.hidden = YES;
+                        VW_overlay.hidden = YES;
+                        [activityIndicatorView stopAnimating];
+                        
+                        
+                        
+                        
+                        
+                        
+                        //currency_code
+                        
+                        currency_code = [json_DATAs valueForKey:@"currency"] ;
+                        
+                       // productDataArray  = [[NSMutableArray alloc]init];
+                        @try
+                        {
+                            if([[json_DATAs valueForKey:@"products"] isKindOfClass:[NSArray class]])
+                            {
+                                NSArray *temp_arr = [json_DATAs valueForKey:@"products"];
+                                
+                                for(int i = 0;i <[temp_arr count];i++)
+                                {
+                                    NSLog(@"+++++++++%@",[temp_arr objectAtIndex:i]);
+                                    [productDataArray addObject:[temp_arr  objectAtIndex:i]];
+
+                                }
+//                                for(int i = 0;i <[temp_arr count];i++)
+//                                {
+//                                    NSLog(@"+++++++++%@",[temp_arr objectAtIndex:i]);
+//                                    [productDataArray addObject:[temp_arr objectAtIndex:i]];
+//                                    
+//                                }
+                               // [productDataArray removeAllObjects];
+//                                [productDataArray addObjectsFromArray:TEMP_arr];
+
+                                    if(temp_arr.count < 1)
+                                {
+                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Already in last Page" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                                    [alert show];
+
+                                }
+                                
+                                
+                                
+                            }
+                            
+                            else
+                            {
+                                
+                                
+                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No products Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                                [alert show];
+                                // [productDataArray removeAllObjects];
+                                [_collection_product reloadData];
+                                [self set_UP_VW];
+                                
+                                
+                                
+                            }
+                        }
+                        
+                        
+                        @catch(NSException *Exception)
+                        {
+                            NSLog(@"%@",Exception);
+                            
+                        }
+                        
+                        NSLog(@"THE respons PRODUCT LIST:%@",json_DATA);
+                        
+                        
+                        [self.collection_product reloadData];
+                        [self set_UP_VW];
+                        
+                        
+                    } @catch (NSException *exception) {
+                        VW_overlay.hidden = YES;
+                        [activityIndicatorView stopAnimating];
+                        NSLog(@"%@",exception);
+                    }
+                    
+                    
+                }
+                
+                
+                
+            }
+            
+        });
+    }];
+    
+    
+    
+    }
+    else
+    {
+        [activityIndicatorView stopAnimating];
+        VW_overlay.hidden = YES;
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+    }
+    [self performSelector:@selector(finishLoadMore) withObject:nil afterDelay:0.01];
+}
+
+-(void) Firstpage_API
+{
+    NSString *urlGetuser = [[NSUserDefaults standardUserDefaults]valueForKey:@"URL_SAVED"];
+    if(urlGetuser)
+    {
+        
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    
+                    VW_overlay.hidden = YES;
+                    [activityIndicatorView stopAnimating];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                    [alert show];
+                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                }
+                if (data) {
+                    
+                    self.collection_product.hidden = NO;
+                   NSDictionary *json_DATAs = data;
+                    
+                    if([json_DATAs isKindOfClass:[NSDictionary class]])
+                    {
+                        @try {
+                            _VW_empty.hidden = YES;
+                            VW_overlay.hidden = YES;
+                            [activityIndicatorView stopAnimating];
+                            
+                            
+                            
+                            
+                            
+                            //currency_code
+                            
+                            currency_code = [json_DATAs valueForKey:@"currency"] ;
+                            
+                            
+                          //  productDataArray  = [[NSMutableArray alloc]init];
+                            @try
+                            {
+                                if([[json_DATAs valueForKey:@"products"] isKindOfClass:[NSArray class]])
+                                {
+                                    NSArray *temp_arr = [json_DATAs valueForKey:@"products"];
+                                    
+                                    for(int i = 0;i <temp_arr.count;i++)
+                                    {
+                                        NSLog(@"+++++++++%@",[temp_arr objectAtIndex:i]);
+                                        [productDataArray addObject:[temp_arr objectAtIndex:i]];
+                                        
+                                        
+                                    }
+                                    
+                                    if(temp_arr.count < 1)
+                                    {
+                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Already in last Page" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                                        [alert show];
+                                        
+                                    }
+                                    
+                                    
+                                    
+                                }
+                                else
+                                {
+                                    
+                                    
+                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No products Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                                    [alert show];
+                                    // [productDataArray removeAllObjects];
+                                    [_collection_product reloadData];
+                                    [self set_UP_VW];
+                                    
+                                    
+                                    
+                                }
+                            }
+                            
+                            
+                            @catch(NSException *Exception)
+                            {
+                                
+                            }
+                            
+                            NSLog(@"THE respons PRODUCT LIST:%@",json_DATAs);
+                            
+                            
+                            [self.collection_product reloadData];
+                            
+                                                       
+                        } @catch (NSException *exception) {
+                            VW_overlay.hidden = YES;
+                            [activityIndicatorView stopAnimating];
+                            NSLog(@"%@",exception);
+                        }
+                        
+                        
+                    }
+                    
+                    
+                    
+                }
+                
+            });
+        }];
+        
+        
+        
+    }
+    else
+    {
+        [activityIndicatorView stopAnimating];
+        VW_overlay.hidden = YES;
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+    }
+    [self performSelector:@selector(finishRefresh) withObject:nil afterDelay:0.01];
+}
+
 
 @end

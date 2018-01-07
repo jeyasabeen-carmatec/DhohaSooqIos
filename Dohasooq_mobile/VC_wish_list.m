@@ -48,6 +48,7 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     
+     self.navigationItem.hidesBackButton = YES;
     
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
@@ -171,7 +172,7 @@
     
     NSString *currency_code = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
          NSString *current_price = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"special_price"] ];
-           NSString *prec_price = [NSString stringWithFormat:@"%@", [[response_Arr objectAtIndex:indexPath.section] valueForKey:@"product_price"] ];
+           NSString *prec_price = [NSString stringWithFormat:@"%@ %@", currency_code,[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"product_price"] ];
     
 //    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
 //    [paragraphStyle setAlignment:NSTextAlignmentCenter];
@@ -191,11 +192,11 @@
             if ([current_price isEqualToString:@""] || [current_price isEqualToString:@"<null>"]) {
                 
                 
-                NSString *text = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
+                NSString *text = [NSString stringWithFormat:@"%@",prec_price];
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
-                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}range:[text rangeOfString:currency_code] ];
+                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}range:[text rangeOfString:prec_price] ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                 
 //                [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
                 //NSParagraphStyleAttributeName
@@ -206,7 +207,7 @@
             else{
              
                 
-            prec_price = [currency_code stringByAppendingString:prec_price];
+         //   prec_price = [currency_code stringByAppendingString:prec_price];
             text = [NSString stringWithFormat:@"%@ %@ %@",currency_code,current_price,prec_price];
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
               [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0],}range:[text rangeOfString:currency_code] ];
@@ -231,12 +232,12 @@
             //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
             if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor]}
                                         range:cmp];
             }
             else
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:12.0],NSForegroundColorAttributeName:[UIColor blackColor],}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}
                                         range:cmp ];
             }
             @try {

@@ -50,6 +50,8 @@
    }
 -(void)viewWillAppear:(BOOL)animated{
     
+    self.navigationItem.hidesBackButton = YES;
+    
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     VW_overlay.clipsToBounds = YES;
@@ -275,6 +277,10 @@
         NSString *str_variant =  [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"variantCombination"]];
         str_variant = [str_variant stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
          str_variant = [str_variant stringByReplacingOccurrencesOfString:@"" withString:@""];
+         if([str_variant isKindOfClass:[NSNull class]])
+         {
+             str_variant = @"";
+         }
         cell.LBL_combo.text = str_variant;
         }
         @catch(NSException *exception)
@@ -293,7 +299,7 @@
         currency_code = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"currency"]];
         NSString *current_price = [NSString stringWithFormat:@"%@", [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"special_price"]];
         
-        NSString *prec_price = [NSString stringWithFormat:@"%@", [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"product_price"]];
+        NSString *prec_price = [NSString stringWithFormat:@"%@ %@", currency_code,[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"product_price"]];
         
         NSString *text;
         
@@ -304,26 +310,28 @@
             if ([current_price isEqualToString:@""]|| [current_price isEqualToString:@"null"]||[current_price isEqualToString:@"<null>"]) {
                 
                 
-                text = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
+                text = [NSString stringWithFormat:@"%@",prec_price];
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                   [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}range:[text rangeOfString:currency_code] ];
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor]}
                                         range:[text rangeOfString:prec_price]];
                 //cell.LBL_current_price.text = [NSString stringWithFormat:@"QR %@",prec_price];
                 cell.LBL_current_price.attributedText = attributedText;
-                cell.LBL_discount.text = @"0% off";
+                cell.LBL_discount.text = @"";
                 
             }
             else{
                 
-                float disc = [prec_price integerValue]-[current_price integerValue];
-                float digits = disc/[prec_price integerValue];
-                int discount = digits *100;
-                NSString *of = @"% off";
-                cell.LBL_discount.text =[NSString stringWithFormat:@"%d%@",discount,of];
+//                float disc = [prec_price integerValue]-[current_price integerValue];
+//                float digits = disc/[prec_price integerValue];
+                NSString *str_discount =[NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"discount"]];
+                str_discount = [str_discount stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+//                int discount = digits *100;
+               
+                cell.LBL_discount.text =[NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"discount"]];
                 
-                prec_price = [currency_code stringByAppendingString:prec_price];
+                //prec_price = [currency_code stringByAppendingString:prec_price];
                 text = [NSString stringWithFormat:@"%@ %@ %@",currency_code,current_price,prec_price];
                 
                 
@@ -381,26 +389,7 @@
         }
         
         
-        
-        //    UIImage *newImage = [cell.BTN_close.currentBackgroundImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        //    UIGraphicsBeginImageContextWithOptions(cell.BTN_close.currentBackgroundImage.size, NO, newImage.scale);
-        //    [[UIColor darkGrayColor] set];
-        //    [newImage drawInRect:CGRectMake(0, 0, cell.BTN_close.currentBackgroundImage.size.width/2, newImage.size.height/2)];
-        //    newImage = UIGraphicsGetImageFromCurrentImageContext();
-        //    UIGraphicsEndImageContext();
-        //        [cell.BTN_close setBackgroundImage:newImage forState:UIControlStateNormal];
-        // cell.BTN_close .userInteractionEnabled = YES;
-        
-        //    tapGesture1 = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tapGesture_close)];
-        //
-        //    tapGesture1.numberOfTapsRequired = 1;
-        //
-        //    [tapGesture1 setDelegate:self];
-        //
-        //    [cell.BTN_close addGestureRecognizer:tapGesture1];
-        //       [cell.BTN_close addTarget:self action:@selector(remove_from_cart:) forControlEvents:UIControlEventTouchUpInside];
-        //        [cell.BTN_close setBackgroundImage:newImage forState:UIControlStateNormal];
-        
+            
         UIImage *newImage = [cell.BTN_close.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         UIGraphicsBeginImageContextWithOptions(cell.BTN_close.image.size, NO, newImage.scale);
         [[UIColor darkGrayColor] set];
@@ -496,7 +485,7 @@
             NSString *str_miles = [NSString stringWithFormat:@"%@\nDoha Miles %@",str_or,miles];
 
             NSString *text = [NSString stringWithFormat:@"%@ %@",currency_code,total_amt];
-            cell.LBL_dohamiles.text = str_miles;
+            //cell.LBL_dohamiles.text = str_miles;
             
             if ([cell.LBL_total_amount respondsToSelector:@selector(setAttributedText:)]) {
                 
@@ -509,7 +498,7 @@
                 
                 
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}
-                                        range:[text rangeOfString:str_or] ];
+                                        range:[text rangeOfString:currency_code] ];
 
                 NSRange cmp = [text rangeOfString:total_amt];
               
@@ -534,13 +523,12 @@
                                           };
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:str_miles attributes:attribs];
                 
-                
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor blackColor],}
+                                        range:[str_miles rangeOfString:str_or] ];
+
                 
                 NSRange cmp = [str_miles rangeOfString:miles];
-                
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor redColor],}
-                                        range:[str_miles rangeOfString:str_or] ];
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}
+                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14.0],NSForegroundColorAttributeName:[UIColor blackColor],}
                                         range:cmp ];
                 
                 

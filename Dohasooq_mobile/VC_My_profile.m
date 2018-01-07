@@ -61,7 +61,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     
     
-    
+    self.navigationItem.hidesBackButton =  YES;
 
     
 }
@@ -765,7 +765,7 @@
     NSString *img_url = [NSString stringWithFormat:@"%@%@%@",SERVER_URL,[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_path"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_img"]];
     
     [_IMG_Profile_pic sd_setImageWithURL:[NSURL URLWithString:img_url]
-                        placeholderImage:[UIImage imageNamed:@"logo.png"]
+                        placeholderImage:[UIImage imageNamed:@"upload-27.png"]
                                  options:SDWebImageRefreshCached];
     
     

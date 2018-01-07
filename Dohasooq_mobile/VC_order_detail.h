@@ -125,5 +125,6 @@
 - (IBAction)order_to_wishListPage:(id)sender;
 
 @property(strong,nonatomic)UIPickerView *country_code_Pickerview;
+@property (weak, nonatomic) IBOutlet UIButton *BTN_logo;
 
 @end

@@ -37,6 +37,8 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     
+    
+    self.navigationItem.hidesBackButton = YES;
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     VW_overlay.clipsToBounds = YES;
@@ -67,14 +69,31 @@
     }
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+
 {
+    
+    
+    NSInteger index;
+    
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        
+        
+        index = 1;
+        
+    }
+    else{
+        index = 0;
+    }
+    
+    
     bookings_cell *book_cell = (bookings_cell *)[tableView dequeueReusableCellWithIdentifier:@"book_cell"];
     
     if (book_cell == nil)
     {
         NSArray *nib;
         nib = [[NSBundle mainBundle] loadNibNamed:@"bookings_cell" owner:self options:nil];
-        book_cell = [nib objectAtIndex:0];
+        book_cell = [nib objectAtIndex:index];
     }
 
     @try

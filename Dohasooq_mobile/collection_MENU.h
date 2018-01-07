@@ -10,4 +10,10 @@
 
 @interface collection_MENU : UICollectionViewCell
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_menu;
+@property(nonatomic,weak) IBOutlet UIView *VW_back_ground;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_menu;
+@property(nonatomic,weak) IBOutlet UIView *VW_select;
+
+
+
 @end

@@ -24,6 +24,7 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_date;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_charge;
 //@property(nonatomic,weak) IBOutlet UILabel *LBL_pick_merchant_location;
+@property (weak, nonatomic) IBOutlet UIButton *BTN_box;
 
 @property(nonatomic,weak) IBOutlet UIButton *BTN_stat;
 @property(nonatomic,weak) IBOutlet UIImageView *LBL_stat;

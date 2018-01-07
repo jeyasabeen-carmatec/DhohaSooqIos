@@ -93,7 +93,16 @@
     @try {
         
         NSString *need_sign = @"NEED AN ACCOUNT ?";
+        
         NSString *sign_UP = @"SIGN UP";
+
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            sign_UP =@"تفضّل بالتسجيل ";
+            need_sign = @"هل تحتاج إلى إنشاء حساب؟";
+        }
+        
+        
         NSString *text = [NSString stringWithFormat:@"%@ %@",need_sign,sign_UP];
         if ([_LBL_sign_up respondsToSelector:@selector(setAttributedText:)]) {
             
@@ -115,17 +124,24 @@
                 // iPhone Classic
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0]}
                                         range:ename];
+                [_TXT_username setFont:[UIFont fontWithName:@"Poppins-Medium" size:14]];
+                [_TXT_password setFont:[UIFont fontWithName:@"Poppins-Medium" size:14]];
             }
             else if(result.height <= 568)
             {
                 // iPhone 5
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0]}
                                         range:ename];
+                
+                [_TXT_username setFont:[UIFont fontWithName:@"Poppins-Medium" size:14]];
+                [_TXT_password setFont:[UIFont fontWithName:@"Poppins-Medium" size:14]];
             }
             else
             {
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0]}
                                         range:ename];
+                [_TXT_username setFont:[UIFont fontWithName:@"Poppins-Medium" size:19]];
+                [_TXT_password setFont:[UIFont fontWithName:@"Poppins-Medium" size:19]];
             }
             
             

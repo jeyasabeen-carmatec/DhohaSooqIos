@@ -21,6 +21,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.navigationItem.hidesBackButton = YES;
     self.navigationController.navigationBar.hidden = NO;
     
     loadingView = [[UIView alloc]init];

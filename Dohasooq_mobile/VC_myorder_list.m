@@ -28,16 +28,15 @@
     // Do any additional setup after loading the view.
     [_BTN_cart addTarget:self action:@selector(cart_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_wish_list addTarget:self action:@selector(wish_action) forControlEvents:UIControlEventTouchUpInside];
-
-
     [_TXT_search addTarget:self action:@selector(search_ORDERS) forControlEvents:UIControlEventEditingChanged];
-    
-    
-}
+  }
 -(void)viewWillAppear:(BOOL)animated
 {
     
     self.navigationController.navigationBar.hidden = NO;
+    self.navigationItem.hidesBackButton = YES;
+
+    
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     VW_overlay.clipsToBounds = YES;
@@ -350,12 +349,12 @@
         NSRange qrs = [price rangeOfString:qr];
         if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0],NSForegroundColorAttributeName :[UIColor blackColor]}
                                     range:qrs];
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor redColor]}
                                     range:qrs];
         }
         order_cell.LBL_price.attributedText = attributedText;

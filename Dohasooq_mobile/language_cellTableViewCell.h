@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface language_cellTableViewCell : UITableViewCell
+@property(nonatomic,weak) IBOutlet UIView *VW_line1;
 
 @property(nonatomic,weak) IBOutlet UITextField *TXT_lang;
 

@@ -10,8 +10,9 @@
 #import "HttpClient.h"
 #import "ViewController.h"
 #import "Home_page_Qtickets.h"
+#import "Reachability.h"
 
-@interface VC_intial ()<UIPickerViewDelegate,UIPickerViewDataSource>
+@interface VC_intial ()<UIPickerViewDelegate,UIPickerViewDataSource,UIAlertViewDelegate>
 {
     NSMutableArray *country_arr,*lang_arr;
     NSMutableDictionary *temp_dict;
@@ -20,6 +21,7 @@
     NSTimer *timer;
     UIView *VW_overlay;
     UIActivityIndicatorView *activityIndicatorView;
+    Reachability *internetReachableFoo;
 }
 
 @end
@@ -31,50 +33,69 @@
     self.view.hidden = NO;
     self.VW_ceter.hidden =NO;
     self.IMG_logo.hidden = NO;
-    self.IMG_back_otal.image = [UIImage imageNamed:@"Log in.jpg"];
+    [self testInternetConnection];
 
 
-     [self set_UP_VW];
-    NSString *lang = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
-    NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-    lang = [lang stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    lang = [lang stringByReplacingOccurrencesOfString:@"null" withString:@""];
-    lang = [lang stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
-    country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    country = [country stringByReplacingOccurrencesOfString:@"null" withString:@""];
-    country = [country stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
-    if([lang isEqualToString:@""] || [country isEqualToString:@""])
-    {
-        [self set_UP_VW];
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(country_API_call) withObject:activityIndicatorView afterDelay:0.01];
-    }
-    else if([lang isEqualToString:@"()"] || [country isEqualToString:@"()"])
-    {
-          [self set_UP_VW];
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(country_API_call) withObject:activityIndicatorView afterDelay:0.01];
+      }
 
-    }
-    else
-    {
-        //          QT = [self.storyboard instantiateViewControllerWithIdentifier:@"QT_controller"];
-        //
-        //[self  presentViewController:QT animated:NO completion:nil];
-        [self start];
-        
-       // [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
-        
-    }
+- (void)testInternetConnection
+{
+    internetReachableFoo = [Reachability reachabilityWithHostname:@"www.google.com"];
     
+    // Internet is reachable
+    internetReachableFoo.reachableBlock = ^(Reachability*reach)
+    {
+        // Update the UI on the main thread
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSString *lang = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+            NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+            lang = [lang stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            lang = [lang stringByReplacingOccurrencesOfString:@"null" withString:@""];
+            lang = [lang stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+            country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            country = [country stringByReplacingOccurrencesOfString:@"null" withString:@""];
+            country = [country stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+            if([lang isEqualToString:@""] || [country isEqualToString:@""])
+            {
+                
+                VW_overlay.hidden = NO;
+                [activityIndicatorView startAnimating];
+                [self performSelector:@selector(country_API_call) withObject:activityIndicatorView afterDelay:0.01];
+            }
+            else if([lang isEqualToString:@"()"] || [country isEqualToString:@"()"])
+            {
+                VW_overlay.hidden = NO;
+                [activityIndicatorView startAnimating];
+                [self performSelector:@selector(country_API_call) withObject:activityIndicatorView afterDelay:0.01];
+                
+            }
+            else
+            {
+                    [self start];
+                
+                
+            }
+            
+
+        });
+    };
+    
+    internetReachableFoo.unreachableBlock = ^(Reachability*reach)
+    {
+        // Update the UI on the main thread
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please check Your Internet Connection" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+        });
+    };
+    
+    [internetReachableFoo startNotifier];
 }
 -(void)start
 {
-    self.VW_ceter.hidden =YES;
-    self.IMG_logo.hidden = YES;
-    self.IMG_back_otal.image = [UIImage imageNamed:@"11-DS-Splash.jpg"];
+     
+    //self.IMG_back_otal.image = [UIImage imageNamed:@"11-DS-Splash.jpg"];
     timer = [NSTimer scheduledTimerWithTimeInterval:1
                                              target:self
                                            selector:@selector(targetMethod)
@@ -195,22 +216,6 @@
 
     }
     _IMG_logo.frame = frameset;
-    //country_arr = [[NSMutableArray alloc]init];
-    
-//    CGRect frameset = _TBL_list_coutry.frame;
-//    frameset.origin.x =_TXT_country.frame.origin.x;
-//    frameset.origin.y =_TXT_country.frame.origin.y + _TXT_country.frame.size.height + 5;
-//    frameset.size.width = _TXT_country.frame.size.width;
-//    frameset.size.height = 120;
-//    _TBL_list_coutry.frame = frameset;
-//    
-//    frameset = _TBL_list_lang.frame;
-//    frameset.origin.x =_TXT_language.frame.origin.x;
-//    frameset.origin.y =_TXT_language.frame.origin.y + _TXT_language.frame.size.height + 5;
-//    frameset.size.width = _TXT_language.frame.size.width;
-//    frameset.size.height = 120;
-//    _TBL_list_lang.frame = frameset;
-//    
     
     
     [_BTN_next addTarget:self action:@selector(go_to_login) forControlEvents:UIControlEventTouchUpInside];
@@ -245,9 +250,7 @@
                     if(json_DATA)
                     {
                     
-                    VW_overlay.hidden = YES;
-                    [activityIndicatorView stopAnimating];
-                            country_arr = [[NSMutableArray alloc]init];
+                    country_arr = [[NSMutableArray alloc]init];
                     NSMutableArray *temp_arr = [json_DATA valueForKey:@"countries"];
                         
                         NSMutableArray *sortedArray = [[NSMutableArray alloc]init];
@@ -259,18 +262,36 @@
                                                                      ascending:YES];
                         NSArray *srt_arr = [sortedArray sortedArrayUsingDescriptors:@[sortDescriptor]];
                         [country_arr addObjectsFromArray:srt_arr];
-                        
+                        for(int i=0;i<country_arr.count;i++)
+                        {
+                            if([[[country_arr objectAtIndex:i] valueForKey:@"name"] isEqualToString:@"Qatar"])
+                            {
+                                country_ID = [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:i] valueForKey:@"id"]];
+                                [[NSUserDefaults standardUserDefaults] setInteger:[country_ID integerValue] forKey:@"country_id"];
+                                [[NSUserDefaults standardUserDefaults] synchronize];
+                                
+                                [self  language_API_calling:country_ID];
+                                
+                                
+
+                            }
+                        }
 
                         
                     [[NSUserDefaults standardUserDefaults] setObject:country_arr forKey:@"country_arr"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
+                 
+                        
+                        
                    // [_TBL_list_coutry reloadData];
                     }
                     else{
-                        VW_overlay.hidden = YES;
-                        [activityIndicatorView stopAnimating];
+                      
                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                         [alert show];
+                        VW_overlay.hidden = YES;
+                        [activityIndicatorView stopAnimating];
+
 
                     }
                     
@@ -285,6 +306,9 @@
         [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please check Your Internet Connection" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
+
     }
     
 
@@ -362,11 +386,11 @@
         _TXT_language.text = @"";
         
         
-         [usd removeObjectForKey:@"country_id"];
+        [usd removeObjectForKey:@"country_id"];
         [usd setInteger:[[country_arr [row] valueForKey:@"id"] integerValue] forKey:@"country_id"];
         [usd synchronize];
         
-        [self language_API_calling];
+       
 
     }
     else
@@ -384,12 +408,12 @@
   }
 
 #pragma mark Language API Integration
--(void)language_API_calling{
+-(void)language_API_calling : (NSString *)country_id{
   
     @try
     {
         
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@Languages/getLangByCountry/%@.json",SERVER_URL,country_ID];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@Languages/getLangByCountry/%@.json",SERVER_URL,country_id];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -397,6 +421,9 @@
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
                 }
                 if (data) {
+                    VW_overlay.hidden = YES;
+                    [activityIndicatorView stopAnimating];
+
                     NSMutableDictionary *json_DATA = data;
                     //                        lang_arr = [NSMutableArray array];
                     //                        lang_arr = [json_DATA valueForKey:@"languages"];
@@ -418,11 +445,28 @@
                         NSMutableDictionary *dictMutable = [[srt_arr objectAtIndex:i] mutableCopy];
                         [dictMutable removeObjectsForKeys:[[srt_arr objectAtIndex:i] allKeysForObject:[NSNull null]]];
                         [lang_arr addObject:dictMutable];
+                            }
+                    
+                    for(int j=0;j<lang_arr.count;j++)
+                    {
+                        if([[[lang_arr objectAtIndex:j] valueForKey:@"language_name"] isEqualToString:@"English (US)"])
+                        {
+                            [[NSUserDefaults standardUserDefaults] setInteger:[[[lang_arr objectAtIndex:j]valueForKey:@"id"] integerValue] forKey:@"language_id"];
+                            [[NSUserDefaults standardUserDefaults] setValue: [[lang_arr  objectAtIndex:j]valueForKey:@"language_name"] forKey:@"language"];
+                            [[NSUserDefaults standardUserDefaults] synchronize];
+                        }
                     }
+
+                    
                     [[NSUserDefaults standardUserDefaults] setObject:lang_arr forKey:@"language_arr"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
+                     [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
                 }
-                
+                else{
+                    VW_overlay.hidden = YES;
+                    [activityIndicatorView stopAnimating];
+
+                }
             });
         }];
     }
@@ -430,6 +474,9 @@
     {
         NSLog(@"The error is:%@",exception);
         [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
+
         
     }
     

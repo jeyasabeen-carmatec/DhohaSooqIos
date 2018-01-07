@@ -11,6 +11,10 @@
 #import "MIBadgeButton.h"
 
 @interface VC_product_List : UIViewController <filter_protocol>
+{
+    NSMutableArray *productDataArray;
+
+}
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_product;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_product;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_product_count;
@@ -20,9 +24,15 @@
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_back;
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *products;
 @property(nonatomic,strong) IBOutlet UIButton *BTN_filter;
+@property(nonatomic,strong) IBOutlet UIButton *BTN_top;
 
+//filter VIEW
 
 @property(nonatomic,weak) IBOutlet UIView *VW_filter;
+@property(nonatomic,weak) IBOutlet UIView *VW_only_filter;
+
+@property(nonatomic,weak) IBOutlet UIView *V_line;
+
 @property(nonatomic,weak) IBOutlet UIButton *BTN_add_cart;
 @property(nonatomic,weak) IBOutlet UITextField *BTN_sort;
 @property(nonatomic,strong) UIPickerView *sort_pickers;
