@@ -12,6 +12,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "XMLDictionary/XMLDictionary.h"
 #import "MZDayPickerCell.h"
+#import "HttpClient.h"
 
 
 @interface VC_Movie_booking ()<UITableViewDelegate,UITableViewDataSource,MZDayPickerDelegate, MZDayPickerDataSource,UICollectionViewDelegate,UICollectionViewDataSource,UIAlertViewDelegate>
@@ -20,8 +21,8 @@
     NSMutableDictionary *detail_dict;
     CGRect oldframe;
     float scrollheight;
-    UIView *VW_overlay;
-     UIActivityIndicatorView *activityIndicatorView;
+//    UIView *VW_overlay;
+//     UIActivityIndicatorView *activityIndicatorView;
     NSMutableArray *ARR_temp;
     NSString *dateString;
     NSDateFormatter *dateFormat;
@@ -49,26 +50,27 @@
     ARR_temp = [[NSMutableArray alloc]init];
     self.navigationController.navigationBar.hidden = NO;
     
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    [self.view addSubview:VW_overlay];
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    //    VW_overlay.layer.cornerRadius = 10.0;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    [self.view addSubview:VW_overlay];
     dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateFormat:@"MM/dd/yyyy"];
     dateString = [dateFormat stringFromDate:[NSDate date]];
     
 
     
-    VW_overlay.hidden = YES;
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(movie_detil_api) withObject:activityIndicatorView afterDelay:0.01];
+//    VW_overlay.hidden = YES;
+//    VW_overlay.hidden = NO;
+//    [activityIndicatorView startAnimating];
+     [HttpClient animating_images:self];
+    [self performSelector:@selector(movie_detil_api) withObject:nil afterDelay:0.01];
 }
 
 -(void)filtering_date{
@@ -333,8 +335,7 @@
     
   [self set_UP_VIEW];
     
-    [activityIndicatorView stopAnimating];
-    VW_overlay.hidden = YES;
+     [HttpClient stop_activity_animation];
      [self viewDidLayoutSubviews];
 }
 
@@ -839,11 +840,12 @@
             NSLog(@"Selected Time Detail %@",[ARR_temp objectAtIndex:collectionView.tag]);
                 NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
                 
-                NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
+                NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie.\nEntrance is not allowed for person below %@ years old.\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
                 alert.tag = 0;
                 [alert show];
+               
               //  [self performSegueWithIdentifier:@"booking_seat" sender:self];
 
             }
@@ -867,7 +869,7 @@
                 
                 NSString *str_censor = [_LBL_censor.text stringByReplacingOccurrencesOfString:@"PG -" withString:@""];
                 
-                NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie\nEntrance is not allowed for person below %@ years old\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
+                NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie.\nEntrance is not allowed for person below %@ years old.\nSupervisor Reserves the Right to Reject Without Refund. \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
                 alert.tag = 1;
@@ -901,7 +903,7 @@
               return CGSizeMake(collectionView.frame.size.width/3.5, 40);
             }
             else{
-                return CGSizeMake(collectionView.frame.size.width/4.5, 40);
+                return CGSizeMake(collectionView.frame.size.width/4.37, 40);
             }
 
 
@@ -914,7 +916,7 @@
              return CGSizeMake(collectionView.frame.size.width/3.5, 40);
         }
         else{
-            return CGSizeMake(collectionView.frame.size.width/4.5, 40);
+            return CGSizeMake(collectionView.frame.size.width/4.39, 40);
         }
             
         }
@@ -930,7 +932,7 @@
 
 -(void)ok_action
 {
-    VW_overlay.hidden = YES;
+    [HttpClient stop_activity_animation];
     _VW_alert.hidden = YES;
 }
 - (IBAction)back_action:(id)sender

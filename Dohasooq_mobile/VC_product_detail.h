@@ -29,8 +29,9 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_First;
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_images;
 @property(nonatomic,weak) IBOutlet UIPageControl *custom_story_page_controller;
-@property(nonatomic,strong) IBOutlet UIButton *BTN_play;
 @property(nonatomic,strong) IBOutlet UIButton *BTN_share;
+@property(nonatomic,strong) IBOutlet UIButton *BTN_wish;
+
 
 
 //second view
@@ -57,6 +58,10 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sold_by;
 
 @property(nonatomic,weak) IBOutlet UILabel *LBL_merchant_sellers;
+@property(nonatomic,weak) IBOutlet UILabel *BTN_left;
+@property(nonatomic,weak) IBOutlet UILabel *BTN_right;
+
+
 
 
 //fourth view
@@ -65,13 +70,19 @@
 
 //fifth_view
 @property(nonatomic,retain) IBOutlet UIView *VW_fifth;
+
 @property(nonatomic,retain) IBOutlet UICollectionView  *collection_related_products;
 
-@property(nonatomic,weak) IBOutlet UILabel *TXTVW_description;
+@property(nonatomic,weak) IBOutlet UIWebView *TXTVW_description;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_colection;
 
 @property(nonatomic,weak) IBOutlet UIView *VW_filter;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_cart;
 @property(nonatomic,weak) IBOutlet UITableView *TBL_reviews;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_buy_now;
+@property(nonatomic,weak)IBOutlet UIButton *BTN_top;
+
+
 
 //- (IBAction)productdetail_to_cartPage:(id)sender;
 //- (IBAction)productDetail_to_wishPage:(id)sender;

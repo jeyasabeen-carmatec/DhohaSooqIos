@@ -13,6 +13,9 @@
 
 @interface Home_detail : UIViewController
 @property(nonatomic,weak)IBOutlet UIButton *Header_name;
+@property(nonatomic,weak)IBOutlet UIButton *logo_home;
+
+
 
 @property(nonatomic,weak)IBOutlet UITabBar *Tab_MENU;
 @property(nonatomic,weak) IBOutlet UIView *VW_filter;
@@ -25,7 +28,11 @@
 @property(nonatomic,weak) IBOutlet UIView *vw_events_filter;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_event_filter;
 
+//Empty screen
 
+@property(nonatomic,weak)IBOutlet UIView *VW_empty;
+@property(nonatomic,weak)IBOutlet UIButton *BTN_empty;
+@property(nonatomic,weak)IBOutlet UILabel *LBL_no_products;
 
 
 //sports tab

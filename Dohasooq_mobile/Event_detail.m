@@ -12,14 +12,15 @@
 #import "XMLDictionary/XMLDictionary.h"
 #import "ViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "HttpClient.h"
 
 
 @interface Event_detail ()<UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource,UIGestureRecognizerDelegate,UIAlertViewDelegate>
 {
     NSMutableDictionary *event_dtl_dict;
     NSMutableArray *event_cost_arr,*values_arr,*cost_arr,*dates_arr;
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+//    UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
 }
 
 @end
@@ -114,7 +115,7 @@
     
     frameset = _IMG_back_ground.frame;
     frameset.size.height = _LBL_event_time.frame.origin.y + _LBL_event_time.frame.size.height;
-    frameset.size.width = _LBL_event_name.frame.size.width;
+    frameset.size.width = _Scroll_contents.frame.size.width;
     _IMG_back_ground.frame = frameset;
 
 
@@ -149,12 +150,14 @@
     {
         NSLog(@"%@",exception);
     }
+      [_LBL_data sizeToFit];
+    
         frameset = _LBL_data.frame;
-        frameset.size.height = _LBL_data.frame.origin.y + _LBL_data.contentSize.height;
+        frameset.size.height = _LBL_data.frame.origin.y + _LBL_data.frame.size.height;
         _LBL_data.frame = frameset;
     
-    [_LBL_data layoutIfNeeded];
-     // [_LBL_data sizeToFit];
+    //[_LBL_data layoutIfNeeded];
+    
     
 
     
@@ -228,7 +231,7 @@
     _VW_author.frame = frameset;
     }
 
-    [_TBL_quantity reloadData];
+   // [_TBL_quantity reloadData];
   //  [_TBL_quantity reloadData];
 
     
@@ -236,16 +239,15 @@
 //    frameset = _BTN_book.frame;
 //    frameset.origin.y = _TBL_quantity.frame.origin.y + _TBL_quantity.frame.size.height;
 //    _BTN_book.frame = frameset;
+    [_TBL_quantity reloadData];
     frameset = _TBL_quantity.frame;
     frameset.size.height = _TBL_quantity.frame.origin.y + _TBL_quantity.contentSize.height+50 ;
     _TBL_quantity.frame = frameset;
-
-//    
+    
     CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = CGRectMake(_VW_Quantity.frame.origin.x, _VW_Quantity.frame.origin.y, [UIScreen mainScreen].bounds.size.width, _TBL_quantity.frame.size.height -50);
+    gradient.frame = CGRectMake(_VW_Quantity.frame.origin.x, _VW_Quantity.frame.origin.y, [UIScreen mainScreen].bounds.size.width, _TBL_quantity.contentSize.height -50);
     gradient.colors = @[(id)[UIColor colorWithRed:0.24 green:0.19 blue:0.15 alpha:1.0].CGColor, (id)[UIColor colorWithRed:0.55 green:0.46 blue:0.41 alpha:1.0].CGColor];
     [_VW_Quantity.layer insertSublayer:gradient atIndex:0];
-    
 
     
     frameset = _VW_Quantity.frame;
@@ -255,12 +257,13 @@
     _VW_Quantity.frame = frameset;
     
     
+   
     
     [self.Scroll_contents addSubview:_VW_event_dtl];
     [self.Scroll_contents addSubview:_VW_author];
     [self.Scroll_contents addSubview:_VW_Quantity];
     [_BTN_book addTarget:self action:@selector(BTN_book_action) forControlEvents:UIControlEventTouchUpInside];
-    
+     [self viewDidLayoutSubviews];
        // [self ATTRIBUTED_TEXT];
    
     
@@ -308,22 +311,25 @@
 {
     
     
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    [self.view addSubview:VW_overlay];
-    
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    //    VW_overlay.layer.cornerRadius = 10.0;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    [self.view addSubview:VW_overlay];
+//    
+//   
+//    VW_overlay.hidden = NO;
+//    [activityIndicatorView startAnimating];
+    [HttpClient animating_images:self];
+    [self performSelector:@selector(getData) withObject:nil afterDelay:0.01];
    
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(getData) withObject:activityIndicatorView afterDelay:0.01];
     [self picker_set_UP];
+   
     
 
 }
@@ -376,12 +382,15 @@
          [event_cost_arr addObject:tem_dictin];
      }
     
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
+  [HttpClient stop_activity_animation];
+      [self set_UP_VIEW];
     [_TBL_quantity reloadData];
     [self set_UP_VIEW];
+    [self set_UP_VIEW];
+
+
     
-    [self viewDidLayoutSubviews];
+   
     
 }
 
@@ -409,37 +418,37 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
    
-    NSString *Gender_identifier,*costCount_identifier;
-    NSInteger index_gndr,index_cost;
-    
-    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-    {
-        
-        Gender_identifier = @"QGemder_cell";
-        costCount_identifier = @"Qcost_count_cell";
-        index_gndr = 2;
-        index_cost = 3;
-        
-    }
-    else{
-        Gender_identifier = @"Gemder_cell";
-        costCount_identifier = @"cost_count_cell";
-        index_gndr = 0;
-        index_cost = 1;
-
-    }
+   // NSString *Gender_identifier,*costCount_identifier;
+    //NSInteger index_gndr,index_cost;
+//    
+//    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+//    {
+//        
+//        Gender_identifier = @"QGemder_cell";
+//        costCount_identifier = @"Qcost_count_cell";
+////        index_gndr = 2;
+////        index_cost = 3;
+//        
+//    }
+//    else{
+//        Gender_identifier = @"Gemder_cell";
+//        costCount_identifier = @"cost_count_cell";
+////        index_gndr = 0;
+////        index_cost = 1;
+//
+//    }
     
 //    static NSString *identifier = @"Gemder_cell";
        if(indexPath.section == 0)
     {
-        Gender_cell *gcell = (Gender_cell *)[tableView dequeueReusableCellWithIdentifier:Gender_identifier];
+        Gender_cell *gcell = (Gender_cell *)[tableView dequeueReusableCellWithIdentifier:@"Gender_cell"];
         if(gcell == nil)
         
         {
             
             NSArray *nib;
             nib = [[NSBundle mainBundle] loadNibNamed:@"Gender_cell" owner:self options:nil];
-            gcell = [nib objectAtIndex:index_gndr];
+            gcell = [nib objectAtIndex:0];
        }
         gcell.BTN_plus.layer.cornerRadius = gcell.BTN_plus.frame.size.width/2;
         gcell.BTN_plus.layer.masksToBounds = YES;
@@ -462,10 +471,11 @@
         gcell.LBL_gender_cat.text = [[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row]valueForKey:@"_TicketName"];
             
         gcell.LBL_price.text = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row] valueForKey:@"_TicketPrice"]];
-            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-            {
-                  gcell.LBL_price.text = [NSString stringWithFormat:@"%@ QAR ",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row] valueForKey:@"_TicketPrice"]];
-            }
+            
+//            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+//            {
+//                  gcell.LBL_price.text = [NSString stringWithFormat:@"%@ QAR ",[[[[event_dtl_dict valueForKey:@"TicketDetails"] valueForKey:@"Ticket"] objectAtIndex:indexPath.row] valueForKey:@"_TicketPrice"]];
+//            }
             
         gcell.LBL_result.text = [[event_cost_arr objectAtIndex:indexPath.row] valueForKey:@"quantity"];
             
@@ -485,25 +495,30 @@
     {
         if(indexPath.section == 1)
         {
-    cost_count_cell *ccell = (cost_count_cell *)[tableView dequeueReusableCellWithIdentifier:costCount_identifier];
+    cost_count_cell *ccell = (cost_count_cell *)[tableView dequeueReusableCellWithIdentifier:@"cost_count_cell"];
     
     if(ccell == nil)
         
     {
         NSArray *nib;
         nib = [[NSBundle mainBundle] loadNibNamed:@"Gender_cell" owner:self options:nil];
-        ccell = [nib objectAtIndex:index_cost];
+        ccell = [nib objectAtIndex:1];
     }
         @try
         {
             
             NSString *str = [cost_arr objectAtIndex:0];//gcell.LBL_result.text;
-            NSString *text = [NSString stringWithFormat:@"%@No of Tickets :",str];
-            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-            {
-                text = [NSString stringWithFormat:@"%@ :No of Tickets",str];
-            }
-            
+            NSString *text = [NSString stringWithFormat:@"No of Tickets :%@",str];
+//            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+//            {
+//                text = [NSString stringWithFormat:@"%@ :No of Tickets",str];
+//            }
+//            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+//            {
+//                text = [NSString stringWithFormat:@"%@ : عدد التذاكر",str];
+//            }
+//            
+
             
             if ([ccell.LBL_no_tickets respondsToSelector:@selector(setAttributedText:)]) {
                 
@@ -518,12 +533,12 @@
                 NSRange ename = [text rangeOfString:str];
                 if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:25.0]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
                                             range:ename];
                 }
                 else
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Medium" size:17.0]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0]}
                                             range:ename];
                 }
                 ccell.LBL_no_tickets.attributedText = attributedText;
@@ -536,11 +551,6 @@
             NSString *str1 = [cost_arr objectAtIndex:1];//gcell.LBL_price.text;
              NSString *text1 = [NSString stringWithFormat:@"Total Price:%@  %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],str1];
             
-            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-            {
-                 text1 = [NSString stringWithFormat:@"%@ :%@ Total Price",str1,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
-            }
-           
             
             if ([ccell.LBL_total_price respondsToSelector:@selector(setAttributedText:)]) {
                 
@@ -555,12 +565,12 @@
                 NSRange ename = [text1 rangeOfString:str1];
                 if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Regular" size:25.0]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
                                             range:ename];
                 }
                 else
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Medium" size:17.0]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0]}
                                             range:ename];
                 }
                 ccell.LBL_total_price.attributedText = attributedText;
@@ -786,9 +796,8 @@
 -(void)BTN_book_action
 {
     
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(Book_action) withObject:activityIndicatorView afterDelay:0.01];
+    [HttpClient animating_images:self];
+    [self performSelector:@selector(Book_action) withObject:nil afterDelay:0.01];
     
 }
 -(void)Book_action
@@ -797,7 +806,7 @@
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
     if([user_id isEqualToString:@"(null)"])
     {
-        
+       [HttpClient stop_activity_animation];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login First" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
         alert.tag = 1;
         [alert show];
@@ -812,12 +821,12 @@
 
     if(_BTN_calneder.hidden == NO)
     {
+        [HttpClient stop_activity_animation];
     if([_BTN_calneder.text isEqualToString:@"Calendar"])
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please selct Date" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
         [alert show];
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        [HttpClient stop_activity_animation];
 
     }
     else if(i <= 0)
@@ -825,8 +834,7 @@
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please selct Atleast one Ticket" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
             [alert show];
-            VW_overlay.hidden = YES;
-            [activityIndicatorView stopAnimating];
+            [HttpClient stop_activity_animation];
         }
     else
     {
@@ -846,8 +854,7 @@
             [[NSUserDefaults standardUserDefaults] setObject:_BTN_calneder.text forKey:@"event_book_date"];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        [HttpClient stop_activity_animation];
         [self performSegueWithIdentifier:@"event_book_user" sender:self];
         
         
@@ -864,8 +871,7 @@
         [[NSUserDefaults standardUserDefaults] setObject:cost_arr forKey:@"Amount_dict"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+         [HttpClient stop_activity_animation];
         [self performSegueWithIdentifier:@"event_book_user" sender:self];
         
         

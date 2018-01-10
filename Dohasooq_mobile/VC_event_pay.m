@@ -7,6 +7,7 @@
 //
 
 #import "VC_event_pay.h"
+#import "HttpClient.h"
 
 @interface VC_event_pay ()
 
@@ -188,12 +189,98 @@
 }
 -(void)pay_action_checked
 {
-    [self performSegueWithIdentifier:@"pay_to_options" sender:self];
+    
+    
+    [self save_bookings];
+
+    
+    
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark Save Bookings
+
+//http://192.168.0.171/dohasooq/apis/savebooking.json
+//full_name, email, mobile, bookingId, movie_event,user_id
+
+-(void)save_bookings{
+    @try {
+        
+        
+        /*saveBookings_dic {
+         email = "ysushmalatha@gmail.com";
+         "full_name" = sushma;
+         mobile = 9177288200;
+         }*/
+        
+        NSString *user_ID =[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+        
+        NSDictionary *saveBookings_dic = [[NSUserDefaults standardUserDefaults] valueForKey:@"savebooking"];
+        NSLog(@"saveBookings_dic %@",saveBookings_dic);
+        
+        NSString *booking_info = [[NSUserDefaults standardUserDefaults] valueForKey:@"order_details"];
+        
+        NSString *order_ID = [booking_info substringWithRange:NSMakeRange(2, booking_info.length-2)];
+        
+       
+        
+        NSString *movie_event = @"event";
+        
+        
+        NSDictionary *params=@{@"full_name":[saveBookings_dic valueForKey:@"full_name"],@"email":[saveBookings_dic valueForKey:@"email"],@"mobile":[saveBookings_dic valueForKey:@"mobile"],@"bookingId":order_ID,@"movie_event":movie_event,@"user_id":user_ID};
+        
+        
+        NSLog(@"Params %@",params);
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/savebooking.json",SERVER_URL];
+        
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        @try {
+            [HttpClient api_with_post_params:urlGetuser andParams:params completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error) {
+                        NSLog(@"%@",[error localizedDescription]);
+                    }
+                    if (data) {
+                        NSLog(@"After Saving %@",data);
+                        
+                        if ([data isKindOfClass:[NSDictionary class]]) {
+                            
+                            if ([[data valueForKey:@"success"] isEqualToString:@"success"]) {
+                                
+                            [self performSegueWithIdentifier:@"pay_to_options" sender:self];
+                                
+                            }
+                            else{
+                                
+                                [HttpClient createaAlertWithMsg:@"Some thing wen wrong ,Check The mail " andTitle:@""];
+
+                            }
+                            
+                            
+                            
+                        }
+                        
+                        
+                    }
+                    
+                });
+            }];
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+            [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+            
+        }
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+        [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+    }
+}
+
 
 /*
 #pragma mark - Navigation

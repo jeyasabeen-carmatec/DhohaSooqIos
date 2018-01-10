@@ -28,20 +28,22 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     arr_events = [[NSMutableArray alloc]init];
-    _TXT_search.layer.borderWidth = 0.5f;
-    _TXT_search.layer.borderColor = [UIColor lightGrayColor].CGColor;
+//    _TXT_search.layer.borderWidth = 0.5f;
+//    _TXT_search.layer.borderColor = [UIColor lightGrayColor].CGColor;
    // [_TXT_search addTarget:self action:@selector(api_calling) forControlEvents:UIControlEventAllEvents];
     _TBL_results.hidden = YES;
-    [_BN_close addTarget:self action:@selector(close_action) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_search addTarget:self action:@selector(api_call) forControlEvents:UIControlEventTouchUpInside];
     
 }
 -(void)viewWillAppear:(BOOL)animated
 {
 
-    self.navigationController.navigationBar.hidden = YES;
+       
     
-    
-    
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     VW_overlay.clipsToBounds = YES;
@@ -164,6 +166,12 @@
 {
     // _TBL_results.hidden = YES;
 }
+-(void)api_call
+{
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(api_calling) withObject:activityIndicatorView afterDelay:0.01];
+}
 -(void)api_calling
 {
     NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/getsearchresult?search=%@",_TXT_search.text];
@@ -262,6 +270,9 @@
     //  detail_dict = xmlDoc;
     
 
+}
+- (IBAction)back_ACTION:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 

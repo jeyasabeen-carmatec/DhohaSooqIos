@@ -9,13 +9,14 @@
 #import "VC_seat_book.h"
 #import "XMLDictionary/XMLDictionary.h"
 #import "ViewController.h"
+#import "HttpClient.h"
 
 @interface VC_seat_book ()<UIAlertViewDelegate>
 {
     ZSeatSelector *seat,*seat2;
     int layout_height;
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+//    UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
     NSMutableArray *title_arr;
     NSDictionary *xmlDoc;
     NSMutableArray *seats_ARR;
@@ -44,17 +45,17 @@
     self.navigationController.navigationBar.hidden = NO;
 
     
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    [self.view addSubview:VW_overlay];
-     VW_overlay.hidden = YES;
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    //    VW_overlay.layer.cornerRadius = 10.0;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    [self.view addSubview:VW_overlay];
+//     VW_overlay.hidden = YES;
     
    
    }
@@ -77,8 +78,7 @@
     NSLog(@"%@",xmlDoc);
     if([[xmlDoc valueForKey:@"_status"] isEqualToString:@"false"])
     {
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+         [HttpClient stop_activity_animation];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Not Available" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
 
@@ -86,8 +86,7 @@
     }
     else{
         
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
+     [HttpClient stop_activity_animation];
     
        NSMutableArray *arrfinal = [[NSMutableArray alloc]init];
     NSMutableArray *title_row = [[NSMutableArray alloc]init];
@@ -546,10 +545,8 @@
     else{
         
     
-    VW_overlay.hidden = YES;
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(Book_action) withObject:activityIndicatorView afterDelay:0.01];
+    [HttpClient animating_images:self];
+    [self performSelector:@selector(Book_action) withObject:nil afterDelay:0.01];
     }
 
     
@@ -560,7 +557,7 @@
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
     if([user_id isEqualToString:@"(null)"])
     {
-        
+        [HttpClient stop_activity_animation];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login First" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
         alert.tag = 1;
         [alert show];
@@ -581,15 +578,13 @@
     NSLog(@"%@",jsonrespnse);
     if([[[jsonrespnse valueForKey:@"result"] valueForKey:@"_status"] isEqualToString:@"False"])
     {
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        [HttpClient stop_activity_animation];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[[jsonrespnse valueForKey:@"result"] valueForKey:@"_errormsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
  
     }
     else{
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+         [HttpClient stop_activity_animation];
         [[NSUserDefaults standardUserDefaults] setObject:jsonrespnse  forKey:@"Amount_dict"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         

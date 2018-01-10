@@ -11,6 +11,7 @@
 #import "Movies_cell.h"
 #import "qtickets_cell.h"
 #import "upcoming_cell.h"
+#import "HttpClient.h"
 
 #import <SDWebImage/UIImageView+WebCache.h>
 
@@ -18,11 +19,13 @@
 @interface Home_detail ()<UITabBarDelegate,UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource>
 {
     NSMutableArray *Movies_arr,*Events_arr,*Sports_arr,*Leisure_arr;
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+//    UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
     NSArray *langugage_arr,*halls_arr,*venues_arr,*sports_venues,*leisure_venues;
     NSString *halls_text,*leng_text;
     NSDictionary *temp_dicts;
+    NSString *headre_name;
+    UIButton *all;
 }
 @property (nonatomic, strong) HMSegmentedControl *segmentedControl4;
 
@@ -42,6 +45,8 @@
     [self.Collection_movies registerNib:[UINib nibWithNibName:@"Image_qtickets" bundle:nil]  forCellWithReuseIdentifier:@"Image_qtickets"];
     
     [self.Collection_movies registerNib:[UINib nibWithNibName:@"upcoming_cell" bundle:nil]  forCellWithReuseIdentifier:@"upcoming_cell"];
+    
+    [_logo_home addTarget:self action:@selector(logo_home_target) forControlEvents:UIControlEventTouchUpInside];
 
     [self set_UP_VIEW];
 
@@ -49,6 +54,19 @@
     Leisure_arr = [[NSMutableArray alloc] init];
     Sports_arr = [[NSMutableArray alloc] init];
     Events_arr = [[NSMutableArray alloc] init];
+    
+    CGRect frameset = _VW_empty.frame;
+    frameset.size.width = 200;
+    frameset.size.height = 200;
+    _VW_empty.frame = frameset;
+    _VW_empty.center = self.view.center;
+    [self.view addSubview:_VW_empty];
+    _VW_empty.hidden = YES;
+    
+    _BTN_empty.layer.cornerRadius = self.BTN_empty.frame.size.width / 2;
+    _BTN_empty.layer.masksToBounds = YES;
+    
+
    
     _BTN_leisure_venues.text = _BTN_venues.text;
     _BTN_sports_venues.text = _BTN_venues.text;
@@ -64,19 +82,20 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     NSLog(@"%@",_Header_name.titleLabel.text);
-    [_Header_name setTitle:[[NSUserDefaults standardUserDefaults] valueForKey:@"header_name"] forState:UIControlStateNormal];
-
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
+    headre_name =[[NSUserDefaults standardUserDefaults] valueForKey:@"header_name"];
    
-    VW_overlay.hidden = YES;
+
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    //    VW_overlay.layer.cornerRadius = 10.0;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//   
+//    VW_overlay.hidden = YES;
     
     CGFloat highlightedWidth = self.view.frame.size.width/_Tab_MENU.items.count;
     [_Tab_MENU setItemWidth:highlightedWidth];
@@ -90,25 +109,21 @@
     _Tab_MENU.selectionIndicatorImage = img;
 
     
-   if([_Header_name.titleLabel.text isEqualToString:@"Movies"])
+   if([headre_name isEqualToString:@"MOVIES"])
    {
         [self Movies_view];
-        [self.view addSubview:VW_overlay];
-       VW_overlay.hidden = NO;
-       [activityIndicatorView startAnimating];
-       [self performSelector:@selector(movie_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+       [HttpClient animating_images:self];
+       [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:0]];
        
     
     
   }
-   else if([_Header_name.titleLabel.text isEqualToString:@"Events"])
+   else if([headre_name isEqualToString:@"EVENTS"])
    {
        [self Events_view];
-        [self.view addSubview:VW_overlay];
-       VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-       [self performSelector:@selector(Events_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+       [HttpClient animating_images:self];
+       [self performSelector:@selector(Events_API_CALL) withObject:nil afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:1]];
 
        
@@ -116,25 +131,30 @@
        
        
     }
-    else if([_Header_name.titleLabel.text isEqualToString:@"Sports"])
+    else if([headre_name isEqualToString:@"SPORTS"])
    {
         [self Sports_view];
-        [self.view addSubview:VW_overlay];
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(Sports_API_call) withObject:activityIndicatorView afterDelay:0.01];
+        //[self.view addSubview:VW_overlay];
+//        VW_overlay.hidden = NO;
+          _VW_sports.hidden = NO;
+//        [activityIndicatorView startAnimating];
+       [HttpClient animating_images:self];
+       
+        [self performSelector:@selector(Sports_API_call) withObject:nil afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:2]];
 
       
        
     }
-    else if([_Header_name.titleLabel.text isEqualToString:@"Leisure"])
+    else if([headre_name isEqualToString:@"LEISURE"])
    {
         [self Leisure_view];
-        [self.view addSubview:VW_overlay];
-       VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-       [self performSelector:@selector(Leisure_API_call) withObject:activityIndicatorView afterDelay:0.01];
+       // [self.view addSubview:VW_overlay];
+       // VW_overlay.hidden = NO;
+       _VW_Leisure.hidden = NO;
+       // [activityIndicatorView startAnimating];
+       [HttpClient animating_images:self];
+       [self performSelector:@selector(Leisure_API_call) withObject:nil afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:3]];
 
       
@@ -144,10 +164,11 @@
     {
         
         [self Movies_view];
-        [self.view addSubview:VW_overlay];
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(movie_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+        //[self.view addSubview:VW_overlay];
+      //  VW_overlay.hidden = NO;
+      //  [activityIndicatorView startAnimating];
+        [HttpClient animating_images:self];
+        [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
         [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:0]];
         [_Header_name setTitle:@"Movies" forState:UIControlStateNormal];
 
@@ -157,6 +178,7 @@
 
     
 }
+
 -(void)picker_view_set_UP
 {
     _halls_picker = [[UIPickerView alloc] init];
@@ -183,10 +205,18 @@
     [conutry_close sizeToFit];
     
     UIButton *close=[[UIButton alloc]init];
-    close.frame=CGRectMake(conutry_close.frame.size.width - 100, 0, 100, conutry_close.frame.size.height);
-    [close setTitle:@"Done" forState:UIControlStateNormal];
-    [close addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
+    close.frame=CGRectMake(conutry_close.frame.origin.x -20, 0, 100, conutry_close.frame.size.height);
+    [close setTitle:@"Close" forState:UIControlStateNormal];
+    [close addTarget:self action:@selector(close_action) forControlEvents:UIControlEventTouchUpInside];
     [conutry_close addSubview:close];
+    
+    UIButton *done=[[UIButton alloc]init];
+    done.frame=CGRectMake(conutry_close.frame.size.width - 100, 0, 100, conutry_close.frame.size.height);
+    [done setTitle:@"Done" forState:UIControlStateNormal];
+    [done addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
+    [conutry_close addSubview:done];
+
+    
     _BTN_all_lang.inputAccessoryView=conutry_close;
     _BTN_all_halls.inputAccessoryView=conutry_close;
     _BTN_leisure_venues.inputAccessoryView = conutry_close;
@@ -212,8 +242,42 @@
     [_BTN_leisure_venues resignFirstResponder];
     [_BTN_venues resignFirstResponder];
 }
+-(void)close_action
+{
+    [self.BTN_all_lang resignFirstResponder];
+    [self.BTN_all_halls resignFirstResponder];
+    [_BTN_sports_venues resignFirstResponder];
+    [_BTN_leisure_venues resignFirstResponder];
+    [_BTN_venues resignFirstResponder];
+}
 
-
+-(void)all_action
+{
+//    [all setTitle:@"ALL CINEMA HALLS" forState:UIControlStateNormal];
+//    [all setTitle:@"ALL LANGUAGES" forState:UIControlStateNormal];
+//    [all setTitle:@"ALL VENUES" forState:UIControlStateNormal];
+//    [all setTitle:@"ALL VENUES" forState:UIControlStateNormal];
+//    [all setTitle:@"ALL VENUES" forState:UIControlStateNormal];
+    if([all.titleLabel.text isEqualToString:@"ALL CINEMA HALLS"])
+    {
+        [HttpClient animating_images:self];
+        [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
+    }
+    if([all.titleLabel.text isEqualToString:@"ALL LANGUAGES"])
+    {
+      [HttpClient animating_images:self];
+        [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
+      
+    }
+    if([all.titleLabel.text isEqualToString:@"ALL VENUES"])
+    {
+        [HttpClient animating_images:self];
+        [self performSelector:@selector(Events_API_CALL) withObject:nil afterDelay:0.01];
+        [self Event_API_CALL];
+    }
+    [self close_action];
+    
+}
 -(void)set_UP_VIEW
 {
      [self tab_BAR_set_UP];
@@ -221,8 +285,6 @@
     [_BTN_sports_filter addTarget:self action:@selector(filter_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_leisure_filter addTarget:self action:@selector(filter_action) forControlEvents:UIControlEventTouchUpInside];
 
-
-   
 
 }
 
@@ -323,7 +385,12 @@
 
     if([item.title isEqualToString:@"Events"])
     {
-       
+          _VW_event.hidden = NO;
+        self.VW_sports.hidden = YES;
+        _VW_Movies.hidden = YES;
+        
+        _VW_Leisure.hidden =YES;
+
         if(_VW_sports.hidden == YES || _VW_Movies.hidden == YES ||  _VW_Leisure.hidden == YES)
         {
             
@@ -339,14 +406,14 @@
             
         }
       
-        [self.VW_event addSubview:VW_overlay];
-         [_Header_name setTitle:@"Events" forState:UIControlStateNormal];
+       // [self.VW_event addSubview:VW_overlay];
+       
+         [_Header_name setTitle:@"EVENTS" forState:UIControlStateNormal];
       
         [user_defafults setValue:@"Events" forKey:@"header_name"];
         [self ATTRIBUTE_TEXT];
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(Events_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+      [HttpClient animating_images:self];
+        [self performSelector:@selector(Events_API_CALL) withObject:nil afterDelay:0.01];
         [self Event_API_CALL];
 
        
@@ -354,7 +421,13 @@
     }
     else if([item.title isEqualToString:@"Sports"])
     {
-     
+        _VW_sports.hidden = NO;
+        self.VW_event.hidden = YES;
+        _VW_Movies.hidden = YES;
+        
+        _VW_Leisure.hidden =YES;
+
+
         if(_VW_event.hidden == YES || _VW_Movies.hidden == YES||_VW_Leisure.hidden == YES)
         {
             [self Sports_view];
@@ -368,13 +441,12 @@
             [self Sports_view];
             
         }
-        [self.VW_sports addSubview:VW_overlay];
-        [_Header_name setTitle:@"Sports" forState:UIControlStateNormal];
-        [user_defafults setValue:@"Sports" forKey:@"header_name"];
-
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(Sports_API_call) withObject:activityIndicatorView afterDelay:0.01];
+      //  [self.VW_sports addSubview:VW_overlay];
+        [_Header_name setTitle:@"SPORTS" forState:UIControlStateNormal];
+        [user_defafults setValue:@"SPORTS" forKey:@"header_name"];
+//              VW_overlay.hidden = NO;
+//        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(Sports_API_call) withObject:nil afterDelay:0.01];
         
 
         
@@ -385,7 +457,12 @@
         //[self API_movie];
        
         
+          _VW_Movies.hidden = NO;
+        self.VW_event.hidden = YES;
+        _VW_sports.hidden = YES;
         
+        _VW_Leisure.hidden =YES;
+
 
         if(_VW_event.hidden == YES || _VW_sports.hidden == YES||_VW_Leisure.hidden == YES)
         {
@@ -400,21 +477,25 @@
             [self Movies_view];
             
         }
-        [self.VW_Movies addSubview:VW_overlay];
-          [_Header_name setTitle:@"Movies" forState:UIControlStateNormal];
-        [user_defafults setValue:@"Movies" forKey:@"header_name"];
+        //[self.VW_Movies addSubview:VW_overlay];
+          [_Header_name setTitle:@"MOVIES" forState:UIControlStateNormal];
+        [user_defafults setValue:@"MOVIES" forKey:@"header_name"];
 
-        
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(movie_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+        _VW_filter.hidden = NO;
+        [HttpClient animating_images:self];
+//        VW_overlay.hidden = NO;
+//        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
         
         
     }
     else if([item.title isEqualToString:@"Leisure"])
     {
-       
-        
+        _VW_Leisure.hidden = NO;
+        self.VW_event.hidden = YES;
+        _VW_sports.hidden = YES;
+        _VW_Movies.hidden = YES;
+
 
         if(_VW_event.hidden == YES || _VW_sports.hidden == YES || _VW_Movies.hidden == YES)
         {
@@ -429,18 +510,19 @@
             [self Leisure_view];
             
         }
-         [self.VW_Leisure addSubview:VW_overlay];
-           [_Header_name setTitle:@"Leisure" forState:UIControlStateNormal];
-        [user_defafults setValue:@"Leisure" forKey:@"header_name"];
-
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(Leisure_API_call) withObject:activityIndicatorView afterDelay:0.01];
+//               [self.VW_Leisure addSubview:VW_overlay];
+           [_Header_name setTitle:@"LEISURE" forState:UIControlStateNormal];
+        [user_defafults setValue:@"LEISURE" forKey:@"header_name"];
+          [HttpClient animating_images:self];
+//        VW_overlay.hidden = NO;
+//        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(Leisure_API_call) withObject:nil afterDelay:0.01];
        
       
         
     }
     [user_defafults synchronize];
+    [self close_action];
 }
 
 
@@ -901,12 +983,12 @@
     {
         if(indexPath.section %2 !=0 )
         {
-            ht = 315;
+            ht = 263;
         }
         else
         {
             
-            ht = 271;
+            ht = 219;
         }
     }
     else if(tableView == _TBL_sports_list)
@@ -914,12 +996,12 @@
         if(indexPath.section %2 !=0)
         {
             
-            ht = 315;
+            ht = 263;
         }
         else
         {
             
-            ht = 271;
+            ht = 219;
         }
     }
     else if(tableView == _TBL_lisure_list)
@@ -927,12 +1009,12 @@
         if(indexPath.section %2 != 0)
         {
             
-            ht = 315;
+            ht = 263;
         }
         else
         {
             
-            ht = 271;
+            ht = 219;
         }
 
     }
@@ -960,9 +1042,8 @@
         
         else
         {
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(event_detail) withObject:activityIndicatorView afterDelay:0.01];
+       [HttpClient animating_images:self];
+            [self performSelector:@selector(event_detail) withObject:nil afterDelay:0.01];
         }
         }
         @catch (NSException *exception)
@@ -991,9 +1072,8 @@
         
         else
         {
-            VW_overlay.hidden = NO;
-            [activityIndicatorView startAnimating];
-            [self performSelector:@selector(sports_detail) withObject:activityIndicatorView afterDelay:0.01];
+         [HttpClient animating_images:self];
+            [self performSelector:@selector(sports_detail) withObject:nil afterDelay:0.01];
         }
         }
     
@@ -1021,9 +1101,8 @@
            
            else
            {
-               VW_overlay.hidden = NO;
-               [activityIndicatorView startAnimating];
-               [self performSelector:@selector(event_detail) withObject:activityIndicatorView afterDelay:0.01];
+              [HttpClient animating_images:self];
+               [self performSelector:@selector(event_detail) withObject:nil afterDelay:0.01];
            }
        }
        
@@ -1052,16 +1131,13 @@
 -(void)sports_detail
 {
     [self performSegueWithIdentifier:@"Home_sports_detail" sender:self];
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
+    [HttpClient stop_activity_animation];
 }
 -(void)event_detail
 {
     
     [self performSegueWithIdentifier:@"leisure_detail_segue" sender:self];
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
-    
+  [HttpClient stop_activity_animation];
 
 }
 
@@ -1080,80 +1156,15 @@
         static NSString *cellidentifier = @"movie_cell";
         
         int i = (int)indexPath.row;
-        i = i +1;
         Movies_cell *cell = (Movies_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellidentifier forIndexPath:indexPath];
         NSDictionary *dict = [Movies_arr objectAtIndex:indexPath.row];
         
         
         if(self.segmentedControl4.selectedSegmentIndex == 0)
         {
-            
-            
-            if(indexPath.row % 5 == 0 && indexPath.row==0)
+            @try
             {
-                cell.LBL_movie_name.text =  [dict valueForKey:@"_name"];
-                cell.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[dict valueForKey:@"_IMDB_rating"]];
-                cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
-                NSString *img_url = [dict valueForKey:@"_iphonethumb"];
-                img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
-                
-                [cell.IMG_banner sd_setImageWithURL:[NSURL URLWithString:img_url]
-                                   placeholderImage:[UIImage imageNamed:@"upload-8.png"]
-                                            options:SDWebImageRefreshCached];
-                
-                NSString *str = [dict valueForKey:@"_Languageid"];
-                NSString *sub_str = [dict valueForKey:@"_MovieType"];
-                int time = [[dict valueForKey:@"_Duration"] intValue];
-                int hours = time / 60;
-                int minutes = time % 60;
-                cell.LBL_duration.text = [NSString stringWithFormat:@"%d hr %d min",hours,minutes];
-                
-                NSString *text = [NSString stringWithFormat:@"%@      %@",str,sub_str];
-                
-                
-                if ([cell.LBL_language respondsToSelector:@selector(setAttributedText:)]) {
-                    
-                    NSDictionary *attribs = @{
-                                              NSForegroundColorAttributeName:cell.LBL_language.textColor,
-                                              NSFontAttributeName:cell.LBL_language.font
-                                              };
-                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
-                    
-                    
-                    
-                    NSRange ename = [text rangeOfString:sub_str];
-                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:25.0]}
-                                                range:ename];
-                    }
-                    else
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.39 green:0.78 blue:0.05 alpha:1.0]}
-                                                range:ename];
-                    }
-                    cell.LBL_language.attributedText = attributedText;
-                }
-                else
-                {
-                    cell.LBL_language.text = text;
-                }
-                [cell.BTN_book_now setTag:indexPath.row];
-                [cell.BTN_book_now addTarget:self action:@selector(Book_now_action:) forControlEvents:UIControlEventTouchUpInside];
-                
-                return cell;
-            }
             
-            
-            else if(i % 5 == 0 && i!=0)
-            {
-                [self.Collection_movies registerNib:[UINib nibWithNibName:@"qtickets_cell" bundle:nil] forCellWithReuseIdentifier:@"qtickets_image"];
-                qtickets_cell *cell1 = (qtickets_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"qtickets_image" forIndexPath:indexPath];
-                return cell1;
-            }
-            else
-            {
-                
                 cell.LBL_movie_name.text =  [dict valueForKey:@"_name"];
                 cell.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[dict valueForKey:@"_IMDB_rating"]];
                 cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
@@ -1191,7 +1202,7 @@
                     }
                     else
                     {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.39 green:0.78 blue:0.05 alpha:1.0]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.39 green:0.78 blue:0.05 alpha:1.0]}
                                                 range:ename];
                     }
                     cell.LBL_language.attributedText = attributedText;
@@ -1203,8 +1214,13 @@
                 [cell.BTN_book_now setTag:indexPath.row];
                 [cell.BTN_book_now addTarget:self action:@selector(Book_now_action:) forControlEvents:UIControlEventTouchUpInside];
                 
+            }
+            @catch(NSException *exception)
+            {
                 
             }
+            
+                
             
             return cell;
         }
@@ -1216,71 +1232,10 @@
             
             NSDictionary *dict = [Movies_arr objectAtIndex:indexPath.row];
             
-            
-            if(indexPath.row % 5 == 0 && indexPath.row==0)
-            {
-                cell.LBL_movie_name.text =  [dict valueForKey:@"_name"];
-                cell.LBL_rating.text = [NSString stringWithFormat:@"%@ votes",[dict valueForKey:@"_willwatch"]];
-                //   cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
-                NSString *img_url = [dict valueForKey:@"_thumbURL"];
-                img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
-                
-                [cell.IMG_banner sd_setImageWithURL:[NSURL URLWithString:img_url]
-                                   placeholderImage:[UIImage imageNamed:@"upload-8.png"]
-                                            options:SDWebImageRefreshCached];
-                
-                NSString *str = [dict valueForKey:@"_language"];
-                int time = [[dict valueForKey:@"_Duration"] intValue];
-                int hours = time / 60;
-                int minutes = time % 60;
-                cell.LBL_duration.text = [NSString stringWithFormat:@"%d hr %d min",hours,minutes];
-                
-                NSString *sub_str = [dict valueForKey:@"_MovieType"];
-                NSString *text = [NSString stringWithFormat:@"%@      %@",str,sub_str];
-                
-                
-                if ([cell.LBL_language respondsToSelector:@selector(setAttributedText:)]) {
-                    
-                    NSDictionary *attribs = @{
-                                              NSForegroundColorAttributeName:cell.LBL_language.textColor,
-                                              NSFontAttributeName:cell.LBL_language.font
-                                              };
-                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
-                    
-                    
-                    
-                    NSRange ename = [text rangeOfString:sub_str];
-                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:25.0]}
-                                                range:ename];
-                    }
-                    else
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.39 green:0.78 blue:0.05 alpha:1.0]}
-                                                range:ename];
-                    }
-                    cell.LBL_language.attributedText = attributedText;
-                }
-                else
-                {
-                    cell.LBL_language.text = text;
-                }
-                //                [cell.BTN_book_now setTag:indexPath.row];
-                //                [cell.BTN_book_now addTarget:self action:@selector(Book_now_action:) forControlEvents:UIControlEventTouchUpInside];
-                return cell;
-            }
-            
-            
-            else if(i % 5 == 0 && i!=0)
-            {
-                [self.Collection_movies registerNib:[UINib nibWithNibName:@"qtickets_cell" bundle:nil] forCellWithReuseIdentifier:@"qtickets_image"];
-                qtickets_cell *cell1 = (qtickets_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"qtickets_image" forIndexPath:indexPath];
-                return cell1;
-            }
-            else
+            @try
             {
                 
+            
                 cell.LBL_movie_name.text =  [dict valueForKey:@"_name"];
                 cell.LBL_rating.text = [NSString stringWithFormat:@"%@ votes",[dict valueForKey:@"_willwatch"]];
                 //cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
@@ -1328,8 +1283,12 @@
                 {
                     cell.LBL_language.text = text;
                 }
+            }
+            @catch(NSException *exception)
+            {
                 
             }
+          
             
             return cell;
             
@@ -1340,71 +1299,8 @@
         else
             
         {
-            if(indexPath.row % 5 == 0 && indexPath.row==0)
+            @try
             {
-                cell.LBL_movie_name.text =  [dict valueForKey:@"_name"];
-                cell.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[dict valueForKey:@"_IMDB_rating"]];
-                cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
-                NSString *img_url = [dict valueForKey:@"_iphonethumb"];
-                img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
-                
-                [cell.IMG_banner sd_setImageWithURL:[NSURL URLWithString:img_url]
-                                   placeholderImage:[UIImage imageNamed:@"upload-8.png"]
-                                            options:SDWebImageRefreshCached];
-                
-                NSString *str = [dict valueForKey:@"_Languageid"];
-                NSString *sub_str = [dict valueForKey:@"_MovieType"];
-                int time = [[dict valueForKey:@"_Duration"] intValue];
-                int hours = time / 60;
-                int minutes = time % 60;
-                cell.LBL_duration.text = [NSString stringWithFormat:@"%d hr %d min",hours,minutes];
-                
-                NSString *text = [NSString stringWithFormat:@"%@      %@",str,sub_str];
-                
-                
-                if ([cell.LBL_language respondsToSelector:@selector(setAttributedText:)]) {
-                    
-                    NSDictionary *attribs = @{
-                                              NSForegroundColorAttributeName:cell.LBL_language.textColor,
-                                              NSFontAttributeName:cell.LBL_language.font
-                                              };
-                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
-                    
-                    
-                    
-                    NSRange ename = [text rangeOfString:sub_str];
-                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:25.0]}
-                                                range:ename];
-                    }
-                    else
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.39 green:0.78 blue:0.05 alpha:1.0]}
-                                                range:ename];
-                    }
-                    cell.LBL_language.attributedText = attributedText;
-                }
-                else
-                {
-                    cell.LBL_language.text = text;
-                }
-                [cell.BTN_book_now setTag:indexPath.row];
-                [cell.BTN_book_now addTarget:self action:@selector(Book_now_action:) forControlEvents:UIControlEventTouchUpInside];
-                
-                return cell;
-            }
-            
-            
-            else if(i % 5 == 0 && i!=0)
-            {
-                [self.Collection_movies registerNib:[UINib nibWithNibName:@"qtickets_cell" bundle:nil] forCellWithReuseIdentifier:@"qtickets_image"];
-                qtickets_cell *cell1 = (qtickets_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"qtickets_image" forIndexPath:indexPath];
-                return cell1;
-            }
-            else
-            {
-                
                 cell.LBL_movie_name.text =  [dict valueForKey:@"_name"];
                 cell.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[dict valueForKey:@"_IMDB_rating"]];
                 cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
@@ -1442,7 +1338,7 @@
                     }
                     else
                     {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.39 green:0.78 blue:0.05 alpha:1.0]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.39 green:0.78 blue:0.05 alpha:1.0]}
                                                 range:ename];
                     }
                     cell.LBL_language.attributedText = attributedText;
@@ -1454,6 +1350,10 @@
                 [cell.BTN_book_now setTag:indexPath.row];
                 [cell.BTN_book_now addTarget:self action:@selector(Book_now_action:) forControlEvents:UIControlEventTouchUpInside];
                 
+                
+            }
+            @catch(NSException *exception)
+            {
                 
             }
             
@@ -1466,23 +1366,8 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    int i = (int)indexPath.row;
-    i = i +1;
-    if(indexPath.row % 5 == 0 && indexPath.row==0)
-    {
-        return CGSizeMake(_Collection_movies.frame.size.width /2.02,224);
-        
-    }
-    if(i % 5 == 0 && i!=0)
-    {
-        return CGSizeMake(_Collection_movies.frame.size.width,40);
-        
-    }
-
-    else
-    {
-        return CGSizeMake(_Collection_movies.frame.size.width /2.02,224);
-    }
+    return CGSizeMake(_Collection_movies.frame.size.width /2.02,224);
+    
    
 }
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
@@ -1492,20 +1377,17 @@
 }
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
 {
-       return 2;
+       return 4;
 }
+- (UIEdgeInsets)collectionView:
+(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    // return UIEdgeInsetsMake(0,8,0,8);  // top, left, bottom, right
+    return UIEdgeInsetsMake(0,0,4,0);  // top, left, bottom, right
+}
+
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 
 {
-    if(self.segmentedControl4.selectedSegmentIndex == 0)
-    {
-        int i = (int)indexPath.row;
-        i = i +1;
-        if(i % 5 == 0 && i!=0)
-        {
-            NSLog(@"mydata");
-        }
-    }
     if(self.segmentedControl4.selectedSegmentIndex == 1)
     {
         [[NSUserDefaults standardUserDefaults] setObject:[Movies_arr objectAtIndex:indexPath.row] forKey:@"Movie_detail"];
@@ -1558,10 +1440,9 @@
     if(self.segmentedControl4.selectedSegmentIndex == 0)
     {
         _VW_filter.hidden = NO;
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
+        [HttpClient animating_images:self];
         
-        [self performSelector:@selector(movie_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+        [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
         
         
         
@@ -1569,28 +1450,26 @@
     else if(self.segmentedControl4.selectedSegmentIndex == 1)
     {
         _VW_filter.hidden = YES;
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(up_coming_API) withObject:activityIndicatorView afterDelay:0.01];
+        [HttpClient animating_images:self];
+
+        [self performSelector:@selector(up_coming_API) withObject:nil afterDelay:0.01];
         
         
     }
     else{
         _VW_filter.hidden = YES;
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(Top_movies_API) withObject:activityIndicatorView afterDelay:0.01];
+        [HttpClient animating_images:self];
+
+        [self performSelector:@selector(Top_movies_API) withObject:nil afterDelay:0.01];
         
         
     }
 }
 -(void)Book_now_action:(UIButton *)sender
 {
-    [[NSUserDefaults standardUserDefaults] setObject:[Movies_arr objectAtIndex:sender.tag] forKey:@"Movie_detail"];
-    NSLog(@"..........Movie Detail .......%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"]);
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    [[NSUserDefaults standardUserDefaults]  setValue:[[Movies_arr objectAtIndex:sender.tag] valueForKey:@"_id"] forKey:@"id"];
+    [[NSUserDefaults standardUserDefaults]  synchronize];
     [self performSegueWithIdentifier:@"Movies_Booking" sender:self];
-    
     
 }
 
@@ -1627,6 +1506,8 @@
         
         //NSLog(@"Response dictionary: %@", tmp_arr);
         NSArray *old_arr = tmp_arr;//[json_RESULT mutableCopy];
+    
+
         
         for(int  i=0;i<old_arr.count;i++)
         {
@@ -1656,6 +1537,7 @@
                 [halls_ar addObject:[halls_arrs objectAtIndex:k]];
             }
         }
+      
         [halls_ar sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
         NSOrderedSet *orderedSet1 = [NSOrderedSet orderedSetWithArray:halls_ar];
         
@@ -1665,29 +1547,28 @@
         NSMutableArray *new_arr = [[NSMutableArray alloc]init];
         
         int count = (int)[old_arr count];
-        int index = 0;
+     //   int index = 0;
         
-        int tags = 0;
+     //   int tags = 0;
         
-        for (int i = 0; i < count; )
+        for (int i = 0; i < count;i++ )
         {
-            i= i+1;
-            if ((i % 5) == 0 && i != 0)
-            {
-                NSDictionary *tmp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Qtickets",@"Movies", nil];
-                [new_arr addObject:tmp_dictin];
-                count = count + 1;
-                tags = tags + 1;
-            }
-            else
-            {
-                index = i - tags - 1;
-                [new_arr addObject:[old_arr objectAtIndex:index]];
-            }
+//            i= i+1;
+//            if ((i % 5) == 0 && i != 0)
+//            {
+//                NSDictionary *tmp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Qtickets",@"Movies", nil];
+//                [new_arr addObject:tmp_dictin];
+//                count = count + 1;
+//                tags = tags + 1;
+//            }
+//            else
+//            {
+                //index = i - tags - 1;
+                [new_arr addObject:[old_arr objectAtIndex:i]];
+           // }
         }
       
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        [HttpClient stop_activity_animation];
         [Movies_arr removeAllObjects];
         Movies_arr = [new_arr mutableCopy];
         [_Collection_movies reloadData];
@@ -1716,30 +1597,29 @@
         NSMutableArray *new_arr = [[NSMutableArray alloc]init];
         
         int count = (int)[old_arr count];
-        int index = 0;
+        //int index = 0;
         
-        int tags = 0;
+        //int tags = 0;
         
-        for (int i = 0; i < count; )
+        for (int i = 0; i < count;i++ )
         {
-            i= i+1;
-            if ((i % 5) == 0 && i != 0)
-            {
-                NSDictionary *tmp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Qtickets",@"Movies", nil];
-                [new_arr addObject:tmp_dictin];
-                count = count + 1;
-                tags = tags + 1;
-            }
-            else
-            {
-                index = i - tags - 1;
-                [new_arr addObject:[old_arr objectAtIndex:index]];
-            }
+//            i= i+1;
+//            if ((i % 5) == 0 && i != 0)
+//            {
+//                NSDictionary *tmp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Qtickets",@"Movies", nil];
+//                [new_arr addObject:tmp_dictin];
+//                count = count + 1;
+//                tags = tags + 1;
+//            }
+//            else
+//            {
+//                index = i - tags - 1;
+                [new_arr addObject:[old_arr objectAtIndex:i]];
+           // }
         }
         
         
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        [HttpClient stop_activity_animation];
         [Movies_arr removeAllObjects];
         Movies_arr = [new_arr mutableCopy];
         [_Collection_movies reloadData];
@@ -1767,30 +1647,29 @@
         NSMutableArray *new_arr = [[NSMutableArray alloc]init];
         
         int count = (int)[old_arr count];
-        int index = 0;
+//        int index = 0;
+//        
+//        int tags = 0;
         
-        int tags = 0;
-        
-        for (int i = 0; i < count; )
+        for (int i = 0; i < count;i++ )
         {
-            i= i+1;
-            if ((i % 5) == 0 && i != 0)
-            {
-                NSDictionary *tmp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Qtickets",@"Movies", nil];
-                [new_arr addObject:tmp_dictin];
-                count = count + 1;
-                tags = tags + 1;
-            }
-            else
-            {
-                index = i - tags - 1;
-                [new_arr addObject:[old_arr objectAtIndex:index]];
-            }
+//            i= i+1;
+//            if ((i % 5) == 0 && i != 0)
+//            {
+//                NSDictionary *tmp_dictin = [NSDictionary dictionaryWithObjectsAndKeys:@"Qtickets",@"Movies", nil];
+//                [new_arr addObject:tmp_dictin];
+//                count = count + 1;
+//                tags = tags + 1;
+//            }
+//            else
+//            {
+//                index = i - tags - 1;
+                [new_arr addObject:[old_arr objectAtIndex:i]];
+           // }
         }
         
         
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        [HttpClient stop_activity_animation];
         [Movies_arr removeAllObjects];
         Movies_arr = [new_arr mutableCopy];
         [_Collection_movies reloadData];
@@ -1820,7 +1699,7 @@
         
         [Leisure_arr removeAllObjects];
         [Sports_arr removeAllObjects];
-        
+         // [new_arr addObject:@"ALL VENUES"];
         for(int dictconut = 0; dictconut< tmp_arr.count;dictconut++)
         {
             NSMutableDictionary *temp_dict = [tmp_arr objectAtIndex:dictconut];
@@ -1839,6 +1718,8 @@
             [new_arr addObject:[temp_dict valueForKey:@"_Venue"]];
             
         }
+      
+
         [new_arr sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
         NSOrderedSet *orderedSet1 = [NSOrderedSet orderedSetWithArray:new_arr];
         
@@ -1866,8 +1747,7 @@
         
         [_TBL_event_list reloadData];
         
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        [HttpClient stop_activity_animation];
         
         //  [self performSegueWithIdentifier:@"Home_to_detail" sender:self];
         
@@ -1876,23 +1756,27 @@
     @catch(NSException *exception)
     {
         NSLog(@"%@",exception);
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        [HttpClient stop_activity_animation];
     }
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
+    
 }
 
 -(void)Event_API_CALL
 {
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
+    [HttpClient stop_activity_animation];
     //[Events_arr removeAllObjects];
     Events_arr = [[[NSUserDefaults standardUserDefaults] valueForKey:@"Events_arr"] mutableCopy];
     if(Events_arr.count<1)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//        [alert show];
+        _VW_event.hidden= YES;
+        _VW_empty.hidden = NO;
+        
+        _VW_sports_filter.hidden = YES;
+        [_BTN_empty setImage:[UIImage imageNamed:@"spot.png"] forState:UIControlStateNormal];
+        _LBL_no_products.text = @"No Events found";
+
         
     }
     else
@@ -1902,52 +1786,70 @@
 }
 
 -(void)Sports_API_call
+
 {
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
+    [HttpClient stop_activity_animation];
     Sports_arr = [[[NSUserDefaults standardUserDefaults] valueForKey:@"Sports_arr"] mutableCopy];
     if(Sports_arr.count < 1)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//        [alert show];
+      _VW_sports.hidden= YES;
+        _VW_empty.hidden = NO;
+        
         _VW_sports_filter.hidden = YES;
+        [_BTN_empty setImage:[UIImage imageNamed:@"spot.png"] forState:UIControlStateNormal];
+        _LBL_no_products.text = @"No Sporting events found";
+        
+
         
     }else
         if(Sports_arr.count == 1)
         {
+            _VW_sports.hidden= NO;
             [_TBL_sports_list reloadData];
             _VW_sports_filter.hidden = YES;
+            _VW_empty.hidden = YES;
         }
         else
         {
+            _VW_sports.hidden= NO;
             [_TBL_sports_list reloadData];
             _VW_sports_filter.hidden = NO;
+            _VW_empty.hidden = YES;
         }
     
     
 }
 -(void)Leisure_API_call
 {
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
+     [HttpClient stop_activity_animation];
     
     Leisure_arr = [[[NSUserDefaults standardUserDefaults] valueForKey:@"leisure_arr"] mutableCopy];
     if(Leisure_arr.count < 1)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Events found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//        [alert show];
         _VW_leisure_filter.hidden = YES;
+        _VW_Leisure.hidden = YES;
+        _VW_empty.hidden = NO;
+        [_BTN_empty setImage:[UIImage imageNamed:@"leis.png"] forState:UIControlStateNormal];
+               _LBL_no_products.text = @"No Leisure events found";
+
+        
         
     }else
         if(Leisure_arr.count == 1)
-        {
+        { _VW_Leisure.hidden = NO;
             [_TBL_lisure_list reloadData];
             _VW_leisure_filter.hidden = YES;
+             _VW_empty.hidden = YES;
         }
         else
-        {
+        {   _VW_Leisure.hidden = NO;
             [_TBL_lisure_list reloadData];
             _VW_leisure_filter.hidden = NO;
+             _VW_empty.hidden = YES;
         }
     
 }
@@ -1955,9 +1857,8 @@
 
 -(void)API_movie
 {
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(movie_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+    [HttpClient animating_images:self];
+    [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
     
 }
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
@@ -2021,18 +1922,27 @@
 
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
     if (pickerView == _halls_picker) {
+        [all setTitle:@"ALL CINEMA HALLS" forState:UIControlStateNormal];
         return halls_arr[row];
     }
     if (pickerView == _lang_picker) {
+        [all setTitle:@"ALL LANGUAGES" forState:UIControlStateNormal];
+
         return langugage_arr[row];
     }
     if (pickerView == _venue_picker) {
+        [all setTitle:@"ALL VENUES" forState:UIControlStateNormal];
+
         return venues_arr[row];
     }
     else if (pickerView == _sports_venue_picker) {
+        [all setTitle:@"ALL VENUES" forState:UIControlStateNormal];
+
         return sports_venues[row];
     }
     else if (pickerView == _leisure_venues) {
+        [all setTitle:@"ALL VENUES" forState:UIControlStateNormal];
+
         return leisure_venues[row];
     }
     else if(pickerView == _lang_picker)
@@ -2056,12 +1966,19 @@
     
     if (pickerView == _halls_picker)
     {
+        if([halls_arr[row] isEqualToString:@"ALL CINEMA HALLS"])
+        {
+             [self movie_API_CALL];
+        }
+        else
+        {
         [self movie_API_CALL];
         
         for(int i=0;i<Movies_arr.count;i++)
         {
             @try
             {
+               //   [movie addObject:@"ALL"];
                 for(int k=0;k< [[[Movies_arr objectAtIndex:i]valueForKey:@"Theatre"] count];k++)
                 {
                     
@@ -2070,12 +1987,14 @@
                         [movie addObject:[Movies_arr objectAtIndex:i]];
                     }
                 }
+              
                 
                 
                 
             }
             @catch(NSException *exception)
             {
+                // [movie addObject:@"ALL"];
                 
                 if([[[[Movies_arr objectAtIndex:i]valueForKey:@"Theatre"]valueForKey:@"_name"] isEqualToString:halls_arr[row]])
                 {
@@ -2085,7 +2004,7 @@
                     
                     
                 }
-                
+               
                 
             }
             
@@ -2097,11 +2016,20 @@
         [_Collection_movies reloadData];
         halls_text = halls_arr[row];
         [self ATTRIBUTE_TEXT];
-        
+        }
         
     }
     if (pickerView == _lang_picker) {
+        
+        if([langugage_arr[row] isEqualToString:@"ALL LANGUAGES"])
+        {
+            [self movie_API_CALL];
+        }
+        else
+        {
+
         [self movie_API_CALL];
+              // [lang addObject:@"ALL"];
         for(int l = 0;l<Movies_arr.count;l++)
         {
             if([[[Movies_arr objectAtIndex:l]valueForKey:@"_Languageid"] isEqualToString:langugage_arr[row]])
@@ -2109,6 +2037,7 @@
                 [lang addObject:[Movies_arr objectAtIndex:l]];
             }
         }
+         
         
         NSLog(@"The arr:%@",langugage_arr[row]);
         
@@ -2128,13 +2057,21 @@
         
         [self ATTRIBUTE_TEXT];
         // _BTN_all_lang.text = halls_text;
-        
+        }
         
     }
     if (pickerView == _venue_picker)
     {
+        if([venues_arr[row] isEqualToString:@"ALL VENUES"])
+        {
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+        }
+        else
+        {
         [self Events_API_CALL];
         [self Event_API_CALL];
+            //  [venues addObject:@"ALL"];
         for(int l = 0;l<Events_arr.count;l++)
         {
             if([[[Events_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:venues_arr[row]])
@@ -2142,17 +2079,28 @@
                 [venues addObject:[Events_arr objectAtIndex:l]];
             }
         }
-        
+      
         NSLog(@"The arr:%@",venues_arr[row]);
         [Events_arr removeAllObjects];
         [Events_arr addObjectsFromArray:venues];
         [_TBL_event_list reloadData];
+        }
         
     }
     if(pickerView == _leisure_venues)
     {
+        if([venues_arr[row] isEqualToString:@"ALL VENUES"])
+        {
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+        }
+        else
+        {
+
         [self Events_API_CALL];
         [self Event_API_CALL];
+          //  [venues addObject:@"ALL"];
+
         for(int l = 0;l<Leisure_arr.count;l++)
         {
             if([[[Leisure_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:leisure_venues[row]])
@@ -2160,17 +2108,27 @@
                 [venues addObject:[Leisure_arr objectAtIndex:l]];
             }
         }
-        
-        NSLog(@"The arr:%@",venues_arr[row]);
+              NSLog(@"The arr:%@",venues_arr[row]);
         [Leisure_arr removeAllObjects];
         [Leisure_arr addObjectsFromArray:venues];
         [_TBL_lisure_list reloadData];
+        }
         
     }
     if(pickerView == _sports_venue_picker)
     {
+        if([venues_arr[row] isEqualToString:@"ALL VENUES"])
+        {
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+        }
+        else
+        {
+
         [self Events_API_CALL];
         [self Event_API_CALL];
+       // [venues addObject:@"ALL"];
+
         for(int l = 0;l<Sports_arr.count;l++)
         {
             if([[[Sports_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:sports_venues[row]])
@@ -2178,11 +2136,12 @@
                 [venues addObject:[Sports_arr objectAtIndex:l]];
             }
         }
-        
+       
         NSLog(@"The arr:%@",venues_arr[row]);
         [Sports_arr removeAllObjects];
         [Sports_arr addObjectsFromArray:venues];
         [_TBL_sports_list reloadData];
+        }
         
     }
     
@@ -2197,6 +2156,14 @@
 
 - (IBAction)back_ACTION:(id)sender {
     [self.navigationController popViewControllerAnimated:NO];
+}
+-(void)logo_home_target
+{
+    [self.navigationController popViewControllerAnimated:YES];
+
+}
+- (IBAction)shop_action:(id)sender {
+    
 }
 
 /*

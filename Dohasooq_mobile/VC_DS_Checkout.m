@@ -7,10 +7,12 @@
 //
 
 #import "VC_DS_Checkout.h"
+#import "VC_cart_list.h"
 
 @interface VC_DS_Checkout ()<UIWebViewDelegate>
 {
     UIView *loadingView;
+    UIActivityIndicatorView *activityView;
 }
 
 @end
@@ -19,6 +21,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.navigationItem.hidesBackButton = YES;
     self.navigationController.navigationBar.hidden = NO;
     
     loadingView = [[UIView alloc]init];
@@ -31,7 +34,7 @@
     loadingView.backgroundColor = [UIColor colorWithWhite:0. alpha:0.6];
     loadingView.layer.cornerRadius = 5;
     
-    UIActivityIndicatorView *activityView=[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+   activityView=[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     activityView.center = CGPointMake(loadingView.frame.size.width / 2.0, 35);
     [activityView startAnimating];
     activityView.tag = 100;
@@ -45,28 +48,54 @@
     [loadingView addSubview:lblLoading];
     
     [self.view addSubview:loadingView];
-    NSMutableDictionary *event_dict = [[NSMutableDictionary alloc]init];
-    event_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"event_detail"];
     
-    NSString *urlStr = [event_dict valueForKey:@"_EventQTurlPath"];
-    NSURL *url = [[NSURL alloc]initWithString:urlStr];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    
-    [self.web_pay loadRequest:request];
+    NSString *html_str;
     self.web_pay.delegate = self;
     
+    if ([[self.rec_dic valueForKey:@"payment_method"] isEqualToString:@"CrediCard"] || [[self.rec_dic valueForKey:@"payment_method"] isEqualToString:@"COD"] ) {
+        
+         html_str = [self.rec_dic valueForKey:@"url"];
+        NSURL *url = [[NSURL alloc]initWithString:html_str];
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        [self.web_pay loadRequest:request];
+       
+    }
+    else  {
+       
+       
+         html_str = [self.rec_dic valueForKey:@"formstring"];
+       // [_web_pay loadHTMLString:[html_str stringByReplacingOccurrencesOfString:@"\n" withString:@"<br/>"] baseURL:nil];
+        [_web_pay loadHTMLString:html_str baseURL:nil];
+
+
+        
+    }
+    
+
+    
+    
+   
+
+    
     
 }
-- (IBAction)back_action:(id)sender {
-    //    [self dismissViewControllerAnimated:NO completion:nil];
-    [self.navigationController popViewControllerAnimated:NO];
-}
+//- (IBAction)back_action:(id)sender {
+//    //    [self dismissViewControllerAnimated:NO completion:nil];
+//  //  [self.navigationController popViewControllerAnimated:NO];
+//    [self performSegueWithIdentifier:@"payment_cart" sender:self];
+//}
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     
     [loadingView setHidden:NO];
     
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+    
+    
+    NSLog(@"Loading Successful ");
+    
+    
+    [activityView stopAnimating];
     [loadingView setHidden:YES];
 }
 
@@ -74,20 +103,14 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
--(void)plase_order_API_calling{
-       // NSString *urlStr = [[NSUserDefaults standardUserDefaults] valueForKey:@"payment_url"];
-           @try {
-               NSString *urlStr = @"bhj";
-               NSURL *url = [[NSURL alloc]initWithString:urlStr];
-               NSURLRequest *request = [NSURLRequest requestWithURL:url];
-               
-               [self.web_pay loadRequest:request];
-               } @catch (NSException *exception) {
-        
-    }
+- (IBAction)back_action:(id)sender {
+    //VC_cart_list *list = [self.storyboard instantiateViewControllerWithIdentifier:@"cart_identifir"];
+    [self.navigationController popToRootViewControllerAnimated:NO];
     
+    
+    // [self performSegueWithIdentifier:@"payment_cart" sender:self];
 }
+    
 
 /*
 #pragma mark - Navigation

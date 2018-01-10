@@ -8,6 +8,7 @@
 
 #import "event_detail_web.h"
 
+
 @interface event_detail_web ()<UIWebViewDelegate>
 {
     UIView *loadingView;

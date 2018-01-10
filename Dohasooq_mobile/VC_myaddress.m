@@ -15,8 +15,8 @@
 {
     
     NSMutableDictionary *jsonresponse_dic_address;
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+//    UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
     int j ,i;
     BOOL is_add_new,isCountrySelected;
     NSInteger edit_tag,cntry_ID;
@@ -24,8 +24,12 @@
      NSString *country,*str_fname,*str_city,*str_lname,*str_addr1,*str_addr2,*str_zip_code,*str_phone,*str_country,*str_state,*ship_id,*new_address_input,*state_id;
     UIToolbar *accessoryView;
     NSMutableDictionary *response_countries_dic;
-    NSMutableArray *response_picker_arr,*arr_states;
-    NSString *cntry_selection,*state_selection;//*selection_str,
+    NSMutableArray *response_picker_arr,*phone_code_arr;
+    NSString *cntry_selection,*state_selection,*shpid;//*selection_str,
+    
+    UITapGestureRecognizer *tapGesture1;
+    NSString *flag;
+
 
 
 }
@@ -37,7 +41,46 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.navigationItem.hidesBackButton = YES;
+    
+    self.navigationController.navigationBar.hidden = NO;
+//    is_add_new = NO;
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    VW_overlay.center = self.view.center;
+//    [self.view addSubview:VW_overlay];
+//    VW_overlay.hidden = YES;
+//    
+//    VW_overlay.hidden = NO;
+//    [activityIndicatorView startAnimating];
+    [HttpClient animating_images:self];
+    [self performSelector:@selector(Shipp_address_API) withObject:nil afterDelay:0.01];
+    
+ [self set_UP_VIEW];
+   
+}
+-(void)viewWillAppear:(BOOL)animated
+{
+    
+   
+  self.navigationItem.hidesBackButton = YES;   
+    
+    
+}
+-(void)set_UP_VIEW
+{
     j=0;i = 0;
+    
+    
+    response_picker_arr = [NSMutableArray array];
+    
+    
     jsonresponse_dic_address = [[NSMutableDictionary alloc]init];
     stat_arr = [[NSMutableArray alloc]init];
     stat_arr = [NSMutableArray arrayWithObjects:@"0", nil];
@@ -52,44 +95,24 @@
     accessoryView.barStyle = UIBarStyleBlackTranslucent;
     [accessoryView sizeToFit];
     
+    UIButton *done=[[UIButton alloc]init];
+    done.frame=CGRectMake(accessoryView.frame.size.width - 100, 0, 100, accessoryView.frame.size.height);
+    [done setTitle:@"Done" forState:UIControlStateNormal];
+    [done addTarget:self action:@selector(picker_done_btn_action:) forControlEvents:UIControlEventTouchUpInside];
+    [accessoryView addSubview:done];
+    
+    
     UIButton *close=[[UIButton alloc]init];
-    close.frame=CGRectMake(accessoryView.frame.size.width - 100, 0, 100, accessoryView.frame.size.height);
-    [close setTitle:@"Done" forState:UIControlStateNormal];
-    [close addTarget:self action:@selector(picker_done_btn_action:) forControlEvents:UIControlEventTouchUpInside];
+    close.frame=CGRectMake(accessoryView.frame.origin.x -20 , 0, 100, accessoryView.frame.size.height);
+    [close setTitle:@"Close" forState:UIControlStateNormal];
+    [close addTarget:self action:@selector(close_ACTION) forControlEvents:UIControlEventTouchUpInside];
     [accessoryView addSubview:close];
+    
+    
+    [self phone_code_view];
+     [HttpClient stop_activity_animation];
+    
 
-    
-    
-    
-
-}
--(void)viewWillAppear:(BOOL)animated
-{
-    
-    response_picker_arr = [NSMutableArray array];
-    self.navigationItem.hidesBackButton = YES;
-
-    self.navigationController.navigationBar.hidden = NO;
-    is_add_new = NO;
-      VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    VW_overlay.center = self.view.center;
-    [self.view addSubview:VW_overlay];
-    VW_overlay.hidden = YES;
-    
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(Shipp_address_API) withObject:activityIndicatorView afterDelay:0.01];
-
-    
-    
-    
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -177,6 +200,8 @@
         cell.VW_layer.layer.borderColor = [UIColor lightGrayColor].CGColor;
         cell.VW_layer.layer.borderWidth = 0.5f;
        
+        cell.Btn_close.hidden = YES;
+        
         if ([[jsonresponse_dic_address valueForKey:@"shipaddress"] isKindOfClass:[NSDictionary class]]) {
              cell.BTN_edit_addres.hidden = YES;
         }
@@ -204,7 +229,7 @@
         country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
         
         
-        NSString *address_str = [NSString stringWithFormat:@"%@,\n%@ \n %@,%@,%@",[[dict valueForKey:@"billingaddress"] valueForKey:@"address1"],[[dict valueForKey:@"billingaddress"] valueForKey:@"city"],state,country,[[dict valueForKey:@"billingaddress"] valueForKey:@"zip_code"]];
+        NSString *address_str = [NSString stringWithFormat:@"%@,\n%@ \n %@, %@, %@",[[dict valueForKey:@"billingaddress"] valueForKey:@"address1"],[[dict valueForKey:@"billingaddress"] valueForKey:@"city"],state,country,[[dict valueForKey:@"billingaddress"] valueForKey:@"zip_code"]];
         
         address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             
@@ -228,7 +253,7 @@
             nib = [[NSBundle mainBundle] loadNibNamed:@"address_cell" owner:self options:nil];
             cell = [nib objectAtIndex:index];
         }
-
+        cell.Btn_close.hidden = NO;
         cell.BTN_edit_addres.hidden = YES;
         cell.VW_layer.layer.borderColor = [UIColor lightGrayColor].CGColor;
         cell.VW_layer.layer.borderWidth = 0.5f;
@@ -271,7 +296,7 @@
 
         
         
-        NSString *address_str = [NSString stringWithFormat:@"%@,\n%@ \n%@,%@,%@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"address1"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"city"],state,country,[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"zip_code"]];
+        NSString *address_str = [NSString stringWithFormat:@"%@,\n%@ \n%@, %@, %@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"address1"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"city"],state,country,[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"zip_code"]];
         
         address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
         
@@ -281,6 +306,33 @@
         [cell.BTN_edit_addres addTarget:self action:@selector(add_new_address:) forControlEvents:UIControlEventTouchUpInside];
         [cell.BTN_edit addTarget:self action:@selector(BTN_edit_clickd:) forControlEvents:UIControlEventTouchUpInside];
         cell.BTN_edit.tag = indexPath.row;
+        
+        state_id =[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"state_id"];
+        cntry_ID = [[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"country_id"] integerValue];
+        
+        
+        
+//        UIImage *newImage = [cell.Btn_close.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+//        UIGraphicsBeginImageContextWithOptions(cell.Btn_close.image.size, NO, newImage.scale);
+//        [[UIColor darkGrayColor] set];
+//        [newImage drawInRect:CGRectMake(0, 0, cell.Btn_close.image.size.width, newImage.size.height)];
+//        newImage = UIGraphicsGetImageFromCurrentImageContext();
+//        UIGraphicsEndImageContext();
+//        cell.Btn_close.image = newImage;
+        
+        cell.Btn_close .userInteractionEnabled = YES;
+        NSString *Id_ship = [NSString stringWithFormat:@"%@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"id"]];
+        
+        cell.Btn_close.tag = [Id_ship integerValue];
+        
+        tapGesture1 = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tapGesture_close:)];
+        
+        tapGesture1.numberOfTapsRequired = 1;
+        
+        [tapGesture1 setDelegate:self];
+        
+        [cell.Btn_close addGestureRecognizer:tapGesture1];
+        
         return cell;
         
     }
@@ -293,6 +345,9 @@
                 nib = [[NSBundle mainBundle] loadNibNamed:@"billing_address" owner:self options:nil];
                 cell = [nib objectAtIndex:index];
             }
+        
+        cell.TXT_cntry_code.hidden = NO;
+        cell.TXT_phone.hidden = NO;
         cell.LBL_Blng_title.text = @"EDIT SHIPPING ADDRESS";
         
         cell.BTN_check.tag = 0;
@@ -307,6 +362,7 @@
         cell.TXT_zip.delegate = self;
         cell.TXT_email.delegate = self;
         cell.TXT_phone.delegate = self;
+        cell.TXT_cntry_code.delegate = self;
         
         
         @try {
@@ -329,6 +385,17 @@
 
               str_state = [NSString stringWithFormat:@"%@", [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"state"]];
         state_id = [NSString stringWithFormat:@"%@", [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"state_id"]];
+                    cell.TXT_cntry_code.hidden = YES;
+                    cell.TXT_phone.hidden = YES;
+                    
+                  
+                   
+                    CGRect frame = cell.Btn_save.frame;
+                    frame.origin.y= cell.TXT_phone.frame.origin.y+20;
+                    
+                    cell.Btn_save.frame= frame;
+                    
+                    
             }
             }
 
@@ -339,6 +406,7 @@
             
             NSArray *keys_arr = [dict allKeys];
         if (edit_tag != 999) {
+            
             
                 country = [NSString stringWithFormat:@"%@",[[[dict valueForKey:[keys_arr objectAtIndex:edit_tag]] valueForKey:@"shippingaddress"] valueForKey:@"country"]];
               
@@ -369,9 +437,6 @@
                 cell.TXT_country.placeholder = @"select state";
             }
             
-//          [str_country stringByReplacingOccurrencesOfString:@"<null>" withString:@"select Country"];
-//          [str_state stringByReplacingOccurrencesOfString:@"<null>" withString:@"select states"];
-
         
             cell.TXT_first_name.text = str_fname;
             cell.TXT_last_name.text = str_lname;
@@ -384,6 +449,16 @@
             cell.TXT_phone.text = str_phone;
         
         if (is_add_new) {
+            
+            cell.TXT_cntry_code.hidden = NO;
+            cell.TXT_phone.hidden = NO;
+            
+            CGRect frame = cell.Btn_save.frame;
+            frame.origin.y= cell.TXT_phone.frame.origin.y+90;
+            
+            cell.Btn_save.frame= frame;
+            
+            
              cell.LBL_Blng_title.text = @"ADD NEW ADDRESS";
             cell.TXT_first_name.text = @"";
             cell.TXT_last_name.text = @"";
@@ -405,19 +480,6 @@
         
         
         [cell.Btn_save addTarget:self action:@selector(save_btn_action:) forControlEvents:UIControlEventTouchUpInside];
-//           [cell.BTN_check removeFromSuperview];
-//           [cell.LBL_stat removeFromSuperview];
-//           [cell.LBL_shipping removeFromSuperview];
-//        
-//        UIButton *save_Btn = [UIButton buttonWithType:UIButtonTypeSystem];
-//        save_Btn.frame = CGRectMake(cell.TXT_phone.frame.origin.x, 522, cell.TXT_phone.frame.size.width, 44);
-        
-        
-        
-//        [save_Btn setTitle:@"SAVE" forState:UIControlStateNormal];
-//        [save_Btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//        save_Btn.backgroundColor = [UIColor colorWithRed:251.0/255.0 green:185.0/255.0 blue:71.0/255 alpha:1];
-//        [cell.contentView addSubview:save_Btn];
         
             return cell;
         
@@ -439,47 +501,47 @@
 }
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UILabel *label = [[UILabel alloc] init];
-    if (section == 0)
-    {
-    label.text=@"BILLING ADDRESS";
-
-    label.backgroundColor=[UIColor whiteColor];
+    
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,170, 60)];
+    headerView.backgroundColor = [UIColor clearColor];
+    
+    UILabel *label = [[UILabel alloc] initWithFrame: CGRectMake(10,0, 170, 30)];
+    label.backgroundColor = [UIColor whiteColor];
+    label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+    
+    [headerView addSubview:label];
     label.textColor = [UIColor lightGrayColor];
     [label setFont:[UIFont fontWithName:@"Poppins-Regular" size:15]];
-
-    label.textAlignment = NSTextAlignmentLeft;
-    return label;
-    }
-    else if (section == 1)
+    if (section == 0)
     {
-        label.text= @"SHIPPING ADDRESS";
-        label.backgroundColor=[UIColor whiteColor];
-        label.textColor = [UIColor lightGrayColor];
-        [label setFont:[UIFont fontWithName:@"Poppins-Regular" size:15]];
+        label.text=@"BILLING ADDRESS";
         
-        label.textAlignment = NSTextAlignmentLeft;
-
-         return label;
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            label.text = @"عنوان الفاتورة ";
+            label.textAlignment = NSTextAlignmentRight;
+        }
+        
     }
-
     else
     {
-         return nil;
+        label.text= @"SHIPPING ADDRESS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            label.text = @"عنوان الشحن";
+            label.textAlignment = NSTextAlignmentRight;
+        }
     }
+    
+    
+    return headerView;
 }
-//- (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-//{
-//    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 30)];
-//    [headerView setBackgroundColor:[UIColor whiteColor]];
-//    return headerView;
-//}
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if(section == 0 || section == 1)
     {
-    return 50;
+    return 30;
     }
     else{
         return 0;
@@ -492,7 +554,7 @@
     
         if(indexPath.section == 2)
         {
-            return 679.0;
+            return 530.0;
             
             
         }
@@ -509,13 +571,41 @@
     return 10;
 }
 
+
+#pragma mark delete shipping address action
+-(void)tapGesture_close:(UITapGestureRecognizer *)tapgstr{
+    
+//    CGPoint location = [tapGesture1 locationInView:_TBL_address];
+//    NSIndexPath *indexPath = [_TBL_address indexPathForRowAtPoint:location];
+    //
+    //    //Cart_cell *cell = (Cart_cell *)[_TBL_cart_items cellForRowAtIndexPath:indexPath];
+    //    product_id = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"productid"]];
+
+    
+     UIView *view = tapgstr.view;
+    shpid = [NSString stringWithFormat:@"%ld",(long)[view tag]];
+    
+    
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Are you sure you want to Delete" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
+    alert.tag = 1;
+    [alert show];
+
+    
+    
+   
+    
+    
+    NSLog(@"the cancel clicked");
+}
+
 #pragma mark Shipp_address_API
 -(void)Shipp_address_API
 {
     
     
     @try {
-    
+     [HttpClient animating_images:self];
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
     
@@ -531,11 +621,12 @@
                 }
                 if (data) {
                     
-                    VW_overlay.hidden = YES;
-                    [activityIndicatorView stopAnimating];
+                    
+                    [HttpClient stop_activity_animation];
                     @try {
                         if ([data isKindOfClass:[NSDictionary class]]) {
                             jsonresponse_dic_address = data;
+                           
                             [_TBL_address reloadData];
                             NSLog(@"*******%@*********",data);
                         }
@@ -545,6 +636,8 @@
                         
                        
                     } @catch (NSException *exception) {
+                        [HttpClient stop_activity_animation];
+
                         
                     }
                    
@@ -555,16 +648,16 @@
         }];
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
+         [HttpClient stop_activity_animation];
         
     }
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
+         [HttpClient stop_activity_animation];
     }
     
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
-}
+    }
 
 
 -(void)BTN_check_clickd
@@ -660,27 +753,27 @@
         [cell.TXT_address1 becomeFirstResponder];
         msg = @"address1 should be 3 to 30  characters range";
     }
-        //else if ([str_addr2 isEqualToString:@""]) {
-//        
-//        [cell.TXT_address2 becomeFirstResponder];
-//        msg = @"fname should not be empty";
-//        
-//    }
-//    else if (str_addr2.length<3 || str_addr2.length>30)
-//    {
-//        [cell.TXT_address2 becomeFirstResponder];
-//        msg = @"fname should be 3 to 30  characters range";
-//    }
+        else if ([str_addr2 isEqualToString:@""]) {
+        
+        [cell.TXT_address2 becomeFirstResponder];
+        msg = @"Address2 should not be empty";
+        
+    }
+    else if (str_addr2.length<3 || str_addr2.length>30)
+    {
+        [cell.TXT_address2 becomeFirstResponder];
+        msg = @"Address2 should be 3 to 30  characters range";
+    }
     else if ([str_city isEqualToString:@""]) {
         
         [cell.TXT_city becomeFirstResponder];
-        msg = @"city should not be empty";
+        msg = @"City should not be empty";
         
     }
     else if (str_city.length<3 || str_city.length>15)
     {
         [cell.TXT_city becomeFirstResponder];
-        msg = @"city should be 3 to 30  characters range";
+        msg = @"city should be 3 to 15  characters range";
     }
     else if ([str_zip_code isEqualToString:@""]) {
         
@@ -691,18 +784,18 @@
     else if (str_zip_code.length<5 || str_zip_code.length>8)
     {
         [cell.TXT_zip becomeFirstResponder];
-        msg = @"zip code should be 3 to 30  characters range";
+        msg = @"zip code should be 5 to 8  characters range";
     }
     else if ([str_phone isEqualToString:@""]) {
         
         [cell.TXT_phone becomeFirstResponder];
-        msg = @"phone number field should not be empty";
+        msg = @"Mobile Number  should not be empty";
         
     }
-    else if (str_phone.length<5 || str_phone.length >10)
+    else if (str_phone.length<5 || str_phone.length >15)
     {
         [cell.TXT_phone becomeFirstResponder];
-        msg = @"phone should be 5 to 10  characters range";
+        msg = @"Mobile Number should be 5 to 15  characters range";
     }
     else if ([str_state isEqualToString:@""])
     {
@@ -719,14 +812,19 @@
     if (msg) {
         [HttpClient createaAlertWithMsg:msg andTitle:@""];
     }
-    if (edit_tag == 999) {
+    else if (edit_tag == 999) {
         [self edit_Billing_address_API];
     }
     else if (is_add_new){
-        [self add_new_shipping_address_API];
+        
+        [self add_new_ship_address];
     }
     else{
-    [self edit_Shipping_Address];
+        
+        [HttpClient animating_images:self];
+
+        [self performSelector:@selector(edit_Shipping_Address) withObject:nil afterDelay:0.01];
+   
     }
     
 }
@@ -745,7 +843,8 @@
 -(void)edit_Shipping_Address{
     @try {
         
-         NSDictionary *params = @{@"FirstName":str_fname,@"LastName":str_lname,@"country":country,@"state":str_state,@"city":str_city,@"address1":str_addr1,@"address2":str_addr2,@"zipcode":str_zip_code,@"newaddressinput":@"0",@"customerId":[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"customer_id"],@"shipaddressId":ship_id};
+        NSString *cntr_id = [NSString stringWithFormat:@"%ld",(long)cntry_ID];
+         NSDictionary *params = @{@"FirstName":str_fname,@"LastName":str_lname,@"country":cntr_id,@"state":state_id,@"city":str_city,@"address1":str_addr1,@"address2":str_addr2,@"zipcode":str_zip_code,@"newaddressinput":@"0",@"customerId":[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"customer_id"],@"shipaddressId":ship_id};
         NSLog(@"%@",params);
         
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/shipaddressadd.json",SERVER_URL];
@@ -753,17 +852,22 @@
         [HttpClient api_with_post_params:urlGetuser andParams:params completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
-                  
+                    [HttpClient stop_activity_animation];
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
                      ];
                 }
                 if (data) {
+                    [HttpClient stop_activity_animation];
                     
+
                     NSLog(@"edit_Shipping_Address Response%@",data);
                     if ([data isKindOfClass:[NSDictionary class]]) {
                         
-                        if ([[data valueForKey:@"success"] isEqualToString:@"1"]) {
-                            [self.navigationController popViewControllerAnimated:NO];
+                        
+                        NSString *succes = [NSString stringWithFormat:@"%@",[data valueForKey:@"success"]];
+                        if ([succes isEqualToString:@"success"]) {
+                            i=i-1;
+                            [self Shipp_address_API];
                         }
                     }
                    
@@ -777,7 +881,8 @@
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-        
+        [HttpClient stop_activity_animation];
+
     }
 }
 
@@ -808,12 +913,17 @@
                         
                         @try {
                              NSLog(@"edit_Shipping_Address Response%@",[data valueForKey:@"success"]);
+                            NSString *succs = [NSString stringWithFormat:@"%@",[data valueForKey:@"success"]];
+                            if ([succs isEqualToString:@"success"] || [succs isEqualToString:@"1"] ) {
+                                i=i-1;
+                                [HttpClient createaAlertWithMsg:@"New Address saved successfully" andTitle:@""];
+                                 [self Shipp_address_API];
+                               }
                             
+                           
+
                             
-                            NSString *succes = [NSString stringWithFormat:@"%@",[data valueForKey:@"success"]];
-                            if ([succes isEqualToString:@"1"]) {
-                                [self.navigationController popViewControllerAnimated:NO];
-                            }
+                
                         } @catch (NSException *exception) {
                             NSLog(@"%@",exception);
                         }
@@ -835,62 +945,10 @@
     }
 
 }
-#pragma mark add_new_shipping_address_API
-/*Add shipping api
- http://192.168.0.171/dohasooq/apis/shipaddressadd.json*/
 
--(void)add_new_shipping_address_API{
-    @try {
-        
-        NSDictionary *params;
-        
-        
-        @try {
-             params = @{@"FirstName":str_fname,@"LastName":str_lname,@"country":country,@"state":str_state,@"city":str_city,@"address1":str_addr1,@"address2":str_addr2,@"zipcode":str_zip_code,@"newaddressinput":new_address_input,@"customerId":[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"customer_id"]};
-        } @catch (NSException *exception) {
-            NSLog(@"%@",exception);
-        }
-       
-        
-        NSLog(@"add_new_shipping_address params %@",params);
-        
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/shipaddressadd.json ",SERVER_URL];
-        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-        [HttpClient api_with_post_params:urlGetuser andParams:params completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (error) {
-                    
-                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
-                     ];
-                }
-                if (data) {
-                    NSLog(@"add_new_Shipping_Address Response%@",data);
-                    if ([data isKindOfClass:[NSDictionary class]]) {
-                        
-                        
-                        NSString *succes = [NSString stringWithFormat:@"%@",[data valueForKey:@"success"]];
-                        if ([succes isEqualToString:@"1"]) {
-                            [self.navigationController popViewControllerAnimated:NO];
-                        }
-                        
-                    }
-                    
-                }
-                
-            });
-        }];
-        
-        
-        
-        
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-        
-    }
-  
-}
 
-#pragma text field delgates
+#pragma mark text field delgates
+
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
@@ -898,10 +956,19 @@
 }
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
+    
+    if (textField.tag == 10) {
+        [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
+        [UIView beginAnimations:nil context:NULL];
+        self.view.frame = CGRectMake(0,-120,self.view.frame.size.width,self.view.frame.size.height);
+        [UIView commitAnimations];
+
+    }
     if (textField.tag == 8) {
         
         isCountrySelected = YES;
         textField.inputView = _staes_country_pickr;
+        
         textField.inputAccessoryView = accessoryView;
         
         [self CountryAPICall];
@@ -912,6 +979,11 @@
         textField.inputView = _staes_country_pickr;
         textField.inputAccessoryView = accessoryView;
         [self stateApiCall];
+    }
+    if (textField.tag == 11) {
+        textField.inputView = _phone_picker_view;
+        textField.inputAccessoryView = accessoryView;
+
     }
     
 
@@ -924,13 +996,13 @@
     
 if (textField.tag == 8) {
     
-    billing_address *textFieldRowCell;
-    textFieldRowCell = (billing_address *) textField.superview.superview.superview;
-    NSIndexPath *indexPath = [self.TBL_address indexPathForCell:textFieldRowCell];
-    
-    NSLog(@"The index path is %@",indexPath);
-    
-    textFieldRowCell = (billing_address *)[self.TBL_address cellForRowAtIndexPath:indexPath];
+//    billing_address *textFieldRowCell;
+//    textFieldRowCell = (billing_address *) textField.superview.superview.superview;
+//    NSIndexPath *indexPath = [self.TBL_address indexPathForCell:textFieldRowCell];
+//    
+//    NSLog(@"The index path is %@",indexPath);
+//    
+//    textFieldRowCell = (billing_address *)[self.TBL_address cellForRowAtIndexPath:indexPath];
     textField.text = cntry_selection;
     
     if ([textField.text isEqualToString:@""]) {
@@ -938,18 +1010,74 @@ if (textField.tag == 8) {
     }else{
         
     }
-    textFieldRowCell.TXT_state.placeholder = @" Select State";
+    //textFieldRowCell.TXT_state.placeholder = @" Select State";
 
 }
+    if (textField.tag == 11) {
+        textField.text = flag;
+    }
+    
+    
+    
+    if (textField.tag == 10 || textField.tag == 11) {
+        [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
+        [UIView beginAnimations:nil context:NULL];
+        self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+        [UIView commitAnimations];
+
+    }
 }
 #pragma mark CountryAPI Call
 //http://192.168.0.171/dohasooq/'apis/countriesapi.json
 -(void)CountryAPICall{
     @try {
         response_countries_dic = [NSMutableDictionary dictionary];
+        NSString *country_ID = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/countriesapi/%@.json",SERVER_URL,country_ID];
+        @try
+        {
+            NSError *error;
+           // NSError *err;
+            NSHTTPURLResponse *response = nil;
+            
+            
+           // NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/login/1.json",SERVER_URL];
+            // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+            NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+            [request setURL:urlProducts];
+            [request setHTTPMethod:@"POST"];
+            [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+            //[request setHTTPBody:postData];
+            //[request setAllHTTPHeaderFields:headers];
+            [request setHTTPShouldHandleCookies:NO];
+            NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            if(aData)
+            {
+                
+                NSString *json_DATA = (NSString *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+                NSLog(@"The response Api post sighn up API %@",json_DATA);
+              //  NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
+            }
+            else
+            {
+                [HttpClient stop_activity_animation];
+
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+            }
+            
+        }
         
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/countriesapi.json",SERVER_URL];
-        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        @catch(NSException *exception)
+        {
+            NSLog(@"The error is:%@",exception);
+        }
+        
+
+        
+     /*        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         @try {
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -966,10 +1094,20 @@ if (textField.tag == 8) {
                                     NSDictionary *dic = @{@"cntry_id":[[response_countries_dic allKeys] objectAtIndex:x],@"cntry_name":[response_countries_dic valueForKey:[[response_countries_dic allKeys] objectAtIndex:x]]};
                                     
                                     [response_picker_arr addObject:dic];
+                                    
                                 }
-                                [self.staes_country_pickr reloadAllComponents];
-                                NSLog(@"%@",response_picker_arr);
-                            }
+                                NSSortDescriptor *sortDescriptor;
+                                sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"cntry_name"
+                                                                             ascending:YES];
+                                NSArray *sortedArr = [response_picker_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
+                                NSLog(@"sortedArr %@",sortedArr);
+                                
+                                [response_picker_arr removeAllObjects];
+                                [response_picker_arr addObjectsFromArray:sortedArr];
+                                [_staes_country_pickr reloadAllComponents];
+                                
+                                
+                                 }
                             else{
                                 [HttpClient createaAlertWithMsg:@"The Data could not be read" andTitle:@""];
                             }
@@ -985,6 +1123,7 @@ if (textField.tag == 8) {
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
         }
+      */
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
@@ -1001,8 +1140,6 @@ if (textField.tag == 8) {
 -(void)stateApiCall{
     
     @try {
-        arr_states = [NSMutableArray array];
-        
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/getstatebyconapi/%@.json",SERVER_URL,[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         @try {
@@ -1014,15 +1151,33 @@ if (textField.tag == 8) {
                     if (data) {
                         @try {
                             if ([data isKindOfClass:[NSArray class]]) {
-                                [arr_states addObjectsFromArray:data];
+                                
+                                //[arr_states addObjectsFromArray:data];
                                 [response_picker_arr removeAllObjects];
                                 
-                                [response_picker_arr addObjectsFromArray:arr_states];
+                                [response_picker_arr addObjectsFromArray:data];
+                                
+                                NSSortDescriptor *sortDescriptor;
+                                sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"value"
+                                                                             ascending:YES];
+                                NSArray *sortedArr = [response_picker_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
+                                
+                                NSLog(@"sortedArr %@",sortedArr);
+                                
+                                [response_picker_arr removeAllObjects];
+                                [response_picker_arr addObjectsFromArray:sortedArr];
                                 [_staes_country_pickr reloadAllComponents];
+//                                [self.staes_country_pickr selectRow:0 inComponent:0 animated:NO];
+//                                [self pickerView:self.staes_country_pickr didSelectRow:0 inComponent:0];
+                                
+                                
+                                
+                                
+                                
                                 
                             }
                             else{
-                                [HttpClient createaAlertWithMsg:@"The Data could not be read" andTitle:@""];
+                                [HttpClient createaAlertWithMsg:@"The Data Could not be read" andTitle:@""];
                             }
                         } @catch (NSException *exception) {
                             NSLog(@"%@",exception);
@@ -1046,19 +1201,39 @@ if (textField.tag == 8) {
 
 #pragma mark UIPickerViewDelegate and UIPickerViewDataSource
 
+
+/*-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+ {
+ return [NSString stringWithFormat:@"%@   %@",[phone_code_arr[row] valueForKey:@"name"],[phone_code_arr[row] valueForKey:@"dial_code"]];
+ 
+ }*/
+
+
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView{
     return 1;
 }// returns the # of rows in each component..
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
     
    
+    if (pickerView == self.phone_picker_view) {
+        
+        return phone_code_arr.count;
+        
+    }else{
         return response_picker_arr.count;
-    
+    }
     
 }
 - (nullable NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
     
+
+    if (pickerView == self.phone_picker_view) {
+        
+        return [NSString stringWithFormat:@"%@   %@",[phone_code_arr[row] valueForKey:@"name"],[phone_code_arr[row] valueForKey:@"dial_code"]];
+    }
+    else{
     
+    @try {
         if (isCountrySelected) {
             return [[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_name"];
         }
@@ -1066,12 +1241,20 @@ if (textField.tag == 8) {
             
             return [[response_picker_arr objectAtIndex:row] valueForKey:@"value"];
         }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
+    }
     
 }
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
     
-   
-    
+    if (pickerView == self.phone_picker_view) {
+        flag = [NSString stringWithFormat:@"%@",[phone_code_arr[row] valueForKey:@"dial_code"]];
+      
+    }
+    else{
+        
         if (isCountrySelected) {
             @try {
                 
@@ -1098,8 +1281,14 @@ if (textField.tag == 8) {
             }
             
         }
-       
+    }
 }
+- (void)selectRow:(NSInteger)row inComponent:(NSInteger)component animated:(BOOL)animated
+{
+    
+    
+}
+
 #pragma mark picker_done_btn_action
 -(void)picker_done_btn_action:(id)sender{
     
@@ -1116,7 +1305,329 @@ if (textField.tag == 8) {
     //    [_blng_cell.TXT_state resignFirstResponder];
     
 }
+-(void)close_ACTION{
+    [self.view endEditing:YES];
+}
 
+
+/*
+ Delete Shipping Address
+ 
+ 
+ Function Name : Apis/shipaddressdelete.json
+ Parameters :customerId,shipId
+ Method : POST*/
+#pragma mark DeleShippingAddress
+-(void)deleteShipping_address:(NSString *)cust_id andShipID:(NSString *)shipid{
+    
+    @try {
+        
+        
+        NSDictionary *params = @{@"customerId":cust_id,@"shipId":shipid};
+        
+        
+    NSString *urlGetuser =[NSString stringWithFormat:@"%@Apis/shipaddressdelete.json",SERVER_URL];
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        @try {
+            
+            [HttpClient api_with_post_params:urlGetuser andParams:params completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error) {
+                        NSLog(@"%@",[error localizedDescription]);
+                    }
+                    if (data) {
+                        @try {
+                            NSLog(@"%@",data);
+                            if ([data isKindOfClass:[NSDictionary class]]) {
+                                if ([[data valueForKey:@"msg"] isEqualToString:@"success"]) {
+                                    
+                                    [self Shipp_address_API];
+                                    
+                                }
+                            }
+                            else{
+                                [HttpClient createaAlertWithMsg:@"The Data could not be read" andTitle:@""];
+                            }
+                        } @catch (NSException *exception) {
+                            NSLog(@"%@",exception);
+                        }
+                        
+                    }
+                    
+                });
+            }];
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        }
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
+    
+    
+}
+
+#pragma mark add_new_shipping_address_API
+/*Add shipping api
+ http://192.168.0.171/dohasooq/apis/shipaddressadd.json
+ [10:38 AM] Bindal Gami: params.put("FirstName", user_firstname);
+                 params.put("LastName", user_lastname);
+                 params.put("country", user_countrys);
+                 params.put("state", user_state);
+                 params.put("city", user_city);
+                 params.put("address1", user_address1);
+                 params.put("address2", user_address2);
+                 params.put("zipcode", user_zip_code);
+                 params.put("newaddressinput", user_address_token);
+                 params.put("customerId", customerid);*/
+
+-(void)add_new_ship_address{
+    @try
+    {
+        NSString *cntr_id = [NSString stringWithFormat:@"%ld",(long)cntry_ID];
+        
+       NSDictionary *params = @{@"FirstName":str_fname,@"LastName":str_lname,@"country":cntr_id,@"state":state_id,@"city":str_city,@"address1":str_addr1,@"address2":str_addr2,@"zipcode":str_zip_code,@"newaddressinput":new_address_input,@"customerId":[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"customer_id"],@"mobile":str_phone};
+        NSLog(@"%@",params);
+        
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/shipaddressadd.json",SERVER_URL];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:[NSURL URLWithString:urlGetuser]];
+        [request setHTTPMethod:@"POST"];
+        
+        NSString *boundary = @"---------------------------14737809831466499882746641449";
+        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
+        [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+        
+        NSMutableData *body = [NSMutableData data];
+        //    [request setHTTPBody:body];
+        
+        
+        
+        
+        
+        // FirstName
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"FirstName\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]]; //venu1@carmatec.com
+        [body appendData:[[NSString stringWithFormat:@"%@",str_fname]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        //LastName
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"LastName\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",str_lname]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        
+        //address1
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"address1\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",str_addr1]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        
+        //address2
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"address2\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",str_addr2]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        //city
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"city\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",str_city]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        
+        
+        
+        //country
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"country\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",cntr_id]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        
+        
+        //customerId
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"customerId\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"customer_id"]]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        NSLog(@"%@  * %@",[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"customer_id"],new_address_input);
+
+        
+        //newaddressinput
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"newaddressinput\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",new_address_input]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        
+        //state
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"state\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",state_id]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+
+        //zipcode
+    
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"zipcode\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",str_zip_code]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        
+        //mobile
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"mobile\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",str_phone]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        
+        //
+        NSError *er;
+        //    NSHTTPURLResponse *response = nil;
+        
+        // close form
+        [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        // set request body
+        [request setHTTPBody:body];
+        
+        NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&er];
+        if (er) {
+            NSLog(@"%@",[er localizedDescription]);
+        }
+        
+        if (returnData) {
+            
+            NSMutableDictionary *json_DATA = [[NSMutableDictionary alloc]init];
+            json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
+            NSLog(@"%@", [NSString stringWithFormat:@"JSON DATA OF ORDER DETAIL: %@", json_DATA]);
+            
+            if ([[json_DATA valueForKey:@"success"] isEqualToString:@"success"]) {
+               
+                i= i-1;
+                 [self Shipp_address_API];
+            }
+            
+            [HttpClient createaAlertWithMsg:[json_DATA valueForKey:@"success"] andTitle:@""];
+        }
+        
+    }
+    @catch(NSException *exception)
+    {
+        [HttpClient stop_activity_animation];
+
+        NSLog(@"THE EXception:%@",exception);
+        
+    }
+   
+
+}
+
+
+-(void)phone_code_view
+{
+
+   
+    NSData *data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"countries" ofType:@"json"]];
+    NSError *localError = nil;
+    NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
+    
+    if (localError != nil) {
+        NSLog(@"%@", [localError userInfo]);
+    }
+    phone_code_arr = (NSMutableArray *)parsedObject;
+    
+    NSSortDescriptor *sortDescriptor;
+    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name"
+                                                 ascending:YES];
+    NSArray *sorted_arr = [phone_code_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
+    
+    NSLog(@"%@",sorted_arr);
+    
+           for(int k = 0; k < sorted_arr.count;k++)
+            {
+                if([[[sorted_arr objectAtIndex:k] valueForKey:@"name"] isEqualToString:@"Qatar"])
+                        {
+                          [self.phone_picker_view selectRow:k inComponent:0 animated:NO];
+        
+                            [self pickerView:self.phone_picker_view didSelectRow:k inComponent:0];
+                            
+        
+                        }
+                }
+    
+                                        
+
+    
+    //phone_code_arr = [NSMutableArray arrayWithArray:[codes allValues]];
+    //   country_arr = [codes allKeys];
+    //    [[NSUserDefaults standardUserDefaults] setObject:country_arr forKey:@"country_array"];
+    //    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    _phone_picker_view = [[UIPickerView alloc] init];
+    _phone_picker_view.delegate = self;
+    _phone_picker_view.dataSource = self;
+    
+    
+    
+    
+//    UITapGestureRecognizer *tapToSelect = [[UITapGestureRecognizer alloc]initWithTarget:self
+//                                                                                 action:@selector(tappedToSelectRow:)];
+//    tapToSelect.delegate = self;
+//    [_phone_picker_view addGestureRecognizer:tapToSelect];
+    
+    
+    
+}
+
+
+
+- (void)alertView:(UIAlertView *)alertView
+clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if(alertView.tag == 1)
+    {
+        if (buttonIndex == [alertView cancelButtonIndex])
+        {
+            NSString *customer_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"customer_id"];
+
+            [self deleteShipping_address:customer_id andShipID:shpid ];
+            
+        }
+        else{
+            
+            
+            NSLog(@"cancel:");
+            
+            
+        }
+    }
+}
+
+
+- (IBAction)home_action:(id)sender {
+    
+    [self.navigationController popViewControllerAnimated:NO];
+
+}
 
 
 
@@ -1130,5 +1641,6 @@ if (textField.tag == 8) {
     // Pass the selected object to the new view controller.
 }
 */
+
 
 @end

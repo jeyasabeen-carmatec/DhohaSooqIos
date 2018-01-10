@@ -7,14 +7,17 @@
 //
 
 #import "VC_event_user.h"
+#import "HttpClient.h"
 #import "XMLDictionary/XMLDictionary.h"
 
-@interface VC_event_user ()<UITextFieldDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
+@interface VC_event_user ()<UITextFieldDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIWebViewDelegate>
 {
     float scroll_height;
     NSMutableArray *phone_code_arr;
     UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+  //  UIActivityIndicatorView *activityIndicatorView;
+    NSArray *country_arr;
+    //NSTimer *timer;
 }
 
 @end
@@ -25,6 +28,23 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    
+    @try
+    {
+        
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        if (dict.count != 0) {
+            
+            _TXT_mail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"user_email"];
+            _TXT_name.text = [dict valueForKey:@"firstname"];
+            
+        }
+    }@catch(NSException *exception)
+    {
+        
+    }
+    
+    
     self.navigationController.navigationBar.hidden = NO;
 
     phone_code_arr = [[NSMutableArray alloc]init];
@@ -32,6 +52,11 @@
     frameset.size.height = _BTN_pay.frame.origin.y + _BTN_pay.frame.size.height;
     frameset.size.width = _scroll_contents.frame.size.width;
     _VW_contents.frame = frameset;
+    
+    
+    self.web_terms.delegate = self;
+    
+    
     [self.scroll_contents addSubview:_VW_contents];
     
     @try
@@ -66,10 +91,51 @@
     
     _BTN_apply.layer.cornerRadius = 2.0f;
     _BTN_apply.layer.masksToBounds = YES;
+    
+    _VW_terms.layer.cornerRadius = 2.0f;
+    _VW_terms.layer.masksToBounds = YES;
+    
+    _BTN_ok_terms.layer.cornerRadius = 2.0f;
+    _BTN_ok_terms.layer.masksToBounds = YES;
+    
+    
+
     _LBL_stat.tag = 0;
     scroll_height  = _VW_contents.frame.origin.y + _VW_contents.frame.size.height;
     [_BTN_pay addTarget:self action:@selector(Pay_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_check addTarget:self action:@selector(BTN_chek_action) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_terms addTarget:self action:@selector(terms_conditions) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_ok_terms addTarget:self action:@selector(terms_ok) forControlEvents:UIControlEventTouchUpInside];
+
+
+    NSString *str_accept = @"I accept";
+    NSString *str_terms = @"Terms and Conditions";
+    NSString *str_conditions = [NSString stringWithFormat:@"%@ %@",str_accept,str_terms];
+    if ([_BTN_terms.titleLabel respondsToSelector:@selector(setAttributedText:)]) {
+        
+        NSDictionary *attribs = @{
+                                  NSForegroundColorAttributeName:_BTN_terms.titleLabel.textColor,
+                                  NSFontAttributeName:_BTN_terms.titleLabel.font
+                                  };
+        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:str_conditions attributes:attribs];
+        NSRange enames = [str_conditions rangeOfString:str_accept];
+        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Italic" size:17.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                                range:enames];
+
+        
+        
+        NSRange ename = [str_conditions rangeOfString:str_terms];
+        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.23 green:0.35 blue:0.60 alpha:1.0]}
+                                    range:ename];
+        
+        [_BTN_terms setAttributedTitle:attributedText forState:UIControlStateNormal];
+    }
+    else
+    {      [_BTN_terms setTitle:str_conditions forState:UIControlStateNormal];
+    }
+    
+    
+    
 
 }
 -(void)viewWillAppear:(BOOL)animated
@@ -81,10 +147,10 @@
     VW_overlay.clipsToBounds = YES;
     //    VW_overlay.layer.cornerRadius = 10.0;
     
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
     [self.view addSubview:VW_overlay];
     
      VW_overlay.hidden = YES;
@@ -93,10 +159,80 @@
     
     
 }
+/*UIFont *font = [UIFont fontWithName:@"OpenSans" size:12];
+NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %@; font-size:             %i\">%@</span>",font.fontName, (int) font.pointSize, yourHTMLString];*/
+-(void)terms_conditions
+{
+   
+    _VW_terms.hidden = NO;
+    VW_overlay.hidden = NO;
+    CGRect frameset = _VW_terms.frame;
+    CGSize result = [[UIScreen mainScreen] bounds].size;
+    
+    if(result.height <= 480)
+    {
+        frameset.size.height = 300;
+        frameset.size.width = 300;
+
+    }
+    else if(result.height <= 568)
+    {
+        frameset.size.height = 350;
+        frameset.size.width = 350;
+
+    }
+    else
+    {
+        frameset.size.height = 400;
+        frameset.size.width = 400;
+
+    }
+    
+
+     _VW_terms.frame= frameset;
+    _VW_terms.center =  self.view.center;
+    [VW_overlay addSubview:_VW_terms];
+    
+//  timer = [NSTimer scheduledTimerWithTimeInterval:1
+//                                             target:self
+//                                           selector:@selector(set_DATA_web_VIEW)
+//                                           userInfo:nil
+//                                            repeats:NO];
+//
+    [self set_DATA_web_VIEW];
+  
+    
+    
+}
+
+-(void)terms_ok
+{
+    
+    _VW_terms.hidden =YES;
+    VW_overlay.hidden = YES;
+    
+    
+}
+-(void)set_DATA_web_VIEW
+{
+    NSString *html = @"<html><head><meta charset=\"utf-8\"></head><body><div class=\"english_data\" dir=\"ltr\"><ol><li>Once the tickets are confirmed it is deemed as sold and as per the cinema regulations, once a ticket has been paid for, it cannot be refunded replaced or cancelled or changed/transferred.</li><li>Ticket prices are applicable for children from 2 years and above.</li><li>Reserved seats cannot be transferred or changed.</li><li>Q-Tickets guarantee the absolute privacy and confidentiality of its users' personal information.</li><li>Q-Tickets only role is to facilitate the online reservation process. We are neither responsible nor accountable for the theater's services.</li><li>By agreeing to the terms and conditions, you are verifying that all the personal information is valid and accurate, and that you bear all legal responsibility for it.</li><li>Q-Tickets is not responsible for the movies ratings.Theatre owner has right to access permission.</li></ol></div><div class=\"arabic_data\" dir=\"rtl\" lang=\"ar\"><ol><li>حالما يتم تأكيد التذاكر تعتبر قد بيعت وحيث ينص قانون السينيما، حينما يتم دفع ثمن التذاكر فأنه غير ممكن استبدالها أرجاعها أو حتى ألغائها.</li><li>الأسعار قابلة للتطبيق للأطفال من سن 2 فما فوق.</li><li>المقاعد المحجوزة لا يمكن تغيريها أو نقلها.</li><li>Q-ticketts تضمن السريه والخصوصية التامه للمعلومات الشخصية لمستخدميها.</li><li>Q-tickets دورها الاساسي والوحيد من خلال الحجز عبر الأنترنت، ونحن غير مسؤولين عن خدمات القاعة.</li><li>عبر الموافقة على الشروط والأحكام فأنك تعطي الحق بأستخدام المعلومات الشخصيه بشكل قانوني.<li><li>Q-tickets غير مسؤولة عن تقييم الفيلم، مالك القاعه هو فقط من لديه الصلاحيه لذلك.</li>          </ol></div></body>";
+    
+    
+    UIFont *font = [UIFont fontWithName:@"poppins" size:15];
+    NSString *string = [NSString stringWithFormat:@"<span style=\"font-family: %@; font-size:             %i\">%@</span>",font.fontName, (int) font.pointSize, html];
+    
+    //    VW_overlay.hidden = NO;
+    //    [activityIndicatorView startAnimating];
+    
+    [_web_terms loadHTMLString:string baseURL:nil];
+ //   [timer invalidate];
+    
+
+}
 
 -(void)phone_code_view
 {
-    NSDictionary *codes = @{
+  /*  NSDictionary *codes = @{
                             @"Canada"                                       : @"+1",
                             @"China"                                        : @"+86",
                             @"France"                                       : @"+33",
@@ -347,11 +483,29 @@
                             @"Zambia"                                       : @"+260",
                             @"Zanzibar"                                     : @"+255",
                             @"Zimbabwe"                                     : @"+263"
-                            };
-    phone_code_arr = [NSMutableArray arrayWithArray:[codes allValues]];
-    NSArray *country_arr = [codes allKeys];
-    [[NSUserDefaults standardUserDefaults] setObject:country_arr forKey:@"country_array"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+                            };*/
+
+//    phone_code_arr = [NSMutableArray arrayWithArray:[codes allValues]];
+//    country_arr = [codes allKeys];
+//    [[NSUserDefaults standardUserDefaults] setObject:country_arr forKey:@"country_array"];
+//    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    
+    NSData *data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"countries" ofType:@"json"]];
+    NSError *localError = nil;
+    NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
+    
+    if (localError != nil) {
+        NSLog(@"%@", [localError userInfo]);
+    }
+    phone_code_arr = (NSMutableArray *)parsedObject;
+    
+    NSSortDescriptor *sortDescriptor;
+    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name"
+                                                 ascending:YES];
+    [phone_code_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
+    
+    NSLog(@"%@",phone_code_arr);
     
     _phone_picker_view = [[UIPickerView alloc] init];
     _phone_picker_view.delegate = self;
@@ -370,9 +524,16 @@
     phone_close.barStyle = UIBarStyleBlackTranslucent;
     [phone_close sizeToFit];
     
+    UIButton *done=[[UIButton alloc]init];
+    done.frame=CGRectMake(phone_close.frame.size.width - 100, 0, 100, phone_close.frame.size.height);
+    [done setTitle:@"Done" forState:UIControlStateNormal];
+    [done addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
+    [phone_close addSubview:done];
+    
+    
     UIButton *close=[[UIButton alloc]init];
-    close.frame=CGRectMake(phone_close.frame.size.width - 100, 0, 100, phone_close.frame.size.height);
-    [close setTitle:@"close" forState:UIControlStateNormal];
+    close.frame=CGRectMake(phone_close.frame.origin.x -20, 0, 100, phone_close.frame.size.height);
+    [close setTitle:@"Close" forState:UIControlStateNormal];
     [close addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
     [phone_close addSubview:close];
     
@@ -481,9 +642,8 @@
     
     else
     {
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(get_oreder_ID) withObject:activityIndicatorView afterDelay:0.01];
+        [HttpClient animating_images:self];
+        [self performSelector:@selector(get_oreder_ID) withObject:nil afterDelay:0.01];
 
      
     }
@@ -497,69 +657,82 @@
     }
 
 }
+#pragma mark Generating Order ID
+
 -(void)get_oreder_ID
 {
-   @try
-    {    NSMutableArray *arr;NSString  *event_price_id; NSString *event_master_id;
-    arr = [[NSMutableArray alloc]init];
-    NSArray *temp_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"cost_arr"];
-    NSDictionary *event_dict =[[NSUserDefaults standardUserDefaults] valueForKey:@"event_dtl"];
-    
-    for(int j = 0;j< temp_arr.count;j++)
+    @try
     {
-        if([[[temp_arr objectAtIndex:j] valueForKey:@"quantity"] intValue] > 0)
+        NSMutableArray *arr;NSString  *event_price_id; NSString *event_master_id;
+        arr = [[NSMutableArray alloc]init];
+        NSArray *temp_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"cost_arr"];
+        NSDictionary *event_dict =[[NSUserDefaults standardUserDefaults] valueForKey:@"event_dtl"];
+        
+        for(int j = 0;j< temp_arr.count;j++)
         {
-            NSString  *event_ticket_id = [NSString stringWithFormat:@"%@-%@",[[temp_arr objectAtIndex:j] valueForKey:@"ticket_ID"],[[temp_arr objectAtIndex:j] valueForKey:@"quantity"]];
-            [arr addObject:event_ticket_id];
-            event_master_id = [NSString stringWithFormat:@"%@",[[temp_arr objectAtIndex:j]valueForKey:@"ticket_master_ID"]];
+            if([[[temp_arr objectAtIndex:j] valueForKey:@"quantity"] intValue] > 0)
+            {
+                NSString  *event_ticket_id = [NSString stringWithFormat:@"%@-%@",[[temp_arr objectAtIndex:j] valueForKey:@"ticket_ID"],[[temp_arr objectAtIndex:j] valueForKey:@"quantity"]];
+                [arr addObject:event_ticket_id];
+                event_master_id = [NSString stringWithFormat:@"%@",[[temp_arr objectAtIndex:j]valueForKey:@"ticket_master_ID"]];
+            }
         }
-    }
-    
-    
-    
-    event_price_id = [arr componentsJoinedByString:@","];
-    
-    NSString *event_id = [NSString stringWithFormat:@"%@",[event_dict valueForKey:@"_eventid"]];
-    
-    NSString *str_count = [NSString stringWithFormat:@"%@",[[[NSUserDefaults standardUserDefaults] valueForKey:@"Amount_dict"] objectAtIndex:0]];
-    NSString *str_price = [NSString stringWithFormat:@"%@",[[[NSUserDefaults standardUserDefaults] valueForKey:@"Amount_dict"] objectAtIndex:1]];
-    NSString *start_date = [[NSUserDefaults standardUserDefaults] valueForKey:@"event_book_date"];
-    if([start_date isEqualToString:@"(null)"] ||[start_date isEqualToString:@"<null>"])
-    {
-        start_date = [event_dict valueForKey:@"_startDate"];
-
-    }
-    else{
-        start_date = start_date;
-    }
-    NSString *start_time = [event_dict valueForKey:@"_StartTime"];
-    NSLog(@"The appended string is:%@",event_price_id);
-    
-    
-    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/eventbookings?eventid=%@&ticket_id=%@&amount=%@&tkt_count=%@&NoOftktPerid=%@&camount=0&email=%@&name=%@&phone=%@&prefix=91&bdate=%@&btime=%@&balamount=0&couponcodes=null&AppSource=4&AppVersion=1.0",event_id,event_master_id,str_price,str_count,event_price_id,_TXT_mail.text,_TXT_name.text,_TXT_phone.text,start_date,start_time];
-    
-    NSURL *URL = [[NSURL alloc] initWithString:str_url];
-    
-    NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
-    NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
-    NSLog(@"The booking_data is:%@",xmlDoc);
-    [[NSUserDefaults standardUserDefaults] setObject:xmlDoc forKey:@"order_details"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-   
-    
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
-    
-    [self performSegueWithIdentifier:@"user_detail_pay" sender:self];
+        
+        
+        
+        event_price_id = [arr componentsJoinedByString:@","];
+        
+        NSString *event_id = [NSString stringWithFormat:@"%@",[event_dict valueForKey:@"_eventid"]];
+        
+        NSString *str_count = [NSString stringWithFormat:@"%@",[[[NSUserDefaults standardUserDefaults] valueForKey:@"Amount_dict"] objectAtIndex:0]];
+        NSString *str_price = [NSString stringWithFormat:@"%@",[[[NSUserDefaults standardUserDefaults] valueForKey:@"Amount_dict"] objectAtIndex:1]];
+        NSString *start_date = [[NSUserDefaults standardUserDefaults] valueForKey:@"event_book_date"];
+        if([start_date isEqualToString:@"(null)"] ||[start_date isEqualToString:@"<null>"])
+        {
+            start_date = [event_dict valueForKey:@"_startDate"];
+            
+        }
+        else{
+            start_date = start_date;
+        }
+        NSString *start_time = [event_dict valueForKey:@"_StartTime"];
+        NSLog(@"The appended string is:%@",event_price_id);
+        
+        
+        NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/eventbookings?eventid=%@&ticket_id=%@&amount=%@&tkt_count=%@&NoOftktPerid=%@&camount=0&email=%@&name=%@&phone=%@&prefix=%@&bdate=%@&btime=%@&balamount=0&couponcodes=null&AppSource=4&AppVersion=1.0",event_id,event_master_id,str_price,str_count,event_price_id,_TXT_mail.text,_TXT_name.text,_TXT_phone.text,_TXT_code.text,start_date,start_time];
+        
+        NSURL *URL = [[NSURL alloc] initWithString:str_url];
+        
+        NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
+        NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
+        NSLog(@"The booking_data is:%@",xmlDoc);
+        
+        
+        //_Transaction_Id
+        
+        // Saving User Data And Transaction ID
+        //full_name, email, mobile, bookingId, movie_event,user_id
+        
+        NSDictionary *save_booking_dic = @{@"full_name":_TXT_name.text,@"email":_TXT_mail.text,@"mobile":_TXT_phone.text };
+        
+        [[NSUserDefaults standardUserDefaults]setObject:save_booking_dic forKey:@"savebooking"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        [[NSUserDefaults standardUserDefaults] setObject:[[xmlDoc valueForKey:@"result"] valueForKey:@"_orderid"] forKey:@"order_details"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        
+        [HttpClient stop_activity_animation];
+        // Move to next 
+        [self performSegueWithIdentifier:@"user_detail_pay" sender:self];
     }
     @catch(NSException *exception)
     {
         
     }
     
-
+    
 }
-
 -(void)BTN_chek_action
 {
     if(_LBL_stat.tag == 1)
@@ -569,11 +742,12 @@
     }
     else if(_LBL_stat.tag == 0)
     {
-        _LBL_stat.image = [UIImage imageNamed:@"checked_order"];
+        _LBL_stat.image = [UIImage imageNamed:@"checkbox_select.png"];
         [_LBL_stat setTag:1];
     }
     
 }
+
 - (IBAction)tappedToSelectRow:(UITapGestureRecognizer *)tapRecognizer
 {
     if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
@@ -611,7 +785,7 @@
 
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
-    return phone_code_arr[row];
+   return [NSString stringWithFormat:@"%@   %@",[phone_code_arr[row] valueForKey:@"name"],[phone_code_arr[row] valueForKey:@"dial_code"]];
     
 }
 
@@ -619,11 +793,17 @@
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
    
-        self.TXT_code.text = phone_code_arr[row];
+        self.TXT_code.text = [phone_code_arr[row] valueForKey:@"dial_code"];
         NSLog(@"the text is:%@",_TXT_code.text);
         
     
    }
+
+
+#pragma mark picker_close_action
+-(void)picker_close_action{
+    [self.view endEditing:YES];
+}
 
 
 - (void)didReceiveMemoryWarning {
@@ -631,6 +811,24 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark WebViewDelegate Methods
+
+
+-(void)webViewDidFinishLoad:(UIWebView *)webView {
+    
+    //[self removeLoadingView];
+    
+    //[activityIndicatorView startAnimating];
+   // VW_overlay.hidden = YES;
+    NSLog(@"finish");
+}
+
+
+-(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+    
+    //[self removeLoadingView];
+    NSLog(@"Error for WEBVIEW: %@", [error description]);
+}
 /*
 #pragma mark - Navigation
 

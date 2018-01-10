@@ -50,6 +50,7 @@
 @property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_city;
 @property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_country;
 @property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_zip;
+@property (weak, nonatomic) IBOutlet UITextField *TXT_Cntry_code;
 @property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_email;
 
 // Shiiping address
@@ -65,6 +66,7 @@
 @property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_ship_country;
 @property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_ship_zip;
 @property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_ship_email;
+@property (weak, nonatomic) IBOutlet UITextField *TXT_ship_cntry_code;
 
 
 
@@ -95,6 +97,7 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sub_total;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_shipping_charge;
 @property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_cupon;
+@property (weak, nonatomic) IBOutlet UILabel *LBL_summry_miles;
 
 
 
@@ -121,5 +124,8 @@
 
 - (IBAction)order_to_cartPage:(id)sender;
 - (IBAction)order_to_wishListPage:(id)sender;
+
+@property(strong,nonatomic)UIPickerView *country_code_Pickerview;
+@property (weak, nonatomic) IBOutlet UIButton *BTN_logo;
 
 @end
