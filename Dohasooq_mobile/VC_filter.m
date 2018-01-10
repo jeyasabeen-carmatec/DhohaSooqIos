@@ -25,13 +25,13 @@
     
     self.navigationController.navigationBar.hidden = NO;
 
-    self.LBL_slider.minimumValue = 1;
-    self.LBL_slider.maximumValue = 3000;
+    self.LBL_slider.minValue = 1;
+    self.LBL_slider.maxValue = 3000;
     
     self.LBL_slider.lowerValue = 1;
     self.LBL_slider.upperValue = 3000;
     
-    self.LBL_slider.minimumRange = 1;
+    self.LBL_slider.minValue = 1;
     
     _TXT_start_date.text = @"Select start date";
     _TXT_end_date.text = @"Select end date";
@@ -39,6 +39,14 @@
     lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
     upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];
     self.BTN_all.backgroundColor = self.BTN_submit.backgroundColor;
+    _LBL_slider.trackColor =[UIColor colorWithRed:1.00 green:0.98 blue:0.80 alpha:1.0];
+    
+    
+    // Set color for highlighted section of the slider track
+    _LBL_slider.trackHighlightColor =[UIColor colorWithRed:0.92 green:0.66 blue:0.27 alpha:1.0];
+    // Set height of slider track
+    _LBL_slider.trackHeight = 8.0;
+
 
 
     [_BTN_submit addTarget:self action:@selector(submit_ACTION) forControlEvents:UIControlEventTouchUpInside];
@@ -46,7 +54,7 @@
     
     
 }
-- (IBAction)labelSliderChanged:(NMRangeSlider*)sender
+- (IBAction)labelSliderChanged:(CCRangeSlider*)sender
 {
     lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
     upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];

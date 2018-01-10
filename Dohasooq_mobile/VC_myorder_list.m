@@ -12,8 +12,8 @@
 
 @interface VC_myorder_list ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 {
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+//    UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
    NSArray *json_DATA;
     NSArray *search_arr;
     UIImageView *image_empty;
@@ -37,22 +37,23 @@
     self.navigationItem.hidesBackButton = YES;
 
     
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    VW_overlay.center = self.view.center;
-    [self.view addSubview:VW_overlay];
-    VW_overlay.hidden = YES;
-    _TXT_search.delegate = self;
-    
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(Orders_list_API) withObject:activityIndicatorView afterDelay:0.01];
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    VW_overlay.center = self.view.center;
+//    [self.view addSubview:VW_overlay];
+//    VW_overlay.hidden = YES;
+//    _TXT_search.delegate = self;
+//    
+//    VW_overlay.hidden = NO;
+//    [activityIndicatorView startAnimating];
+    [HttpClient animating_images:self];
+    [self performSelector:@selector(Orders_list_API) withObject:nil afterDelay:0.01];
     
     
     
@@ -79,13 +80,12 @@
             [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
              ];
             
-            VW_overlay.hidden=YES;
-            [activityIndicatorView stopAnimating];
+            [HttpClient stop_activity_animation];
+
         }
         if (data) {
             
-            VW_overlay.hidden=YES;
-            [activityIndicatorView stopAnimating];
+            [HttpClient stop_activity_animation];
             NSLog(@"%@",data);
             NSDictionary *dict = data;
             @try {
@@ -129,8 +129,8 @@
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
                 
-                VW_overlay.hidden=YES;
-                [activityIndicatorView stopAnimating];
+                [HttpClient stop_activity_animation];
+
             }
             
         }
@@ -455,8 +455,8 @@
             if([json_DATA isKindOfClass:[NSArray class]])
             {
              
-                [activityIndicatorView stopAnimating];
-                VW_overlay.hidden = YES;
+                [HttpClient stop_activity_animation];
+
                 image_empty.hidden = YES;
                 [self cart_count];
                 
@@ -468,8 +468,8 @@
                 
             }
             else{
-                [activityIndicatorView stopAnimating];
-                VW_overlay.hidden = YES;
+                [HttpClient stop_activity_animation];
+
 
                 _TBL_orders.hidden =  YES;
                image_empty = [[UIImageView alloc]init];
@@ -484,15 +484,14 @@
 
             }
             [self.TBL_orders reloadData];
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
+            [HttpClient stop_activity_animation];
+
             
             
         }
         else
         {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
+            [HttpClient stop_activity_animation];
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
@@ -503,8 +502,7 @@
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
+        [HttpClient stop_activity_animation];
 
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];

@@ -7,6 +7,7 @@
 //
 
 #import "VC_event_user.h"
+#import "HttpClient.h"
 #import "XMLDictionary/XMLDictionary.h"
 
 @interface VC_event_user ()<UITextFieldDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIWebViewDelegate>
@@ -14,7 +15,7 @@
     float scroll_height;
     NSMutableArray *phone_code_arr;
     UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+  //  UIActivityIndicatorView *activityIndicatorView;
     NSArray *country_arr;
     //NSTimer *timer;
 }
@@ -146,10 +147,10 @@
     VW_overlay.clipsToBounds = YES;
     //    VW_overlay.layer.cornerRadius = 10.0;
     
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
     [self.view addSubview:VW_overlay];
     
      VW_overlay.hidden = YES;
@@ -641,9 +642,8 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
     
     else
     {
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(get_oreder_ID) withObject:activityIndicatorView afterDelay:0.01];
+        [HttpClient animating_images:self];
+        [self performSelector:@selector(get_oreder_ID) withObject:nil afterDelay:0.01];
 
      
     }
@@ -722,9 +722,7 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
-        
+        [HttpClient stop_activity_animation];
         // Move to next 
         [self performSegueWithIdentifier:@"user_detail_pay" sender:self];
     }
@@ -820,7 +818,7 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
     
     //[self removeLoadingView];
     
-    [activityIndicatorView startAnimating];
+    //[activityIndicatorView startAnimating];
    // VW_overlay.hidden = YES;
     NSLog(@"finish");
 }

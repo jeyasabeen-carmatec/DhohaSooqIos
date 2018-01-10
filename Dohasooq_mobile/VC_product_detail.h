@@ -29,7 +29,6 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_First;
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_images;
 @property(nonatomic,weak) IBOutlet UIPageControl *custom_story_page_controller;
-@property(nonatomic,strong) IBOutlet UIButton *BTN_play;
 @property(nonatomic,strong) IBOutlet UIButton *BTN_share;
 @property(nonatomic,strong) IBOutlet UIButton *BTN_wish;
 
@@ -81,6 +80,7 @@
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_cart;
 @property(nonatomic,weak) IBOutlet UITableView *TBL_reviews;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_buy_now;
+@property(nonatomic,weak)IBOutlet UIButton *BTN_top;
 
 
 

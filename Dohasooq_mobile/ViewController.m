@@ -13,8 +13,8 @@
 
 @interface ViewController ()<UITextFieldDelegate,FBSDKLoginButtonDelegate,GIDSignInUIDelegate,GIDSignInDelegate>
 {
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+//    UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
     NSDictionary *social_dictl;
     
 }
@@ -53,24 +53,24 @@
     
 }
 - (void)signInWillDispatch:(GIDSignIn *)signIn error:(NSError *)error {
-    [activityIndicatorView stopAnimating];
+    [HttpClient animating_images:self];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    [self.view addSubview:VW_overlay];
-    
-    VW_overlay.hidden = YES;
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    //    VW_overlay.layer.cornerRadius = 10.0;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    [self.view addSubview:VW_overlay];
+//    
+//    VW_overlay.hidden = YES;
     [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
 
     
@@ -278,9 +278,8 @@
     NSString *emails = [NSString stringWithFormat:@"%@",[dict valueForKey:@"userEmail"]];
 
 
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(google_LOGIN) withObject:activityIndicatorView afterDelay:0.01];
+    [HttpClient animating_images:self];
+    [self performSelector:@selector(google_LOGIN) withObject:nil afterDelay:0.01];
     [self Google_plus_login:first_name:last_name:emails];
 
     
@@ -374,9 +373,8 @@
                 
                 social_dictl = [[NSUserDefaults standardUserDefaults] objectForKey:@"login_details"];
                 NSLog(@"dict ------ %@",social_dictl);
-                VW_overlay.hidden = NO;
-                [activityIndicatorView startAnimating];
-                [self performSelector:@selector(Facebook_login) withObject:activityIndicatorView afterDelay:0.01];
+                [HttpClient animating_images:self];
+                [self performSelector:@selector(Facebook_login) withObject:nil afterDelay:0.01];
 
                // [self Facebook_login];
                 
@@ -476,8 +474,7 @@ error:(NSError *)error{
         }
         else
         {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
+           [HttpClient stop_activity_animation];
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
@@ -488,8 +485,7 @@ error:(NSError *)error{
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
+        [HttpClient stop_activity_animation];
     }
 
     
@@ -555,8 +551,8 @@ error:(NSError *)error{
                 [self MENU_api_call];
                 
                 
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
+//                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//                [alert show];
                 
             }
             else
@@ -573,8 +569,7 @@ error:(NSError *)error{
         }
         else
         {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
+             [HttpClient stop_activity_animation];
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
@@ -585,8 +580,7 @@ error:(NSError *)error{
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
+        [HttpClient stop_activity_animation];
     }
     
     
@@ -624,9 +618,8 @@ error:(NSError *)error{
     else
     {
         [self.view endEditing:TRUE];
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(LOGIN_up_api_integration) withObject:activityIndicatorView afterDelay:0.01];
+        [HttpClient animating_images:self];
+        [self performSelector:@selector(LOGIN_up_api_integration) withObject:nil afterDelay:0.01];
         
     }
     if(msg)
@@ -675,8 +668,7 @@ error:(NSError *)error{
             
             if([status isEqualToString:@"1"])
             {
-                [activityIndicatorView stopAnimating];
-                VW_overlay.hidden = YES;
+                 [HttpClient stop_activity_animation];
                 
                 [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
@@ -695,14 +687,13 @@ error:(NSError *)error{
                 [self MENU_api_call];
                 
                 
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
+               // UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+               // [alert show];
                 
             }
             else
             {
-                [activityIndicatorView stopAnimating];
-                VW_overlay.hidden = YES;
+                [HttpClient stop_activity_animation];
 
                 if ([msg isEqualToString:@"User already exists"])
                 {
@@ -716,8 +707,7 @@ error:(NSError *)error{
         }
         else
         {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
+            [HttpClient stop_activity_animation];
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
@@ -768,15 +758,13 @@ error:(NSError *)error{
            // [self performSegueWithIdentifier:@"logint_to_home" sender:self];
             
             NSLog(@"the api_collection_product%@",json_DATA);
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
+            [HttpClient stop_activity_animation];
         }
     }
     @catch(NSException *exception)
     {
         NSLog(@"%@",exception);
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
+        [HttpClient stop_activity_animation];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
         

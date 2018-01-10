@@ -9,6 +9,7 @@
 #import "VC_movie_user_detail.h"
 #import "XMLDictionary/XMLDictionary.h"
 #import "VC_Movie_booking.h"
+#import "HttpClient.h"
 
 @interface VC_movie_user_detail ()<UITextFieldDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIWebViewDelegate>
 
@@ -16,7 +17,7 @@
     float scroll_height;
     NSMutableArray *phone_code_arr;
     UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+   // UIActivityIndicatorView *activityIndicatorView;
     NSDictionary *temp_dict;
     NSArray *country_arr;
 }
@@ -136,10 +137,10 @@
     VW_overlay.clipsToBounds = YES;
     //    VW_overlay.layer.cornerRadius = 10.0;
     
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
     [self.view addSubview:VW_overlay];
     
     VW_overlay.hidden = YES;
@@ -640,9 +641,8 @@
         
     {
 
-    VW_overlay.hidden = NO;
-     [activityIndicatorView startAnimating];
-    [self performSelector:@selector(get_transaction_id) withObject:activityIndicatorView afterDelay:0.01];
+        [HttpClient animating_images:self];
+    [self performSelector:@selector(get_transaction_id) withObject:nil afterDelay:0.01];
         
     }
     
@@ -767,8 +767,7 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        [HttpClient stop_activity_animation];
         
         [self performSegueWithIdentifier:@"movie_user_detail_pay" sender:self];
     }

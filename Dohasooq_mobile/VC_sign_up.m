@@ -10,12 +10,15 @@
 #import "Home_page_Qtickets.h"
 #import "HttpClient.h"
 
-@interface VC_sign_up ()<UIGestureRecognizerDelegate,UITextFieldDelegate,UIAlertViewDelegate>
+@interface VC_sign_up ()<UIGestureRecognizerDelegate,UITextFieldDelegate,UIAlertViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
 {
     float scroll_height;
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
-
+//    UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
+    UIPickerView *phone_picker;
+    NSMutableArray *phone_code_arr;
+     UIToolbar *accessoryView;
+    NSString *flag;
 }
 @end
 
@@ -32,19 +35,19 @@
 -(void)viewWillAppear:(BOOL)animated
 {
   
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    VW_overlay.center = self.view.center;
-    [self.view addSubview:VW_overlay];
-    
-    VW_overlay.hidden = YES;
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    //    VW_overlay.layer.cornerRadius = 10.0;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    VW_overlay.center = self.view.center;
+//    [self.view addSubview:VW_overlay];
+//    
+//    VW_overlay.hidden = YES;
      [self set_UP_View];
 
 }
@@ -86,10 +89,46 @@
     
     [tapGesture1 setDelegate:self];
     
+    accessoryView = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
+    accessoryView.barStyle = UIBarStyleBlackTranslucent;
+    [accessoryView sizeToFit];
+    
+    UIButton *done=[[UIButton alloc]init];
+    done.frame=CGRectMake(accessoryView.frame.size.width - 100, 0, 100, accessoryView.frame.size.height);
+    [done setTitle:@"Done" forState:UIControlStateNormal];
+    [done addTarget:self action:@selector(picker_done_btn_action:) forControlEvents:UIControlEventTouchUpInside];
+    [accessoryView addSubview:done];
+    
+    
+    UIButton *close=[[UIButton alloc]init];
+    close.frame=CGRectMake(accessoryView.frame.origin.x -20 , 0, 100, accessoryView.frame.size.height);
+    [close setTitle:@"Close" forState:UIControlStateNormal];
+    [close addTarget:self action:@selector(close_ACTION) forControlEvents:UIControlEventTouchUpInside];
+    [accessoryView addSubview:close];
+    [self phone_code_view];
+    _TXT_prefix.inputAccessoryView = accessoryView;
+    _TXT_prefix.inputView = phone_picker;
+
+    
     [_BTN_close addGestureRecognizer:tapGesture1];
     [_BTN_submit addTarget:self action:@selector(submit_Action) forControlEvents:UIControlEventTouchUpInside];
     
 }
+-(void)picker_done_btn_action:(id)sender{
+    
+    [self.view endEditing:YES];
+    //[textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
+    [UIView beginAnimations:nil context:NULL];
+    self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+    [UIView commitAnimations];
+    
+    
+    
+}
+-(void)close_ACTION{
+    [self.view endEditing:YES];
+}
+
 -(void)tapGesture_close
 {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -377,9 +416,8 @@
     else
     {
         [self.view endEditing:TRUE];
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(_sign_up_api_integration) withObject:activityIndicatorView afterDelay:0.01];
+        [HttpClient animating_images:self];
+        [self performSelector:@selector(_sign_up_api_integration) withObject:nil afterDelay:0.01];
         
     }
     if(msg)
@@ -403,42 +441,91 @@
     NSString *phone_num = _TXT_phone.text;
     NSString *password = _TXT_password.text;
     NSString *confirm_apssword = _TXT_con_password.text;
+        NSString *prefix = _TXT_prefix.text;
+        prefix = [prefix stringByReplacingOccurrencesOfString:@"+" withString:@""];
+
     NSError *error;
-    NSError *err;
-    NSHTTPURLResponse *response = nil;
-   
-    NSDictionary *parameters = @{ @"firstname": fname,
-                                  @"lastname": lname,
-                                  @"email": email,
-                                  @"phone": phone_num,
-                                  @"password": password,
-                                  @"password2":confirm_apssword
-                                  };
-    NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
-    NSLog(@"the posted data is:%@",parameters);
-    NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/signup/1.json",SERVER_URL];
-    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-    NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL:urlProducts];
-    [request setHTTPMethod:@"POST"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [request setHTTPBody:postData];
-    //[request setAllHTTPHeaderFields:headers];
-    [request setHTTPShouldHandleCookies:NO];
-    NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-    if(aData)
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/signup/1.json",SERVER_URL];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:[NSURL URLWithString:urlGetuser]];
+        [request setHTTPMethod:@"POST"];
+        
+        NSString *boundary = @"---------------------------14737809831466499882746641449";
+        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
+        [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+        
+        NSMutableData *body = [NSMutableData data];
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"firstname\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]]; //venu1@carmatec.com
+        [body appendData:[[NSString stringWithFormat:@"%@",fname]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"lastname\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]]; //venu1@carmatec.com
+        [body appendData:[[NSString stringWithFormat:@"%@",lname]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+
+        
+        // another text parameter
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"email\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",email]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"mobile\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",phone_num]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        
+        //Phnumber
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"password\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",password]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        
+        //message
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"password2\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",confirm_apssword]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        //organization
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"countrycode_sel\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",prefix]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        
+        //
+        NSError *er;
+        //    NSHTTPURLResponse *response = nil;
+        
+        // close form
+        [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        // set request body
+        [request setHTTPBody:body];
+        
+        NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+        
+        if (returnData)
+        
     {
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
-        NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+        [HttpClient stop_activity_animation];        NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&error];
         NSLog(@"The response Api post sighn up API %@",json_DATA);
         NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
         NSString *msg = [json_DATA valueForKey:@"message"];
 
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
-
+        [HttpClient stop_activity_animation];
         if([status isEqualToString:@"1"])
         {
            
@@ -475,9 +562,7 @@
     }
     else
     {
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
-        
+      [HttpClient stop_activity_animation];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
        
         [alert show];
@@ -554,8 +639,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
             
             if([status isEqualToString:@"1"])
             {
-                [activityIndicatorView stopAnimating];
-                VW_overlay.hidden = YES;
+                [HttpClient stop_activity_animation];
                 
                 [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
@@ -574,9 +658,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
             }
             else
             {
-                [activityIndicatorView stopAnimating];
-                VW_overlay.hidden = YES;
-                
+               [HttpClient stop_activity_animation];
                 if ([msg isEqualToString:@"User already exists"])
                 {
                     msg = @"Email address already in use, Please try with different email.";
@@ -589,9 +671,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
         }
         else
         {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
-            
+            [HttpClient stop_activity_animation];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
         }
@@ -605,6 +685,92 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
     
     
 }
+-(void)phone_code_view
+{
+    
+    
+    NSData *data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"countries" ofType:@"json"]];
+    NSError *localError = nil;
+    NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
+    
+    if (localError != nil) {
+        NSLog(@"%@", [localError userInfo]);
+    }
+    phone_code_arr = (NSMutableArray *)parsedObject;
+    
+    NSSortDescriptor *sortDescriptor;
+    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name"
+                                                 ascending:YES];
+    NSArray *sorted_arr = [phone_code_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
+    
+    NSLog(@"%@",sorted_arr);
+    
+    for(int k = 0; k < phone_code_arr.count;k++)
+    {
+        if([[[sorted_arr objectAtIndex:k] valueForKey:@"name"] isEqualToString:@"Qatar"])
+        {
+            [phone_picker selectRow:k inComponent:0 animated:NO];
+            
+            [self pickerView:phone_picker didSelectRow:k inComponent:0];
+            
+            
+        }
+    }
+    
+    
+    
+    
+    //phone_code_arr = [NSMutableArray arrayWithArray:[codes allValues]];
+    //   country_arr = [codes allKeys];
+    //    [[NSUserDefaults standardUserDefaults] setObject:country_arr forKey:@"country_array"];
+    //    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    phone_picker = [[UIPickerView alloc] init];
+    phone_picker.delegate = self;
+    phone_picker.dataSource = self;
+    _TXT_prefix.inputAccessoryView = accessoryView;
+    _TXT_prefix.inputView = phone_picker;
+
+    
+    
+    
+    
+    //    UITapGestureRecognizer *tapToSelect = [[UITapGestureRecognizer alloc]initWithTarget:self
+    //                                                                                 action:@selector(tappedToSelectRow:)];
+    //    tapToSelect.delegate = self;
+    //    [_phone_picker_view addGestureRecognizer:tapToSelect];
+    
+    
+    
+}
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView{
+    return 1;
+}// returns the # of rows in each component..
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
+    
+    
+    
+        return phone_code_arr.count;
+        
+    
+}
+- (nullable NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    
+    
+  
+        
+return [NSString stringWithFormat:@"%@   %@",[phone_code_arr[row] valueForKey:@"name"],[phone_code_arr[row] valueForKey:@"dial_code"]];
+    
+}
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+  
+        flag = [NSString stringWithFormat:@"%@",[phone_code_arr[row] valueForKey:@"dial_code"]];
+    _TXT_prefix.text = flag;
+        
+   }
+
+
 
 
 /*

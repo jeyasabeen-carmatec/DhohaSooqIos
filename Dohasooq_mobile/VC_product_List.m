@@ -41,12 +41,14 @@
     
     CGRect frame;
     NSString *type_product,*sort_key,*currency_code,*product_id;
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+    
+//    UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
+    
     NSMutableDictionary *json_Response_Dic,*json_DATA,*sort_array;
     float oldwidth;
     int page_count;
-
+    NSArray *productDataArray;
    
 
 }
@@ -73,7 +75,7 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     
-     productDataArray  = [[NSMutableArray alloc]init];
+//     productDataArray  = [[NSMutableArray alloc]init];
     [_collection_product setDragDelegate:self refreshDatePermanentKey:@"FriendList"];
     _collection_product.showLoadMoreView = YES;
 
@@ -91,7 +93,7 @@
     _VW_filter.hidden = NO;
 
     sort_array = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Best Selling",@"bestSelling",@"Latest",@"newListed",@"High To Low",@"highToLow",@"Low To High",@"lowToHigh",@"Discount",@"discount", nil];
-         [self brands_STORE];
+        // [self brands_STORE];
     
     CGRect frameset = _VW_empty.frame;
     frameset.size.width = 200;
@@ -104,7 +106,6 @@
     _BTN_empty.layer.cornerRadius = self.BTN_empty.frame.size.width / 2;
     _BTN_empty.layer.masksToBounds = YES;
     [_BTN_top addTarget:self action:@selector(scroll_top) forControlEvents:UIControlEventTouchUpInside];
-    oldwidth = _BTN_sort.frame.size.width;
     
 }
 
@@ -112,6 +113,8 @@
 {
    
    self.navigationItem.hidesBackButton = YES;
+    
+    
     
 }
 -(void)scroll_top
@@ -123,24 +126,26 @@
 -(void)set_appear
 {
     
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    //    VW_overlay.layer.cornerRadius = 10.0;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    VW_overlay.center = self.view.center;
+//    [self.view addSubview:VW_overlay];
+//    VW_overlay.hidden = YES;
+//    
+//    
+//    
+//    VW_overlay.hidden = NO;
+//    [activityIndicatorView startAnimating];
     
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    VW_overlay.center = self.view.center;
-    [self.view addSubview:VW_overlay];
-    VW_overlay.hidden = YES;
     
-    
-    
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(product_list_API) withObject:activityIndicatorView afterDelay:0.01];
+    [self performSelector:@selector(product_list_API) withObject:nil afterDelay:0.01];
 }
 -(void)brands_STORE
 {
@@ -239,8 +244,12 @@
     [done addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
     [conutry_close addSubview:done];
     _BTN_sort.inputAccessoryView=conutry_close;
+    _BTN_sort_deals.inputAccessoryView = conutry_close;
     self.BTN_sort.inputView = _sort_pickers;
+    _BTN_sort_deals.inputView = _sort_pickers;
     _BTN_sort.tintColor=[UIColor clearColor];
+    _BTN_sort_deals.tintColor=[UIColor clearColor];
+
 
     
 //    [_BTN_filter addTarget:self action:@selector(contact_us_action) forControlEvents:UIControlEventTouchUpInside];
@@ -258,6 +267,7 @@
 }
 -(void)close_action
 {
+    [_BTN_sort_deals resignFirstResponder];
     [_BTN_sort resignFirstResponder];
 }
 - (IBAction)back_action:(id)sender
@@ -403,7 +413,7 @@
             NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
             [paragraphStyle setAlignment:NSTextAlignmentCenter];
             
-            if ([current_price isEqualToString:@"<null>"] || [current_price isEqualToString:@"<nil>"] || [current_price isEqualToString:@" "]) {
+            if ([current_price isEqualToString:@"<null>"] || [current_price isEqualToString:@"<nil>"] || [current_price isEqualToString:@" "]||[current_price isEqualToString:@"0"]) {
                 
                 
                 
@@ -546,7 +556,7 @@
         if ([[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"wishListStatus"] isEqualToString:@"Yes"]) {
             [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
             
-            [pro_cell.BTN_fav setTitleColor:[UIColor colorWithRed:244.f/255.f green:176.f/255.f blue:77.f/255.f alpha:1] forState:UIControlStateNormal];
+            [pro_cell.BTN_fav setTitleColor:[UIColor colorWithRed:0.91 green:0.21 blue:0.00 alpha:1.0] forState:UIControlStateNormal];
         }
         else{
             [pro_cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
@@ -669,7 +679,22 @@
     {
         //        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+        NSString *str_id = @"user_id";
+        NSString *user_id;
+        for(int i = 0;i<[[dict allKeys] count];i++)
+        {
+            if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+            {
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                break;
+            }
+            else
+            {
+                
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+            }
+            
+        }
         if([user_id isEqualToString:@"(null)"])
         {
             
@@ -691,15 +716,18 @@
             }
             else{
                 
-                
+                [HttpClient animating_images:self];
                 NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/addToWishList/%@/%@.json",SERVER_URL,product_id,user_id];
                 urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
                 [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if (error) {
                             
-                            VW_overlay.hidden=YES;
-                            [activityIndicatorView stopAnimating];
+//                            VW_overlay.hidden=YES;
+//                            [activityIndicatorView stopAnimating];
+                            
+                             [HttpClient stop_activity_animation];
+                            
                             [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
                         }
                         if (data) {
@@ -708,8 +736,11 @@
                             {
                                 json_Response_Dic = data;
 
-                                VW_overlay.hidden=YES;
-                                [activityIndicatorView stopAnimating];
+//                                VW_overlay.hidden=YES;
+//                                [activityIndicatorView stopAnimating];
+                                
+                                 [HttpClient stop_activity_animation];
+                                
                                 NSLog(@"The Wishlist %@",json_Response_Dic);
                                 
                                 NSIndexPath *index = [NSIndexPath indexPathForRow:sender.tag inSection:0];
@@ -719,12 +750,10 @@
                                    if (json_Response_Dic ) {
                                     
                                       //  [self product_list_API];
-                                        
-                                      
-                                        
+                                       
                                         [cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
                                         
-                                        [cell.BTN_fav setTitleColor:[UIColor colorWithRed:244.f/255.f green:176.f/255.f blue:77.f/255.f alpha:1] forState:UIControlStateNormal];
+                                        [cell.BTN_fav setTitleColor:[UIColor colorWithRed:0.91 green:0.21 blue:0.00 alpha:1.0] forState:UIControlStateNormal];
 
                                         [HttpClient createaAlertWithMsg:[json_Response_Dic valueForKey:@"msg"] andTitle:@""];
                                         //[self cart_count];
@@ -746,8 +775,10 @@
                             }
                             else
                             {
-                                VW_overlay.hidden=YES;
-                                [activityIndicatorView stopAnimating];
+//                                VW_overlay.hidden=YES;
+//                                [activityIndicatorView stopAnimating];
+                                
+                                [HttpClient stop_activity_animation];
                                     [self product_list_API];
                              //   [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
                                 NSLog(@"The Wishlist%@",json_Response_Dic);
@@ -765,14 +796,15 @@
     }
         @catch(NSException *exception)
         {
-            VW_overlay.hidden=YES;
-            [activityIndicatorView stopAnimating];
+//            VW_overlay.hidden=YES;
+//            [activityIndicatorView stopAnimating];
+            [HttpClient stop_activity_animation];
             
             NSLog(@"The error is:%@",exception);
         }
-        
-        VW_overlay.hidden=YES;
-        [activityIndicatorView stopAnimating];
+         [HttpClient stop_activity_animation];
+//        VW_overlay.hidden=YES;
+//        [activityIndicatorView stopAnimating];
     }
     
     
@@ -914,44 +946,42 @@
     
     @try
     {
+        
+        
         json_DATA = [[NSMutableDictionary alloc]init];
         NSString *list_TYPE = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_list_url"];
         NSString *urlGetuser;
         urlGetuser =[NSString stringWithFormat:@"%@",list_TYPE];
- 
-       
-        
-        
-
-        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         
         if([urlGetuser containsString:@"dealsList"])
         {
            _VW_only_filter.hidden = YES;
             _V_line.hidden = YES;
-            CGRect frameset = _BTN_sort.frame;
-            frameset.size.width = _VW_only_filter.frame.origin.x + _BTN_sort.frame.origin.x +_BTN_sort.frame.size.width;
-            _BTN_sort.frame = frameset;
+            _BTN_sort_deals.hidden = NO;
+            _BTN_sort.hidden = YES;
         }
         else
         {
             _VW_only_filter.hidden = NO;
             _V_line.hidden = NO;
-            CGRect frameset = _BTN_sort.frame;
-            frameset.size.width = oldwidth;
-            _BTN_sort.frame = frameset;
-
+            _BTN_sort_deals.hidden = YES;
+             _BTN_sort.hidden = NO;
             
         }
         NSLog(@"%@",urlGetuser);
 
+         [HttpClient animating_images:self];
         
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
                     
-                    VW_overlay.hidden = YES;
-                    [activityIndicatorView stopAnimating];
+//                    VW_overlay.hidden = YES;
+//                    [activityIndicatorView stopAnimating];
+                    
+                    [HttpClient stop_activity_animation];
+                    
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                     [alert show];
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
@@ -965,8 +995,13 @@
                     {
                         @try {
                              _VW_empty.hidden = YES;
-                            VW_overlay.hidden = YES;
-                            [activityIndicatorView stopAnimating];
+                            
+                            _VW_filter.hidden = NO;
+                            _BTN_top.hidden = NO;
+                            
+//                            VW_overlay.hidden = YES;
+//                            [activityIndicatorView stopAnimating];
+                            [HttpClient stop_activity_animation];
                             
                            
                             NSString *min = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"products_min"]];
@@ -1020,6 +1055,8 @@
                                    }
                                     self.collection_product.hidden = YES;
                                     _VW_empty.hidden = NO;
+                                    _VW_filter.hidden = YES;
+                                    _BTN_top.hidden = YES;
                                     
 
                                 }
@@ -1079,8 +1116,11 @@
                             [self cart_count];
 
                         } @catch (NSException *exception) {
-                            VW_overlay.hidden = YES;
-                            [activityIndicatorView stopAnimating];
+                            
+                             [HttpClient stop_activity_animation];
+//                            VW_overlay.hidden = YES;
+//                            [activityIndicatorView stopAnimating];
+                            
                             NSLog(@"%@",exception);
                         }
                        
@@ -1096,8 +1136,10 @@
     }
     @catch(NSException *exception)
     {
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+//        VW_overlay.hidden = YES;
+//        [activityIndicatorView stopAnimating];
+         [HttpClient stop_activity_animation];
+        
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
         [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
@@ -1115,13 +1157,15 @@
             [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
              ];
             
-            VW_overlay.hidden=YES;
-            [activityIndicatorView stopAnimating];
+//            VW_overlay.hidden=YES;
+//            [activityIndicatorView stopAnimating];
+            [HttpClient stop_activity_animation];
         }
         if (data) {
             
-            VW_overlay.hidden=YES;
-            [activityIndicatorView stopAnimating];
+//            VW_overlay.hidden=YES;
+//            [activityIndicatorView stopAnimating];
+            [HttpClient stop_activity_animation];
             NSLog(@"%@",data);
             NSDictionary *dict = data;
             @try {
@@ -1166,8 +1210,7 @@
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
                 
-                VW_overlay.hidden=YES;
-                [activityIndicatorView stopAnimating];
+               [HttpClient stop_activity_animation];
             }
             
         }
@@ -1219,13 +1262,29 @@
 }
 
 - (IBAction)productList_to_cartPage:(id)sender {
+    
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+    NSString *str_id = @"user_id";
+    NSString *user_id;
+    for(int i = 0;i<[[dict allKeys] count];i++)
+    {
+        if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+        {
+            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+            break;
+        }
+        else
+        {
+            
+            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+        }
+        
+    }
     
     if([user_id isEqualToString:@"(null)"])
     {
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login First" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please login to access this" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
         alert.tag = 1;
         [alert show];
         
@@ -1254,12 +1313,15 @@
 {
     NSString *str =[[sort_array allValues] objectAtIndex:row];
     self.BTN_sort.text =[NSString stringWithFormat:@"%@  ",str];
+   _BTN_sort_deals.text =[NSString stringWithFormat:@"%@  ",str];
     NSLog(@"THe sort text is:%@",_BTN_sort.text);
     sort_key = [sort_array allKeys][row];
 }
 -(void)countrybuttonClick
 {
     [self.BTN_sort resignFirstResponder];
+    [self.BTN_sort_deals resignFirstResponder];
+    
 
     NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
     
@@ -1279,8 +1341,7 @@
     [[NSUserDefaults standardUserDefaults] setValue:url_str forKey:@"product_list_sort"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
+    [HttpClient animating_images:self];
     
     [self performSelector:@selector(sort_API) withObject:nil afterDelay:0.01];
 
@@ -1294,7 +1355,7 @@
     {
         
         json_DATA = [[NSMutableDictionary alloc]init];
-        productDataArray = [[NSMutableArray alloc]init];
+//        productDataArray = [[NSMutableArray alloc]init];
     NSString *list_TYPE = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_list_sort"];
     NSString *urlGetuser;
     urlGetuser =[NSString stringWithFormat:@"%@",list_TYPE];
@@ -1305,8 +1366,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             if (error) {
                 
-                VW_overlay.hidden = YES;
-                [activityIndicatorView stopAnimating];
+                [HttpClient stop_activity_animation];
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 [alert show];
                 [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
@@ -1317,13 +1377,39 @@
                 if(json_DATA)
                 {
                     @try {
-                        VW_overlay.hidden = YES;
-                        [activityIndicatorView stopAnimating];
+                        [HttpClient stop_activity_animation];
+
+                        _VW_filter.hidden = NO;
+                        _BTN_top.hidden = NO;
                         
                             NSLog(@"THE respons PRODUCT LIST:%@",json_DATA);
+                        self.collection_product.hidden = NO;
+                        _VW_empty.hidden = YES;
+
                         if([[json_DATA valueForKey:@"products"] isKindOfClass:[NSArray class]])
                         {
-                            productDataArray = [json_DATA valueForKey:@"products"];
+                            NSArray *temp_arr = [json_DATA valueForKey:@"products"];
+                            
+                            if(temp_arr.count  < 1)
+                            {
+                                _LBL_oops.text = @"Oops!";
+                                _LBL_no_products.text = @"No matching products available.";
+                                _VW_empty.hidden = NO;
+                                _VW_filter.hidden = YES;
+                                _BTN_top.hidden = YES;
+                                  self.collection_product.hidden = YES;
+                                  [self set_UP_VW];
+
+                            }
+                            else
+                            {
+                               
+                                productDataArray = temp_arr;
+                              
+                                
+                            }
+                           
+                            
                         }
                         
 
@@ -1343,8 +1429,7 @@
                         [self set_UP_VW];
 
                     } @catch (NSException *exception) {
-                        VW_overlay.hidden = YES;
-                        [activityIndicatorView stopAnimating];
+                        [HttpClient stop_activity_animation];
                         NSLog(@"%@",exception);
                     }
                     
@@ -1375,7 +1460,7 @@
     {
         
         json_DATA = [[NSMutableDictionary alloc]init];
-        productDataArray = [[NSMutableArray alloc]init];
+//        productDataArray = [[NSMutableArray alloc]init];
         NSString *list_TYPE = str;
         NSString *urlGetuser;
         urlGetuser =[NSString stringWithFormat:@"%@",list_TYPE];
@@ -1386,8 +1471,8 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
                     
-                    VW_overlay.hidden = YES;
-                    [activityIndicatorView stopAnimating];
+                    [HttpClient stop_activity_animation];
+
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                     [alert show];
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
@@ -1398,14 +1483,36 @@
                     if(json_DATA)
                     {
                         @try {
-                            VW_overlay.hidden = YES;
-                            [activityIndicatorView stopAnimating];
+                             [HttpClient stop_activity_animation];
+                            _VW_filter.hidden = NO;
+                            _BTN_top.hidden = NO;
                             
                             NSLog(@"THE respons PRODUCT LIST:%@",json_DATA);
+                            self.collection_product.hidden = NO;
+                            _VW_empty.hidden = YES;
                             
                             if([[json_DATA valueForKey:@"products"] isKindOfClass:[NSArray class]])
                             {
-                                productDataArray = [json_DATA valueForKey:@"products"];
+                                NSArray *temp_arr = [json_DATA valueForKey:@"products"];
+                                
+                                if(temp_arr.count  < 1)
+                                {
+                                    _LBL_oops.text = @"Oops!";
+                                    _LBL_no_products.text = @"No matching products available.";
+                                    _VW_empty.hidden = NO;
+                                    _VW_filter.hidden = YES;
+                                    _BTN_top.hidden = YES;
+                                    self.collection_product.hidden = YES;
+                                      [self set_UP_VW];
+                                    
+                                }
+                                else
+                                {
+                                    
+                                    productDataArray = temp_arr;
+                                    
+                                    
+                                }
                             }
 
                             
@@ -1425,8 +1532,7 @@
                             [self set_UP_VW];
                             
                         } @catch (NSException *exception) {
-                            VW_overlay.hidden = YES;
-                            [activityIndicatorView stopAnimating];
+                             [HttpClient stop_activity_animation];
                             NSLog(@"%@",exception);
                         }
                         
@@ -1550,8 +1656,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         dispatch_async(dispatch_get_main_queue(), ^{
             if (error) {
                 
-                VW_overlay.hidden = YES;
-                [activityIndicatorView stopAnimating];
+                [HttpClient stop_activity_animation];
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 [alert show];
                 [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
@@ -1566,8 +1671,8 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                 {
                     @try {
                         _VW_empty.hidden = YES;
-                        VW_overlay.hidden = YES;
-                        [activityIndicatorView stopAnimating];
+                        [HttpClient stop_activity_animation];
+
                         
                         
                         
@@ -1585,26 +1690,28 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                             {
                                 NSArray *temp_arr = [json_DATAs valueForKey:@"products"];
                                 
-                                for(int i = 0;i <[temp_arr count];i++)
-                                {
-                                    NSLog(@"+++++++++%@",[temp_arr objectAtIndex:i]);
-                                    [productDataArray addObject:[temp_arr  objectAtIndex:i]];
-
-                                }
 //                                for(int i = 0;i <[temp_arr count];i++)
 //                                {
 //                                    NSLog(@"+++++++++%@",[temp_arr objectAtIndex:i]);
-//                                    [productDataArray addObject:[temp_arr objectAtIndex:i]];
-//                                    
+//                                    [productDataArray addObject:[temp_arr  objectAtIndex:i]];
+//
 //                                }
-                               // [productDataArray removeAllObjects];
-//                                [productDataArray addObjectsFromArray:TEMP_arr];
 
                                     if(temp_arr.count < 1)
                                 {
                                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Already in last Page" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                                     [alert show];
 
+                                }
+                                else
+                                {
+                                    @try {
+                                        NSArray *newArray=[productDataArray arrayByAddingObjectsFromArray:temp_arr];
+                                        productDataArray = newArray;
+                                    } @catch (NSException *exception) {
+                                        NSLog(@"Add array exception %@",exception);
+                                    }
+                                    
                                 }
                                 
                                 
@@ -1641,8 +1748,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                         
                         
                     } @catch (NSException *exception) {
-                        VW_overlay.hidden = YES;
-                        [activityIndicatorView stopAnimating];
+                        [HttpClient stop_activity_animation];
                         NSLog(@"%@",exception);
                     }
                     
@@ -1661,8 +1767,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     }
     else
     {
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
+        [HttpClient stop_activity_animation];
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
@@ -1680,8 +1785,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
                     
-                    VW_overlay.hidden = YES;
-                    [activityIndicatorView stopAnimating];
+                    [HttpClient stop_activity_animation];
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                     [alert show];
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
@@ -1695,9 +1799,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                     {
                         @try {
                             _VW_empty.hidden = YES;
-                            VW_overlay.hidden = YES;
-                            [activityIndicatorView stopAnimating];
-                            
+                             [HttpClient stop_activity_animation];
                             
                             
                             
@@ -1714,13 +1816,13 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                                 {
                                     NSArray *temp_arr = [json_DATAs valueForKey:@"products"];
                                     
-                                    for(int i = 0;i <temp_arr.count;i++)
-                                    {
-                                        NSLog(@"+++++++++%@",[temp_arr objectAtIndex:i]);
-                                        [productDataArray addObject:[temp_arr objectAtIndex:i]];
-                                        
-                                        
-                                    }
+//                                    for(int i = 0;i <temp_arr.count;i++)
+//                                    {
+//                                        NSLog(@"+++++++++%@",[temp_arr objectAtIndex:i]);
+//                                        [productDataArray addObject:[temp_arr objectAtIndex:i]];
+//                                        
+//                                        
+//                                    }
                                     
                                     if(temp_arr.count < 1)
                                     {
@@ -1728,7 +1830,11 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                                         [alert show];
                                         
                                     }
-                                    
+                                    else
+                                    {
+                                        NSArray *newArray=[productDataArray arrayByAddingObjectsFromArray:temp_arr];
+                                        productDataArray = newArray;
+                                    }
                                     
                                     
                                 }
@@ -1760,8 +1866,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                             
                                                        
                         } @catch (NSException *exception) {
-                            VW_overlay.hidden = YES;
-                            [activityIndicatorView stopAnimating];
+                             [HttpClient stop_activity_animation];
                             NSLog(@"%@",exception);
                         }
                         
@@ -1780,9 +1885,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     }
     else
     {
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
-        
+        [HttpClient stop_activity_animation];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
     }

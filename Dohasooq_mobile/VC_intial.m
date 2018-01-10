@@ -11,6 +11,7 @@
 #import "ViewController.h"
 #import "Home_page_Qtickets.h"
 #import "Reachability.h"
+#import "UIImage+animatedGIF.h"
 
 @interface VC_intial ()<UIPickerViewDelegate,UIPickerViewDataSource,UIAlertViewDelegate>
 {
@@ -20,7 +21,7 @@
     Home_page_Qtickets *QT;
     NSTimer *timer;
     UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+    UIImageView *activityIndicatorView;
     Reachability *internetReachableFoo;
 }
 
@@ -34,6 +35,9 @@
     self.VW_ceter.hidden =NO;
     self.IMG_logo.hidden = NO;
     [self testInternetConnection];
+   
+//    NSURL *url = [[NSBundle mainBundle] URLForResource:@"Loader-2" withExtension:@"gif"];
+//    activityIndicatorView.image = [UIImage animatedImageWithAnimatedGIFURL:url];                [self performSelector:@selector(country_API_call) withObject:activityIndicatorView afterDelay:0.01];
 
 
       }
@@ -59,13 +63,11 @@
             {
                 
                 VW_overlay.hidden = NO;
-                [activityIndicatorView startAnimating];
-                [self performSelector:@selector(country_API_call) withObject:activityIndicatorView afterDelay:0.01];
+             
             }
             else if([lang isEqualToString:@"()"] || [country isEqualToString:@"()"])
             {
                 VW_overlay.hidden = NO;
-                [activityIndicatorView startAnimating];
                 [self performSelector:@selector(country_API_call) withObject:activityIndicatorView afterDelay:0.01];
                 
             }
@@ -106,7 +108,7 @@
 {
     [timer invalidate];
     VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
+  //  [activityIndicatorView startAnimating];
     [self performSelector:@selector(MENU_api_call) withObject:activityIndicatorView afterDelay:0.01];
 
 
@@ -177,14 +179,10 @@
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    [self.view addSubview:VW_overlay];
-    
+        VW_overlay.layer.cornerRadius = 10.0;
+    // Custom Activity Indicator
+  [HttpClient animating_images:self];
+
     VW_overlay.hidden = YES;
     
 }
@@ -233,13 +231,15 @@
     @try
     {
         
+        [HttpClient animating_images:self];
+        
         NSString *urlGetuser =[NSString stringWithFormat:@"%@countries/index.json",SERVER_URL];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
                     VW_overlay.hidden = YES;
-                    [activityIndicatorView stopAnimating];
+                  
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please check Your Internet Connection" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                     [alert show];
                     
@@ -290,7 +290,7 @@
                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                         [alert show];
                         VW_overlay.hidden = YES;
-                        [activityIndicatorView stopAnimating];
+                      //  [activityIndicatorView stopAnimating];
 
 
                     }
@@ -307,11 +307,11 @@
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please check Your Internet Connection" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
         VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        //[activityIndicatorView stopAnimating];
 
     }
     
-
+[HttpClient stop_activity_animation];
 }
 #pragma Picker delegates
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
@@ -422,7 +422,7 @@
                 }
                 if (data) {
                     VW_overlay.hidden = YES;
-                    [activityIndicatorView stopAnimating];
+                  //  [activityIndicatorView stopAnimating];
 
                     NSMutableDictionary *json_DATA = data;
                     //                        lang_arr = [NSMutableArray array];
@@ -464,7 +464,7 @@
                 }
                 else{
                     VW_overlay.hidden = YES;
-                    [activityIndicatorView stopAnimating];
+                   // [activityIndicatorView stopAnimating];
 
                 }
             });
@@ -475,7 +475,7 @@
         NSLog(@"The error is:%@",exception);
         [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
         VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        //[activityIndicatorView stopAnimating];
 
         
     }
@@ -799,7 +799,6 @@
           //  [self performSegueWithIdentifier:@"logint_to_home" sender:self];
             
             NSLog(@"the api_collection_product%@",json_DATA);
-            [activityIndicatorView stopAnimating];
             VW_overlay.hidden = YES;
            // [self dismissViewControllerAnimated:NO completion:nil];
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
@@ -822,7 +821,7 @@
     @catch(NSException *exception)
     {
         NSLog(@"%@",exception);
-        [activityIndicatorView stopAnimating];
+       //  activityIndicatorView.hidden = YES;
         VW_overlay.hidden = YES;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please check Your Internet Connection" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];

@@ -15,14 +15,17 @@
 #import "tbl_amount.h"
 #import "Payment_summary_cell.h"
 #import "Transaction_Type_cell.h"
+#import "transaction_cell.h"
+#import "paymentCell.h"
+
 #import <SDWebImage/UIImageView+WebCache.h>
 
 
 @interface VC_myorders ()<UITableViewDataSource,UITableViewDelegate>
 {
 NSMutableDictionary *jsonresponse_dic_address,*json_DATA;
-UIView *VW_overlay;
-UIActivityIndicatorView *activityIndicatorView;
+//UIView *VW_overlay;
+//UIActivityIndicatorView *activityIndicatorView;
 int j ,i;
 }
 
@@ -35,21 +38,22 @@ int j ,i;
     // Do any additional setup after loading the view.
     
     self.navigationController.navigationBar.hidden = NO;
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    VW_overlay.center = self.view.center;
-    [self.view addSubview:VW_overlay];
-    VW_overlay.hidden = YES;
-    
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(orders_LIST_Detail) withObject:activityIndicatorView afterDelay:0.01];
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    VW_overlay.center = self.view.center;
+//    [self.view addSubview:VW_overlay];
+//    VW_overlay.hidden = YES;
+//    
+//    VW_overlay.hidden = NO;
+//    [activityIndicatorView startAnimating];
+    [HttpClient animating_images:self];
+    [self performSelector:@selector(orders_LIST_Detail) withObject:nil afterDelay:0.01];
     
     
     jsonresponse_dic_address = [[NSMutableDictionary alloc]init];
@@ -71,7 +75,7 @@ int j ,i;
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 6;
+    return 8;
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -468,7 +472,8 @@ int j ,i;
                 nib = [[NSBundle mainBundle] loadNibNamed:@"address_cell" owner:self options:nil];
                 cell = [nib objectAtIndex:index];
             }
-            
+            @try
+            {
             cell.BTN_edit_addres.hidden = YES;
             cell.BTN_edit.hidden = YES;
             cell.Btn_close.hidden =  YES;
@@ -497,12 +502,137 @@ int j ,i;
             address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             
             cell.LBL_address.text = address_str;
+            }
+            @catch(NSException *Exception)
+            {
+                
+            }
+
             
             return cell;
         }
             break;
+            
+        case 4:
+        {
+             static NSString *cellIdentifier = @"dklsjfkldfgfhjhjghjghjdsfk123";
+        paymentCell *cell = (paymentCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+            
+            if (cell == nil)
+            {
+                NSArray *nib;
+                nib = [[NSBundle mainBundle] loadNibNamed:@"paymentCells" owner:self options:nil];
+                cell = [nib objectAtIndex:index];
+            }
+
+            @try
+            {
+            cell.VW_layer.layer.borderColor = [UIColor lightGrayColor].CGColor;
+            cell.VW_layer.layer.borderWidth = 0.5f;
+                
+                NSString *str_order_stat,*str_payment_stat,*str_notes;
+            if(index == 1)
+            {
+                str_order_stat = [NSString stringWithFormat:@"%@ :",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"paymentstatus"] valueForKey:@"orderstatus"]];
+                
+                str_payment_stat = [NSString stringWithFormat:@"%@ :",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"paymentstatus"] valueForKey:@"paymentstatus"]];
+                str_notes = [NSString stringWithFormat:@"%@ :",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"paymentstatus"] valueForKey:@"notes"]];
+
+            }
+            else
+            {
+                str_order_stat = [NSString stringWithFormat:@": %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"paymentstatus"] valueForKey:@"orderstatus"]];
+                
+                str_payment_stat = [NSString stringWithFormat:@": %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"paymentstatus"] valueForKey:@"paymentstatus"]];
+                str_notes = [NSString stringWithFormat:@": %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"paymentstatus"] valueForKey:@"notes"]];
+
+                
+            }
+                
+            str_order_stat = [str_order_stat stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            str_payment_stat = [str_payment_stat stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+             str_notes = [str_notes stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            
+            cell.LBL_order_status.text = str_order_stat;
+
+            cell.LBL_paymen_status.text = str_payment_stat;
+            cell.LBL_notes.text = str_notes;
+            }
+                @catch(NSException *Exception)
+                {
+                    
+                }
+
+            
+            return cell;
+
+            break;
+
+        }
+        case 5:
+        {
+            static NSString *cellIdentifier = @"dklsjfkldfgfhjhdhftghfejghjghjdsfk123";
+
+            transaction_cell *cell = (transaction_cell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+            if (cell == nil)
+            {
+                NSArray *nib;
+                nib = [[NSBundle mainBundle] loadNibNamed:@"transaction_cell" owner:self options:nil];
+                cell = [nib objectAtIndex:index];
+            }
+
+            @try
+            {
+            cell.VW_layer.layer.borderColor = [UIColor lightGrayColor].CGColor;
+            cell.VW_layer.layer.borderWidth = 0.5f;
+                
+                NSString *str_amount,*str_payment_method,*str_transaction_id,*str_payment_response;
+                if(index == 1)
+                {
+                    str_amount = [NSString stringWithFormat:@"%@ :",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"amount"]];
+                    
+                    str_payment_method = [NSString stringWithFormat:@"%@ :",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"payment_method"]];
+                    
+                    str_transaction_id = [NSString stringWithFormat:@"%@ :",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"transactionId"]];
+                    
+                    str_payment_response = [NSString stringWithFormat:@"%@ :",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"paymentresponse"]];
+
+                }
+                else
+                {
+           str_amount = [NSString stringWithFormat:@": %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"amount"]];
+            
+            str_payment_method = [NSString stringWithFormat:@": %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"payment_method"]];
+            
+            str_transaction_id = [NSString stringWithFormat:@": %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"transactionId"]];
+            
+            str_payment_response = [NSString stringWithFormat:@": %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"paymentresponse"]];
+                }
+            str_amount = [str_amount stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            str_payment_method = [str_payment_method stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            str_transaction_id = [str_transaction_id stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            str_payment_response = [str_payment_response stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            
+
+            cell.LBL_amount.text = str_amount;
+            
+            cell.LBL_paymen_method.text = str_payment_method;
+            cell.LBL_transaction_Id.text = str_transaction_id;
+            cell.LBL_payment_response.text = str_payment_response;
+            }
+
+            @catch(NSException *Exception)
+                {
+                    
+                }
+
+            return cell;
+            break;
+
+        }
           
-        case 4:{
+        case 6:
+        {
             
             //Transaction_Type_cell
             
@@ -514,7 +644,8 @@ int j ,i;
                 nib = [[NSBundle mainBundle] loadNibNamed:@"Transaction_Type_cell" owner:self options:nil];
                 cell = [nib objectAtIndex:index];
             }
-            
+            @try
+            {
             NSString *transaction_str;
               NSString *str_pay = @" AMOUNT PAID THROUGH:";
             NSString *type_str;
@@ -585,6 +716,12 @@ int j ,i;
             } @catch (NSException *exception) {
                //cell.lbl_transaction.attributedText = attributedText;
             }
+            }
+            @catch(NSException *Exception)
+            {
+                
+            }
+
             return cell;
         }
             break;
@@ -598,6 +735,8 @@ int j ,i;
                 nib = [[NSBundle mainBundle] loadNibNamed:@"Payment_summary_cell" owner:self options:nil];
                 cell = [nib objectAtIndex:index];
             }
+            @try
+            {
             NSString *sub_total = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"order_subtotal"]];
             sub_total = [sub_total stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
             sub_total = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],sub_total];
@@ -690,8 +829,12 @@ int j ,i;
             {
                 cell.LBL_total.text = text;
             }
-            
-            
+            }
+            @catch(NSException *Exception)
+            {
+                
+            }
+
             return cell;
         }
             break;
@@ -706,10 +849,19 @@ int j ,i;
         return 260;
     }
     
-    if(indexPath.section == 1 || indexPath.section == 4)
+    if(indexPath.section == 1 || indexPath.section == 6)
     {
         return 45;
     }
+    if(indexPath.section == 4)
+    {
+        return 138;
+    }
+    if(indexPath.section == 5)
+    {
+        return 168;
+    }
+
     
     if(indexPath.section == 2)
     {
@@ -730,6 +882,14 @@ int j ,i;
     {
     return 10;
     }
+    if(indexPath.section == 4)
+    {
+        return 138;
+    }
+    if(indexPath.section == 5)
+    {
+        return 168;
+    }
     else
     {
         return 30;
@@ -744,6 +904,18 @@ int j ,i;
     {
         return @"SHIPPING ADDRESS";
     }
+    if(section == 4)
+    {
+        return @"PAYMENT STATUS";
+        
+    }
+    if(section == 5)
+    {
+        return @"TRANSACTION DETAILS";
+        
+    }
+
+   
     else{
         return @"";
     }
@@ -782,6 +954,16 @@ int j ,i;
             label.text = @"عنوان الشحن";
             label.textAlignment = NSTextAlignmentRight;
         }
+    }
+    if(section == 4)
+    {
+        label.text= @"PAYMENT STATUS";
+        
+    }
+    if(section == 5)
+    {
+        label.text= @"TRANSACTION DETAILS";
+        
     }
     
     
@@ -972,16 +1154,14 @@ int j ,i;
             _LBL_order_date.text = text;
         }
         
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
-
+        [HttpClient stop_activity_animation];
 
         
     }
     else
     {
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
+        [HttpClient stop_activity_animation];
+
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection Failed" message:@"" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
     }
@@ -990,8 +1170,7 @@ int j ,i;
     }
     @catch(NSException *exception)
     {
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
+        [HttpClient stop_activity_animation];
         NSLog(@"THE EXception:%@",exception);
         
     }

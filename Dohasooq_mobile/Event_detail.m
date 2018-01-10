@@ -12,14 +12,15 @@
 #import "XMLDictionary/XMLDictionary.h"
 #import "ViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "HttpClient.h"
 
 
 @interface Event_detail ()<UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource,UIGestureRecognizerDelegate,UIAlertViewDelegate>
 {
     NSMutableDictionary *event_dtl_dict;
     NSMutableArray *event_cost_arr,*values_arr,*cost_arr,*dates_arr;
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+//    UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
 }
 
 @end
@@ -310,21 +311,22 @@
 {
     
     
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    [self.view addSubview:VW_overlay];
-    
-   
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(getData) withObject:activityIndicatorView afterDelay:0.01];
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    //    VW_overlay.layer.cornerRadius = 10.0;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    [self.view addSubview:VW_overlay];
+//    
+//   
+//    VW_overlay.hidden = NO;
+//    [activityIndicatorView startAnimating];
+    [HttpClient animating_images:self];
+    [self performSelector:@selector(getData) withObject:nil afterDelay:0.01];
    
     [self picker_set_UP];
    
@@ -380,8 +382,7 @@
          [event_cost_arr addObject:tem_dictin];
      }
     
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
+  [HttpClient stop_activity_animation];
       [self set_UP_VIEW];
     [_TBL_quantity reloadData];
     [self set_UP_VIEW];
@@ -795,9 +796,8 @@
 -(void)BTN_book_action
 {
     
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(Book_action) withObject:activityIndicatorView afterDelay:0.01];
+    [HttpClient animating_images:self];
+    [self performSelector:@selector(Book_action) withObject:nil afterDelay:0.01];
     
 }
 -(void)Book_action
@@ -806,8 +806,7 @@
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
     if([user_id isEqualToString:@"(null)"])
     {
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+       [HttpClient stop_activity_animation];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login First" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
         alert.tag = 1;
         [alert show];
@@ -822,14 +821,12 @@
 
     if(_BTN_calneder.hidden == NO)
     {
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        [HttpClient stop_activity_animation];
     if([_BTN_calneder.text isEqualToString:@"Calendar"])
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please selct Date" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
         [alert show];
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        [HttpClient stop_activity_animation];
 
     }
     else if(i <= 0)
@@ -837,8 +834,7 @@
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please selct Atleast one Ticket" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
             [alert show];
-            VW_overlay.hidden = YES;
-            [activityIndicatorView stopAnimating];
+            [HttpClient stop_activity_animation];
         }
     else
     {
@@ -858,8 +854,7 @@
             [[NSUserDefaults standardUserDefaults] setObject:_BTN_calneder.text forKey:@"event_book_date"];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        [HttpClient stop_activity_animation];
         [self performSegueWithIdentifier:@"event_book_user" sender:self];
         
         
@@ -876,8 +871,7 @@
         [[NSUserDefaults standardUserDefaults] setObject:cost_arr forKey:@"Amount_dict"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+         [HttpClient stop_activity_animation];
         [self performSegueWithIdentifier:@"event_book_user" sender:self];
         
         

@@ -13,8 +13,8 @@
 @interface VC_contact_us ()<UITextFieldDelegate,UIAlertViewDelegate>
 {
     float scroll_ht;
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+//    UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
     NSDictionary *json_dic;
     
     
@@ -77,12 +77,13 @@
     _BTN_submit.frame = frameset;
     
     frameset = _VW_contents.frame;
-    frameset.size.height = _BTN_submit.frame.origin.y + _BTN_submit.frame.size.height + 10;
+   // frameset.size.height = _BTN_submit.frame.origin.y + _BTN_submit.frame.size.height + 10;
+    frameset.size.height = _BTN_submit.frame.origin.y + _BTN_submit.frame.origin.y;
     frameset.size.width = _Scroll_contents.frame.size.width;
     _VW_contents.frame = frameset;
     [self.Scroll_contents addSubview:_VW_contents];
     
-    scroll_ht = _VW_contents.frame.size.height +_VW_contents .frame.size.height;
+    scroll_ht = _VW_contents.frame.origin.y +_VW_contents .frame.size.height;
     [_BTN_submit addTarget:self action:@selector(contact_SUBMIT) forControlEvents:UIControlEventTouchUpInside];
     
   
@@ -92,22 +93,22 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    //    VW_overlay.layer.cornerRadius = 10.0;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    [self.view addSubview:VW_overlay];
+ //   [self address_API];
     
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    [self.view addSubview:VW_overlay];
-    [self address_API];
-    
-    
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(address_API) withObject:activityIndicatorView afterDelay:0.01];
+    [HttpClient animating_images:self];
+//        VW_overlay.hidden = NO;
+//        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(address_API) withObject:nil afterDelay:0.01];
     
 }
 
@@ -233,9 +234,8 @@
         msg = @" Message length should be more than 64 characters";
     }
     else{
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(online_enquiry_API_calling) withObject:activityIndicatorView afterDelay:0.01];
+        [HttpClient animating_images:self];
+        [self performSelector:@selector(online_enquiry_API_calling) withObject:nil afterDelay:0.01];
 
     }
        if(msg)
@@ -266,9 +266,7 @@
         json_dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
    
      [self set_up_VIEW];
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
-    }
+ [HttpClient stop_activity_animation];    }
     @catch(NSException *exception)
     {
         
@@ -435,7 +433,7 @@
             NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
             
             if (returnData) {
-                
+                 [HttpClient stop_activity_animation];
                 NSMutableDictionary *json_DATA = [[NSMutableDictionary alloc]init];
                 json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
                 NSLog(@"%@", [NSString stringWithFormat:@"JSON DATA OF ORDER DETAIL: %@", json_DATA]);
@@ -448,13 +446,11 @@
         }
         @catch(NSException *exception)
         {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
+            [HttpClient stop_activity_animation];
             NSLog(@"THE EXception:%@",exception);
             
         }
-    [activityIndicatorView stopAnimating];
-    VW_overlay.hidden = YES;
+   
     }
 
 

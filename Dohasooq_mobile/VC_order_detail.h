@@ -97,6 +97,7 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sub_total;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_shipping_charge;
 @property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_cupon;
+@property (weak, nonatomic) IBOutlet UILabel *LBL_summry_miles;
 
 
 

@@ -29,5 +29,6 @@
 @property(nonatomic,weak) IBOutlet UIButton *BTN_stat;
 @property(nonatomic,weak) IBOutlet UIImageView *LBL_stat;
 
+@property (weak, nonatomic) IBOutlet UIView *seperator_view;
 
 @end

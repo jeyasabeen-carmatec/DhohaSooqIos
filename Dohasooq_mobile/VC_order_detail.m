@@ -504,7 +504,6 @@
         _TXT_email.text =  str_email;
         _TXT_phone.text =  str_phone;
         
-        
         _TXT_phone.backgroundColor = [UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1];;
         
         
@@ -581,7 +580,7 @@
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:19.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:16.0]}
                                     range:ename];
         }
         NSRange cmp = [text rangeOfString:price];
@@ -597,7 +596,7 @@
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:19.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:16.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
                                     range:cmp ];
         }
     
@@ -614,7 +613,12 @@
         
 
     NSString *prec_price = [NSString stringWithFormat:@"%d",total];
-    NSString *summary_text = [NSString stringWithFormat:@"%@ %@/Dohamiles %d",currency,prec_price,doha_val];
+        // NSString *summary_text = [NSString stringWithFormat:@"%@ %@/Dohamiles %d",currency,prec_price,doha_val];
+    NSString *summary_text = [NSString stringWithFormat:@"%@ %@",currency,prec_price];
+        NSString *doha_value = [NSString stringWithFormat:@"%d",doha_val];
+          NSString *str_or = @"(OR)";
+        
+        NSString *str_miles= [NSString stringWithFormat:@"%@\n Doha Miles %@",str_or,doha_value];
     
     if ([_LBL_total respondsToSelector:@selector(setAttributedText:)]) {
         
@@ -635,7 +639,7 @@
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:20.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:18.0]}
                                     range:ename];
         }
         NSRange cmp = [summary_text rangeOfString:prec_price];
@@ -644,6 +648,8 @@
         
         
         //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
+        
+        
         if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
         {
             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:21.0],NSForegroundColorAttributeName:[UIColor blackColor]}
@@ -651,32 +657,45 @@
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:20.0],NSForegroundColorAttributeName:[UIColor blackColor],}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:18.0],NSForegroundColorAttributeName:[UIColor blackColor],}
                                     range:cmp ];
         }
-        
-        
-        NSRange doha_va = [summary_text rangeOfString:[NSString stringWithFormat:@"%d",doha_val]];
-        
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:21.0],NSForegroundColorAttributeName:[UIColor redColor]}
-                                    range:doha_va];
-        }
-        else
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:20.0],NSForegroundColorAttributeName:[UIColor blackColor],}
-                                    range:doha_va ];
-        }
-        
-        
-        
-        
-        _LBL_total.attributedText = attributedText;
+          _LBL_total.attributedText = attributedText;
     }
     else
     {
         _LBL_total.text = summary_text;
+    }
+
+        
+        if ([_LBL_summry_miles respondsToSelector:@selector(setAttributedText:)]) {
+            
+            // Define general attributes for the entire text
+            NSDictionary *attribs = @{
+                                      NSForegroundColorAttributeName:_LBL_total.textColor,
+                                      NSFontAttributeName:_LBL_total.font
+                                      };
+            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:str_miles attributes:attribs];
+            
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor blackColor],}
+                                    range:[str_miles rangeOfString:str_or] ];
+        
+
+        
+        NSRange doha_va = [str_miles rangeOfString:doha_value];
+            
+        
+        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:16.0],NSForegroundColorAttributeName:[UIColor blackColor],}
+                                    range:doha_va ];
+        _LBL_summry_miles.attributedText = attributedText;
+        
+        
+        
+      
+    }
+    else
+    {
+        _LBL_summry_miles.text = str_miles;
     }
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
@@ -848,7 +867,10 @@
             {
                 NSString *str = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"merchantId"]];
                 //  str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-                NSString *img_url = [NSString stringWithFormat:@"%@Merchant%@/Small/%@",MERCHANT_URL,str,[[arr_product objectAtIndex:indexPath.row] valueForKey:@"productimage"]];
+//                NSString *img_url = [NSString stringWithFormat:@"%@Merchant%@/Small/%@",MERCHANT_URL,str,[[arr_product objectAtIndex:indexPath.row] valueForKey:@"productimage"]];
+                
+                NSString *img_url = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"productimage"]];
+
                 [cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:img_url]
                                  placeholderImage:[UIImage imageNamed:@"logo.png"]
                                           options:SDWebImageRefreshCached];
@@ -862,7 +884,28 @@
                 
                 item_name = [item_name stringByReplacingOccurrencesOfString:@"<null>" withString:@"not mentioned"];
                 cell.LBL_item_name.text = item_name;
-                cell.LBL_seller.text = item_seller;
+                
+                
+                if ([cell.LBL_seller respondsToSelector:@selector(setAttributedText:)])
+                {
+                   
+                    // Define general attributes for the entire text
+                    NSDictionary *attribs = @{
+                                              NSForegroundColorAttributeName:[UIColor colorWithRed:84.0/255.0 green:84.0/255.0 blue:84.0/255.0 alpha:1],
+                                              NSFontAttributeName:cell.LBL_date .font
+                                              };
+                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:item_seller attributes:attribs];
+                    
+                    cell.LBL_seller.attributedText = attributedText;
+                    
+                }
+                else{
+                    cell.LBL_seller.text = item_seller;
+                  }
+                
+                
+                
+                
                 
    // Product Quantity
                 cell._TXT_count.text = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"product_qty"]];
@@ -1159,6 +1202,13 @@
                 cell.BTN_minus.layer.borderColor = [UIColor grayColor].CGColor;
                 
 
+    // seperator View Border Setting
+               // cell.seperator_view.layer.borderWidth = 0.4f;
+              //  cell.seperator_view.layer.borderColor = [UIColor grayColor].CGColor;
+                
+                
+                
+                
                 
     //Delivary Slot checking Condition
                 
@@ -1170,7 +1220,10 @@
                 
                 if(indexPath.row == totalRow -1){ //last row
                     
-                    //cell.seperator_view.hidden = NO;
+                   // cell.seperator_view.hidden = NO;
+                    
+                    //[cell.seperator_view removeFromSuperview];
+                    
                     if ([delivery_slot_available isEqualToString:@"No"] || [delivery_slot_available isEqualToString:@"<null>"])
                     {
                         
@@ -1182,7 +1235,7 @@
                     
                 }
                 else{ //Not last row
-                   // cell.seperator_view.hidden = YES;
+                  //  cell.seperator_view.hidden = YES;
 
                     cell.BTN_calendar.hidden = YES;
                 }
@@ -1626,6 +1679,12 @@
         return cell;
             }
 }
+
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewAutomaticDimension;
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if(tableView == _TBL_orders)
@@ -1638,11 +1697,14 @@
              ct = [[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] valueForKey:[keys_arr objectAtIndex:indexPath.section]]count];
             
             if (ct-1 == indexPath.row) {
-                return 215.0;
+                return 210.0;
+                //return UITableViewAutomaticDimension;
             }
             
             else{
-                return 150;
+                return 160;
+                //return UITableViewAutomaticDimension;
+                
                 
             }
 
@@ -1893,40 +1955,40 @@
     
     if([title_page_str isEqualToString:@"ORDER DETAIL"])
     {
-        
-        if(_VW_summary.hidden == NO)
-        {
-            VW_overlay.hidden = NO;
-            _VW_summary.hidden = NO;
-        }
-        else
-        {
+//        
+//        if(_VW_summary.hidden == NO)
+//        {
+//            VW_overlay.hidden = NO;
+//            _VW_summary.hidden = NO;
+//        }
+//        else
+//        {
             VW_overlay.hidden = NO;
             [activityIndicatorView startAnimating];
             [self performSelector:@selector(move_to_shipping) withObject:activityIndicatorView afterDelay:0.01];
 
            
-        }
+       // }
         
     }
     else  if([title_page_str isEqualToString:@"SHIPPING"])
     {
         
-        if(_VW_summary.hidden == NO)
-        {
-            VW_overlay.hidden = NO;
-            _VW_summary.hidden = NO;
-            
-        }
-        else
-            
-        {
-            
+//        if(_VW_summary.hidden == NO)
+//        {
+//            VW_overlay.hidden = NO;
+//            _VW_summary.hidden = NO;
+//            
+//        }
+//        else
+//            
+//        {
+        
             VW_overlay.hidden = NO;
             [activityIndicatorView startAnimating];
             [self performSelector:@selector(validatingTextField) withObject:activityIndicatorView afterDelay:0.01];
            
-        }
+        //}
     }
     
       else if ([title_page_str isEqualToString:@"PAYMENT"] && _VW_payment.hidden == NO) {

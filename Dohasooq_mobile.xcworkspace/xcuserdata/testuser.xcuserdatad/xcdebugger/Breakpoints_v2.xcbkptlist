@@ -2,4 +2,131 @@
 <Bucket
    type = "0"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Dohasooq_mobile/VC_ub_table_view.m"
+            timestampString = "537078829.569191"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "-tableView:didSelectRowAtIndexPath:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Dohasooq_mobile/VC_myaddress.m"
+            timestampString = "537207063.9306901"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1032"
+            endingLineNumber = "1032"
+            landmarkName = "-CountryAPICall"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Dohasooq_mobile/VC_product_detail.m"
+            timestampString = "537248408.6827379"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2919"
+            endingLineNumber = "2919"
+            landmarkName = "-product_detail_API"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[VC_product_detail product_detail_API]"
+                  moduleName = "Dohasooq_mobile"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/testuser/Documents/project_Dhohasooq/DhohaSooqIos-master/Dohasooq_mobile/VC_product_detail.m"
+                  timestampString = "537204018.026229"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2886"
+                  endingLineNumber = "2886"
+                  offsetFromSymbolStart = "1440">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[VC_product_detail product_detail_API]"
+                  moduleName = "Dohasooq_mobile"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/testuser/Documents/project_Dhohasooq/DhohaSooqIos-master/Dohasooq_mobile/VC_product_detail.m"
+                  timestampString = "537204018.028142"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2886"
+                  endingLineNumber = "2886"
+                  offsetFromSymbolStart = "1456">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[VC_product_detail product_detail_API]"
+                  moduleName = "Dohasooq_mobile"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/testuser/Documents/project_Dhohasooq/DhohaSooqIos-master/Dohasooq_mobile/VC_product_detail.m"
+                  timestampString = "537204018.03045"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2886"
+                  endingLineNumber = "2886"
+                  offsetFromSymbolStart = "2244">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[VC_product_detail product_detail_API]"
+                  moduleName = "Dohasooq_mobile"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/testuser/Documents/project_Dhohasooq/DhohaSooqIos-master/Dohasooq_mobile/VC_product_detail.m"
+                  timestampString = "537204018.032196"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2886"
+                  endingLineNumber = "2886"
+                  offsetFromSymbolStart = "2488">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[VC_product_detail product_detail_API]"
+                  moduleName = "Dohasooq_mobile"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/testuser/Documents/project_Dhohasooq/DhohaSooqIos-master/Dohasooq_mobile/VC_product_detail.m"
+                  timestampString = "537204018.033903"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2886"
+                  endingLineNumber = "2886"
+                  offsetFromSymbolStart = "2760">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

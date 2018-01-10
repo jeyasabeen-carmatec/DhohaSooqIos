@@ -11,12 +11,12 @@
 #import "bookings_cell.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "XMLDictionary.h"
-
+#import "HttpClient.h"
 @interface VC_my_bookings ()<UITableViewDelegate,UITableViewDataSource>
 {
     NSMutableArray *Total_QT_arr;
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+//    UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
     NSMutableDictionary *json_DATA;
     UIImageView *not_found_image;//No_items_Found
 }
@@ -39,20 +39,20 @@
     
     
     self.navigationItem.hidesBackButton = YES;
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    //    VW_overlay.layer.cornerRadius = 10.0;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+ //   [self.view addSubview:VW_overlay];
     
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    [self.view addSubview:VW_overlay];
-    
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(booking_API) withObject:activityIndicatorView afterDelay:0.01];
+//    VW_overlay.hidden = NO;
+//    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(booking_API) withObject:nil afterDelay:0.01];
     
     
 }
@@ -663,9 +663,10 @@
 {
     if(segmentedControl4.selectedSegmentIndex == 0)
     {
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(movies_VIEW) withObject:activityIndicatorView afterDelay:0.01];
+//        VW_overlay.hidden = NO;
+//        [activityIndicatorView startAnimating];
+        [HttpClient animating_images:self];
+        [self performSelector:@selector(movies_VIEW) withObject:nil afterDelay:0.01];
         
         [_TBL_bookings reloadData];
         not_found_image.hidden= YES;
@@ -673,9 +674,11 @@
     else
     {
         not_found_image.hidden= YES;
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(event_VIEW) withObject:activityIndicatorView afterDelay:0.01];       [_TBL_bookings reloadData];
+        [HttpClient animating_images:self];
+
+//        VW_overlay.hidden = NO;
+//        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(event_VIEW) withObject:nil afterDelay:0.01];       [_TBL_bookings reloadData];
         
     }
 }
@@ -709,9 +712,10 @@
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         if(aData)
         {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
-            
+//            [activityIndicatorView stopAnimating];
+//            VW_overlay.hidden = YES;
+            [HttpClient stop_activity_animation];
+
            json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             NSLog(@"The response Api post sighn up API %@",json_DATA);
             [self movies_VIEW];
@@ -725,9 +729,9 @@
         }
         else
         {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
-            
+//            [activityIndicatorView stopAnimating];
+//            VW_overlay.hidden = YES;
+             [HttpClient stop_activity_animation];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
         }
@@ -735,10 +739,10 @@
     }
     
     @catch(NSException *exception)
-    {
+    { [HttpClient stop_activity_animation];
         NSLog(@"The error is:%@",exception);
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
+//        [activityIndicatorView stopAnimating];
+//        VW_overlay.hidden = YES;
     }
     
 
@@ -769,8 +773,7 @@
                        NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
             if([[xmlDoc valueForKey:@"_status"] isEqualToString:@"true"])
             {
-                [activityIndicatorView stopAnimating];
-                VW_overlay.hidden = YES;
+                [HttpClient stop_activity_animation];
 
                 Total_QT_arr =[xmlDoc valueForKey:@"bookinghistory"];
               // [Total_QT_arr addObject:[xmlDoc valueForKey:@"bookinghistory"]];
@@ -798,8 +801,7 @@
                 
             }
             else{
-                [activityIndicatorView stopAnimating];
-                VW_overlay.hidden = YES;
+              [HttpClient stop_activity_animation];
 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No bookings Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 [alert show];
@@ -809,8 +811,7 @@
              }
         @catch(NSException *exception)
         {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
+            [HttpClient stop_activity_animation];
 
             NSLog(@"exception");
             
@@ -841,8 +842,7 @@
         NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
         if(xmlDoc)
         {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
+           [HttpClient stop_activity_animation];
 
            // Total_QT_arr = [xmlDoc valueForKey:@"bookinghistory"];
             Total_QT_arr =[[xmlDoc valueForKey:@"BookingHistories"] valueForKey:@"bookinghistory"];
@@ -870,9 +870,7 @@
             
         }
         else{
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
-
+            [HttpClient stop_activity_animation];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No bookings Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
             
@@ -881,8 +879,7 @@
     }
     @catch(NSException *exception)
     {
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
+        [HttpClient stop_activity_animation];
 
         NSLog(@"exception");
         

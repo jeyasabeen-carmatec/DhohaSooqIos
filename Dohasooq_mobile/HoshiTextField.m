@@ -104,8 +104,8 @@ static CGPoint const placeholderInsets = {0, 6};
     self.borderActiveColor = [UIColor colorWithRed:0.28 green:0.28 blue:0.28 alpha:1.0];
     self.placeholderColor = [UIColor grayColor];
     self.cursorColor = [UIColor colorWithRed:0.349 green:0.3725 blue:0.4314 alpha:1.0];
-    self.textColor = [UIColor grayColor];
-    [self setFont:[UIFont fontWithName:@"Poppins-Regular" size:19]];
+    self.textColor = [UIColor colorWithRed:0.47 green:0.47 blue:0.47 alpha:1.0];
+    [self setFont:[UIFont fontWithName:@"Poppins-Regular" size:17]];
     
     self.placeholderFontScale = 0.65;
     self.activePlaceholderPoint = CGPointZero;

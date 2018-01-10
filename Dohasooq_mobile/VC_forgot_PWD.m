@@ -7,11 +7,12 @@
 //
 
 #import "VC_forgot_PWD.h"
+#import "HttpClient.h"
 
 @interface VC_forgot_PWD ()<UITextFieldDelegate,UIGestureRecognizerDelegate>
 {
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+//    UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
 }
 @end
 
@@ -51,20 +52,20 @@
     }
 -(void)viewWillAppear:(BOOL)animated
 {
-    
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    [self.view addSubview:VW_overlay];
-    
-    VW_overlay.hidden = YES;
-    
+//    
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    //    VW_overlay.layer.cornerRadius = 10.0;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    [self.view addSubview:VW_overlay];
+//    
+//    VW_overlay.hidden = YES;
+//    
     
 }
 
@@ -97,9 +98,8 @@
     else
     {
         [self.view endEditing:TRUE];
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(Forgot_api_integration) withObject:activityIndicatorView afterDelay:0.01];
+        [HttpClient animating_images:self];
+        [self performSelector:@selector(Forgot_api_integration) withObject:nil afterDelay:0.01];
         
     }
     if(msg)
@@ -185,7 +185,8 @@
             NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
             NSString *msg = [json_DATA valueForKey:@"message"];
             
-            
+           
+
             if([status isEqualToString:@"1"])
             {
                 
@@ -195,7 +196,7 @@
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 
                 
-                
+                 [HttpClient stop_activity_animation];
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 [alert show];
@@ -203,8 +204,7 @@
             }
             else
             {
-                [activityIndicatorView stopAnimating];
-                VW_overlay.hidden = YES;
+                [HttpClient stop_activity_animation];
                 
                 if ([msg isEqualToString:@"User already exists"])
                 {
@@ -218,8 +218,8 @@
         }
         else
         {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
+            [HttpClient stop_activity_animation];
+
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];

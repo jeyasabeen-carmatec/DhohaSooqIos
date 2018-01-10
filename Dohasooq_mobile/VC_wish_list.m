@@ -17,8 +17,11 @@
     NSMutableArray *response_Arr;
     NSInteger product_count;
     UITapGestureRecognizer *tapGesture1 ;
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+    
+//   UIView *VW_overlay;
+//    UIImageView *actiIndicatorView;
+    
+//    UIActivityIndicatorView *activityIndicatorView;
     NSString *product_id;
     UIImageView *image_empty;
 
@@ -50,24 +53,28 @@
     
      self.navigationItem.hidesBackButton = YES;
     
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    VW_overlay.center = self.view.center;
-    [self.view addSubview:VW_overlay];
-    VW_overlay.hidden = YES;
-    
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    //    VW_overlay.layer.cornerRadius = 10.0;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    VW_overlay.center = self.view.center;
+//    [self.view addSubview:VW_overlay];
+//    VW_overlay.hidden = YES;
+//    
+//    VW_overlay.hidden = NO;
+//    [activityIndicatorView startAnimating];
     
 
     [self performSelector:@selector(wish_list_api_calling) withObject:nil afterDelay:0.01];
+    
+  
+    
+    //[self wish_list_api_calling];
 
 }
 
@@ -167,6 +174,18 @@
     }
     
     //NSString *str1 = [NSString stringWithFormat:@"%ld",[[[response_Arr objectAtIndex:indexPath.row] valueForKey:@"special_price"] integerValue]];
+        
+        if([[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"stock_status"] isEqualToString:@"Out of stock"] )
+        {
+            cell.Btn_add_cart.enabled = NO;
+            [cell.Btn_add_cart setBackgroundImage:[UIImage imageNamed:@"out-of-stock-2.png"] forState:UIControlStateNormal];
+        }
+        else
+        {
+            cell.Btn_add_cart.enabled = YES;
+            [cell.Btn_add_cart setBackgroundImage:[UIImage imageNamed:@"Add-to-cart.png"] forState:UIControlStateNormal];
+
+        }
     
     
     
@@ -189,7 +208,7 @@
            
 
             
-            if ([current_price isEqualToString:@""] || [current_price isEqualToString:@"<null>"]) {
+            if ([current_price isEqualToString:@""] || [current_price isEqualToString:@"<null>"]||[current_price isEqualToString:@"0"]) {
                 
                 
                 NSString *text = [NSString stringWithFormat:@"%@",prec_price];
@@ -318,10 +337,20 @@
         return cell;
     
 }
+
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 147.0;
+    //return 147.0;
+    return UITableViewAutomaticDimension;
 }
+-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return UITableViewAutomaticDimension;
+}
+
+
+
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [[NSUserDefaults standardUserDefaults]setObject:[NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"id"]] forKey:@"product_id"];
@@ -412,11 +441,12 @@
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
     @try {
+        
+        
+     [HttpClient animating_images:self];
+        
     response_Arr = [[NSMutableArray alloc]init];
 
-    
-   
-        
     //http://192.168.0.171/dohasooq/apis/customerWishList/46/1/1
     NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
     NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
@@ -424,12 +454,15 @@
     
     NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/customerWishList/%@/%@/%@.json",SERVER_URL,user_id,country,languge];
     urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        
     @try {
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
-                    VW_overlay.hidden = YES;
-                    [activityIndicatorView stopAnimating];
+                    
+                    [HttpClient stop_activity_animation];
+
                     NSLog(@"%@",[error localizedDescription]);
                 }
                   @try {
@@ -438,9 +471,10 @@
                       });
                 if (data) {
                   
-                        VW_overlay.hidden = YES;
-                        [activityIndicatorView stopAnimating];
+                    [HttpClient stop_activity_animation];
+                    
                        response_Arr = data;
+                    
                         image_empty.hidden = YES;
                      _VW_empty.hidden = YES;
                         
@@ -448,16 +482,6 @@
                         {
                              _VW_empty.hidden = NO;
                             _TBL_wish_list_items.hidden =  YES;
-//                           image_empty = [[UIImageView alloc]init];
-//                            CGRect frame_image = image_empty.frame;
-//                            frame_image.size.height = 200;
-//                            frame_image.size.width = 200;
-//                            image_empty.frame = frame_image;
-//                            image_empty.center = self.view.center;
-//                            [self.view addSubview:image_empty];
-//                            image_empty.image = [UIImage imageNamed:@"wish_list_not"];
-                            
-
                             
                         }
                         else{
@@ -466,52 +490,65 @@
                             NSLog(@"Wish List Data*******%@*********",response_Arr);
                             
                             _TBL_wish_list_items.hidden =  NO;
+                             [HttpClient stop_activity_animation];
                             [self.TBL_wish_list_items reloadData];
                            }
                        }
                         else{
-                            VW_overlay.hidden=YES;
-                            [activityIndicatorView stopAnimating];
+                            
+                            [HttpClient stop_activity_animation];
+                            
+//                            VW_overlay.hidden=YES;
+//                            [activityIndicatorView stopAnimating];
 
                             [HttpClient createaAlertWithMsg:@"The data is in Unknown format" andTitle:@""];
                         }
                       
                       NSString *str_header_title = [NSString stringWithFormat:@"MY WISHLIST(%lu)",(unsigned long)response_Arr.count];
                       [_BTN_header setTitle:str_header_title forState:UIControlStateNormal];
-
+                       [HttpClient stop_activity_animation];
+                      
                       
                     }
                 @catch (NSException *exception) {
-                    VW_overlay.hidden=YES;
-                    [activityIndicatorView stopAnimating];
+                    
+                    [HttpClient stop_activity_animation];
+//                    VW_overlay.hidden=YES;
+//                    [activityIndicatorView stopAnimating];
                     _TBL_wish_list_items.hidden =  YES;
                     _VW_empty.hidden = NO;
 
 
                         NSLog(@"%@",exception);
                     }
-                    
-                
-                
+                 [HttpClient stop_activity_animation];
             });
             
         }];
-    
+        
     } @catch (NSException *exception) {
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        
+        
+        [HttpClient stop_activity_animation];
         NSLog(@"%@",exception);
     }
+         [HttpClient stop_activity_animation];
         }
      @catch (NSException *exception) {
+           [HttpClient stop_activity_animation];
         NSLog(@"%@",exception);
     }
+    
+
 }
 #pragma mark  add_to_cart_API_calling
 
 -(void)add_to_cart_API_calling{
     
     @try {
+        
+        [HttpClient animating_images:self];
+        
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
         NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
         NSString *items_count =@"1";
@@ -533,11 +570,13 @@
         [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         if (error) {
+            [HttpClient stop_activity_animation];
             [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
         }
         
         if(aData)
         {
+            [HttpClient stop_activity_animation];
             NSMutableDictionary *dict = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             
             if ([[dict valueForKey:@"success"] isEqualToString:@"1"]) {
@@ -545,7 +584,7 @@
                 [self set_Data_to_badge_value:[NSString stringWithFormat:@"%@",[dict valueForKey:@"count"]]];
                 [self performSegueWithIdentifier:@"wish_to_cart" sender:self];
 
-               // [self delete_from_wishLis];
+              
                 
             }
             
@@ -556,7 +595,10 @@
         }
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
+        [HttpClient stop_activity_animation];
     }
+    
+    
     
 }
 #pragma mark  cart_count_api
@@ -595,6 +637,7 @@
             }
             
         }
+        [HttpClient stop_activity_animation];
     }];
 }
 
@@ -648,6 +691,8 @@
     
     @try {
         
+        [HttpClient animating_images:self];
+        
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
         NSString *user_ID = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
         
@@ -658,10 +703,15 @@
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
+                        
+                        [HttpClient stop_activity_animation];
                         NSLog(@"%@",[error localizedDescription]);
                     }
                     if (data) {
+                        
+                        [HttpClient stop_activity_animation];
                         NSLog(@"%@",data);
+                        
                         if([[data valueForKey:@"msg"] isEqualToString:@"Customer not found"])
                         {
                              [HttpClient createaAlertWithMsg:[data valueForKey:@"msg"] andTitle:@""];
@@ -671,6 +721,7 @@
                         {
                         
                         @try {
+                             [HttpClient stop_activity_animation];
                             [HttpClient createaAlertWithMsg:@"Item Deleted Successfully" andTitle:@""];
                             
                             [self performSelector:@selector(wish_list_api_calling) withObject:nil afterDelay:0.01];
@@ -688,14 +739,19 @@
             }];
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
+            
+            [HttpClient stop_activity_animation];
              [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
             
         }
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
+        [HttpClient stop_activity_animation];
          [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
     }
+    
+   
 }
 
 - (void)didReceiveMemoryWarning {
@@ -744,7 +800,8 @@
     
     @try {
         
-    
+        [HttpClient animating_images:self];
+        
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
     
@@ -760,7 +817,7 @@
                 NSLog(@"%@",[error localizedDescription]);
             }
             if (data) {
-                //NSLog(@"%@",data);
+               
                 
                 
                 @try {
@@ -778,6 +835,7 @@
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     }
+   
 }
 - (void)alertView:(UIAlertView *)alertView
 clickedButtonAtIndex:(NSInteger)buttonIndex{
@@ -800,7 +858,5 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         }
     }
 }
-
-
 @end
 
