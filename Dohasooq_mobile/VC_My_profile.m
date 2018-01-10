@@ -18,8 +18,8 @@
     NSMutableArray *countrypicker,*statepicker,*phone_code_arr;
     NSDictionary *grouppicker;
     NSDictionary *user_dictionary;
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+//    UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
     NSString *state_val,*group_val,*country_val;
     
     
@@ -38,21 +38,21 @@
     phone_code_arr = [[NSMutableArray alloc]init];
     // Do any additional setup after loading the view.
     
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    VW_overlay.center = self.view.center;
-    [self.view addSubview:VW_overlay];
-    VW_overlay.hidden = YES;
-    
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    //    VW_overlay.layer.cornerRadius = 10.0;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    VW_overlay.center = self.view.center;
+//    [self.view addSubview:VW_overlay];
+//    VW_overlay.hidden = YES;
+//    
+//    VW_overlay.hidden = NO;
+//    [activityIndicatorView startAnimating];
     
     [self performSelector:@selector(View_user_data) withObject:nil afterDelay:0.01];
     [self phone_code_view];
@@ -61,7 +61,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     
     
-    
+    self.navigationItem.hidesBackButton =  YES;
 
     
 }
@@ -765,7 +765,7 @@
     NSString *img_url = [NSString stringWithFormat:@"%@%@%@",SERVER_URL,[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_path"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_img"]];
     
     [_IMG_Profile_pic sd_setImageWithURL:[NSURL URLWithString:img_url]
-                        placeholderImage:[UIImage imageNamed:@"logo.png"]
+                        placeholderImage:[UIImage imageNamed:@"upload-27.png"]
                                  options:SDWebImageRefreshCached];
     
     
@@ -833,8 +833,7 @@
 
 
     
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
+    [HttpClient stop_activity_animation];
     
 }
 
@@ -854,6 +853,13 @@
         _BTN_male.enabled = NO;
         _BTN_feamle.enabled = NO;
         _BTN_bank_customer.enabled = NO;
+        _TXT_mobile_phone.borderActiveColor = [UIColor whiteColor];
+        _TXT_land_phone.borderActiveColor  = [UIColor whiteColor];
+        _TXT_Dob.borderActiveColor  = [UIColor whiteColor];
+        _TXT_first_name.borderActiveColor  = [UIColor whiteColor];
+        _TXT_last_name.borderActiveColor  = [UIColor whiteColor];
+
+
         
         
         
@@ -872,6 +878,11 @@
         _BTN_male.enabled = YES;
         _BTN_feamle.enabled = YES;
         _BTN_bank_customer.enabled = YES;
+        _TXT_mobile_phone.borderActiveColor = [UIColor lightGrayColor];
+        _TXT_land_phone.borderActiveColor  = [UIColor lightGrayColor];
+        _TXT_Dob.borderActiveColor  = [UIColor lightGrayColor];
+        _TXT_first_name.borderActiveColor  = [UIColor whiteColor];
+        _TXT_last_name.borderActiveColor  = [UIColor whiteColor];
 
         
     }
@@ -886,6 +897,15 @@
     _TXT_address1.enabled = NO;
     _TXT_address2.enabled = NO;
     _TXT_zipcode.enabled = NO;
+        
+        _TXT_country.borderActiveColor = [UIColor whiteColor];
+        _TXT_state.borderActiveColor  = [UIColor whiteColor];
+        _TXT_city.borderActiveColor  = [UIColor whiteColor];
+        _TXT_address1.borderActiveColor  = [UIColor whiteColor];
+        _TXT_address2.borderActiveColor  = [UIColor whiteColor];
+        _TXT_zipcode.borderActiveColor  = [UIColor whiteColor];
+
+
     }
     else
     {
@@ -895,6 +915,13 @@
     _TXT_address1.enabled = YES;
     _TXT_address2.enabled = YES;
     _TXT_zipcode.enabled = YES;
+        _TXT_country.borderActiveColor = [UIColor lightGrayColor];
+        _TXT_state.borderActiveColor  = [UIColor lightGrayColor];
+        _TXT_city.borderActiveColor  = [UIColor lightGrayColor];
+        _TXT_address1.borderActiveColor  = [UIColor lightGrayColor];
+        _TXT_address2.borderActiveColor  = [UIColor lightGrayColor];
+        _TXT_zipcode.borderActiveColor  = [UIColor lightGrayColor];
+
 
     }
 }
@@ -990,8 +1017,7 @@
    }
   else
   {
-      VW_overlay.hidden = NO;
-      [activityIndicatorView startAnimating];
+      [HttpClient animating_images:self];
       
       [self performSelector:@selector(Edit_user_data) withObject:nil afterDelay:0.01];
       
@@ -1066,8 +1092,7 @@
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         if(aData)
         {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
+           [HttpClient stop_activity_animation];
             
             NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
@@ -1086,16 +1111,14 @@
         }
         else
         {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
+             [HttpClient stop_activity_animation];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
         }
     }
     @catch(NSException *exception)
     {
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
+        [HttpClient stop_activity_animation];
     }
     
 }
@@ -1162,8 +1185,8 @@
     }
     else
     {
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
+        
+        [HttpClient animating_images:self];
         [self performSelector:@selector(Edit_billing_addres) withObject:nil afterDelay:0.01];
     }
     if(msg)
@@ -1211,9 +1234,7 @@
     NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     if(aData)
     {
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
-        
+        [HttpClient stop_activity_animation];
         NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
         NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
         if([status isEqualToString:@"1"])
@@ -1232,8 +1253,7 @@
     }
     else
     {
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
+        [HttpClient stop_activity_animation];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
     }
@@ -1241,9 +1261,7 @@
 
 @catch(NSException *exception)
 {
-    [activityIndicatorView stopAnimating];
-    VW_overlay.hidden = YES;
-}
+     [HttpClient stop_activity_animation];}
 
 }
 -(void)take_Picture
@@ -1282,27 +1300,6 @@
 }
 
 
-/*- (void)imagePickerController:(UIImagePickerController *)picker
-didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
-
-    [picker dismissViewControllerAnimated:YES completion:nil];
-    UIImage *chosenImage = info[UIImagePickerControllerOriginalImage];
-    
-//    if (chosenImage) {
-//        NSURL *refURL = [info valueForKey:UIImagePickerControllerReferenceURL];
-//        PHFetchResult *result = [PHAsset fetchAssetsWithALAssetURLs:@[refURL] options:nil];
-//        NSString *filename = [[result firstObject] filename];
-//        [self send_Image:filename];
-//    }
-    
-    _IMG_Profile_pic.image = chosenImage;
-    
-    
-//    pngData = UIImagePNGRepresentation(chosenImage);
-    
-    
-    
-}*/
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(nullable NSDictionary<NSString *,id> *)editingInfo
 {
@@ -1314,32 +1311,6 @@ didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
     
    [self uploadImage:image];
     
-//    // get the ref url
-//    NSURL *refURL = [editingInfo valueForKey:UIImagePickerControllerReferenceURL];
-//    
-//    // define the block to call when we get the asset based on the url (below)
-//    ALAssetsLibraryAssetForURLResultBlock resultblock = ^(ALAsset *imageAsset)
-//    {
-//        ALAssetRepresentation *imageRep = [imageAsset defaultRepresentation];
-//        NSLog(@"[imageRep filename] : %@", [imageRep filename]);
-//    };
-//    
-//    
-//    ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
-//    [assetslibrary assetForURL:refURL resultBlock:resultblock failureBlock:nil];
-//
-
-    
-    
-    
-    //Send Image
-    
-    //        if (chosenImage) {
-    //            NSURL *refURL = [editingInfo valueForKey:UIImagePickerControllerReferenceURL];
-    //            PHFetchResult *result = [PHAsset fetchAssetsWithALAssetURLs:@[refURL] options:nil];
-    //            NSString *filename = [[result firstObject] filename];
-    //            [self send_Image:filename];
-    //        }
     }
 
 
@@ -1350,131 +1321,6 @@ didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
     
 }
 
-/*-(void)send_Image:(NSString *)image
-{
-//    NSHTTPURLResponse *response = nil;
-//    NSDictionary *headers = @{ @"content-type": @"multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-//                               @"cache-control": @"no-cache",
-//                               @"postman-token": @"41e487bc-2105-a77f-084e-d4281f54dc43" };
-//    NSArray *parameters = @[ @{ @"name": @"logo", @"fileName": image } ];
-//    NSString *boundary = @"----WebKitFormBoundary7MA4YWxkTrZu0gW";
-//    
-//    NSError *error;
-//    NSMutableString *body = [NSMutableString string];
-//    for (NSDictionary *param in parameters) {
-//        [body appendFormat:@"--%@\r\n", boundary];
-//        if (param[@"fileName"]) {
-//            [body appendFormat:@"Content-Disposition:form-data; name=\"%@\"; filename=\"%@\"\r\n", param[@"name"], param[@"fileName"]];
-//            [body appendFormat:@"Content-Type: %@\r\n\r\n", param[@"contentType"]];
-//            [body appendFormat:@"%@", [NSString stringWithContentsOfFile:param[@"fileName"] encoding:NSUTF8StringEncoding error:&error]];
-//            if (error) {
-//                NSLog(@"%@", error);
-//            }
-//        } else {
-//            [body appendFormat:@"Content-Disposition:form-data; name=\"%@\"\r\n\r\n", param[@"name"]];
-//            [body appendFormat:@"%@", param[@"value"]];
-//        }
-//    }
-//    [body appendFormat:@"\r\n--%@--\r\n", boundary];
-//    NSData *postData = [body dataUsingEncoding:NSUTF8StringEncoding];
-//    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-//    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
-//    NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/my-account/3/%@.json",SERVER_URL,user_id];
-//    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-//    NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
-//    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-//    [request setURL:urlProducts];
-//    [request setHTTPMethod:@"POST"];
-//    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-//    [request setHTTPBody:postData];
-//    [request setAllHTTPHeaderFields:headers];
-//    [request setHTTPShouldHandleCookies:NO];
-//    NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-//    if(aData)
-//    {
-//        NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
-//        NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
-//        if([status isEqualToString:@"1"])
-//        {
-//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-//            [alert show];
-//            [self  View_user_data];
-//            NSString *img_url = [NSString stringWithFormat:@"%@%@%@",SERVER_URL,[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_path"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_img"]];
-//            
-//            [_IMG_Profile_pic sd_setImageWithURL:[NSURL URLWithString:img_url]
-//                                placeholderImage:[UIImage imageNamed:@"logo.png"]
-//                                         options:SDWebImageRefreshCached];
-//
-//            
-//        }
-//        else{
-//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-//            [alert show];
-//            
-//        }
-//
-//
-//    }
-    
-    
-    
-        NSDictionary *headers = @{ @"content-type": @"multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-                                   @"cache-control": @"no-cache",
-                                   @"postman-token": @"00352018-826e-50fd-ce31-ac69b40ab330" };
-        NSArray *parameters = @[ @{ @"name": @"logo", @"fileName": image } ];
-        NSString *boundary = @"----WebKitFormBoundary7MA4YWxkTrZu0gW";
-        
-        NSError *error;
-        NSMutableString *body = [NSMutableString string];
-        for (NSDictionary *param in parameters) {
-            [body appendFormat:@"--%@\r\n", boundary];
-            if (param[@"fileName"]) {
-                [body appendFormat:@"Content-Disposition:form-data; name=\"%@\"; filename=\"%@\"\r\n", param[@"name"], param[@"fileName"]];
-                [body appendFormat:@"Content-Type: %@\r\n\r\n", param[@"contentType"]];
-                [body appendFormat:@"%@", [NSString stringWithContentsOfFile:param[@"fileName"] encoding:NSUTF8StringEncoding error:&error]];
-                if (error) {
-                    NSLog(@"%@", error);
-                }
-            } else {
-                [body appendFormat:@"Content-Disposition:form-data; name=\"%@\"\r\n\r\n", param[@"name"]];
-                [body appendFormat:@"%@", param[@"value"]];
-            }
-        }
-        [body appendFormat:@"\r\n--%@--\r\n", boundary];
-        NSData *postData = [body dataUsingEncoding:NSUTF8StringEncoding];
-    
-     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-     NSString *urlgesture = [NSString stringWithFormat:@"%@customers/my-account/4/%@.json",SERVER_URL,[dict valueForKey:@"id"]];
-        
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlgesture]
-                                                               cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                                           timeoutInterval:10.0];
-        [request setHTTPMethod:@"POST"];
-        [request setAllHTTPHeaderFields:headers];
-        [request setHTTPBody:postData];
-        NSURLSession *session = [NSURLSession sharedSession];
-        NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request
-                                                    completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                        if (error) {
-                                                            NSLog(@"%@", error);
-                                                        } else {
-                                                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-                                                            NSLog(@"%@", httpResponse);
-                                                        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&httpResponse error:&error];
-                                                                if(aData)
-                                                                {
-                                                                    NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
-                                                                    NSLog(@"THe data is:%@",json_DATA);
-                                                                }
-
-                                                        }
-                                                    }];
-        [dataTask resume];
-    //    if(aData)
-    //    {
-    //        NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
-
-}*/
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -1495,8 +1341,7 @@ didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
 {
     
     
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
+    [HttpClient animating_images:self];
     NSLog(@"%@",yourImage);
     
    
@@ -1534,8 +1379,7 @@ didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
     
     if (err) {
         
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        [HttpClient stop_activity_animation];
         NSLog(@"%@",[err localizedDescription]);
     }
     
@@ -1547,8 +1391,7 @@ didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
         NSLog(@"jsonObject  %@",jsonObject);
     }
     
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
+    [HttpClient stop_activity_animation];
 }
 
 #pragma mark PhoneCodeView
@@ -1570,18 +1413,6 @@ didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
                                                  ascending:YES];
     [phone_code_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
     
-//    for(int k = 0; k < phone_code_arr.count;k++)
-//    {
-//        if([[[phone_code_arr objectAtIndex:k] valueForKey:@"name"] isEqualToString:@"Qatar"])
-//        {
-//            [self.flag_contry_pickerCiew selectRow:k inComponent:0 animated:NO];
-//            
-//            [self pickerView:self.flag_contry_pickerCiew didSelectRow:k inComponent:0];
-//            
-//            
-//        }
-//    }
-//    
 
     
     }

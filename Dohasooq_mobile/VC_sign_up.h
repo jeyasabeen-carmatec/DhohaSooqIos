@@ -24,6 +24,10 @@
 @property(nonatomic,weak) IBOutlet HoshiTextField *TXT_phone;
 @property(nonatomic,weak) IBOutlet HoshiTextField *TXT_password;
 @property(nonatomic,weak) IBOutlet HoshiTextField *TXT_con_password;
+@property(nonatomic,weak) IBOutlet UITextField *TXT_prefix;
+@property(nonatomic,weak) IBOutlet UIPickerView *phone_picker;
+
+
 
 
 

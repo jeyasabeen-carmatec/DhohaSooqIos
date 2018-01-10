@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Hoshi_Billing_ADDR.h"
+#import "profile_Hoshi_Billing_ADDR.h"
 
 @interface VC_My_profile : UIViewController <UIGestureRecognizerDelegate>
 
@@ -22,12 +22,12 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_layer;
 @property(nonatomic,weak) IBOutlet UIView *VW_profile;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_edit;
-@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_first_name;
-@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_last_name;
-@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_land_phone;
-@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_mobile_phone;
-@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_Dob;
-@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_group;
+@property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_first_name;
+@property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_last_name;
+@property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_land_phone;
+@property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_mobile_phone;
+@property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_Dob;
+@property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_group;
 @property(nonatomic,weak) IBOutlet UITextField *TXT_country_fld;
 
 @property(nonatomic,weak) IBOutlet UIButton *BTN_bank_customer;
@@ -44,18 +44,18 @@
 //login_view
 
 @property(nonatomic,weak) IBOutlet UIView *VW_login;
-@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_email;
+@property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_email;
 @property(nonatomic,weak) IBOutlet UIView *VW_layer_login;
 
 //biiling view
 
 @property(nonatomic,weak) IBOutlet UIView *VW_billing;
-@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_country;
-@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_state;
-@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_city;
-@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_address1;
-@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_address2;
-@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_zipcode;
+@property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_country;
+@property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_state;
+@property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_city;
+@property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_address1;
+@property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_address2;
+@property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_zipcode;
 
 
 @property(nonatomic,weak) IBOutlet UIView *VW_layer_billing;

@@ -8,7 +8,12 @@
 
 #import "HttpClient.h"
 
+
+
 @implementation HttpClient
+
+UIImageView *actiIndicatorView;
+UIView *VW_overlay;
 
 + (void)postServiceCall:(NSString*_Nullable)urlStr andParams:(NSDictionary*_Nullable)params completionHandler:(void (^_Nullable)(id  _Nullable data, NSError * _Nullable error))completionHandler{
     
@@ -145,6 +150,40 @@
     }];
     [dataTask resume];
 }
+
++(void)animating_images:(UIViewController *)my_controller{
+    
+    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.0];
+    VW_overlay.clipsToBounds = YES;
+    
+
+    VW_overlay.hidden = NO;
+    actiIndicatorView = [[UIImageView alloc] initWithImage:[UIImage new]];
+    actiIndicatorView.frame = CGRectMake(0, 0, 60, 60);
+    actiIndicatorView.center = my_controller.view.center;
+    
+    actiIndicatorView.animationImages = [NSArray arrayWithObjects:[UIImage imageNamed:@"loader1.png"],[UIImage imageNamed:@"loader2.png"],[UIImage imageNamed:@"loader3.png"],[UIImage imageNamed:@"loader4.png"],[UIImage imageNamed:@"loader5.png"],[UIImage imageNamed:@"loader6.png"],[UIImage imageNamed:@"loader7.png"],[UIImage imageNamed:@"loader8.png"],[UIImage imageNamed:@"loader9.png"],[UIImage imageNamed:@"loader10.png"],[UIImage imageNamed:@"loader11.png"],[UIImage imageNamed:@"loader12.png"],[UIImage imageNamed:@"loader13.png"],[UIImage imageNamed:@"loader14.png"],[UIImage imageNamed:@"loader15.png"],[UIImage imageNamed:@"loader16.png"],[UIImage imageNamed:@"loader17.png"],[UIImage imageNamed:@"loader18.png"],nil];
+    
+    actiIndicatorView.animationDuration = 3.0;
+    [actiIndicatorView startAnimating];
+    actiIndicatorView.center = VW_overlay.center;
+    
+    [VW_overlay addSubview:actiIndicatorView];
+    [my_controller.view addSubview:VW_overlay];
+  }
++(void)stop_activity_animation{
+    
+    [actiIndicatorView stopAnimating];
+    VW_overlay.hidden = YES;
+    
+    
+}
+
+
+
+
+
 
 
 @end

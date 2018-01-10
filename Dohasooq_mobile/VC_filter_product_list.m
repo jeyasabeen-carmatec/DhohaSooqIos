@@ -63,7 +63,13 @@
         }
         // max = [max stringByReplacingOccurrencesOfString:@"0" withString:@"10"];
         
+        _LBL_slider.trackColor =[UIColor colorWithRed:1.00 green:0.98 blue:0.80 alpha:1.0];
         
+        
+        // Set color for highlighted section of the slider track
+        _LBL_slider.trackHighlightColor =[UIColor colorWithRed:0.92 green:0.66 blue:0.27 alpha:1.0];
+        // Set height of slider track
+        _LBL_slider.trackHeight = 8.0;
         
         @try
         {
@@ -72,8 +78,8 @@
             min = [min stringByReplacingOccurrencesOfString:@"<nil>" withString:@"0"];
             min = [min stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
             
-            self.LBL_slider.minimumValue = [min floatValue];
-            self.LBL_slider.maximumValue = [max floatValue];
+            self.LBL_slider.minValue = [min floatValue];
+            self.LBL_slider.maxValue = [max floatValue];
             
             self.LBL_slider.lowerValue = [min floatValue];
             self.LBL_slider.upperValue = [max floatValue];
@@ -94,8 +100,8 @@
         
         @try {
             
-            self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"], (int)self.LBL_slider.maximumValue];
-            self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d", [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],(int)self.LBL_slider.minimumValue];
+            self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"], (int)self.LBL_slider.maxValue];
+            self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d", [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],(int)self.LBL_slider.minValue];
             NSLog(@"%@ /n %@",lower,upper);
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
@@ -145,6 +151,10 @@
     framset.size.height = _scroll_contents.frame.origin.y + _scroll_contents.frame.size.height;
     _IMG_back_ground.frame = framset;
 }
+-(void)viewWillAppear:(BOOL)animated{
+    self.navigationItem.hidesBackButton = YES;
+}
+
 -(void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
@@ -153,7 +163,7 @@
     
 }
 
-- (IBAction)labelSliderChanged:(NMRangeSlider*)sender
+- (IBAction)labelSliderChanged:(CCRangeSlider*)sender
 {
     lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
     upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];

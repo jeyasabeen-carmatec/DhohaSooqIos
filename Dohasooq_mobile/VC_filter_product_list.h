@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NMRangeSlider.h"
+#import "CCRangeSlider.h"
 
 @protocol filter_protocol <NSObject>
 
@@ -24,7 +24,7 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_min;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_max;
 
-@property(nonatomic,weak) IBOutlet NMRangeSlider *LBL_slider;
+@property(nonatomic,weak) IBOutlet CCRangeSlider *LBL_slider;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_ten;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_twenty;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_thirty;

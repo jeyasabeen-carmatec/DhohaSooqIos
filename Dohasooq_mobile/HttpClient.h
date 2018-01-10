@@ -10,6 +10,11 @@
 #import <UIKit/UIKit.h>
 
 @interface HttpClient : NSObject
+
+
+//@property (strong, nonatomic, readwrite) UIImageView *actiIndicatorView;
+
+
 + (void)postServiceCall:(NSString*_Nullable)urlStr andParams:(NSDictionary*_Nullable)params completionHandler:(void (^_Nullable)(id  _Nullable data, NSError * _Nullable error))completionHandler;
 
 
@@ -20,5 +25,9 @@
 +(void)cart_count_value:(NSString *_Nullable)user_id;
 
 +(void)api_with_post_params:(NSString*_Nullable)urlStr andParams:(NSDictionary*_Nullable)params completionHandler:(void (^_Nullable)(id  _Nullable data, NSError * _Nullable error))completionHandler;
+
++(void)animating_images:(UIViewController *_Nullable)my_controller;
+
++(void)stop_activity_animation;
 
 @end
