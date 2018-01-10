@@ -85,6 +85,7 @@
     [self.navigationController.view addSubview:VW_overlay];
     VW_overlay.hidden = YES;
     _TBL_search_results.hidden = YES;
+    _TXT_search.text = @"";
    // [_TBL_search_results reloadData];
     
     
@@ -142,7 +143,15 @@
 }
 -(void)search_API_CALL
 {
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+    if([user_id isEqualToString:@"(null)"])
+    {
+        
+        user_id = 0;
+    }
     
+
     @try
     {
         NSString *search_str = _TXT_search.text;
@@ -156,7 +165,7 @@
         
         // http://192.168.0.171/dohasooq/apis/productList/txt_Handbags/0/1/2/137/Customer.json
         
-        NSString *urlGetuser = [NSString stringWithFormat:@"%@apis/productList/txt_%@/0/%@/%@/Customer.json",SERVER_URL,search_str,country,languge];
+        NSString *urlGetuser = [NSString stringWithFormat:@"%@apis/productList/txt_%@/0/%@/%@/%@/Customer/1.json",SERVER_URL,search_str,country,languge,user_id];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         
         NSHTTPURLResponse *response = nil;
@@ -306,6 +315,14 @@
 {
 //    if(_BTN_search.tag == 1)
 //    {
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+    if([user_id isEqualToString:@"(null)"])
+    {
+        
+        user_id = 0;
+    }
+
     NSString *url_key= [NSString stringWithFormat:@"%@",[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"title"]];
 //    url_key = [url_key lowercaseString];
 //    url_key = [url_key stringByReplacingOccurrencesOfString:@" " withString:@"-"];
@@ -319,7 +336,7 @@
     [[NSUserDefaults standardUserDefaults] setValue:str_key forKey:@"product_list_key"];
     
 
-    NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/txt_%@/0/%@/%@.json",SERVER_URL,list_TYPE,url_key,country,languge];
+    NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/txt_%@/0/%@/%@/%@/Customer/1.json",SERVER_URL,list_TYPE,url_key,country,languge,user_id];
     urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
     
     [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
@@ -361,6 +378,14 @@
 -(void)search_API_ALL
 
 {
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+    if([user_id isEqualToString:@"(null)"])
+    {
+        
+        user_id = 0;
+    }
+    
     if(_TXT_search.text.length > 0)
     {
     _BTN_search.tag = 0;
@@ -370,7 +395,7 @@
     NSString *str_key = [NSString stringWithFormat:@"%@/txt_%@/0",list_TYPE,_TXT_search.text];
         [[NSUserDefaults standardUserDefaults] setValue:str_key forKey:@"product_list_key"];
 
-    NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/txt_%@/0/%@/%@.json",SERVER_URL,list_TYPE,_TXT_search.text,country,languge];
+    NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/txt_%@/0/%@/%@/%@/Customer/1.json",SERVER_URL,list_TYPE,_TXT_search.text,country,languge,user_id];
     urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
     
     [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
@@ -388,7 +413,7 @@
         NSString *list_TYPE = @"productList";
         NSString *str_key = [NSString stringWithFormat:@"%@/txt_%@/0",list_TYPE,_TXT_search.text];
         [[NSUserDefaults standardUserDefaults] setValue:str_key forKey:@"product_list_key"];
-      NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/txt_/0/%@/%@.json",SERVER_URL,list_TYPE,country,languge];
+      NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/txt_/0/%@/%@/%@/Customer/1.json",SERVER_URL,list_TYPE,country,languge,user_id];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         
         [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];

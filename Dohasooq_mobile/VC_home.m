@@ -1805,6 +1805,7 @@
                     
                     json_Response_Dic = data;
                     // NSLog(@"the api_collection_product%@",json_Response_Dic);
+                      [HttpClient stop_activity_animation];
                     @try {
                         if(json_Response_Dic )
                         [self brands_API_call];
@@ -1819,6 +1820,7 @@
                          [self set_up_VIEW];
                     } @catch (NSException *exception) {
                         NSLog(@"%@",exception);
+                          [HttpClient stop_activity_animation];
                     }
                     NSLog(@"the api_collection_product%@",json_Response_Dic);
                     
@@ -1830,6 +1832,7 @@
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
+          [HttpClient stop_activity_animation];
         [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
     }
     

@@ -97,6 +97,7 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sub_total;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_shipping_charge;
 @property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_cupon;
+@property (weak, nonatomic) IBOutlet UILabel *LBL_summry_miles;
 
 
 
@@ -125,5 +126,6 @@
 - (IBAction)order_to_wishListPage:(id)sender;
 
 @property(strong,nonatomic)UIPickerView *country_code_Pickerview;
+@property (weak, nonatomic) IBOutlet UIButton *BTN_logo;
 
 @end

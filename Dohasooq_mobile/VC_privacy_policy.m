@@ -7,11 +7,12 @@
 //
 
 #import "VC_privacy_policy.h"
+#import "HttpClient.h"
 
 @interface VC_privacy_policy ()<UIWebViewDelegate>
-{
-    UIView *loadingView;
-}
+//{
+//    UIView *loadingView;
+//}
 
 
 @end
@@ -22,33 +23,36 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    loadingView = [[UIView alloc]init];
-    CGRect loadframe = loadingView.frame;
-    loadframe.size.width = 100;
-    loadframe.size.height = 100;
-    loadingView.frame = loadframe;
-    loadingView.center = self.view.center;
-
-    loadingView.backgroundColor = [UIColor colorWithWhite:0. alpha:0.6];
-    loadingView.layer.cornerRadius = 5;
-    
-    UIActivityIndicatorView *activityView=[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityView.center = CGPointMake(loadingView.frame.size.width / 2.0, 35);
-    [activityView startAnimating];
-    activityView.tag = 100;
-    [loadingView addSubview:activityView];
-    
-    UILabel* lblLoading = [[UILabel alloc]initWithFrame:CGRectMake(0, 48, 80, 30)];
-    lblLoading.text = @"Loading...";
-    lblLoading.textColor = [UIColor whiteColor];
-    lblLoading.font = [UIFont fontWithName:lblLoading.font.fontName size:15];
-    lblLoading.textAlignment = NSTextAlignmentCenter;
-    [loadingView addSubview:lblLoading];
-    
-    [self.view addSubview:loadingView];
+    //loadingView = [[UIView alloc]init];
+//    CGRect loadframe = loadingView.frame;
+//    loadframe.size.width = 100;
+//    loadframe.size.height = 100;
+//    loadingView.frame = loadframe;
+//    loadingView.center = self.view.center;
+//
+//    loadingView.backgroundColor = [UIColor colorWithWhite:0. alpha:0.6];
+//    loadingView.layer.cornerRadius = 5;
+//    
+//    UIActivityIndicatorView *activityView=[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityView.center = CGPointMake(loadingView.frame.size.width / 2.0, 35);
+//    [activityView startAnimating];
+//    activityView.tag = 100;
+//    [loadingView addSubview:activityView];
+//    
+//    UILabel* lblLoading = [[UILabel alloc]initWithFrame:CGRectMake(0, 48, 80, 30)];
+//    lblLoading.text = @"Loading...";
+//    lblLoading.textColor = [UIColor whiteColor];
+//    lblLoading.font = [UIFont fontWithName:lblLoading.font.fontName size:15];
+//    lblLoading.textAlignment = NSTextAlignmentCenter;
+//    [loadingView addSubview:lblLoading];
+//    
+//    [self.view addSubview:loadingView];
     self.about_us_VW.delegate = self;
 
-    NSString *urlStr = @"http://192.168.0.171/dohasooq/Pages?page=privacy-policy";
+    NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+    NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+    
+    NSString *urlStr = [NSString stringWithFormat:@"http://test2.dohasooq.com/Pages/contentApi/privacy-policy/%@/%@",languge,country];
     NSURL *url = [[NSURL alloc]initWithString:urlStr];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
@@ -64,11 +68,11 @@
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     
-    [loadingView setHidden:NO];
+    [HttpClient animating_images:self];
     
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    [loadingView setHidden:YES];
+    [HttpClient animating_images:self];
 }
 
 - (void)didReceiveMemoryWarning {

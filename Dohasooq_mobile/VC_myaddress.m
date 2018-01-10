@@ -15,8 +15,8 @@
 {
     
     NSMutableDictionary *jsonresponse_dic_address;
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+//    UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
     int j ,i;
     BOOL is_add_new,isCountrySelected;
     NSInteger edit_tag,cntry_ID;
@@ -44,22 +44,23 @@
     self.navigationItem.hidesBackButton = YES;
     
     self.navigationController.navigationBar.hidden = NO;
-    is_add_new = NO;
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    VW_overlay.center = self.view.center;
-    [self.view addSubview:VW_overlay];
-    VW_overlay.hidden = YES;
-    
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(Shipp_address_API) withObject:activityIndicatorView afterDelay:0.01];
+//    is_add_new = NO;
+//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    VW_overlay.center = self.view.center;
+//    [self.view addSubview:VW_overlay];
+//    VW_overlay.hidden = YES;
+//    
+//    VW_overlay.hidden = NO;
+//    [activityIndicatorView startAnimating];
+    [HttpClient animating_images:self];
+    [self performSelector:@selector(Shipp_address_API) withObject:nil afterDelay:0.01];
     
  [self set_UP_VIEW];
    
@@ -68,7 +69,7 @@
 {
     
    
-    
+  self.navigationItem.hidesBackButton = YES;   
     
     
 }
@@ -109,6 +110,7 @@
     
     
     [self phone_code_view];
+     [HttpClient stop_activity_animation];
     
 
 }
@@ -603,7 +605,7 @@
     
     
     @try {
-    
+     [HttpClient animating_images:self];
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
     
@@ -620,8 +622,7 @@
                 if (data) {
                     
                     
-                    VW_overlay.hidden = YES;
-                    [activityIndicatorView stopAnimating];
+                    [HttpClient stop_activity_animation];
                     @try {
                         if ([data isKindOfClass:[NSDictionary class]]) {
                             jsonresponse_dic_address = data;
@@ -635,8 +636,8 @@
                         
                        
                     } @catch (NSException *exception) {
-                        VW_overlay.hidden = YES;
-                        [activityIndicatorView stopAnimating];
+                        [HttpClient stop_activity_animation];
+
                         
                     }
                    
@@ -647,11 +648,13 @@
         }];
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
+         [HttpClient stop_activity_animation];
         
     }
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
+         [HttpClient stop_activity_animation];
     }
     
     }
@@ -818,9 +821,9 @@
     }
     else{
         
-        VW_overlay.hidden = NO;
-        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(edit_Shipping_Address) withObject:activityIndicatorView afterDelay:0.01];
+        [HttpClient animating_images:self];
+
+        [self performSelector:@selector(edit_Shipping_Address) withObject:nil afterDelay:0.01];
    
     }
     
@@ -849,14 +852,12 @@
         [HttpClient api_with_post_params:urlGetuser andParams:params completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
-                    VW_overlay.hidden = YES;
-                    [activityIndicatorView stopAnimating];
+                    [HttpClient stop_activity_animation];
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
                      ];
                 }
                 if (data) {
-                    VW_overlay.hidden = YES;
-                    [activityIndicatorView stopAnimating];
+                    [HttpClient stop_activity_animation];
                     
 
                     NSLog(@"edit_Shipping_Address Response%@",data);
@@ -880,8 +881,8 @@
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
+        [HttpClient stop_activity_animation];
+
     }
 }
 
@@ -1031,9 +1032,52 @@ if (textField.tag == 8) {
 -(void)CountryAPICall{
     @try {
         response_countries_dic = [NSMutableDictionary dictionary];
+        NSString *country_ID = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/countriesapi/%@.json",SERVER_URL,country_ID];
+        @try
+        {
+            NSError *error;
+           // NSError *err;
+            NSHTTPURLResponse *response = nil;
+            
+            
+           // NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/login/1.json",SERVER_URL];
+            // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+            NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+            [request setURL:urlProducts];
+            [request setHTTPMethod:@"POST"];
+            [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+            //[request setHTTPBody:postData];
+            //[request setAllHTTPHeaderFields:headers];
+            [request setHTTPShouldHandleCookies:NO];
+            NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            if(aData)
+            {
+                
+                NSString *json_DATA = (NSString *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+                NSLog(@"The response Api post sighn up API %@",json_DATA);
+              //  NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
+            }
+            else
+            {
+                [HttpClient stop_activity_animation];
+
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+            }
+            
+        }
         
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/countriesapi.json",SERVER_URL];
-        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        @catch(NSException *exception)
+        {
+            NSLog(@"The error is:%@",exception);
+        }
+        
+
+        
+     /*        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         @try {
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -1062,18 +1106,6 @@ if (textField.tag == 8) {
                                 [response_picker_arr addObjectsFromArray:sortedArr];
                                 [_staes_country_pickr reloadAllComponents];
                                 
-//                                for(int k = 0; k < response_picker_arr.count;k++)
-//                                {
-//                                    if([[[response_picker_arr objectAtIndex:k] valueForKey:@"cntry_name"] isEqualToString:@"Qatar"])
-//                                    {
-//                                        [self.staes_country_pickr selectRow:k inComponent:0 animated:NO];
-//
-//                                        [self pickerView:self.staes_country_pickr didSelectRow:k inComponent:0];
-//
-//                                    }
-//                                }
-//                                
-//                                
                                 
                                  }
                             else{
@@ -1091,6 +1123,7 @@ if (textField.tag == 8) {
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
         }
+      */
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
@@ -1500,13 +1533,13 @@ if (textField.tag == 8) {
     }
     @catch(NSException *exception)
     {
-        [activityIndicatorView stopAnimating];
-        VW_overlay.hidden = YES;
+        [HttpClient stop_activity_animation];
+
         NSLog(@"THE EXception:%@",exception);
         
     }
-    [activityIndicatorView stopAnimating];
-    VW_overlay.hidden = YES;
+   
+
 }
 
 

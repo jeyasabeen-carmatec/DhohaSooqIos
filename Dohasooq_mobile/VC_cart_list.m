@@ -19,8 +19,8 @@
     NSMutableArray *cart_array;
     NSDictionary *json_dict;
     NSInteger product_count;
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+    //UIView *VW_overlay;
+//    UIActivityIndicatorView *activityIndicatorView;
     UITapGestureRecognizer *tapGesture1;
     NSString *currency_code,*product_id,*item_count;
     UIImageView *image_empty;
@@ -37,35 +37,35 @@
     // Do any additional setup after loading the view.
        [self set_UP_VIEW];
     [self.BTN_clear_cart addTarget:self action:@selector(clear_cart_action:) forControlEvents:UIControlEventTouchUpInside];
-    @try
-    {
-    [_BTN_fav setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
-    }
-    @catch(NSException *exception)
-    {
-        
-    }
 
     
    }
 -(void)viewWillAppear:(BOOL)animated{
     
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    VW_overlay.clipsToBounds = YES;
-    //    VW_overlay.layer.cornerRadius = 10.0;
+    self.navigationItem.hidesBackButton = YES;
     
-    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-    activityIndicatorView.center = VW_overlay.center;
-    [VW_overlay addSubview:activityIndicatorView];
-    VW_overlay.center = self.view.center;
-    [self.view addSubview:VW_overlay];
-    VW_overlay.hidden = YES;
+  //    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+//    VW_overlay.clipsToBounds = YES;
+//    //    VW_overlay.layer.cornerRadius = 10.0;
+//    
+//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
+//    activityIndicatorView.center = VW_overlay.center;
+//    [VW_overlay addSubview:activityIndicatorView];
+//    VW_overlay.center = self.view.center;
+//    [self.view addSubview:VW_overlay];
+//    VW_overlay.hidden = YES;
+//    
+//    VW_overlay.hidden = NO;
+//    [activityIndicatorView startAnimating];
     
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(cartList_api_calling) withObject:activityIndicatorView afterDelay:0.01];
+    [HttpClient animating_images:self];
+    [self performSelector:@selector(cartList_api_calling) withObject:nil afterDelay:0.01];
+    
+    
+    
+   // [self  cartList_api_calling];
 
 }
 -(void)set_UP_VIEW
@@ -77,8 +77,8 @@
        NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:20.0f]
        } forState:UIControlStateNormal];
     
-    _BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
-                 @selector(btnfav_action)];
+    //_BTN_fav  = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain  target:self action:
+            //     @selector(btnfav_action)];
     _BTN_cart = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain   target:self action:@selector(btn_cart_action)];
     
     CGRect frameset = _VW_empty.frame;
@@ -92,79 +92,6 @@
     _BTN_empty.layer.cornerRadius = self.BTN_empty.frame.size.width / 2;
     _BTN_empty.layer.masksToBounds = YES;
 
-//    NSString *badge_value = @"25";
-//    
-//    
-//    if(badge_value.length > 2)
-//    {
-//        self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@+",badge_value];
-//        
-//    }
-//    else{
-//        self.navigationItem.rightBarButtonItem.badgeValue = [NSString stringWithFormat:@"%@",badge_value];
-//        
-//    }
-//    NSString *qr = @"QR";
-//    NSString *price = @"4565";
-//    NSString *plans = @"VIEW PRICE DETAILS";
-//    NSString *text = [NSString stringWithFormat:@"%@ %@\n%@",qr,price,plans];
-//    if ([_LBL_price respondsToSelector:@selector(setAttributedText:)]) {
-//        
-//        // Define general attributes for the entire text
-//        NSDictionary *attribs = @{
-//                                  NSForegroundColorAttributeName:_LBL_price.textColor,
-//                                  NSFontAttributeName:_LBL_price.font
-//                                  };
-//        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
-//        
-//        
-//        
-//        NSRange ename = [text rangeOfString:qr];
-//        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-//        {
-//            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0]}
-//                                    range:ename];
-//        }
-//        else
-//        {
-//            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0]}
-//                                    range:ename];
-//        }
-//        NSRange cmp = [text rangeOfString:price];
-//        //        [attributedText addAttribute: NSStrikethroughStyleAttributeName value:[NSNumber numberWithInteger: NSUnderlineStyleSingle] range: NSMakeRange(0, [prec_price length])];
-//        //
-//        
-//        
-//        //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
-//        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-//        {
-//            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
-//                                    range:cmp];
-//        }
-//        else
-//        {
-//            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
-//                                    range:cmp ];
-//        }
-//        NSRange cmp1 = [text rangeOfString:plans];
-//        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-//        {
-//            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:19.0]}
-//                                    range:cmp1];
-//            
-//        }
-//        else
-//        {
-//            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0]}
-//                                    range:cmp1];        }
-//
-//        
-//       _LBL_price.attributedText = attributedText;
-//    }
-//    else
-//    {
-//        _LBL_price.text = text;
-//    }
     NSString *next = @"";
     
     NSString *next_text = [NSString stringWithFormat:@"NEXT %@",next];
@@ -275,6 +202,12 @@
         NSString *str_variant =  [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"variantCombination"]];
         str_variant = [str_variant stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
          str_variant = [str_variant stringByReplacingOccurrencesOfString:@"" withString:@""];
+            str_variant = [str_variant stringByReplacingOccurrencesOfString:@"Null" withString:@""];
+
+         if([str_variant isKindOfClass:[NSNull class]])
+         {
+             str_variant = @"";
+         }
         cell.LBL_combo.text = str_variant;
         }
         @catch(NSException *exception)
@@ -293,7 +226,7 @@
         currency_code = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"currency"]];
         NSString *current_price = [NSString stringWithFormat:@"%@", [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"special_price"]];
         
-        NSString *prec_price = [NSString stringWithFormat:@"%@", [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"product_price"]];
+        NSString *prec_price = [NSString stringWithFormat:@"%@ %@", currency_code,[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"product_price"]];
         
         NSString *text;
         
@@ -301,29 +234,31 @@
         if ([cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
             
             
-            if ([current_price isEqualToString:@""]|| [current_price isEqualToString:@"null"]||[current_price isEqualToString:@"<null>"]) {
+            if ([current_price isEqualToString:@""]|| [current_price isEqualToString:@"null"]||[current_price isEqualToString:@"<null>"]||[current_price isEqualToString:@"0"]) {
                 
                 
-                text = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
+                text = [NSString stringWithFormat:@"%@",prec_price];
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                   [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}range:[text rangeOfString:currency_code] ];
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor]}
                                         range:[text rangeOfString:prec_price]];
                 //cell.LBL_current_price.text = [NSString stringWithFormat:@"QR %@",prec_price];
                 cell.LBL_current_price.attributedText = attributedText;
-                cell.LBL_discount.text = @"0% off";
+                cell.LBL_discount.text = nil;
                 
             }
             else{
                 
-                float disc = [prec_price integerValue]-[current_price integerValue];
-                float digits = disc/[prec_price integerValue];
-                int discount = digits *100;
-                NSString *of = @"% off";
-                cell.LBL_discount.text =[NSString stringWithFormat:@"%d%@",discount,of];
+//                float disc = [prec_price integerValue]-[current_price integerValue];
+//                float digits = disc/[prec_price integerValue];
+                NSString *str_discount =[NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"discount"]];
+                str_discount = [str_discount stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+//                int discount = digits *100;
+               
+                cell.LBL_discount.text =[NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"discount"]];
                 
-                prec_price = [currency_code stringByAppendingString:prec_price];
+                //prec_price = [currency_code stringByAppendingString:prec_price];
                 text = [NSString stringWithFormat:@"%@ %@ %@",currency_code,current_price,prec_price];
                 
                 
@@ -381,26 +316,7 @@
         }
         
         
-        
-        //    UIImage *newImage = [cell.BTN_close.currentBackgroundImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        //    UIGraphicsBeginImageContextWithOptions(cell.BTN_close.currentBackgroundImage.size, NO, newImage.scale);
-        //    [[UIColor darkGrayColor] set];
-        //    [newImage drawInRect:CGRectMake(0, 0, cell.BTN_close.currentBackgroundImage.size.width/2, newImage.size.height/2)];
-        //    newImage = UIGraphicsGetImageFromCurrentImageContext();
-        //    UIGraphicsEndImageContext();
-        //        [cell.BTN_close setBackgroundImage:newImage forState:UIControlStateNormal];
-        // cell.BTN_close .userInteractionEnabled = YES;
-        
-        //    tapGesture1 = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tapGesture_close)];
-        //
-        //    tapGesture1.numberOfTapsRequired = 1;
-        //
-        //    [tapGesture1 setDelegate:self];
-        //
-        //    [cell.BTN_close addGestureRecognizer:tapGesture1];
-        //       [cell.BTN_close addTarget:self action:@selector(remove_from_cart:) forControlEvents:UIControlEventTouchUpInside];
-        //        [cell.BTN_close setBackgroundImage:newImage forState:UIControlStateNormal];
-        
+            
         UIImage *newImage = [cell.BTN_close.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         UIGraphicsBeginImageContextWithOptions(cell.BTN_close.image.size, NO, newImage.scale);
         [[UIColor darkGrayColor] set];
@@ -496,7 +412,7 @@
             NSString *str_miles = [NSString stringWithFormat:@"%@\nDoha Miles %@",str_or,miles];
 
             NSString *text = [NSString stringWithFormat:@"%@ %@",currency_code,total_amt];
-            cell.LBL_dohamiles.text = str_miles;
+            //cell.LBL_dohamiles.text = str_miles;
             
             if ([cell.LBL_total_amount respondsToSelector:@selector(setAttributedText:)]) {
                 
@@ -509,7 +425,7 @@
                 
                 
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}
-                                        range:[text rangeOfString:str_or] ];
+                                        range:[text rangeOfString:currency_code] ];
 
                 NSRange cmp = [text rangeOfString:total_amt];
               
@@ -534,13 +450,12 @@
                                           };
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:str_miles attributes:attribs];
                 
-                
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor blackColor],}
+                                        range:[str_miles rangeOfString:str_or] ];
+
                 
                 NSRange cmp = [str_miles rangeOfString:miles];
-                
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor redColor],}
-                                        range:[str_miles rangeOfString:str_or] ];
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}
+                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14.0],NSForegroundColorAttributeName:[UIColor blackColor],}
                                         range:cmp ];
                 
                 
@@ -590,7 +505,25 @@
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 147.0;
+    if (indexPath.section == 0) {
+        return 160;
+         //return UITableViewAutomaticDimension;
+        
+    }
+    else{
+        return 147;
+    }
+}
+-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if (indexPath.section == 0) {
+        return UITableViewAutomaticDimension;
+
+    }
+    else{
+        return 147;
+    }
+
 }
 #pragma button_actions
 -(void)btnfav_action
@@ -610,8 +543,10 @@
     //Cart_cell *cell = (Cart_cell *)[_TBL_cart_items cellForRowAtIndexPath:indexPath];
    product_id = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"productid"]];
     
-    //[[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];
-    [self performSelector:@selector(delete_from_cart) withObject:activityIndicatorView afterDelay:0.01];
+    
+    [HttpClient animating_images:self];
+   // [self performSelector:@selector(delete_from_cart) withObject:activityIndicatorView afterDelay:0.01];
+    [self delete_from_cart];
     
     
 
@@ -648,8 +583,11 @@
     //[[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];
     
      //Update cart Api method calling
+    [HttpClient animating_images:self];
     
-    [self updating_cart_List_api];
+    //[self updating_cart_List_api];
+    
+    [self performSelector:@selector(updating_cart_List_api) withObject:nil afterDelay:0.01];
     
 }
 -(void)plus_action:(UIButton*)btn
@@ -667,7 +605,10 @@
 //    [[NSUserDefaults standardUserDefaults]setObject:cell._TXT_count.text forKey:@"item_count"];
     // Update cart Api method calling
     
-    [self updating_cart_List_api];
+    [HttpClient animating_images:self];
+    
+    //[self updating_cart_List_api];
+     [self performSelector:@selector(updating_cart_List_api) withObject:nil afterDelay:0.01];
     
     
 }
@@ -710,8 +651,10 @@ params.put("customerId",customerid);
 -(void)cartList_api_calling{
     
     @try {
-        cart_array = [[NSMutableArray alloc]init];
         
+       // [HttpClient animating_images:self];
+        
+        cart_array = [[NSMutableArray alloc]init];
         
         NSError *error;
         NSHTTPURLResponse *response = nil;
@@ -745,8 +688,9 @@ params.put("customerId",customerid);
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         if (error) {
             [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
-            VW_overlay.hidden=YES;
-            [activityIndicatorView stopAnimating];
+            
+//            VW_overlay.hidden=YES;
+//            [activityIndicatorView stopAnimating];
         }
         
         if(aData)
@@ -777,8 +721,10 @@ params.put("customerId",customerid);
                         }
                         
 
-                    VW_overlay.hidden=YES;
-                    [activityIndicatorView stopAnimating];
+//                    VW_overlay.hidden=YES;
+//                    [activityIndicatorView stopAnimating];
+                        
+                        
                          _TBL_cart_items.hidden =  NO;
                          self.VW_filter.hidden =NO;
                         [self.TBL_cart_items reloadData];
@@ -789,8 +735,10 @@ params.put("customerId",customerid);
                    
                     }
                     else{
-                        VW_overlay.hidden=YES;
-                        [activityIndicatorView stopAnimating];
+                        
+//                        VW_overlay.hidden=YES;
+//                        [activityIndicatorView stopAnimating];
+                        
                         _TBL_cart_items.hidden =  YES;
                        
                             
@@ -808,8 +756,8 @@ params.put("customerId",customerid);
                   
                 }
                 else{
-                    VW_overlay.hidden=YES;
-                    [activityIndicatorView stopAnimating];
+//                    VW_overlay.hidden=YES;
+//                    [activityIndicatorView stopAnimating];
 
                     [HttpClient createaAlertWithMsg:@"The Data is in Unknown format" andTitle:@""];
                 }
@@ -818,8 +766,9 @@ params.put("customerId",customerid);
                 
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
-                VW_overlay.hidden=YES;
-                [activityIndicatorView stopAnimating];
+                
+//                VW_overlay.hidden=YES;
+//                [activityIndicatorView stopAnimating];
                 
             }
             
@@ -829,9 +778,12 @@ params.put("customerId",customerid);
 
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-        VW_overlay.hidden=YES;
-        [activityIndicatorView stopAnimating];
+        
+//        VW_overlay.hidden=YES;
+//        [activityIndicatorView stopAnimating];
     }
+    
+    [HttpClient stop_activity_animation];
     
 }
 /*
@@ -843,11 +795,20 @@ params.put("customerId",customerid);
  */
 -(void)clear_cart_action:(UIButton*)sender{
 //    [self clear_cart_api];
-    [self performSelector:@selector(clear_cart_api) withObject:activityIndicatorView afterDelay:0.01];
+    
+    
+    //[self performSelector:@selector(clear_cart_api) withObject:activityIndicatorView afterDelay:0.01];
+    
+     [HttpClient animating_images:self];
+    [self clear_cart_api];
+    
+    
     [self performSelector:@selector(cart_count) withObject:nil afterDelay:0.01];
 }
 #pragma mark clear_cart_api_calling
 -(void)clear_cart_api{
+    
+   
     
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
@@ -865,8 +826,10 @@ params.put("customerId",customerid);
                     [HttpClient createaAlertWithMsg:[data valueForKey:@"message"] andTitle:@""];
                     [self cartList_api_calling];
                     [self.TBL_cart_items reloadData];
-                    VW_overlay.hidden=YES;
-                    [activityIndicatorView stopAnimating];
+                    
+//                    
+//                    VW_overlay.hidden=YES;
+//                    [activityIndicatorView stopAnimating];
                 }
                 
             });
@@ -874,9 +837,11 @@ params.put("customerId",customerid);
         }];
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-        VW_overlay.hidden=YES;
-        [activityIndicatorView stopAnimating];
+//        VW_overlay.hidden=YES;
+//        [activityIndicatorView stopAnimating];
     }
+    
+    [HttpClient stop_activity_animation];
 }
 #pragma mark  cart_count_api
 -(void)cart_count{
@@ -1032,6 +997,9 @@ params.put("customerId",customerid);
 
      */
     
+    
+    //[HttpClient animating_images:self];
+    
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
     
@@ -1049,8 +1017,10 @@ params.put("customerId",customerid);
                         [HttpClient createaAlertWithMsg:[data valueForKey:@"message"] andTitle:@""];
                         [self cartList_api_calling];
                         [self.TBL_cart_items reloadData];
-                        VW_overlay.hidden=YES;
-                        [activityIndicatorView stopAnimating];
+                        
+//                        VW_overlay.hidden=YES;
+//                        [activityIndicatorView stopAnimating];
+                        
                     } @catch (NSException *exception) {
                         NSLog(@"%@",exception);
                     }
@@ -1062,10 +1032,12 @@ params.put("customerId",customerid);
         }];
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-        VW_overlay.hidden=YES;
-        [activityIndicatorView stopAnimating];
+//        VW_overlay.hidden=YES;
+//        [activityIndicatorView stopAnimating];
     }
 
+    [HttpClient stop_activity_animation];
+    
 }
 #pragma mark updating_cart_API
 /*
@@ -1081,6 +1053,8 @@ params.put("customerId",customerid);
  */
 
 -(void)updating_cart_List_api{
+    
+    
     
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
@@ -1115,6 +1089,7 @@ params.put("customerId",customerid);
         });
         
     }];
+    [HttpClient stop_activity_animation];
 }
 
 - (void)alertView:(UIAlertView *)alertView
