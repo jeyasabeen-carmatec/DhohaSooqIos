@@ -20,8 +20,8 @@
 @implementation HoshiTextField
 
 #pragma mark - Constants
-static CGFloat const activeBorderThickness = 1.5;
-static CGFloat const inactiveBorderThickness = 0.8;
+static CGFloat const activeBorderThickness = 0.5;
+static CGFloat const inactiveBorderThickness = 0.5;
 static CGPoint const textFieldInsets = {0, 12};
 static CGPoint const placeholderInsets = {0, 6};
 
@@ -100,12 +100,12 @@ static CGPoint const placeholderInsets = {0, 6};
     self.activeBorderLayer = [[CALayer alloc] init];
     self.placeholderLabel = [[UILabel alloc] init];    
     
-    self.borderInactiveColor = [UIColor colorWithRed:0.7255 green:0.7569 blue:0.7922 alpha:1.0];
-    self.borderActiveColor = [UIColor colorWithRed:0.28 green:0.28 blue:0.28 alpha:1.0];
+    self.borderInactiveColor = [UIColor lightGrayColor];
+    self.borderActiveColor = [UIColor lightGrayColor];
     self.placeholderColor = [UIColor grayColor];
     self.cursorColor = [UIColor colorWithRed:0.349 green:0.3725 blue:0.4314 alpha:1.0];
-    self.textColor = [UIColor colorWithRed:0.47 green:0.47 blue:0.47 alpha:1.0];
-    [self setFont:[UIFont fontWithName:@"Poppins-Regular" size:17]];
+    self.textColor = [UIColor grayColor];
+    [self setFont:[UIFont fontWithName:@"Poppins-Light" size:17]];
     
     self.placeholderFontScale = 0.65;
     self.activePlaceholderPoint = CGPointZero;

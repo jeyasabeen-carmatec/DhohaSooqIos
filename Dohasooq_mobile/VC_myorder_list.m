@@ -26,6 +26,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    CGRect frameset = _VW_empty.frame;
+    frameset.size.width = 200;
+    frameset.size.height = 200;
+    _VW_empty.frame = frameset;
+    _VW_empty.center = self.view.center;
+    [self.view addSubview:_VW_empty];
+    _VW_empty.hidden = YES;
+    
+    _BTN_empty.layer.cornerRadius = self.BTN_empty.frame.size.width / 2;
+    _BTN_empty.layer.masksToBounds = YES;
+    
+
     [_BTN_cart addTarget:self action:@selector(cart_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_wish_list addTarget:self action:@selector(wish_action) forControlEvents:UIControlEventTouchUpInside];
     [_TXT_search addTarget:self action:@selector(search_ORDERS) forControlEvents:UIControlEventEditingChanged];
@@ -452,13 +465,17 @@
           NSMutableDictionary *json_DAT = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             json_DATA = [json_DAT valueForKey:@"Orders"];
             NSLog(@"The response Api post sighn up API %@",json_DATA);
-            if([json_DATA isKindOfClass:[NSArray class]])
+            if([json_DATA isKindOfClass:[NSArray class]] && json_DATA.count > 1)
             {
              
+                
                 [HttpClient stop_activity_animation];
+                
 
-                image_empty.hidden = YES;
-                [self cart_count];
+                _VW_empty.hidden = YES;
+                _TBL_orders.hidden =  NO;
+                _VW_search_VW.hidden = NO;
+
                 
                 NSString *str_header_title = [NSString stringWithFormat:@"MY ORDERS(%lu)",(unsigned long) [json_DATA count]];
                 [_BTN_header setTitle:str_header_title forState:UIControlStateNormal];
@@ -469,17 +486,19 @@
             }
             else{
                 [HttpClient stop_activity_animation];
-
-
                 _TBL_orders.hidden =  YES;
-               image_empty = [[UIImageView alloc]init];
+                _VW_empty.hidden = NO;
+                _VW_search_VW.hidden = YES;
+                
+                
+               /*image_empty = [[UIImageView alloc]init];
                 CGRect frame_image = image_empty.frame;
                 frame_image.size.height = 200;
                 frame_image.size.width = 200;
                 image_empty.frame = frame_image;
                 image_empty.center = self.view.center;
                 [self.view addSubview:image_empty];
-                image_empty.image = [UIImage imageNamed:@"Orders_not_found"];
+                image_empty.image = [UIImage imageNamed:@"Orders_not_found"];*/
                 
 
             }

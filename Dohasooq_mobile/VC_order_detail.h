@@ -112,6 +112,7 @@
 @property(nonatomic,weak) IBOutlet UIButton *BTN_doha_bank_account;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_doha_miles;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_credit;
+@property (weak, nonatomic) IBOutlet UILabel *LBL_cash_on_Delivary;
 
 
 // view delivery slot

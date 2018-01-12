@@ -114,7 +114,10 @@
     }
     else
     {
-        [self performSelector:@selector(search_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self performSelector:@selector(search_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+
+        });
 
     }
 //{

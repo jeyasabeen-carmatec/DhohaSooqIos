@@ -8,6 +8,7 @@ pod 'FBSDKCoreKit'
 pod 'FBSDKShareKit'
 pod 'FBSDKLoginKit'
 pod 'Google/SignIn'
+pod 'TTRangeSlider'
   # Uncomment the next line if you're using Swift or would like to use dynamic framework
   # use_frameworks!
   # Pods for Dohasooq_mobile

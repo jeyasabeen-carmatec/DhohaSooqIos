@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "VC_home.h"
 #import "MIBadgeButton.h"
 @interface Home_page_Qtickets : UIViewController
 
 @property(nonatomic,strong) NSArray *items;
+
 @property(nonatomic,weak)IBOutlet UITabBar *Tab_MENU;
 
 //side bar

@@ -399,7 +399,7 @@ error:(NSError *)error{
 }
 -(void)Google_plus_login:(NSString *)f_name :(NSString *)l_name :(NSString *)e_mail
 {
-    
+     [HttpClient animating_images:self];
         NSString *type = @"Google_Plus";
         NSString *first_name = f_name;
         NSString *last_name = l_name;
@@ -458,10 +458,12 @@ error:(NSError *)error{
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 [alert show];
+                 [HttpClient stop_activity_animation];
                 
             }
             else
             {
+                 [HttpClient stop_activity_animation];
                 if ([msg isEqualToString:@"User already exists"])
                 { 
                     msg = @"Email address already in use, Please try with different email.";
@@ -495,6 +497,8 @@ error:(NSError *)error{
 {
     @try
     {
+     [HttpClient animating_images:self];
+       
         NSString *type = @"Facebook";
         NSString *first_name = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"first_name"]];
         NSString *last_name = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"last_name"]];
@@ -536,6 +540,8 @@ error:(NSError *)error{
             
             if([status isEqualToString:@"1"])
             {
+                 [HttpClient stop_activity_animation];
+                
                 [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
@@ -557,6 +563,7 @@ error:(NSError *)error{
             }
             else
             {
+                 [HttpClient stop_activity_animation];
                 if ([msg isEqualToString:@"User already exists"])
                 {
                     msg = @"Email address already in use, Please try with different email.";
@@ -634,6 +641,7 @@ error:(NSError *)error{
 {
     @try
     {
+        [HttpClient animating_images:self];
         NSString *email = _TXT_username.text;
         NSString *password = _TXT_password.text;
         NSDictionary *parameters = @{
@@ -668,7 +676,7 @@ error:(NSError *)error{
             
             if([status isEqualToString:@"1"])
             {
-                 [HttpClient stop_activity_animation];
+               
                 
                 [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
@@ -685,6 +693,7 @@ error:(NSError *)error{
 
                 
                 [self MENU_api_call];
+                  [HttpClient stop_activity_animation];
                 
                 
                // UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
@@ -717,6 +726,7 @@ error:(NSError *)error{
     
     @catch(NSException *exception)
     {
+         [HttpClient stop_activity_animation];
         NSLog(@"The error is:%@",exception);
     }
     
@@ -758,7 +768,7 @@ error:(NSError *)error{
            // [self performSegueWithIdentifier:@"logint_to_home" sender:self];
             
             NSLog(@"the api_collection_product%@",json_DATA);
-            [HttpClient stop_activity_animation];
+            //[HttpClient stop_activity_animation];
         }
     }
     @catch(NSException *exception)
@@ -767,6 +777,7 @@ error:(NSError *)error{
         [HttpClient stop_activity_animation];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
+        
         
     }
     //    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
