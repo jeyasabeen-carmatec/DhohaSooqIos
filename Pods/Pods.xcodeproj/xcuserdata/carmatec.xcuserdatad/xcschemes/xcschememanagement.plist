@@ -49,6 +49,11 @@
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
+		<key>TTRangeSlider.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>11</integer>
+		</dict>
 		<key>youtube-ios-player-helper.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -58,6 +63,11 @@
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>06DD82F1D77F8BA94ED9708BDF889FCF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>0E9F6724C731DB563F6A7FC5A489C702</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -97,7 +107,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>6D137D0C3E3B32217C3A5103AC3A3920</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>70F85D1045CE53F81DBC3D515F71D4C2</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>97E82053AB31A53CB533576E7CB92807</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -112,7 +132,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>D5999A7D2A6352B38C28E2841D120CD1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>E4EB7BD69C45863A0A84F3D48C8AA879</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E5CC2559517D779DAE802F0254A0D784</key>
 		<dict>
 			<key>primary</key>
 			<true/>
