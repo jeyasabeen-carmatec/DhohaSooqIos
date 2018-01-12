@@ -415,8 +415,7 @@
     
     else
     {
-        [self.view endEditing:TRUE];
-        [HttpClient animating_images:self];
+        //[HttpClient animating_images:self];
         [self performSelector:@selector(_sign_up_api_integration) withObject:nil afterDelay:0.01];
         
     }
@@ -433,6 +432,7 @@
 #pragma API call
 -(void)_sign_up_api_integration
 {
+    [HttpClient animating_images:self];
     @try
     {
     NSString *fname = _TXT_F_name.text;
@@ -506,7 +506,7 @@
         
         
         //
-        NSError *er;
+   
         //    NSHTTPURLResponse *response = nil;
         
         // close form
@@ -520,12 +520,13 @@
         if (returnData)
         
     {
-        [HttpClient stop_activity_animation];        NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&error];
+       // [HttpClient stop_activity_animation];
+        NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&error];
         NSLog(@"The response Api post sighn up API %@",json_DATA);
         NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
         NSString *msg = [json_DATA valueForKey:@"message"];
 
-        [HttpClient stop_activity_animation];
+       
         if([status isEqualToString:@"1"])
         {
            
@@ -541,7 +542,9 @@
             alert.tag = 1;
             [alert show];
 
-            
+             [HttpClient stop_activity_animation];
+            [self.view endEditing:TRUE];
+
 
 
             //[self performSegueWithIdentifier:@"normalsighnuptoinitialVC" sender:self];
@@ -549,6 +552,7 @@
         }
         else
         {
+             [HttpClient stop_activity_animation];
             if ([msg isEqualToString:@"User already exists"])
             {
                 msg = @"Email address already in use, Please try with different email.";
@@ -572,7 +576,9 @@
         
     @catch(NSException *exception)
     {
+         [HttpClient stop_activity_animation];
         NSLog(@"The error is:%@",exception);
+        
     }
     
 }
@@ -696,7 +702,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
     if (localError != nil) {
         NSLog(@"%@", [localError userInfo]);
     }
-    phone_code_arr = (NSMutableArray *)parsedObject;
+    phone_code_arr = (NSMutableArray *)[parsedObject valueForKey:@"countries"];
     
     NSSortDescriptor *sortDescriptor;
     sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name"
@@ -759,14 +765,14 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
     
   
         
-return [NSString stringWithFormat:@"%@   %@",[phone_code_arr[row] valueForKey:@"name"],[phone_code_arr[row] valueForKey:@"dial_code"]];
+    return [NSString stringWithFormat:@"%@   %@",[phone_code_arr[row] valueForKey:@"name"],[phone_code_arr[row] valueForKey:@"code"]];
     
 }
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
   
-        flag = [NSString stringWithFormat:@"%@",[phone_code_arr[row] valueForKey:@"dial_code"]];
-    _TXT_prefix.text = flag;
+        flag = [NSString stringWithFormat:@"%@",[phone_code_arr[row] valueForKey:@"code"]];
+        _TXT_prefix.text = flag;
         
    }
 

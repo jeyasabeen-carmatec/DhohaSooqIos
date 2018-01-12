@@ -238,7 +238,29 @@
          mobile = 9177288200;
          }*/
         
-        NSString *user_ID =[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+        
+        
+        
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *str_id = @"user_id";
+        NSString *user_id;
+        for(int h = 0;h<[[dict allKeys] count];h++)
+        {
+            if([[[dict allKeys] objectAtIndex:h] isEqualToString:str_id])
+            {
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                break;
+            }
+            else
+            {
+                
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+            }
+            
+        }
+        
+        
+       
         
         NSDictionary *saveBookings_dic = [[NSUserDefaults standardUserDefaults] valueForKey:@"savebooking"];
         NSLog(@"saveBookings_dic %@",saveBookings_dic);
@@ -246,7 +268,7 @@
         NSString *order_ID = [booking_info substringWithRange:NSMakeRange(1, booking_info.length-1)];
         
         
-        NSDictionary *params=@{@"full_name":[saveBookings_dic valueForKey:@"full_name"],@"email":[saveBookings_dic valueForKey:@"email"],@"mobile":[saveBookings_dic valueForKey:@"mobile"],@"bookingId":order_ID,@"movie_event":@"movie",@"user_id":user_ID};
+        NSDictionary *params=@{@"full_name":[saveBookings_dic valueForKey:@"full_name"],@"email":[saveBookings_dic valueForKey:@"email"],@"mobile":[saveBookings_dic valueForKey:@"mobile"],@"bookingId":order_ID,@"movie_event":@"movie",@"user_id":user_id};
         
         
         NSLog(@"Params %@",params);

@@ -15,18 +15,22 @@
 @interface VC_My_profile ()<UITextFieldDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
 {
     float scroll_ht;
-    NSMutableArray *countrypicker,*statepicker,*phone_code_arr;
+    NSMutableArray *statepicker,*phone_code_arr, *required_format;
     NSDictionary *grouppicker;
     NSDictionary *user_dictionary;
 //    UIView *VW_overlay;
 //    UIActivityIndicatorView *activityIndicatorView;
-    NSString *state_val,*group_val,*country_val;
+    NSString *state_val,*group_val,*country_val,*state_id,*country_id;
     
-    
+    NSArray *json_DATA;
     NSData *pngData;
     NSData *syncResData;
     NSMutableURLRequest *requesti;
+    NSMutableArray *temp_arr ;
+    NSDictionary *country_dict;
     
+    
+  
 }
 
 @end
@@ -53,7 +57,7 @@
 //    
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-    
+    [HttpClient animating_images:self];
     [self performSelector:@selector(View_user_data) withObject:nil afterDelay:0.01];
     [self phone_code_view];
     [self set_UP_VIEW];
@@ -136,6 +140,8 @@
     [self TEXT_hidden];
     [self TEXT_billing_hidden];
     [self  View_user_data];
+    [self CountryAPICall];
+
 
 
 }
@@ -161,21 +167,6 @@
     _flag_contry_pickerCiew.delegate = self;
     _flag_contry_pickerCiew.dataSource=self;
     
-//    UIToolbar* conutry_close = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
-//    conutry_close.barStyle = UIBarStyleBlackTranslucent;
-//    [conutry_close sizeToFit];
-//    
-//    UIButton *Done=[[UIButton alloc]init];
-//    Done.frame=CGRectMake(conutry_close.frame.size.width - 100, 0, 100, conutry_close.frame.size.height);
-//    [Done setTitle:@"Done" forState:UIControlStateNormal];
-//    [Done addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
-//    [conutry_close addSubview:Done];
-//    
-//    UIButton *close=[[UIButton alloc]init];
-//    close.frame=CGRectMake(conutry_close.frame.size.width - 20 , 0, 100, conutry_close.frame.size.height);
-//    [close setTitle:@"Close" forState:UIControlStateNormal];
-//    [close addTarget:self action:@selector(close_ACTION) forControlEvents:UIControlEventTouchUpInside];
-//    [conutry_close addSubview:close];
     
     
     
@@ -227,19 +218,28 @@
     [_date_picker setMaximumDate:min_date];
     [_date_picker addTarget:self action:@selector(fromdateTextField) forControlEvents:UIControlEventValueChanged];
 
-    
-    NSMutableArray *temp_arr = [[NSMutableArray alloc]init];
-    countrypicker = [[NSMutableArray alloc]init];
-     temp_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
-    for(int i =0 ;i < temp_arr.count;i++)
-    {
-        [countrypicker addObject:[[temp_arr objectAtIndex:i]valueForKey:@"name"]];
-    }
+    [self CountryAPICall];
+//   temp_arr = [[NSMutableArray alloc]init];
+//    countrypicker = [[NSMutableArray alloc]init];
+//     temp_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
+//    for(int i =0 ;i < temp_arr.count;i++)
+//    {
+//        [countrypicker addObject:[[temp_arr objectAtIndex:i]valueForKey:@"name"]];
+//    }
+//    
+//    for(int i = 0;i<temp_arr.count;i++)
+//    {
+//        if([_TXT_country.text isEqualToString:[[temp_arr objectAtIndex:i]valueForKey:@"name"]])
+//        {
+//            country_id =[NSString stringWithFormat:@"%@",[[temp_arr objectAtIndex:i]valueForKey:@"id"]];
+//        }
+//    }
+   
     [self customer_GROUP_API];
-    
     
     // = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
 }
+
 -(void)close_ACTION
 {
     [_TXT_country_fld resignFirstResponder];
@@ -256,6 +256,25 @@
     self.TXT_country.text = country_val;
     self.TXT_state.text=state_val;
     self.TXT_group.text  = group_val;
+    
+    
+    for(int i = 0;i<country_dict.count;i++)
+    {
+        if([country_val isEqualToString:[[country_dict allValues]objectAtIndex:i]])
+        {
+            country_id =[NSString stringWithFormat:@"%@",[[country_dict allKeys]objectAtIndex:i]];
+            
+        }
+    }
+    for(int j = 0;j<json_DATA.count;j++)
+    {
+        if([state_val isEqualToString:[[json_DATA objectAtIndex:j]valueForKey:@"value"]])
+        {
+            state_id =[NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:j]valueForKey:@"key"]];
+            
+        }
+        
+    }
 
     [_TXT_country resignFirstResponder];
     [_TXT_group resignFirstResponder];
@@ -264,6 +283,135 @@
     [_TXT_country_fld resignFirstResponder];
     
 }
+-(void)CountryAPICall
+{
+    @try {
+       NSMutableArray *countrypicker = [[NSMutableArray alloc]init];
+        NSString *country_ID = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/countriesapi/%@.json",SERVER_URL,country_ID];
+        @try
+        {
+            NSError *error;
+            // NSError *err;
+            NSHTTPURLResponse *response = nil;
+            
+            
+            // NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/login/1.json",SERVER_URL];
+            // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+            NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+            [request setURL:urlProducts];
+            [request setHTTPMethod:@"POST"];
+            [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+            //[request setHTTPBody:postData];
+            //[request setAllHTTPHeaderFields:headers];
+            [request setHTTPShouldHandleCookies:NO];
+            NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            if(aData)
+            {
+                
+                country_dict = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+                
+                
+                
+                for (int x=0; x<[[country_dict allKeys] count]; x++) {
+                    NSDictionary *dic = @{@"cntry_id":[[country_dict allKeys] objectAtIndex:x],@"cntry_name":[country_dict valueForKey:[[country_dict allKeys] objectAtIndex:x]]};
+                    
+                    [countrypicker addObject:dic];
+                }
+                
+                
+                NSSortDescriptor *sortDescriptor;
+                sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"cntry_name"
+                                                             ascending:YES];
+                NSArray *sortedArr = [countrypicker sortedArrayUsingDescriptors:@[sortDescriptor]];
+                
+                
+             required_format = [NSMutableArray array];
+                for (int l =0; l<sortedArr.count; l++) {
+                    
+                    if ([[[sortedArr objectAtIndex:l] valueForKey:@"cntry_name"] isEqualToString:@"Qatar"] ) {
+                        
+                        [required_format addObject:[sortedArr objectAtIndex:l]];
+                        
+                    }
+                    
+                }
+                for (int l =0; l<sortedArr.count; l++) {
+                    
+                    if ([[[sortedArr objectAtIndex:l] valueForKey:@"cntry_name"] isEqualToString:@"India"]) {
+                        
+                        [required_format addObject:[sortedArr objectAtIndex:l]];
+                        
+                    }
+                    
+                }
+                
+                for (int m =0; m<sortedArr.count; m++) {
+                    
+                    if (![[[sortedArr objectAtIndex:m] valueForKey:@"cntry_name"] isEqualToString:@"Qatar"] && ![[[sortedArr objectAtIndex:m] valueForKey:@"cntry_name"] isEqualToString:@"India"]) {
+                        
+                        [required_format addObject:[sortedArr objectAtIndex:m]];
+                        
+                    }
+                    
+                }
+                for(int i = 0;i<required_format.count;i++)
+                {
+                    if([[[user_dictionary valueForKey:@"detail"] valueForKey:@"country_name"] isEqualToString:[[required_format objectAtIndex:i] valueForKey:@"cntry_name"]])
+                    {
+                        country_id =[NSString stringWithFormat:@"%@",[[required_format objectAtIndex:i] valueForKey:@"cntry_id"]];
+                        [self states_API:country_id];
+                        
+                    }
+                }
+
+                
+                
+//                for (int l =0; l<required_format.count; l++) {
+//                    
+//                    if ([[[required_format objectAtIndex:l] valueForKey:@"cntry_name"] isEqualToString:@"Qatar"] ) {
+//                        
+//                        country_ID = []
+//                        
+//                        [required_format addObject:[sortedArr objectAtIndex:l]];
+//                        
+//                    }
+//                    
+//                }
+//
+                
+                [countrypicker removeAllObjects];
+                [countrypicker addObjectsFromArray:required_format];
+                [_contry_pickerView reloadAllComponents];
+                NSLog(@"The response Api post sighn up API %@",countrypicker);
+                
+                //  NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
+            }
+            else
+            {
+                [HttpClient stop_activity_animation];
+                
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+            }
+            
+        }
+        
+        @catch(NSException *exception)
+        {
+            NSLog(@"The error is:%@",exception);
+        }
+        
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
+    
+    
+}
+
 -(void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
@@ -296,7 +444,9 @@
       frameset.size.width = _scroll_contents.frame.size.width;
       _VW_billing.frame = frameset;
       
-      scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height;
+      
+      
+       scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height;
 
       _TXT_first_name.backgroundColor = [UIColor whiteColor];
       _TXT_last_name.backgroundColor = [UIColor whiteColor];
@@ -321,12 +471,28 @@
       frameset.size.width = _scroll_contents.frame.size.width;
       _VW_login.frame = frameset;
       
-      frameset = _VW_billing.frame;
+     frameset = _VW_billing.frame;
       frameset.origin.y =_VW_login.frame.origin.y+ _VW_login.frame.size.height;
       frameset.size.width = _scroll_contents.frame.size.width;
       _VW_billing.frame = frameset;
       
-      scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height;
+      if(_BTN_save_billing.hidden == YES)
+      {
+      frameset = _VW_layer_billing.frame;
+      frameset.size.height = _TXT_zipcode.frame.origin.y + _TXT_zipcode.frame.size.height + 12;
+      _VW_layer_billing.frame = frameset;
+      }
+      else
+      {
+          frameset = _VW_layer_billing.frame;
+          frameset.size.height = _BTN_save_billing.frame.origin.y + _BTN_save_billing.frame.size.height + 12;
+          _VW_layer_billing.frame = frameset;
+      }
+      
+
+   
+     scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height;
+      
 
 
       _TXT_first_name.backgroundColor = [UIColor colorWithRed:240.0/255.0 green:240.0/255.0 blue:240.0/255.0 alpha:1];
@@ -352,13 +518,13 @@
 
         if(_BTN_save.hidden == YES)
         {
-            scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height;
+            scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height+50;
             
         }
         else
         {
             
-            scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height +_BTN_save.frame.size.height+10;
+            scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height +_BTN_save.frame.size.height+50;
         }
 
     }
@@ -378,12 +544,12 @@
         
         if(_BTN_save.hidden == YES)
         {
-            scroll_ht = _BTN_save_billing.frame.origin.y + _BTN_save_billing.frame.size.height +_BTN_save.frame.size.height;
+            scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height +_BTN_save.frame.size.height;
  
         }
         else
         {
-        scroll_ht = _BTN_save_billing.frame.origin.y + _BTN_save_billing.frame.size.height+80;
+        scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height+80;
 
         }
 
@@ -391,6 +557,25 @@
     }
   //  [self viewDidLayoutSubviews];
     [self TEXT_billing_hidden];
+}
+
+-(void)scroll_HANDLER
+{
+    if(_BTN_save.hidden == YES && _BTN_save_billing.hidden == YES)
+    {
+        scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height;
+    }
+    else if(_BTN_save.hidden ==  YES && _BTN_save_billing.hidden == NO)
+    {
+        scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height;
+
+    }
+    else if(_BTN_save_billing.hidden == NO && _BTN_save.hidden == YES)
+    {
+        scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height;
+
+    }
+    
 }
 -(void)BTN_bank_customer_action
 {
@@ -471,40 +656,45 @@
     
     if(textField == _TXT_city )
     {
-        scroll_ht = scroll_ht + 100;
-        [self viewDidLayoutSubviews];
+        [UIView beginAnimations:nil context:NULL];
+        self.view.frame = CGRectMake(0,-110,self.view.frame.size.width,self.view.frame.size.height);
+        [UIView commitAnimations];
+
     }
     else if(textField  == _TXT_address1)
     {
-        scroll_ht = scroll_ht + 150;
-        [self viewDidLayoutSubviews];
+        [UIView beginAnimations:nil context:NULL];
+        self.view.frame = CGRectMake(0,-140,self.view.frame.size.width,self.view.frame.size.height);
+        [UIView commitAnimations];
+
+        
     }
     else if(textField == _TXT_zipcode)
     {
-        scroll_ht = scroll_ht  + 200;
-        [self viewDidLayoutSubviews];
+        [UIView beginAnimations:nil context:NULL];
+        self.view.frame = CGRectMake(0,-150,self.view.frame.size.width,self.view.frame.size.height);
+        [UIView commitAnimations];
     }
+    
+    if (textField == _TXT_country) {
+        [_contry_pickerView reloadAllComponents];
+    }
+    if (textField == _TXT_state) {
+        [_state_pickerView reloadAllComponents];
+    }
+    
+   
     
 }
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
-    if(textField == _TXT_city )
+    if(textField == _TXT_city || textField == _TXT_zipcode ||textField  == _TXT_address1)
     {
-        scroll_ht = scroll_ht - 100;
-       // [self viewDidLayoutSubviews];
-    }
-    else if(textField  == _TXT_address1)
-    {
-        scroll_ht = scroll_ht - 150;
-       // [self viewDidLayoutSubviews];
-    }
-    else if(textField == _TXT_zipcode)
-    {
-        scroll_ht = scroll_ht  - 200;
-        //[self viewDidLayoutSubviews];
-    }
-    
+        [UIView beginAnimations:nil context:NULL];
+        self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+        [UIView commitAnimations];
 
+    }
     
 }
 #pragma Picker_Actions
@@ -529,7 +719,7 @@
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
     if (pickerView == _contry_pickerView) {
-        return [countrypicker count];
+        return [required_format count];
     }
     if (pickerView == _state_pickerView) {
         return [statepicker count];
@@ -546,7 +736,7 @@
 }
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
     if (pickerView == _contry_pickerView) {
-        return countrypicker[row];
+        return [required_format[row] valueForKey:@"cntry_name"];
     }
     if (pickerView == _state_pickerView) {
         return statepicker[row];
@@ -556,7 +746,7 @@
         return [grouppicker allValues][row];
     }
     if (pickerView == _flag_contry_pickerCiew) {
-        return [NSString stringWithFormat:@"%@   %@",[phone_code_arr[row] valueForKey:@"name"],[phone_code_arr[row] valueForKey:@"dial_code"]];
+        return [NSString stringWithFormat:@"%@   %@",[phone_code_arr[row] valueForKey:@"name"],[phone_code_arr[row] valueForKey:@"code"]];
     }
     
     return nil;
@@ -564,11 +754,15 @@
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     if (pickerView == _contry_pickerView) {
-            country_val = countrypicker[row];
-        NSLog(@"the text is:%@",_TXT_country.text);
-       NSArray *temp_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
+        
+            country_val = [required_format[row] valueForKey:@"cntry_name"];
+        
+        NSLog(@"the text is:%@",temp_arr);
+        
+//       NSArray *temp_arrs = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
+     
 
-        [self states_API:[NSString stringWithFormat:@"%@",[temp_arr[row]valueForKey:@"id"]]];
+        [self states_API:[NSString stringWithFormat:@"%@",[required_format[row] valueForKey:@"cntry_id"]]];
         self.TXT_state.enabled=YES;
     }
     if (pickerView == _state_pickerView) {
@@ -585,13 +779,13 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     if (pickerView == _flag_contry_pickerCiew) {
-       self.TXT_country_fld.text = [phone_code_arr[row] valueForKey:@"dial_code"];
+       self.TXT_country_fld.text = [phone_code_arr[row] valueForKey:@"code"];
     }
 }
 
 
 #pragma mark states API
--(void)states_API :(NSString *)country_id
+-(void)states_API :(NSString *)country_ids
 {
     //http://192.168.0.171/dohasooq/apis/getstatebyconapi/countryid.json
     @try
@@ -600,7 +794,7 @@
         // NSError *err;
         NSHTTPURLResponse *response = nil;
         //   Languages/getLangByCountry/"+countryid+".json
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/getstatebyconapi/%@.json",SERVER_URL,country_id];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/getstatebyconapi/%@.json",SERVER_URL,country_ids];
         NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
         [request setURL:urlProducts];
@@ -612,15 +806,57 @@
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         if(aData)
         {
-            NSArray *json_DATA = (NSArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+           json_DATA = (NSArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             NSLog(@"The response Api post sighn up API %@",json_DATA);
             statepicker = [[NSMutableArray alloc]init];
             for(int i= 0;i<json_DATA.count;i++)
             {
                 [statepicker addObject:[[json_DATA objectAtIndex:i] valueForKey:@"value"]];
             }
+            NSString *str_state;
+           @try
+            {
+                str_state = [[user_dictionary valueForKey:@"detail"] valueForKey:@"state_name"];
+                str_state  = [str_state stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+
+                for(int j = 0;j<json_DATA.count;j++)
+                {
+                    if([str_state isEqualToString:[[json_DATA objectAtIndex:j]valueForKey:@"value"]])
+                    {
+                        state_id =[NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:j]valueForKey:@"key"]];
+                        
+                    }
+                    
+                }
+
+            }
+            @catch(NSException *Exception)
+            {
+                str_state = @"";
+                for(int j = 0;j<json_DATA.count;j++)
+                {
+                    if([str_state isEqualToString:[[json_DATA objectAtIndex:j]valueForKey:@"value"]])
+                    {
+                        state_id =[NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:j]valueForKey:@"key"]];
+                        
+                    }
+                    
+                }
+
+                
+            }
             
             
+            for(int j = 0;j<json_DATA.count;j++)
+            {
+                if([str_state isEqualToString:[[json_DATA objectAtIndex:j]valueForKey:@"value"]])
+                {
+                    state_id =[NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:j]valueForKey:@"key"]];
+                    
+                }
+                
+            }
+
             
             
         }
@@ -682,25 +918,43 @@
         NSError *error;
         // NSError *err;
         NSHTTPURLResponse *response = nil;
-        //   Languages/getLangByCountry/"+countryid+".json
-        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+       
+       NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *str_id = @"user_id";
+        NSString *user_id;
+        for(int i = 0;i<[[dict allKeys] count];i++)
+        {
+            if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+            {
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                break;
+            }
+            else
+            {
+                
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+            }
+            
+        }
+        
         NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/my-account/1/%@.json",SERVER_URL,user_id];
         NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
         [request setURL:urlProducts];
         [request setHTTPMethod:@"POST"];
         [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-        // [request setHTTPBody:postData];
-        //[request setAllHTTPHeaderFields:headers];
+     
         [request setHTTPShouldHandleCookies:NO];
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         if(aData)
         {
+            
            user_dictionary = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             NSLog(@"The response Api post sighn up API %@",user_dictionary);
             
             [self set_DATA];
+            [self CountryAPICall];
+            [HttpClient stop_activity_animation];
         }
     }
     
@@ -709,6 +963,8 @@
         NSLog(@"The error is:%@",exception);
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
+        [HttpClient stop_activity_animation];
+
     }
     
 }
@@ -717,10 +973,13 @@
     NSString *STR_fname = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"firstname"]];
      NSString *STR_lname = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"lastname"]];
      NSString *STR_land_phone = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"lnumber"]];
-     NSString *STR_mobile = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"mnumber"]];
-     NSString *STR_dob = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"bdate"]];
-    NSArray *temp_arr = [STR_dob componentsSeparatedByString:@"T"];
-      STR_dob = [temp_arr objectAtIndex:0];
+     NSString *STR_mobile = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"mob_no"]];
+    NSString *cntry_code =  [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"country_code"]];
+    NSString *STR_dob = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"bdate"]];
+    
+    NSArray *temp_arrs = [STR_dob componentsSeparatedByString:@"T"];
+      STR_dob = [temp_arrs objectAtIndex:0];
+     STR_dob = [self setdata_string:STR_dob];
      NSString *STR_customer_group = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"customer_grp_name"]];
      NSString *STR_bank_customer = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"doha_bank_customer"]];
      NSString *STR_bank_employee = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"doha_bank_employee"]];
@@ -733,34 +992,46 @@
     
     
     STR_fname = [STR_fname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    STR_fname = [STR_fname stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
+    STR_fname = [STR_fname stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
     STR_lname = [STR_lname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    STR_lname = [STR_lname stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
+    STR_lname = [STR_lname stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
     STR_land_phone = [STR_land_phone stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    STR_land_phone = [STR_land_phone stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
+    STR_land_phone = [STR_land_phone stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
     STR_mobile = [STR_mobile stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    STR_mobile = [STR_mobile stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
-    STR_dob = [STR_dob stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    STR_dob = [STR_dob stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
-    STR_customer_group = [STR_customer_group stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    STR_customer_group = [STR_customer_group stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
-    STR_bank_customer = [STR_bank_customer stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    STR_bank_customer = [STR_bank_customer stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
-    STR_bank_employee = [STR_bank_customer stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    STR_bank_employee = [STR_bank_customer stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
-    STR_gender = [STR_gender stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    STR_gender = [STR_gender stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
-    STR_city = [STR_city stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    STR_city = [STR_city stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
-    STR_address = [STR_address stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    STR_address = [STR_address stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
-    STR_country = [STR_country stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    STR_country = [STR_country stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
-    STR_state = [STR_state stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    STR_state = [STR_state stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
-    STR_zip_code = [STR_zip_code stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    STR_zip_code = [STR_zip_code stringByReplacingOccurrencesOfString:@"(ull)" withString:@""];
+    STR_mobile = [STR_mobile stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+   
     
+    if ([cntry_code containsString:@"<null>"]||[cntry_code containsString:@"<nil>"]||[cntry_code isEqualToString:@""]) {
+        cntry_code = @"+974";
+    }
+    
+    NSString *unfilteredString =STR_mobile;
+    NSCharacterSet *notAllowedChars = [[NSCharacterSet characterSetWithCharactersInString:@",1234567890"] invertedSet];
+    NSString *resultString = [[unfilteredString componentsSeparatedByCharactersInSet:notAllowedChars] componentsJoinedByString:@""];
+    STR_mobile =  resultString;
+
+    STR_dob = [STR_dob stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    STR_dob = [STR_dob stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    STR_customer_group = [STR_customer_group stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    STR_customer_group = [STR_customer_group stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    STR_bank_customer = [STR_bank_customer stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    STR_bank_customer = [STR_bank_customer stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    STR_bank_employee = [STR_bank_customer stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    STR_bank_employee = [STR_bank_customer stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    STR_gender = [STR_gender stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    STR_gender = [STR_gender stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    STR_city = [STR_city stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    STR_city = [STR_city stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    STR_address = [STR_address stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    STR_address = [STR_address stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    
+
+    
+    
+    STR_state = [STR_state stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    STR_state = [STR_state stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    STR_zip_code = [STR_zip_code stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    STR_zip_code = [STR_zip_code stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
     
     NSString *img_url = [NSString stringWithFormat:@"%@%@%@",SERVER_URL,[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_path"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_img"]];
     
@@ -768,16 +1039,26 @@
                         placeholderImage:[UIImage imageNamed:@"upload-27.png"]
                                  options:SDWebImageRefreshCached];
     
+//    STR_country = [STR_country stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+//    STR_country = [STR_country stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    
+    if ([STR_country containsString:@"<null>"] || [STR_country containsString:@"<nil>"] ||[STR_country isEqualToString:@"<null>"]) {
+        _TXT_country.placeholder = @"Select Country*";
+    }
+    else{
+         _TXT_country.text = STR_country;
+    }
     
     
     _TXT_first_name.text = STR_fname;
     _TXT_last_name.text = STR_lname;
     _TXT_land_phone.text = STR_land_phone;
     _TXT_mobile_phone.text = STR_mobile;
+    _TXT_country_fld.text =[NSString stringWithFormat:@"+ %@",cntry_code];
     _TXT_Dob.text = STR_dob;
     _TXT_group.text = STR_customer_group;
     _TXT_name.text = [NSString stringWithFormat:@"%@ %@",STR_fname,STR_lname];
-    _TXT_country.text = STR_country;
+   
     _TXT_state.text = STR_state;
     _TXT_address1.text = STR_address;
     _TXT_city.text = STR_city;
@@ -833,7 +1114,7 @@
 
 
     
-    [HttpClient stop_activity_animation];
+   // [HttpClient stop_activity_animation];
     
 }
 
@@ -929,10 +1210,23 @@
 {
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     NSDate *eventDate = _date_picker.date;
-    [dateFormat setDateFormat:@"YYYY-MM-dd"];
+     [dateFormat setDateFormat:@"MMM dd, yyyy"];
     
     NSString *dateString = [dateFormat stringFromDate:eventDate];
     _TXT_Dob.text = [NSString stringWithFormat:@"%@",dateString];
+}
+-(NSString *)setdata_string:(NSString *)date
+{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"YYYY-MM-dd"];
+    NSDate *eventDate = [formatter dateFromString:date];
+     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"MMM dd, yyyy"];
+    
+    
+    NSString *dateString = [dateFormat stringFromDate:eventDate];
+   // _TXT_Dob.text = [NSString stringWithFormat:@"%@",dateString];
+    return dateString;
 }
 - (IBAction)back_action:(id)sender {
     [self.navigationController popViewControllerAnimated:NO];
@@ -941,42 +1235,42 @@
 -(void)Save_button_clicked
 {
     NSString *msg;
-    if ([_TXT_land_phone.text isEqualToString:@""])
-    {
-        [_TXT_land_phone becomeFirstResponder];
-        msg = @"Please enter Phone Number";
-        
-        
-        
-    }
-    
-    else if (_TXT_land_phone.text.length < 5)
-    {
-        [_TXT_land_phone becomeFirstResponder];
-        msg = @"Phone Number cannot be less than 5 digits";
-        
-        
-        
-    }
-    else if(_TXT_land_phone.text.length>15)
-    {
-        [_TXT_land_phone becomeFirstResponder];
-        msg = @"Phone Number should not be more than 15 characters";
-        
-        
-    }
-    else if([_TXT_land_phone.text isEqualToString:@" "])
-    {
-        [_TXT_land_phone becomeFirstResponder];
-        msg = @"Blank space are not allowed";
-        
-        
-    }
+//    if ([_TXT_land_phone.text isEqualToString:@""])
+//    {
+//        [_TXT_land_phone becomeFirstResponder];
+//        msg = @"Please enter Phone Number";
+//        
+//        
+//        
+//    }
+//    
+//    else if (_TXT_land_phone.text.length < 5)
+//    {
+//        [_TXT_land_phone becomeFirstResponder];
+//        msg = @"Phone Number cannot be less than 5 digits";
+//        
+//        
+//        
+//    }
+//    else if(_TXT_land_phone.text.length>15)
+//    {
+//        [_TXT_land_phone becomeFirstResponder];
+//        msg = @"Phone Number should not be more than 15 characters";
+//        
+//        
+//    }
+//    else if([_TXT_land_phone.text isEqualToString:@" "])
+//    {
+//        [_TXT_land_phone becomeFirstResponder];
+//        msg = @"Blank space are not allowed";
+//        
+//        
+//    }
 
-    else if ([_TXT_mobile_phone.text isEqualToString:@""])
+     if ([_TXT_mobile_phone.text isEqualToString:@""])
     {
         [_TXT_mobile_phone becomeFirstResponder];
-        msg = @"Please enter Phone Number";
+        msg = @"Please enter Mobile Number";
         
         
         
@@ -985,7 +1279,7 @@
     else if (_TXT_mobile_phone.text.length < 5)
     {
         [_TXT_mobile_phone becomeFirstResponder];
-        msg = @"Phone Number cannot be less than 5 digits";
+        msg = @"Mobile Number cannot be less than 5 digits";
         
         
         
@@ -993,28 +1287,38 @@
     else if(_TXT_mobile_phone.text.length>15)
     {
         [_TXT_mobile_phone becomeFirstResponder];
-        msg = @"Phone Number should not be more than 15 characters";
+        msg = @"Mobile Number should not be more than 15 characters";
         
         
     }
-    else if([_TXT_mobile_phone.text isEqualToString:@" "])
+    else if([_TXT_mobile_phone.text isEqualToString:@""])
     {
         [_TXT_mobile_phone becomeFirstResponder];
         msg = @"Blank space are not allowed";
         
         
     }
-    else if([_TXT_group.text isEqualToString:@" "])
+    else if([_TXT_Dob.text isEqualToString:@""])
     {
-        [_TXT_group becomeFirstResponder];
+        [_TXT_Dob becomeFirstResponder];
+        msg = @"Please enter Date of birth";
+        
+        
+    }
+
+    else if([_TXT_Dob.text isEqualToString:@" "])
+    {
+        [_TXT_Dob becomeFirstResponder];
         msg = @"Blank space are not allowed";
         
         
     }
-  else if( _BTN_male.tag == 1 && _BTN_feamle.tag == 1)
-   {
-    msg = @"Please select Gender";
-   }
+   
+   
+//  else if( _BTN_male.tag == 1 && _BTN_feamle.tag == 1)
+//   {
+//    msg = @"Please select Gender";
+//   }
   else
   {
       [HttpClient animating_images:self];
@@ -1078,7 +1382,21 @@
         NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
         NSLog(@"the posted data is:%@",parameters);
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+        NSString *str_id = @"user_id";
+        NSString *user_id;
+        for(int i = 0;i<[[dict allKeys] count];i++)
+        {
+            if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+            {
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                break;
+            }
+            else
+            {
+                
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+            }
+        }
         NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/my-account/2/%@.json",SERVER_URL,user_id];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
@@ -1094,16 +1412,21 @@
         {
            [HttpClient stop_activity_animation];
             
-            NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
-            NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
+            NSMutableDictionary *json_DATAs = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            NSString *status = [NSString stringWithFormat:@"%@",[json_DATAs valueForKey:@"success"]];
             if([status isEqualToString:@"1"])
             {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATAs valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 [alert show];
+                _BTN_save.hidden = YES;
+                [_BTN_edit setTitle:@"" forState:UIControlStateNormal];
+                [self Edit_user_data];
+                [self scroll_HANDLER];
+                
                 
             }
             else{
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATAs valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 [alert show];
                 
             }
@@ -1201,69 +1524,241 @@
 {
     @try
     {
-    NSString *country = _TXT_country.text;
-    NSString *state = _TXT_state.text;
-    NSString *city = _TXT_city.text;
-    NSString *address = _TXT_address1.text;
-    NSString *zipcode = _TXT_zipcode.text;
-    
-    NSError *error;
-    NSError *err;
-    NSHTTPURLResponse *response = nil;
-    
-    NSDictionary *parameters = @{ @"country_id": country,
-                                  @"state_id": state,
-                                  @"city": city,
-                                  @"address1": address,
-                                  @"zip_code":zipcode
-                                  };
-    NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
-    NSLog(@"the posted data is:%@",parameters);
-    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
-    NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/my-account/3/%@.json",SERVER_URL,user_id];
-    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-    NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL:urlProducts];
-    [request setHTTPMethod:@"POST"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [request setHTTPBody:postData];
-    //[request setAllHTTPHeaderFields:headers];
-    [request setHTTPShouldHandleCookies:NO];
-    NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-    if(aData)
-    {
-        [HttpClient stop_activity_animation];
-        NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
-        NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
-        if([status isEqualToString:@"1"])
+        NSError *error;
+        
+       // NSString *country = country_id;
+       // NSString *state = state_id;
+        NSString *city = _TXT_city.text;
+        NSString *address = _TXT_address1.text;
+        NSString *zipcode = _TXT_zipcode.text;
+        NSString *str_fname = _TXT_first_name.text;
+        NSString *str_lname = _TXT_last_name.text;
+        
+        str_fname = [str_fname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+        str_lname = [str_lname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+
+        
+        
+        
+       // last_name=Bb, address1=Fhgjhg, state_id=3963, country_id=173, first_name=Aaa
+        
+        //    NSDictionary *parameters = @{ @"country_id": country,
+        //                                  @"state_id": state,
+        //                                  @"city": city,
+        //                                  @"address1": address,
+        //                                  @"zip_code":zipcode
+        //                                  };
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *str_id = @"user_id";
+        NSString *user_id;
+        for(int i = 0;i<[[dict allKeys] count];i++)
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-            [alert show];
-             [self View_user_data];
+            if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+            {
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                break;
+            }
+            else
+            {
+                
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+            }
             
         }
-        else{
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-            [alert show];
-            
-        }
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/my-account/3/%@.json",SERVER_URL,user_id];     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:[NSURL URLWithString:urlGetuser]];
+        [request setHTTPMethod:@"POST"];
+        
+        NSString *boundary = @"---------------------------14737809831466499882746641449";
+        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
+        [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+        
+        NSMutableData *body = [NSMutableData data];
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"first_name\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]]; //venu1@carmatec.com
+        [body appendData:[[NSString stringWithFormat:@"%@",str_fname]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"last_name\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]]; //venu1@carmatec.com
+        [body appendData:[[NSString stringWithFormat:@"%@",str_lname]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"country_id\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]]; //venu1@carmatec.com
+        [body appendData:[[NSString stringWithFormat:@"%@",country_id]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"state_id\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]]; //venu1@carmatec.com
+        [body appendData:[[NSString stringWithFormat:@"%@",state_id]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        // another text parameter
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"city\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",city]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"address1\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",address]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"address2\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",@""]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+
+        
        
+        
+        
+        
+        //Phnumber
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"zip_code\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",zipcode]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        
+        //message
+        
+        //
+       
+        //    NSHTTPURLResponse *response = nil;
+        
+        // close form
+        [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        // set request body
+        [request setHTTPBody:body];
+        
+        NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+        
+        if (returnData)
+            
+        {
+            [HttpClient stop_activity_animation];
+            NSMutableDictionary *json_DATAs = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&error];
+            NSLog(@"The response Api post sighn up API %@",json_DATAs);
+            NSString *status = [NSString stringWithFormat:@"%@",[json_DATAs valueForKey:@"success"]];
+            //NSString *status = [json_DATA valueForKey:@"message"];
+            
+            [HttpClient stop_activity_animation];
+            if([status isEqualToString:@"1"])
+            {
+               
+                
+                //scroll_ht = _VW_layer_billing.frame.origin.y + _VW_layer_billing.frame.size.height+100;
+                 scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height;
+           
+                [self viewDidLayoutSubviews];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATAs valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                [self View_user_data];
+                _BTN_save_billing.hidden = YES;
+                [_BTN_edit_billing setTitle:@"" forState:UIControlStateNormal];
+                [self Edit_billing_addres];
+
+                [self scroll_HANDLER];
+
+               // [self Button_edit_billing_action];
+              //  [self Button_edit_billing_action];
+                
+            }
+            else
+            {
+                 [HttpClient stop_activity_animation];
+            }
+            
+        }
+        else
+        {
+            [HttpClient stop_activity_animation];
+        }
+        
     }
-    else
+    
+    @catch(NSException *exception)
     {
+        NSLog(@"The error is:%@",exception);
         [HttpClient stop_activity_animation];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
     }
-    }
+    
 
-@catch(NSException *exception)
-{
-     [HttpClient stop_activity_animation];}
-
+    
+//    @try
+//    {
+//    NSString *country = _TXT_country.text;
+//    NSString *state = _TXT_state.text;
+//    NSString *city = _TXT_city.text;
+//    NSString *address = _TXT_address1.text;
+//    NSString *zipcode = _TXT_zipcode.text;
+//    
+//    NSError *error;
+//    NSError *err;
+//    NSHTTPURLResponse *response = nil;
+//    
+//    NSDictionary *parameters = @{ @"country_id": country,
+//                                  @"state_id": state,
+//                                  @"city": city,
+//                                  @"address1": address,
+//                                  @"zip_code":zipcode
+//                                  };
+//    NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
+//    NSLog(@"the posted data is:%@",parameters);
+//    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+//    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+//    NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/my-account/3/%@.json",SERVER_URL,user_id];
+//    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+//    NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+//    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+//    [request setURL:urlProducts];
+//    [request setHTTPMethod:@"POST"];
+//    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+//    [request setHTTPBody:postData];
+//    //[request setAllHTTPHeaderFields:headers];
+//    [request setHTTPShouldHandleCookies:NO];
+//    NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+//    if(aData)
+//    {
+//        [HttpClient stop_activity_animation];
+//        NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+//        NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
+//        if([status isEqualToString:@"1"])
+//        {
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//            [alert show];
+//             [self View_user_data];
+//            
+//        }
+//        else{
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//            [alert show];
+//            
+//        }
+//       
+//    }
+//    else
+//    {
+//        [HttpClient stop_activity_animation];
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//        [alert show];
+//    }
+//    }
+//
+//@catch(NSException *exception)
+//{
+//     [HttpClient stop_activity_animation];}
+//
+//}
 }
+
 -(void)take_Picture
 {
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Pick From"
@@ -1287,8 +1782,7 @@
             [self presentViewController:picker animated:YES completion:NULL];
 
         }
-        else{
-            [HttpClient createaAlertWithMsg:@"Camera is not Available" andTitle:@""];
+        else{              [HttpClient createaAlertWithMsg:@"Camera is not Available" andTitle:@""];
         }
         
            }
@@ -1346,11 +1840,30 @@
     
    
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *str_id = @"user_id";
+    NSString *user_id;
+    for(int i = 0;i<[[dict allKeys] count];i++)
+    {
+        if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+        {
+            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+            break;
+        }
+        else
+        {
+            
+            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+        }
+        
+    }
+    
+    
+    
     NSString *image_Name = [NSString stringWithFormat:@"%@.jpg",[dict valueForKey:@"firstname"]];
 
     NSData *imageData = UIImageJPEGRepresentation(yourImage, 1.0);//UIImagePNGRepresentation(yourImage);
     
-    NSString *urlString =  [NSString stringWithFormat:@"%@customers/my-account/4/%@.json",SERVER_URL,[dict valueForKey:@"id"]];
+    NSString *urlString =  [NSString stringWithFormat:@"%@customers/my-account/4/%@.json",SERVER_URL,user_id];
 
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
@@ -1389,6 +1902,11 @@
                                   options:NSJSONReadingMutableLeaves
                                   error:nil];
         NSLog(@"jsonObject  %@",jsonObject);
+        
+        if ([[NSString stringWithFormat:@"%@",[jsonObject valueForKey:@"success"]] isEqualToString:@"1"]) {
+            [[NSUserDefaults standardUserDefaults] setObject:[jsonObject valueForKey:@"path_detail"] forKey:@"profile_image"];
+            [[NSUserDefaults standardUserDefaults]synchronize];
+        }
     }
     
     [HttpClient stop_activity_animation];
@@ -1406,7 +1924,7 @@
     if (localError != nil) {
         NSLog(@"%@", [localError userInfo]);
     }
-    phone_code_arr = (NSMutableArray *)parsedObject;
+    phone_code_arr = (NSMutableArray *)[parsedObject valueForKey:@"countries"];
     
     NSSortDescriptor *sortDescriptor;
     sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name"

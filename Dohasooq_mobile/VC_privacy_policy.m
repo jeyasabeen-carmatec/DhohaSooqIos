@@ -52,7 +52,7 @@
     NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
     NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
     
-    NSString *urlStr = [NSString stringWithFormat:@"http://test2.dohasooq.com/Pages/contentApi/privacy-policy/%@/%@",languge,country];
+    NSString *urlStr = [NSString stringWithFormat:@"%@Pages/contentApi/privacy-policy/%@/%@",SERVER_URL,languge,country];
     NSURL *url = [[NSURL alloc]initWithString:urlStr];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     

@@ -15,7 +15,10 @@
 @property(nonatomic,weak) IBOutlet MIBadgeButton *BTN_cart;
 @property(nonatomic,weak) IBOutlet MIBadgeButton *BTN_wish_list;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_header;
-
+@property(nonatomic,weak) IBOutlet UIView *VW_search_VW;
+//Empty View
+@property(nonatomic,weak)IBOutlet UIView *VW_empty;
+@property(nonatomic,weak)IBOutlet UIButton *BTN_empty;
 
 
 
