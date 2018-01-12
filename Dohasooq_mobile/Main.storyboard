@@ -1038,10 +1038,6 @@
                                 <rect key="frame" x="12" y="117" width="293" height="363"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="DTY-YL-JbX" id="Wme-pn-Wew"/>
-                                    <outlet property="delegate" destination="DTY-YL-JbX" id="xJN-nf-CZK"/>
-                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -3498,16 +3494,6 @@
                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <textField opaque="NO" clipsSubviews="YES" tag="10" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Phone number*" textAlignment="natural" minimumFontSize="17" id="6Ez-th-vqr" customClass="Hoshi_Billing_ADDR">
-                            <rect key="frame" x="103" y="402" width="199" height="50"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                            <nil key="textColor"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="19"/>
-                            <textInputTraits key="textInputTraits"/>
-                            <connections>
-                                <outlet property="delegate" destination="wMB-1W-bS2" id="Jy1-PE-g7A"/>
-                            </connections>
-                        </textField>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="+974" textAlignment="center" minimumFontSize="17" id="nr6-6i-c55">
                             <rect key="frame" x="15" y="402" width="80" height="50"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
@@ -3519,13 +3505,23 @@
                                 <outlet property="delegate" destination="wMB-1W-bS2" id="9jI-EG-BdD"/>
                             </connections>
                         </textField>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ied-Yc-mMs">
-                            <rect key="frame" x="80" y="419" width="15" height="15"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text=" " textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ied-Yc-mMs">
+                            <rect key="frame" x="16" y="419" width="74" height="15"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="15"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <textField opaque="NO" clipsSubviews="YES" tag="10" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Phone number*" textAlignment="natural" minimumFontSize="17" id="6Ez-th-vqr" customClass="Hoshi_Billing_ADDR">
+                            <rect key="frame" x="103" y="402" width="199" height="50"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            <nil key="textColor"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="19"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <outlet property="delegate" destination="wMB-1W-bS2" id="Jy1-PE-g7A"/>
+                            </connections>
+                        </textField>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
@@ -9223,27 +9219,27 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="pDU-cD-KDi"/>
         <segue reference="X8l-5I-aGL"/>
-        <segue reference="1PO-jV-8IF"/>
-        <segue reference="GAW-2H-hzI"/>
+        <segue reference="Ia6-yw-sEr"/>
+        <segue reference="yWr-Gw-exm"/>
         <segue reference="z2t-AS-he8"/>
-        <segue reference="1fc-cP-jfH"/>
-        <segue reference="gcz-vd-Onb"/>
-        <segue reference="Cw8-vV-nPW"/>
-        <segue reference="vMu-Y7-4Nz"/>
         <segue reference="WuY-ui-8aO"/>
-        <segue reference="Ikb-sa-4zg"/>
-        <segue reference="qE4-Ww-0Jv"/>
+        <segue reference="U1I-tg-KmK"/>
+        <segue reference="hYs-TP-0oE"/>
+        <segue reference="pDU-cD-KDi"/>
+        <segue reference="thM-tK-ujK"/>
+        <segue reference="vMu-Y7-4Nz"/>
+        <segue reference="1fc-cP-jfH"/>
+        <segue reference="GAW-2H-hzI"/>
+        <segue reference="VlJ-8X-e9R"/>
+        <segue reference="Cw8-vV-nPW"/>
+        <segue reference="gcz-vd-Onb"/>
+        <segue reference="1PO-jV-8IF"/>
         <segue reference="fdB-wy-FRl"/>
         <segue reference="PIq-gb-2yd"/>
-        <segue reference="CxN-By-eWp"/>
-        <segue reference="x0e-hc-baO"/>
-        <segue reference="u1i-KR-yL0"/>
-        <segue reference="LS8-aj-kn5"/>
-        <segue reference="ftO-4d-EKK"/>
-        <segue reference="Gbu-bd-OSk"/>
         <segue reference="sNV-nt-3bv"/>
+        <segue reference="Gbu-bd-OSk"/>
         <segue reference="TQh-po-CZq"/>
+        <segue reference="Ikb-sa-4zg"/>
     </inferredMetricsTieBreakers>
 </document>

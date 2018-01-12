@@ -2435,8 +2435,8 @@
                 }
                 else
                 {
-                     [self performSegueWithIdentifier:@"edot_profile_VC" sender:self];
-
+                    [HttpClient animating_images:self];
+                    [self performSelector:@selector(load_Profile_VC) withObject:nil afterDelay:0.01];
               
                 }
             }
@@ -2483,6 +2483,13 @@
     
    
 }
+
+-(void) load_Profile_VC
+{
+    [self performSegueWithIdentifier:@"edot_profile_VC" sender:self];
+    [HttpClient stop_activity_animation];
+}
+
 - (UITableViewCellEditingStyle)tableView:(UITableView *)aTableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.editing == NO || !indexPath)

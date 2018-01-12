@@ -13,8 +13,8 @@
 @interface VC_sign_up ()<UIGestureRecognizerDelegate,UITextFieldDelegate,UIAlertViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
 {
     float scroll_height;
-//    UIView *VW_overlay;
-//    UIActivityIndicatorView *activityIndicatorView;
+    UIView *VW_overlay;
+    UIImageView *activityIndicatorView;
     UIPickerView *phone_picker;
     NSMutableArray *phone_code_arr;
      UIToolbar *accessoryView;
@@ -35,19 +35,29 @@
 -(void)viewWillAppear:(BOOL)animated
 {
   
-//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-//    VW_overlay.clipsToBounds = YES;
-//    //    VW_overlay.layer.cornerRadius = 10.0;
-//    
-//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-//    activityIndicatorView.center = VW_overlay.center;
-//    [VW_overlay addSubview:activityIndicatorView];
-//    VW_overlay.center = self.view.center;
-//    [self.view addSubview:VW_overlay];
-//    
-//    VW_overlay.hidden = YES;
+    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.0];
+    VW_overlay.clipsToBounds = YES;
+    
+    
+    VW_overlay.hidden = NO;
+    activityIndicatorView = [[UIImageView alloc] initWithImage:[UIImage new]];
+    activityIndicatorView.frame = CGRectMake(0, 0, 60, 60);
+    activityIndicatorView.center = VW_overlay.center;
+    
+    activityIndicatorView.animationImages = [NSArray arrayWithObjects:[UIImage imageNamed:@"loader1.png"],[UIImage imageNamed:@"loader2.png"],[UIImage imageNamed:@"loader3.png"],[UIImage imageNamed:@"loader4.png"],[UIImage imageNamed:@"loader5.png"],[UIImage imageNamed:@"loader6.png"],[UIImage imageNamed:@"loader7.png"],[UIImage imageNamed:@"loader8.png"],[UIImage imageNamed:@"loader9.png"],[UIImage imageNamed:@"loader10.png"],[UIImage imageNamed:@"loader11.png"],[UIImage imageNamed:@"loader12.png"],[UIImage imageNamed:@"loader13.png"],[UIImage imageNamed:@"loader14.png"],[UIImage imageNamed:@"loader15.png"],[UIImage imageNamed:@"loader16.png"],[UIImage imageNamed:@"loader17.png"],[UIImage imageNamed:@"loader18.png"],nil];
+    
+    activityIndicatorView.animationDuration = 3.0;
+    [activityIndicatorView startAnimating];
+    activityIndicatorView.center = VW_overlay.center;
+    
+    [VW_overlay addSubview:activityIndicatorView];
+    
+    
+    [self.view addSubview:VW_overlay];
+    
+    VW_overlay.hidden = YES;
+    
      [self set_UP_View];
 
 }
@@ -415,8 +425,10 @@
     
     else
     {
-        //[HttpClient animating_images:self];
-        [self performSelector:@selector(_sign_up_api_integration) withObject:nil afterDelay:0.01];
+//        [HttpClient animating_images:self];
+        VW_overlay.hidden = NO;
+        [activityIndicatorView startAnimating];
+        [self performSelector:@selector(_sign_up_api_integration) withObject:activityIndicatorView afterDelay:0.01];
         
     }
     if(msg)
@@ -432,9 +444,11 @@
 #pragma API call
 -(void)_sign_up_api_integration
 {
-    [HttpClient animating_images:self];
+   
     @try
     {
+//    [HttpClient animating_images:self.navigationController];
+        
     NSString *fname = _TXT_F_name.text;
     NSString *lname = _TXT_L_name.text;
     NSString *email = _TXT_email.text;
@@ -542,17 +556,21 @@
             alert.tag = 1;
             [alert show];
 
-             [HttpClient stop_activity_animation];
+            
             [self.view endEditing:TRUE];
 
-
+//            [HttpClient stop_activity_animation];
+            [activityIndicatorView stopAnimating];
+            VW_overlay.hidden = YES;
 
             //[self performSegueWithIdentifier:@"normalsighnuptoinitialVC" sender:self];
             
         }
         else
         {
-             [HttpClient stop_activity_animation];
+            [activityIndicatorView stopAnimating];
+            VW_overlay.hidden = YES;
+//             [HttpClient stop_activity_animation];
             if ([msg isEqualToString:@"User already exists"])
             {
                 msg = @"Email address already in use, Please try with different email.";
@@ -566,7 +584,9 @@
     }
     else
     {
-      [HttpClient stop_activity_animation];
+//      [HttpClient stop_activity_animation];
+        [activityIndicatorView stopAnimating];
+        VW_overlay.hidden = YES;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
        
         [alert show];
@@ -576,10 +596,14 @@
         
     @catch(NSException *exception)
     {
-         [HttpClient stop_activity_animation];
+//         [HttpClient stop_activity_animation];
+        [activityIndicatorView stopAnimating];
+        VW_overlay.hidden = YES;
         NSLog(@"The error is:%@",exception);
         
     }
+    
+//    [HttpClient stop_activity_animation];
     
 }
 - (void)alertView:(UIAlertView *)alertView
