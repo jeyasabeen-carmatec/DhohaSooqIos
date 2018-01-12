@@ -129,7 +129,7 @@
 
 - (void) setValueDefaults
 {
-    __stepSize = self.stepSize = 1.0;
+    __stepSize = self.stepSize = 0.5;
     _minValue = 0.0;
     _maxValue = 100.0;
     _lowerValue = _minValue;

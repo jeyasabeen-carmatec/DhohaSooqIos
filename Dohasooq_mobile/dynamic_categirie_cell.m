@@ -7,7 +7,6 @@
 //
 
 #import "dynamic_categirie_cell.h"
-#import "VC_home.h"
 
 @implementation dynamic_categirie_cell
 

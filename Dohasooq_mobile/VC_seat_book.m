@@ -558,7 +558,7 @@
     if([user_id isEqualToString:@"(null)"])
     {
         [HttpClient stop_activity_animation];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login First" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please login to continue" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
         alert.tag = 1;
         [alert show];
         

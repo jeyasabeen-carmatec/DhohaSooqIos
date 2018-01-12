@@ -10,6 +10,7 @@
 #import "Hoshi_Billing_ADDR.h"
 
 @interface VC_intial : UIViewController<UIGestureRecognizerDelegate>
+
 @property(nonatomic,weak) IBOutlet UITextField *TXT_country;
 @property(nonatomic,weak) IBOutlet UITextField *TXT_language;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_next;

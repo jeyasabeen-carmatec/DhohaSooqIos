@@ -12,5 +12,7 @@
 
 @property(nonatomic,weak) IBOutlet UITableView *TBL_bookings;
 @property(nonatomic,weak) IBOutlet UIView *VW_segment;
-
+//Empty View
+@property(nonatomic,weak)IBOutlet UIView *VW_empty;
+@property(nonatomic,weak)IBOutlet UIButton *BTN_empty;
 @end

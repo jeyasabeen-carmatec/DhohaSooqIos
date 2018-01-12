@@ -30,8 +30,20 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self addSEgmentedControl];
-     not_found_image = [[UIImageView alloc]init];
-    self.segmentedControl4.selectedSegmentIndex = 0;
+    
+    
+    
+    CGRect frameset = _VW_empty.frame;
+    frameset.size.width = 200;
+    frameset.size.height = 200;
+    _VW_empty.frame = frameset;
+    _VW_empty.center = self.view.center;
+    [self.view addSubview:_VW_empty];
+    _VW_empty.hidden = YES;
+    
+    _BTN_empty.layer.cornerRadius = self.BTN_empty.frame.size.width / 2;
+    _BTN_empty.layer.masksToBounds = YES;
+
   
 }
 -(void)viewWillAppear:(BOOL)animated
@@ -53,6 +65,7 @@
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
     [self performSelector:@selector(booking_API) withObject:nil afterDelay:0.01];
+  
     
     
 }
@@ -668,6 +681,8 @@
         [HttpClient animating_images:self];
         [self performSelector:@selector(movies_VIEW) withObject:nil afterDelay:0.01];
         
+        _TBL_bookings.delegate = self;
+        _TBL_bookings.dataSource = self;
         [_TBL_bookings reloadData];
         not_found_image.hidden= YES;
     }
@@ -678,7 +693,10 @@
 
 //        VW_overlay.hidden = NO;
 //        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(event_VIEW) withObject:nil afterDelay:0.01];       [_TBL_bookings reloadData];
+        [self performSelector:@selector(event_VIEW) withObject:nil afterDelay:0.01];
+        _TBL_bookings.delegate = self;
+        _TBL_bookings.dataSource = self;
+        [_TBL_bookings reloadData];
         
     }
 }
@@ -714,16 +732,55 @@
         {
 //            [activityIndicatorView stopAnimating];
 //            VW_overlay.hidden = YES;
-            [HttpClient stop_activity_animation];
-
+           
            json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             NSLog(@"The response Api post sighn up API %@",json_DATA);
-            [self movies_VIEW];
-            if([[json_DATA valueForKey:@"mbookid"] isEqualToString:@"<null>"] || [[json_DATA valueForKey:@"mbookid"] isEqualToString:@""])
+            
+           
+            @try
             {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Bookings found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
+                if([[json_DATA valueForKey:@"mbookid"] isKindOfClass:[NSNull class]])
+                {
+                    
+                    
+                    [HttpClient stop_activity_animation];
+                    _VW_empty.hidden = NO;
+                    _VW_segment.hidden = YES;
+                    _TBL_bookings.hidden = YES;
 
+                }
+                
+            else if([[json_DATA valueForKey:@"mbookid"] isEqualToString:@"<null>"] || [[json_DATA valueForKey:@"mbookid"] isEqualToString:@""])
+            {
+                _VW_empty.hidden = NO;
+                _VW_segment.hidden = YES;
+                _TBL_bookings.hidden = YES;
+                
+//                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Bookings found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//                [alert show];
+                
+                [HttpClient stop_activity_animation];
+
+
+            }
+            else
+            {
+                [self movies_VIEW];
+                _VW_empty.hidden = YES;
+                _VW_segment.hidden = NO;
+                _TBL_bookings.hidden = NO;
+                self.segmentedControl4.selectedSegmentIndex = 0;
+                [self segmentedControlChangedValue:self.segmentedControl4];
+                [HttpClient stop_activity_animation];
+
+
+
+                
+            }
+            }
+            @catch(NSException *Exception)
+            {
+                
             }
             
         }
@@ -739,7 +796,8 @@
     }
     
     @catch(NSException *exception)
-    { [HttpClient stop_activity_animation];
+    {
+        [HttpClient stop_activity_animation];
         NSLog(@"The error is:%@",exception);
 //        [activityIndicatorView stopAnimating];
 //        VW_overlay.hidden = YES;
@@ -757,6 +815,16 @@
         @try {
             
             NSString *unfilteredString =[json_DATA valueForKey:@"mbookid"];
+            if([unfilteredString isKindOfClass:[NSNull class]])
+            {
+                 [HttpClient stop_activity_animation];
+                _TBL_bookings.hidden = YES;
+                _VW_empty.hidden = NO;
+                _VW_segment.hidden = YES;
+                _TBL_bookings.hidden = YES;
+            }
+           
+            else{
             NSCharacterSet *notAllowedChars = [[NSCharacterSet characterSetWithCharactersInString:@",1234567890"] invertedSet];
             NSString *resultString = [[unfilteredString componentsSeparatedByCharactersInSet:notAllowedChars] componentsJoinedByString:@""];
             
@@ -777,24 +845,28 @@
 
                 Total_QT_arr =[xmlDoc valueForKey:@"bookinghistory"];
               // [Total_QT_arr addObject:[xmlDoc valueForKey:@"bookinghistory"]];
+                _TBL_bookings.delegate = self;
+                _TBL_bookings.dataSource = self;
                 [_TBL_bookings reloadData];
                   _TBL_bookings.hidden = NO;
                 NSString *str_err = [NSString stringWithFormat:@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_errorcode"]];
+            
                 
                 if([[[xmlDoc valueForKey:@"result"] valueForKey:@"_errorcode"] isEqualToString:str_err] || [[[xmlDoc valueForKey:@"result"] valueForKey:@"_errorcode"] isEqualToString:@"<null>"])
                 {
-                    _TBL_bookings.hidden = YES;
-                    not_found_image.hidden= NO;
-                    
                    
-                    CGRect frame_image = not_found_image.frame;
-                    frame_image.size.height = 200;
-                    frame_image.size.width = 200;
-                    not_found_image.frame = frame_image;
-                    not_found_image.center = self.view.center;
-                    [self.view addSubview:not_found_image];
-                    not_found_image.image = [UIImage imageNamed:@"No_items_Found"];
+                    _TBL_bookings.hidden = YES;
+                    _VW_empty.hidden = NO;
+                    _VW_segment.hidden = YES;
+                    _TBL_bookings.hidden = YES;
                     
+
+                }
+                else
+                {
+                    _VW_empty.hidden = YES;
+                    _VW_segment.hidden = NO;
+                    _TBL_bookings.hidden = NO;
 
                 }
 
@@ -802,10 +874,15 @@
             }
             else{
               [HttpClient stop_activity_animation];
+                _TBL_bookings.hidden = YES;
+                _VW_empty.hidden = NO;
+                _VW_segment.hidden = YES;
+                _TBL_bookings.hidden = YES;
 
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No bookings Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
+//                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No bookings Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//                [alert show];
 
+            }
             }
             
              }
@@ -846,24 +923,29 @@
 
            // Total_QT_arr = [xmlDoc valueForKey:@"bookinghistory"];
             Total_QT_arr =[[xmlDoc valueForKey:@"BookingHistories"] valueForKey:@"bookinghistory"];
+            _TBL_bookings.delegate = self;
+            _TBL_bookings.dataSource = self;
              [_TBL_bookings reloadData];
             _TBL_bookings.hidden = NO;
             NSString *str_err = [NSString stringWithFormat:@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_errorcode"]];
 
-            not_found_image.hidden = YES;
-            if([[[xmlDoc valueForKey:@"result"] valueForKey:@"_errorcode"] isEqualToString:str_err] || [[[xmlDoc valueForKey:@"result"] valueForKey:@"_errorcode"] isEqualToString:@"<null>"])
+                if([[[xmlDoc valueForKey:@"result"] valueForKey:@"_errorcode"] isEqualToString:str_err] || [[[xmlDoc valueForKey:@"result"] valueForKey:@"_errorcode"] isEqualToString:@"<null>"])
             {
                
                 _TBL_bookings.hidden = YES;
-                not_found_image.hidden = NO;
+                _VW_empty.hidden = NO;
+                _VW_segment.hidden = YES;
+                _TBL_bookings.hidden = YES;
 
-                CGRect frame_image = not_found_image.frame;
-                frame_image.size.height = 200;
-                frame_image.size.width = 200;
-                not_found_image.frame = frame_image;
-                not_found_image.center = self.view.center;
-                [self.view addSubview:not_found_image];
-                not_found_image.image = [UIImage imageNamed:@"No_items_Found"];
+
+            
+            }
+            else
+            {
+                _TBL_bookings.hidden = NO;
+                _VW_empty.hidden = YES;
+                _VW_segment.hidden = NO;
+                _TBL_bookings.hidden = NO;
 
             }
 
@@ -871,6 +953,12 @@
         }
         else{
             [HttpClient stop_activity_animation];
+            _TBL_bookings.hidden = YES;
+            _VW_empty.hidden = NO;
+            _VW_segment.hidden = YES;
+            _TBL_bookings.hidden = YES;
+            
+
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No bookings Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
             
