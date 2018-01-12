@@ -272,9 +272,15 @@
 }
 - (IBAction)back_action:(id)sender
 {
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    
     @try
     {
        [self performSegueWithIdentifier:@"product_list_home" sender:self];
+        
+        
         
     }
     @catch(NSException *exception)

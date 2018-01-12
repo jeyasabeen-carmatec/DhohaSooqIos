@@ -315,7 +315,7 @@
             country1 = @"";
         }
         
-        NSString *address_str = [NSString stringWithFormat:@"%@,\n%@ \n%@ %@ %@\nMobile:%@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"address1"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"city"],state,country1,[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"zip_code"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"phone"]];
+        NSString *address_str = [NSString stringWithFormat:@"%@,\n%@, \n%@ %@ %@\nMobile:%@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"address1"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"city"],state,country1,[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"zip_code"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"phone"]];
         
         address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@","];
         
@@ -836,10 +836,10 @@
         msg = @"Postal/Zipcode Should not be Empty";
         
     }
-    else if (str_zip_code.length<5 || str_zip_code.length>8)
+    else if (str_zip_code.length<4 || str_zip_code.length>8)
     {
         [cell.TXT_zip becomeFirstResponder];
-        msg = @"Postal/Zipcode Should be 5 to 8  Characters Range";
+        msg = @"Postal/Zipcode Should be 4 to 8  Characters Range";
     }
     
     else if (edit_tag != 999){
@@ -938,6 +938,8 @@
                         NSString *succes = [NSString stringWithFormat:@"%@",[data valueForKey:@"success"]];
                         if ([succes isEqualToString:@"success"]) {
                             i=i-1;
+                            [HttpClient createaAlertWithMsg:@"Shipping Address Updated Successfully." andTitle:@""
+                             ];
                             [self Shipp_address_API];
                         }
                     }
@@ -1008,7 +1010,7 @@
                             NSString *succs = [NSString stringWithFormat:@"%@",[data valueForKey:@"success"]];
                             if ([succs isEqualToString:@"success"] || [succs isEqualToString:@"1"] ) {
                                 i=i-1;
-                                [HttpClient createaAlertWithMsg:@"New Address saved successfully" andTitle:@""];
+                                [HttpClient createaAlertWithMsg:@"Billing Address saved successfully" andTitle:@""];
                                  [self Shipp_address_API];
                                }
                             
@@ -1052,7 +1054,7 @@
     if (textField.tag == 4 || textField.tag == 5 ||textField.tag == 6||textField.tag == 7||textField.tag == 8 ) {
         [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
         [UIView beginAnimations:nil context:NULL];
-        self.view.frame = CGRectMake(0,-270,self.view.frame.size.width,self.view.frame.size.height);
+        self.navigationController.view.frame = CGRectMake(0,-270,self.view.frame.size.width,self.view.frame.size.height);
         [UIView commitAnimations];
         
     }
@@ -1061,7 +1063,7 @@
     if (textField.tag == 10) {
         [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
         [UIView beginAnimations:nil context:NULL];
-        self.view.frame = CGRectMake(0,-200,self.view.frame.size.width,self.view.frame.size.height);
+        self.navigationController.view.frame = CGRectMake(0,-200,self.view.frame.size.width,self.view.frame.size.height);
         [UIView commitAnimations];
 
     }
@@ -1087,7 +1089,7 @@
         
         [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
         [UIView beginAnimations:nil context:NULL];
-        self.view.frame = CGRectMake(0,-200,self.view.frame.size.width,self.view.frame.size.height);
+        self.navigationController.view.frame = CGRectMake(0,-200,self.view.frame.size.width,self.view.frame.size.height);
         [UIView commitAnimations];
 
     }
@@ -1128,7 +1130,7 @@ if (textField.tag == 8) {
     if (textField.tag == 10 || textField.tag == 11||textField.tag == 4 || textField.tag == 5 ||textField.tag == 6||textField.tag == 7||textField.tag == 8) {
         [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
         [UIView beginAnimations:nil context:NULL];
-        self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+        self.navigationController.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
         [UIView commitAnimations];
 
     }
@@ -1690,10 +1692,12 @@ if (textField.tag == 8) {
             if ([[json_DATA valueForKey:@"success"] isEqualToString:@"success"]) {
                
                 i= i-1;
+                [HttpClient createaAlertWithMsg:@"New Address Added Successfully." andTitle:@""];
+
                  [self Shipp_address_API];
             }
             
-            [HttpClient createaAlertWithMsg:[json_DATA valueForKey:@"success"] andTitle:@""];
+           // [HttpClient createaAlertWithMsg:[json_DATA valueForKey:@"success"] andTitle:@""];
         }
         
     }

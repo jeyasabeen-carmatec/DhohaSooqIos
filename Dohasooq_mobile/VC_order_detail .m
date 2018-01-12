@@ -3500,10 +3500,11 @@
                                 if (isCash_on_delivary) {
                                     _BTN_cod.hidden = NO;
                                     _LBL_cash_on_Delivary.hidden = NO;
-                                     _LBL_cash_on_Delivary.hidden = YES;
+                                    
                                 }
                                 else{
                                     _BTN_cod.hidden = YES;
+                                     _LBL_cash_on_Delivary.hidden = YES;
                                 }
                                 
                             }
@@ -4194,7 +4195,7 @@
         NSString *user_id;
         for(int h = 0;h<[[dict allKeys] count];h++)
         {
-            if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+            if([[[dict allKeys] objectAtIndex:h] isEqualToString:str_id])
             {
                 user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
                 break;
