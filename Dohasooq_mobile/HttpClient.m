@@ -31,6 +31,7 @@ UIView *VW_overlay;
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(id  _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
+            [self stop_activity_animation];
             completionHandler(error,nil);
 
             NSLog(@"eror 1:%@",[error localizedDescription]);
@@ -38,6 +39,7 @@ UIView *VW_overlay;
             NSError *err = nil;
             id resposeJSon = [NSJSONSerialization JSONObjectWithData:data options:0 error:&err];
             if (err) {
+                 [self stop_activity_animation];
                 completionHandler(err,nil);
                 //NSLog(@"eror 2:%@",[err localizedDescription]);
             }else{
@@ -53,6 +55,7 @@ UIView *VW_overlay;
                     //}
 
                 } @catch (NSException *exception) {
+                     [self stop_activity_animation];
                     NSLog(@" 3 %@",exception);
                 }
                             }
@@ -170,7 +173,8 @@ UIView *VW_overlay;
     actiIndicatorView.center = VW_overlay.center;
     
     [VW_overlay addSubview:actiIndicatorView];
-    [my_controller.view addSubview:VW_overlay];
+
+    [my_controller.navigationController.view addSubview:VW_overlay];
   }
 +(void)stop_activity_animation{
     

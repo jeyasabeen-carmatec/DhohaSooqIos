@@ -209,6 +209,9 @@
              str_variant = @"";
          }
         cell.LBL_combo.text = str_variant;
+            
+            
+            
         }
         @catch(NSException *exception)
         {
@@ -221,13 +224,56 @@
                                   options:SDWebImageRefreshCached];
         
         cell._TXT_count.text = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"qty"]];
-        
+            
+        NSString *qnty = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"qty"]];
         
         currency_code = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"currency"]];
         NSString *current_price = [NSString stringWithFormat:@"%@", [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"special_price"]];
         
-        NSString *prec_price = [NSString stringWithFormat:@"%@ %@", currency_code,[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"product_price"]];
+        NSString *prec_price = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"product_price"]];
         
+            
+            
+            // Calculating Dohamiles Value and Prices Based on Quantity
+            
+            @try {
+                int quantity = [qnty intValue];
+                
+                
+                @try {
+                    //Product Price Multiplication
+                    
+                    float productprice = [prec_price floatValue];
+                    productprice = quantity*productprice;
+                    prec_price = [NSString stringWithFormat:@"%@ %.2f",currency_code,productprice];
+                    
+                                        
+                    
+                    if([current_price isEqualToString:@""]|| [current_price isEqualToString:@"null"]||[current_price isEqualToString:@"<null>"])
+                    {
+                        
+                    }
+                    else{
+                        float spcl_prc = [current_price floatValue];
+                        
+                         spcl_prc = quantity*spcl_prc;
+                        
+                        current_price = [NSString stringWithFormat:@"%.2f",spcl_prc];
+                    }
+                    
+                } @catch (NSException *exception) {
+                    
+                }
+                
+            } @catch (NSException *exception) {
+                
+            }
+  
+            
+            
+            
+            
+            
         NSString *text;
         
         
@@ -506,7 +552,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0) {
-        return 160;
+        return 170;
          //return UITableViewAutomaticDimension;
         
     }
@@ -567,20 +613,25 @@
 {
     NSIndexPath *index = [NSIndexPath indexPathForRow:btn.tag inSection:0];
     Cart_cell *cell = (Cart_cell *)[_TBL_cart_items cellForRowAtIndexPath:index];
-    product_count = [cell._TXT_count.text integerValue];
-    if (product_count<= 0) {
-        [btn removeTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
-    }
-    else{
-        product_count = product_count-1;
-        cell._TXT_count.text = [NSString stringWithFormat:@"%ld",(long)product_count];
-        
-    }
-     [[NSUserDefaults standardUserDefaults]setObject:cell._TXT_count.text forKey:@"item_count"];
-    product_id = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:index.row] valueForKey:@"productDetails"] valueForKey:@"productid"]];
-    item_count = cell._TXT_count.text;
     
-    //[[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];
+    product_count = [cell._TXT_count.text integerValue];
+    product_count = product_count-1;
+    
+//    
+//    if (product_count<= 0) {
+//        [btn removeTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+//    }
+//    else{
+//        product_count = product_count-1;
+//        cell._TXT_count.text = [NSString stringWithFormat:@"%ld",(long)product_count];
+//        
+//    }
+  
+    
+    product_id = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:index.row] valueForKey:@"productDetails"] valueForKey:@"productid"]];
+    item_count = [NSString stringWithFormat:@"%ld",(long)product_count];
+    
+   
     
      //Update cart Api method calling
     [HttpClient animating_images:self];
@@ -596,13 +647,11 @@
     Cart_cell *cell = (Cart_cell *)[self.TBL_cart_items cellForRowAtIndexPath:index];
     product_count = [cell._TXT_count.text integerValue];
     product_count = product_count+1;
-    cell._TXT_count.text = [NSString stringWithFormat:@"%ld",(long)product_count];
     
     product_id = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:index.row] valueForKey:@"productDetails"] valueForKey:@"productid"]];
-    item_count = cell._TXT_count.text;
+    item_count = [NSString stringWithFormat:@"%ld",(long)product_count];
     
-//    [[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];
-//    [[NSUserDefaults standardUserDefaults]setObject:cell._TXT_count.text forKey:@"item_count"];
+
     // Update cart Api method calling
     
     [HttpClient animating_images:self];
@@ -622,7 +671,11 @@
     // Dispose of any resources that can be recreated.
 }
 - (IBAction)BTN_next_action:(id)sender {
-     [self performSegueWithIdentifier:@"order_detail_segue" sender:self];
+    @try {
+        [self performSegueWithIdentifier:@"order_detail_segue" sender:self];
+    } @catch (NSException *exception) {
+        NSLog(@"Exception %@",exception);
+    }
 }
 
 /*
@@ -661,16 +714,6 @@ params.put("customerId",customerid);
         // NSDictionary *parameters = @{@"pdtId":[[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"],@"userId":user_id,@"quantity":items_count,@"custom":@"",@"variant":@""};
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
             NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
-        if([custmr_id isEqualToString:@"(null)"])
-        {
-            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login First" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
-            alert.tag = 1;
-            [alert show];
-            
-        }
-        else
-        {
             NSString *langId = [[NSUserDefaults standardUserDefaults]valueForKey:@"language_id"];
             NSString *cntrId = [[NSUserDefaults standardUserDefaults]valueForKey:@"country_id"];
 
@@ -773,7 +816,7 @@ params.put("customerId",customerid);
             }
             
             
-        }
+        
         }
 
     } @catch (NSException *exception) {
@@ -889,14 +932,15 @@ params.put("customerId",customerid);
     @try {
         NSString *qr = [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"];
         NSString *price = [NSString stringWithFormat:@"%@",[json_dict valueForKey:@"sub_total"]];
-        //        NSString *dohamls = doha_miles_value
-        //
+       
+        float total = [price floatValue];
         
         
         if ([price isEqualToString:@""]||[price isEqualToString:@"null"]||[price isEqualToString:@"<null>"]) {
             price = @"0";
         }
-        // NSString *plans = @"VIEW PRICE DETAILS"
+       
+        price = [NSString stringWithFormat:@"%.2f",total];
         NSString *text =  [NSString stringWithFormat:@"%@ %@",qr,price];
        // _LBL_miles.text = plans;
         NSLog(@"Value  %@",text);
@@ -1068,9 +1112,11 @@ params.put("customerId",customerid);
     [HttpClient api_with_post_params:urlGetuser andParams:parameters completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (error) {
+                 [HttpClient stop_activity_animation];
                 NSLog(@"%@",[error localizedDescription]);
             }
             if (data) {
+                 [HttpClient stop_activity_animation];
                 NSLog(@"%@",data);
                 @try {
                     NSString  *str = [NSString stringWithFormat:@"%@",[data valueForKey:@"success"]];
@@ -1078,6 +1124,10 @@ params.put("customerId",customerid);
                         [HttpClient createaAlertWithMsg:[data valueForKey:@"message"] andTitle:@""];
                         [self cartList_api_calling];
                     }
+                    else{
+                       [HttpClient createaAlertWithMsg:[data valueForKey:@"message"] andTitle:@""];
+                    }
+                    
                 } @catch (NSException *exception) {
             
                     NSLog(@"The Data Couldn't be read");
@@ -1089,7 +1139,7 @@ params.put("customerId",customerid);
         });
         
     }];
-    [HttpClient stop_activity_animation];
+   
 }
 
 - (void)alertView:(UIAlertView *)alertView

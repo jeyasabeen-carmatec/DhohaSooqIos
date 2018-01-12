@@ -210,7 +210,7 @@
         [[NSUserDefaults standardUserDefaults]setObject:[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_descriptions"] objectAtIndex:0] valueForKey:@"product_id"]] forKey:@"product_id"];
         
         
-        NSString  *actuel_price = [NSString stringWithFormat:@"%@ %@",currency,[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
+        NSString  *actuel_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
         
         NSString *special_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"special_price"]];
         
@@ -223,7 +223,8 @@
         
         if ([special_price isEqualToString:@""]|| [special_price isEqualToString:@"<null>"]||[special_price isEqualToString:@"<null>"]||[special_price isEqualToString:@"0"]) {
             
-            
+            actuel_price = [NSString stringWithFormat:@"%@ %@",currency,[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
+
             
             NSString *text = [NSString stringWithFormat:@"%@ / %@ %@",actuel_price,mils,doha_miles];
             NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
@@ -256,13 +257,47 @@
             _LBL_discount.text = @"";
             
         }
+        else if([actuel_price isEqualToString:special_price])
+        {
+            actuel_price = [NSString stringWithFormat:@"%@ %@",currency,[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
+            NSString *text = [NSString stringWithFormat:@"%@",actuel_price];
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                actuel_price = [NSString stringWithFormat:@"%@ %@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"],currency];
+                text = [NSString stringWithFormat:@"%@",actuel_price];
+            }
+            
+            
+            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
+            
+            
+            
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency] ];
+            
+            
+            
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:actuel_price] ];
+            
+            
+            
+            
+            [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
+            //NSParagraphStyleAttributeName
+           _LBL_prices.attributedText = attributedText;
+            
+            _LBL_discount.text = @"";
+            
+        }
+
         else{
             
             
             // NSString *doha_miles = @"QR 6758";
             //actuel_price = [currency stringByAppendingString:actuel_price];
             // actuel_price = [NSString stringWithFormat:@"%@%@",currency,actuel_price];
-            
+            actuel_price = [NSString stringWithFormat:@"%@ %@",currency,[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
+
             NSString *text = [NSString stringWithFormat:@"%@ %@ %@ / %@ %@",currency,special_price,actuel_price,mils,doha_miles];
             
             if ([_LBL_prices respondsToSelector:@selector(setAttributedText:)]) {
@@ -545,8 +580,8 @@
         frame_set.origin.y = _LBL_delivery_cod.frame.origin.y + _LBL_delivery_cod.frame.size.height + 5;
         _LBL_merchant_sellers.frame = frame_set;
         
-        [_LBL_merchant_sellers sizeToFit];
-        _LBL_merchant_sellers.numberOfLines = 0;
+       // [_LBL_merchant_sellers sizeToFit];
+        _LBL_merchant_sellers.numberOfLines = 2;
         
         
         @try
@@ -1139,8 +1174,15 @@
                     {
                         
                     }
-                    pro_cell.LBL_item_name.text = [[[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row] objectAtIndex:0] valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"title"];
                     
+                   NSString *name = [[[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row] objectAtIndex:0] valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"title"];
+                    pro_cell.LBL_item_name.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+                    
+                    pro_cell.LBL_item_name.titleLabel.numberOfLines = 2;
+                    [pro_cell.LBL_item_name setTitle:name forState:UIControlStateNormal];
+                    pro_cell.LBL_item_name.titleLabel.textAlignment = NSTextAlignmentCenter;
+                    
+
                     
                     @try
                     {
@@ -1222,6 +1264,39 @@
                             pro_cell.LBL_discount.text = @"";
                             
                         }
+                        else if([prec_price isEqualToString:current_price])
+                        {
+                            prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row]objectAtIndex:0]  valueForKey:@"product_price"]];
+                            text = [NSString stringWithFormat:@"%@",prec_price];
+                            
+                            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                            {
+                                prec_price = [NSString stringWithFormat:@"%@ %@",[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row]objectAtIndex:0]  valueForKey:@"product_price"],currency_code];
+                                text = [NSString stringWithFormat:@"%@",prec_price];
+                            }
+                            
+                            
+                            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
+                            
+                            
+                            
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
+                            
+                            
+                            
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                            
+                            
+                            
+                            
+                            [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
+                            //NSParagraphStyleAttributeName
+                            pro_cell.LBL_current_price.attributedText = attributedText;
+                            
+                            pro_cell.LBL_discount.text = @"";
+                            
+                        }
+
                         
                         else{
                             
@@ -1362,7 +1437,7 @@
     }
     else
     {
-       return CGSizeMake(self.view.bounds.size.width/2.1, 320);
+       return CGSizeMake(self.view.bounds.size.width/2.1, 336);
     }
 
     
@@ -2291,10 +2366,18 @@
      
       noDuplicates = [[NSMutableArray alloc]init];
         NSString *items_count = _TXT_count.text;
-
+     NSString *user_id;
+    @try
+    {
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    if(dict.count == 0)
+    {
+         user_id = @"(null)";
+    }
+    else
+    {
     NSString *str_id = @"user_id";
-    NSString *user_id;
+   // NSString *user_id;
     for(int i = 0;i<[[dict allKeys] count];i++)
     {
         if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
@@ -2309,7 +2392,13 @@
         }
         
     }
-    
+    }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
     
     
     
@@ -2449,7 +2538,7 @@
              str_varient = jsonStr;
 
 
-         parameters = @{@"pdtId":pdId,@"userId":user_id,@"quantity":items_count,variant_stat:[arr componentsJoinedByString:@","],@"custom":@""};
+        // parameters = @{@"pdtId":pdId,@"userId":user_id,@"quantity":items_count,variant_stat:str_varient,@"custom":@""};
      }
      else
      {
@@ -3794,7 +3883,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         
         if ([special_price isEqualToString:@""]|| [special_price isEqualToString:@"<null>"]||[special_price isEqualToString:@"<null>"]) {
             
-            NSString *str = [[update_dic valueForKey:@"custom"] valueForKey:@"price"];
+            NSString *str = [NSString stringWithFormat:@"%@",[[update_dic valueForKey:@"custom"] valueForKey:@"price"]];
             NSString *str_custom;int VAL;
             if([str containsString:@"+"])
             {
@@ -3808,9 +3897,14 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                 str_custom = [str stringByReplacingOccurrencesOfString:@"-" withString:@""];
                 VAL = [actuel_price intValue] - [str_custom intValue];
             }
+            else{
+               
+                VAL = [[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"] intValue];
+            }
             
             NSLog(@"THE UPDATED PRICE%d",VAL);
-            doha_miles = [NSString stringWithFormat:@"%d",[special_price intValue]*[[[update_dic valueForKey:@"custom"] valueForKey:@"oneQARtoDM"]intValue]];
+            actuel_price = [NSString stringWithFormat:@"%d",VAL];
+            doha_miles = [NSString stringWithFormat:@"%d",[actuel_price intValue]*[[[update_dic valueForKey:@"custom"] valueForKey:@"oneQARtoDM"]intValue]];
             
             NSString *text = [NSString stringWithFormat:@"%@ %@ / %@ %@",currency,actuel_price,mils,doha_miles];
             
@@ -3829,10 +3923,16 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:@{NSParagraphStyleAttributeName:paragraphStyle}];
             
             //attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0],NSForegroundColorAttributeName:[UIColor redColor]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                                    range:[text rangeOfString:currency]];
+
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor grayColor]}
                                     range:[text rangeOfString:actuel_price]];
             
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0],NSForegroundColorAttributeName:[UIColor redColor]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor darkGrayColor]}
+                                    range:[text rangeOfString:mils]];
+            
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                     range:[text rangeOfString:doha_miles]];
             
             
@@ -3862,6 +3962,11 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                 str_custom = [str stringByReplacingOccurrencesOfString:@"-" withString:@""];
                 VAL = [special_price intValue] - [str_custom intValue];
             }
+            else
+            {
+                str_custom = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"special_price"]];
+            }
+
             
             NSLog(@"THE UPDATED PRICE%d",VAL);
             special_price = [NSString stringWithFormat:@"%d",VAL];
@@ -3890,8 +3995,13 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                 
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:@{NSParagraphStyleAttributeName:paragraphStyle}];
                 
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                                        range:[text rangeOfString:currency]];
+                
+
+                
                 NSRange ename = [text rangeOfString:special_price];
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                         range:ename];
                 
                 
@@ -3902,7 +4012,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                 
                 
                 NSRange miles_price = [text rangeOfString:doha_miles];
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:17.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                         range:miles_price];
                 
                 NSRange miles = [text rangeOfString:mils];
@@ -3964,7 +4074,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         NSString *mileValue = [NSString stringWithFormat:@"%@",[[update_dic valueForKey:@"variant"] valueForKey:@"dohamiles"]];
         
         
-        NSString  *actuel_price = [NSString stringWithFormat:@"%@ %@",currency,[[update_dic valueForKey:@"variant"] valueForKey:@"productprice"]];
+        NSString  *actuel_price = [NSString stringWithFormat:@"%@ %@",currency,[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
         
         NSString *special_price = [NSString stringWithFormat:@"%@",[[update_dic valueForKey:@"variant"] valueForKey:@"newPrice"]];
         
@@ -3993,10 +4103,13 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:@{NSParagraphStyleAttributeName:paragraphStyle}];
             
            // attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor redColor]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor grayColor]}
                                     range:[text rangeOfString:actuel_price]];
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                                    range:[text rangeOfString:currency]];
+
             
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor darkGrayColor]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                     range:[text rangeOfString:doha_miles]];
             
             
@@ -4032,12 +4145,12 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:@{NSParagraphStyleAttributeName:paragraphStyle}];
                 
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                         range:[text rangeOfString:currency]];
 
                 
                 NSRange ename = [text rangeOfString:special_price];
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                         range:ename];
                 
                 
@@ -4048,11 +4161,11 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                 
                 
                 NSRange miles_price = [text rangeOfString:doha_miles];
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                         range:miles_price];
                 
                 NSRange miles = [text rangeOfString:mils];
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor darkGrayColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor grayColor]}
                                         range:miles];
                 
                 

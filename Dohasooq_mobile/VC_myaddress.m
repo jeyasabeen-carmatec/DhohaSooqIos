@@ -21,7 +21,7 @@
     BOOL is_add_new,isCountrySelected;
     NSInteger edit_tag,cntry_ID;
     NSMutableArray *stat_arr;
-     NSString *country,*str_fname,*str_city,*str_lname,*str_addr1,*str_addr2,*str_zip_code,*str_phone,*str_country,*str_state,*ship_id,*new_address_input,*state_id;
+     NSString *country,*str_fname,*str_city,*str_lname,*str_addr1,*str_addr2,*str_zip_code,*str_phone,*str_country,*str_state,*ship_id,*new_address_input,*state_id,*code_cntry;
     UIToolbar *accessoryView;
     NSMutableDictionary *response_countries_dic;
     NSMutableArray *response_picker_arr,*phone_code_arr;
@@ -217,21 +217,36 @@
         
         
         NSString *name_str =[NSString stringWithFormat:@"%@ %@",[[dict  valueForKey:@"billingaddress"] valueForKey:@"firstname"],[[dict valueForKey:@"billingaddress"] valueForKey:@"lastname"]];
-        name_str = [name_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+            
+
+             name_str = [name_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
         
         cell.LBL_name.text = name_str;
         cell.LBL_address_type.text = @"BILLING ADDRESS";
-        NSString *state = [NSString stringWithFormat:@"%@",[[dict valueForKey:@"billingaddress"] valueForKey:@"state"]];
-        country = [NSString stringWithFormat:@"%@",[[dict valueForKey:@"billingaddress"] valueForKey:@"country"]];
+        NSString *state = [NSString stringWithFormat:@"%@,",[[dict valueForKey:@"billingaddress"] valueForKey:@"state"]];
+        country = [NSString stringWithFormat:@"%@,",[[dict valueForKey:@"billingaddress"] valueForKey:@"country"]];
+        str_city = [NSString stringWithFormat:@"%@,",[[dict valueForKey:@"billingaddress"] valueForKey:@"city"]];
+         
+            if ([str_city containsString:@"<null>"] ||[str_city containsString:@"<nil>"] ) {
+                str_city = @"";
+            }
+            
+            if ([state containsString:@"<null>"] ||[state containsString:@"<nil>"] ) {
+                state = @"";
+            }
+            if ([country containsString:@"<null>"]  ||[country containsString:@"<nil>"]) {
+                country = @"";
+            }
+            NSString *addr1 =[NSString stringWithFormat:@"%@,",[[dict valueForKey:@"billingaddress"] valueForKey:@"address1"]];
+            
+            if ([addr1 containsString:@"<null>"]  ||[addr1 containsString:@"<nil>"] || [addr1 isEqualToString:@","]) {
+                addr1 = @"";
+            }
+            
         
-        state = [state stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+        NSString *address_str = [NSString stringWithFormat:@"%@\n%@ \n%@ %@ %@",addr1,str_city,state,country,[[dict valueForKey:@"billingaddress"] valueForKey:@"zip_code"]];
         
-        country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-        
-        
-        NSString *address_str = [NSString stringWithFormat:@"%@,\n%@ \n %@, %@, %@",[[dict valueForKey:@"billingaddress"] valueForKey:@"address1"],[[dict valueForKey:@"billingaddress"] valueForKey:@"city"],state,country,[[dict valueForKey:@"billingaddress"] valueForKey:@"zip_code"]];
-        
-        address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+        address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
             
         cell.LBL_address.text = address_str;
         }
@@ -277,7 +292,9 @@
         
         
         NSString *name_str =[NSString stringWithFormat:@"%@ %@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"firstname"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"lastname"]];
-        name_str = [name_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+        
+       // name_str = [name_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+         name_str = [name_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
         
         cell.LBL_name.text = name_str;
         
@@ -287,18 +304,20 @@
         }
         cell.LBL_address_type.text = @"";
         
-        NSString *state = [NSString stringWithFormat:@"%@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"state"]];
-        NSString *country1 = [NSString stringWithFormat:@"%@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"country"]];
-        state = [state stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+        NSString *state = [NSString stringWithFormat:@"%@,",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"state"]];
         
-        country1 = [country1 stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+        NSString *country1 = [NSString stringWithFormat:@"%@,",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"country"]];
         
-
+        if ([state containsString:@"<null>"] ||[state containsString:@"<nil>"] ) {
+            state = @"";
+        }
+        if ([country1 containsString:@"<null>"]  ||[country1 containsString:@"<nil>"]) {
+            country1 = @"";
+        }
         
+        NSString *address_str = [NSString stringWithFormat:@"%@,\n%@ \n%@ %@ %@\nMobile:%@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"address1"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"city"],state,country1,[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"zip_code"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"phone"]];
         
-        NSString *address_str = [NSString stringWithFormat:@"%@,\n%@ \n%@, %@, %@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"address1"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"city"],state,country,[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"zip_code"]];
-        
-        address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+        address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@","];
         
         cell.LBL_address.text = address_str;
         
@@ -385,13 +404,19 @@
 
               str_state = [NSString stringWithFormat:@"%@", [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"state"]];
         state_id = [NSString stringWithFormat:@"%@", [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"state_id"]];
+                    
+                    
+                    
+                    
+                    
+               //Hiding Phone NUmber
                     cell.TXT_cntry_code.hidden = YES;
                     cell.TXT_phone.hidden = YES;
                     
                   
                    
                     CGRect frame = cell.Btn_save.frame;
-                    frame.origin.y= cell.TXT_phone.frame.origin.y+20;
+                    frame.origin.y= cell.TXT_phone.frame.origin.y+40;
                     
                     cell.Btn_save.frame= frame;
                     
@@ -407,6 +432,8 @@
             NSArray *keys_arr = [dict allKeys];
         if (edit_tag != 999) {
             
+            cell.TXT_cntry_code.hidden = NO;
+            cell.TXT_phone.hidden = NO;
             
                 country = [NSString stringWithFormat:@"%@",[[[dict valueForKey:[keys_arr objectAtIndex:edit_tag]] valueForKey:@"shippingaddress"] valueForKey:@"country"]];
               
@@ -420,6 +447,12 @@
               str_city = [NSString stringWithFormat:@"%@",[[[dict valueForKey:[keys_arr objectAtIndex:edit_tag]] valueForKey:@"shippingaddress"] valueForKey:@"city"]];
               str_zip_code = [NSString stringWithFormat:@"%@",[[[dict valueForKey:[keys_arr objectAtIndex:edit_tag]] valueForKey:@"shippingaddress"] valueForKey:@"zip_code"]];
               str_phone = [NSString stringWithFormat:@"%@",[[[dict valueForKey:[keys_arr objectAtIndex:edit_tag]] valueForKey:@"shippingaddress"] valueForKey:@"phone"]];
+            code_cntry = [NSString stringWithFormat:@"%@",[[[dict valueForKey:[keys_arr objectAtIndex:edit_tag]] valueForKey:@"shippingaddress"] valueForKey:@"phonecode"]];
+            if ([code_cntry containsString:@"<null>"]||[code_cntry containsString:@"<nil>"]||[code_cntry isEqualToString:@""] ) {
+                code_cntry = @"+974";
+            }
+            
+            
               str_country = country;
               str_state =[NSString stringWithFormat:@"%@",[[[dict valueForKey:[keys_arr objectAtIndex:edit_tag]] valueForKey:@"shippingaddress"] valueForKey:@"state"]];
             ship_id = [NSString stringWithFormat:@"%@",[[[dict valueForKey:[keys_arr objectAtIndex:edit_tag]] valueForKey:@"shippingaddress"] valueForKey:@"id"]];
@@ -430,11 +463,28 @@
       }
             
             
-            if ([str_country isEqualToString:@""] || [str_country isEqualToString:@"<nil>"]  || [str_country isEqual:[NSNull class]]) {
-                cell.TXT_country.placeholder = @"select countrt";
+            if ([str_country isEqualToString:@""] || [str_country isEqualToString:@"<nil>"]  || [str_country isEqual:[NSNull class]] ||[str_country isEqualToString:@"<null>"]) {
+                cell.TXT_country.placeholder = @"Select country*";
             }
-            if ([str_city isEqualToString:@""] || [str_city isEqualToString:@"<nil>"]  || [str_city isEqual:[NSNull class]]) {
-                cell.TXT_country.placeholder = @"select state";
+            else{
+                cell.TXT_country.text = str_country;
+            }
+            
+            
+            if ([str_state isEqualToString:@""] || [str_state isEqualToString:@"<nil>"]  || [str_state isEqual:[NSNull class]]||[str_state isEqualToString:@"<null>"]) {
+                cell.TXT_state.placeholder = @"Select state*";
+            }
+            else{
+                cell.TXT_state.text = str_state;
+            }
+            
+            if ([str_city isEqualToString:@"<null>"] || [str_city isEqualToString:@"<nil>"]  || [str_city isEqual:[NSNull class]]) {
+               str_city = @"";
+            }
+            if ([str_addr1 isEqualToString:@"<null>"] || [str_addr1 isEqualToString:@"<nil>"]  || [str_addr1 isEqual:[NSNull class]]) {
+                str_addr1 = @"";
+            } if ([str_addr2 isEqualToString:@"<null>"] || [str_addr2 isEqualToString:@"<nil>"]  || [str_addr2 isEqual:[NSNull class]]) {
+                str_addr2 = @"";
             }
             
         
@@ -443,8 +493,8 @@
             cell.TXT_address1.text = str_addr1;
             cell.TXT_address2.text = str_addr2;
             cell.TXT_city.text = str_city;
-            cell.TXT_state.text = str_state;
-            cell.TXT_country.text = str_country;
+            
+           
             cell.TXT_zip.text = str_zip_code;
             cell.TXT_phone.text = str_phone;
         
@@ -452,9 +502,12 @@
             
             cell.TXT_cntry_code.hidden = NO;
             cell.TXT_phone.hidden = NO;
+            cell.Btn_save.hidden = NO;
+            
+            
             
             CGRect frame = cell.Btn_save.frame;
-            frame.origin.y= cell.TXT_phone.frame.origin.y+90;
+            frame.origin.y= cell.TXT_phone.frame.origin.y+50;
             
             cell.Btn_save.frame= frame;
             
@@ -469,6 +522,7 @@
             cell.TXT_country.text = @"";
             cell.TXT_zip.text = @"";
             cell.TXT_phone.text = @"";
+            cell.TXT_cntry_code.text = @"+974";
             new_address_input = @"1";
         }
        
@@ -717,95 +771,110 @@
     str_country = cell.TXT_country.text ;
     str_zip_code = cell.TXT_zip.text ;
     str_phone =  cell.TXT_phone.text ;
+    code_cntry = cell.TXT_cntry_code.text;
     NSString *msg;
     
     if ([str_fname isEqualToString:@""]) {
         
         [cell.TXT_first_name becomeFirstResponder];
-       msg = @"fname should not be empty";
+       msg = @"Fname Should Not be Empty";
         
     }
     else if (str_fname.length<3 || str_fname.length>30)
     {
         [cell.TXT_first_name becomeFirstResponder];
-         msg = @"fname should be 3 to 30  characters range";
+         msg = @"Fname should be 3 to 30  characters Range";
     }
     
     else if ([str_lname isEqualToString:@""]) {
         
         [cell.TXT_last_name becomeFirstResponder];
-        msg = @"lname should not be empty";
+        msg = @"Lname Should Not be Empty";
         
     }
     else if (str_lname.length<3 || str_lname.length>30)
     {
         [cell.TXT_last_name becomeFirstResponder];
-        msg = @"lname should be 3 to 30  characters range";
+        msg = @"Lname Should be 3 to 30  Characters Range";
     }
     else if ([str_addr1 isEqualToString:@""]) {
         
         [cell.TXT_address1 becomeFirstResponder];
-        msg = @"address1 should not be empty";
+        msg = @"Address1 Should Not be Empty";
         
     }
     else if (str_addr1.length<3 || str_addr1.length>30)
     {
         [cell.TXT_address1 becomeFirstResponder];
-        msg = @"address1 should be 3 to 30  characters range";
+        msg = @"Address1 should be 3 to 30  characters Range";
     }
-        else if ([str_addr2 isEqualToString:@""]) {
-        
-        [cell.TXT_address2 becomeFirstResponder];
-        msg = @"Address2 should not be empty";
-        
-    }
-    else if (str_addr2.length<3 || str_addr2.length>30)
-    {
-        [cell.TXT_address2 becomeFirstResponder];
-        msg = @"Address2 should be 3 to 30  characters range";
-    }
+//        else if ([str_addr2 isEqualToString:@""]) {
+//        
+//        [cell.TXT_address2 becomeFirstResponder];
+//        msg = @"Address2 Should Not be Empty";
+//        
+//    }
+//    else if (str_addr2.length<3 || str_addr2.length>30)
+//    {
+//        [cell.TXT_address2 becomeFirstResponder];
+//        msg = @"Address2 should be 3 to 30  characters Range";
+//    }
     else if ([str_city isEqualToString:@""]) {
         
         [cell.TXT_city becomeFirstResponder];
-        msg = @"City should not be empty";
+        msg = @"City Should Not be Empty";
         
     }
     else if (str_city.length<3 || str_city.length>15)
     {
         [cell.TXT_city becomeFirstResponder];
-        msg = @"city should be 3 to 15  characters range";
+        msg = @"City Should be 3 to 15  Characters Range";
     }
     else if ([str_zip_code isEqualToString:@""]) {
         
         [cell.TXT_zip becomeFirstResponder];
-        msg = @"zip code should not be empty";
+        msg = @"Postal/Zipcode Should not be Empty";
         
     }
     else if (str_zip_code.length<5 || str_zip_code.length>8)
     {
         [cell.TXT_zip becomeFirstResponder];
-        msg = @"zip code should be 5 to 8  characters range";
+        msg = @"Postal/Zipcode Should be 5 to 8  Characters Range";
     }
-    else if ([str_phone isEqualToString:@""]) {
+    
+    else if (edit_tag != 999){
         
-        [cell.TXT_phone becomeFirstResponder];
-        msg = @"Mobile Number  should not be empty";
-        
+        if ([str_phone isEqualToString:@""]) {
+            
+            [cell.TXT_phone becomeFirstResponder];
+            msg = @"Mobile Number  Should Not be Empty";
+            
+        }
+        else if (str_phone.length<5 || str_phone.length >15)
+        {
+            [cell.TXT_phone becomeFirstResponder];
+            msg = @"Mobile Number should be 5 to 15  Characters Range";
+        }
+        if ([code_cntry isEqualToString:@""]) {
+            
+            [cell.TXT_cntry_code becomeFirstResponder];
+            msg = @"Please Select Country Code";
+            
+        }
+       
     }
-    else if (str_phone.length<5 || str_phone.length >15)
-    {
-        [cell.TXT_phone becomeFirstResponder];
-        msg = @"Mobile Number should be 5 to 15  characters range";
-    }
+    
+    
+    
     else if ([str_state isEqualToString:@""])
     {
         [cell.TXT_state becomeFirstResponder];
-        msg = @"please select state";
+        msg = @"Please Select State";
     }
     else if ([str_country isEqualToString:@""])
     {
         [cell.TXT_country becomeFirstResponder];
-        msg = @"please select country";
+        msg = @"Please Select Country";
     }
     
     
@@ -844,7 +913,9 @@
     @try {
         
         NSString *cntr_id = [NSString stringWithFormat:@"%ld",(long)cntry_ID];
-         NSDictionary *params = @{@"FirstName":str_fname,@"LastName":str_lname,@"country":cntr_id,@"state":state_id,@"city":str_city,@"address1":str_addr1,@"address2":str_addr2,@"zipcode":str_zip_code,@"newaddressinput":@"0",@"customerId":[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"customer_id"],@"shipaddressId":ship_id};
+         NSDictionary *params = @{@"FirstName":str_fname,@"LastName":str_lname,@"country":cntr_id,@"state":state_id,@"city":str_city,@"address1":str_addr1,@"address2":str_addr2,@"zipcode":str_zip_code,@"newaddressinput":@"0",@"customerId":[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"customer_id"],@"shipaddressId":ship_id,@"mobile":str_phone,@"mobilecode":code_cntry};
+        
+        
         NSLog(@"%@",params);
         
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/shipaddressadd.json",SERVER_URL];
@@ -893,12 +964,33 @@
 -(void)edit_Billing_address_API{
     @try {
         
+
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *str_id = @"user_id";
+        NSString *user_id;
+        for(int f = 0;f<[[dict allKeys] count];f++)
+        {
+            if([[[dict allKeys] objectAtIndex:f] isEqualToString:str_id])
+            {
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                break;
+            }
+            else
+            {
+                
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+            }
+            
+        }
+        
+        
+        
         
          NSDictionary *params = @{@"first_name":str_fname,@"last_name":str_lname,@"country_id":[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"],@"state_id":state_id,@"city":str_city,@"address1":str_addr1,@"address2":str_addr2,@"zip_code":str_zip_code};
         
         NSLog(@"Billing params %@",params);
         
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/my-account/3/%@.json ",SERVER_URL,[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"]];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/my-account/3/%@.json ",SERVER_URL,user_id];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient api_with_post_params:urlGetuser andParams:params completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -957,10 +1049,19 @@
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
     
+    if (textField.tag == 4 || textField.tag == 5 ||textField.tag == 6||textField.tag == 7||textField.tag == 8 ) {
+        [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
+        [UIView beginAnimations:nil context:NULL];
+        self.view.frame = CGRectMake(0,-270,self.view.frame.size.width,self.view.frame.size.height);
+        [UIView commitAnimations];
+        
+    }
+    
+    
     if (textField.tag == 10) {
         [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
         [UIView beginAnimations:nil context:NULL];
-        self.view.frame = CGRectMake(0,-120,self.view.frame.size.width,self.view.frame.size.height);
+        self.view.frame = CGRectMake(0,-200,self.view.frame.size.width,self.view.frame.size.height);
         [UIView commitAnimations];
 
     }
@@ -983,6 +1084,11 @@
     if (textField.tag == 11) {
         textField.inputView = _phone_picker_view;
         textField.inputAccessoryView = accessoryView;
+        
+        [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
+        [UIView beginAnimations:nil context:NULL];
+        self.view.frame = CGRectMake(0,-200,self.view.frame.size.width,self.view.frame.size.height);
+        [UIView commitAnimations];
 
     }
     
@@ -1019,7 +1125,7 @@ if (textField.tag == 8) {
     
     
     
-    if (textField.tag == 10 || textField.tag == 11) {
+    if (textField.tag == 10 || textField.tag == 11||textField.tag == 4 || textField.tag == 5 ||textField.tag == 6||textField.tag == 7||textField.tag == 8) {
         [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
         [UIView beginAnimations:nil context:NULL];
         self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
@@ -1052,12 +1158,73 @@ if (textField.tag == 8) {
             //[request setAllHTTPHeaderFields:headers];
             [request setHTTPShouldHandleCookies:NO];
             NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            if (error) {
+                
+                
+                 [HttpClient stop_activity_animation];
+               
+            }
+            
             if(aData)
             {
                 
-                NSString *json_DATA = (NSString *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+                NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
                 NSLog(@"The response Api post sighn up API %@",json_DATA);
-              //  NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
+                
+                
+                
+                [response_countries_dic addEntriesFromDictionary:json_DATA];
+                [response_picker_arr removeAllObjects];
+                //[response_picker_arr addObjectsFromArray:[response_countries_dic allKeys]]
+                for (int x=0; x<[[response_countries_dic allKeys] count]; x++) {
+                    NSDictionary *dic = @{@"cntry_id":[[response_countries_dic allKeys] objectAtIndex:x],@"cntry_name":[response_countries_dic valueForKey:[[response_countries_dic allKeys] objectAtIndex:x]]};
+                    
+                    [response_picker_arr addObject:dic];
+                    
+                }
+                NSSortDescriptor *sortDescriptor;
+                sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"cntry_name"
+                                                             ascending:YES];
+                NSArray *sortedArr = [response_picker_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
+                
+                
+                NSMutableArray  *required_format = [NSMutableArray array];
+                for (int l =0; l<sortedArr.count; l++) {
+                    
+                    if ([[[sortedArr objectAtIndex:l] valueForKey:@"cntry_name"] isEqualToString:@"Qatar"] ) {
+                        
+                        [required_format addObject:[sortedArr objectAtIndex:l]];
+                        
+                    }
+                    
+                }
+                for (int l =0; l<sortedArr.count; l++) {
+                    
+                    if ([[[sortedArr objectAtIndex:l] valueForKey:@"cntry_name"] isEqualToString:@"India"]) {
+                        
+                        [required_format addObject:[sortedArr objectAtIndex:l]];
+                        
+                    }
+                    
+                }
+                
+                for (int m =0; m<sortedArr.count; m++) {
+                    
+                    if (![[[sortedArr objectAtIndex:m] valueForKey:@"cntry_name"] isEqualToString:@"Qatar"] && ![[[sortedArr objectAtIndex:m] valueForKey:@"cntry_name"] isEqualToString:@"India"]) {
+                        
+                        [required_format addObject:[sortedArr objectAtIndex:m]];
+                        
+                    }
+                    
+                }
+                
+                
+                
+                NSLog(@"sortedArr %@",sortedArr);
+                
+                [response_picker_arr removeAllObjects];
+                [response_picker_arr addObjectsFromArray:required_format];
+                [_staes_country_pickr reloadAllComponents];
             }
             else
             {
@@ -1087,6 +1254,7 @@ if (textField.tag == 8) {
                     if (data) {
                         @try {
                             if ([data isKindOfClass:[NSDictionary class]]) {
+      
                                 [response_countries_dic addEntriesFromDictionary:data];
                                 [response_picker_arr removeAllObjects];
                                 //[response_picker_arr addObjectsFromArray:[response_countries_dic allKeys]]
@@ -1229,7 +1397,7 @@ if (textField.tag == 8) {
 
     if (pickerView == self.phone_picker_view) {
         
-        return [NSString stringWithFormat:@"%@   %@",[phone_code_arr[row] valueForKey:@"name"],[phone_code_arr[row] valueForKey:@"dial_code"]];
+        return [NSString stringWithFormat:@"%@   %@",[phone_code_arr[row] valueForKey:@"name"],[phone_code_arr[row] valueForKey:@"code"]];
     }
     else{
     
@@ -1250,7 +1418,7 @@ if (textField.tag == 8) {
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
     
     if (pickerView == self.phone_picker_view) {
-        flag = [NSString stringWithFormat:@"%@",[phone_code_arr[row] valueForKey:@"dial_code"]];
+        flag = [NSString stringWithFormat:@"%@",[phone_code_arr[row] valueForKey:@"code"]];
       
     }
     else{
@@ -1386,7 +1554,7 @@ if (textField.tag == 8) {
     {
         NSString *cntr_id = [NSString stringWithFormat:@"%ld",(long)cntry_ID];
         
-       NSDictionary *params = @{@"FirstName":str_fname,@"LastName":str_lname,@"country":cntr_id,@"state":state_id,@"city":str_city,@"address1":str_addr1,@"address2":str_addr2,@"zipcode":str_zip_code,@"newaddressinput":new_address_input,@"customerId":[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"customer_id"],@"mobile":str_phone};
+       NSDictionary *params = @{@"FirstName":str_fname,@"LastName":str_lname,@"country":cntr_id,@"state":state_id,@"city":str_city,@"address1":str_addr1,@"address2":str_addr2,@"zipcode":str_zip_code,@"newaddressinput":new_address_input,@"customerId":[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"customer_id"],@"mobile":str_phone,@"mobilecode":code_cntry};
         NSLog(@"%@",params);
         
         
@@ -1498,8 +1666,6 @@ if (textField.tag == 8) {
         [body appendData:[[NSString stringWithFormat:@"%@",str_phone]dataUsingEncoding:NSUTF8StringEncoding]];
         [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
         
-        
-        
         //
         NSError *er;
         //    NSHTTPURLResponse *response = nil;
@@ -1554,7 +1720,7 @@ if (textField.tag == 8) {
     if (localError != nil) {
         NSLog(@"%@", [localError userInfo]);
     }
-    phone_code_arr = (NSMutableArray *)parsedObject;
+    phone_code_arr = (NSMutableArray *)[parsedObject valueForKey:@"countries"];
     
     NSSortDescriptor *sortDescriptor;
     sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name"

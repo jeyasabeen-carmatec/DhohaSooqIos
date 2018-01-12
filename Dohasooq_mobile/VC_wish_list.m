@@ -38,15 +38,7 @@
 //    UINib *nib = [UINib nibWithNibName:@"wish_list_cell" bundle:nil];
 //    [_TBL_wish_list_items registerNib:nib forCellReuseIdentifier:@"wish_list_cell"];
 //    [_TBL_wish_list_items registerNib:nib forCellReuseIdentifier:@"Qwish_list_cell"];
-    @try
-    {
-    [_BTN_cart setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
-    }
-    @catch(NSException *exception)
-    {
-        
-    }
-
+    
     [self set_UP_VIEW];
 }
 -(void)viewWillAppear:(BOOL)animated{
@@ -69,7 +61,7 @@
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
     
-
+       [HttpClient animating_images:self];
     [self performSelector:@selector(wish_list_api_calling) withObject:nil afterDelay:0.01];
     
   
@@ -80,7 +72,7 @@
 
 -(void)set_UP_VIEW
 {
-    [self wish_list_api_calling];
+  //  [self wish_list_api_calling];
     
 //    CGRect set_frame = _TBL_wish_list_items.frame;
 //    set_frame.origin.y =  - self.navigationController.navigationBar.frame.origin.y+20;
@@ -443,7 +435,7 @@
     @try {
         
         
-     [HttpClient animating_images:self];
+    
         
     response_Arr = [[NSMutableArray alloc]init];
 
@@ -521,7 +513,7 @@
 
                         NSLog(@"%@",exception);
                     }
-                 [HttpClient stop_activity_animation];
+                
             });
             
         }];
@@ -532,8 +524,7 @@
         [HttpClient stop_activity_animation];
         NSLog(@"%@",exception);
     }
-         [HttpClient stop_activity_animation];
-        }
+    }
      @catch (NSException *exception) {
            [HttpClient stop_activity_animation];
         NSLog(@"%@",exception);

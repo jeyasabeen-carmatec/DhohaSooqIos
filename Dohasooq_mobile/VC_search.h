@@ -12,6 +12,7 @@
 @property(nonatomic,weak) IBOutlet UITextField *TXT_search;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_search;
 @property(nonatomic,weak) IBOutlet UITableView *TBL_results;
+@property(nonatomic,weak) IBOutlet UIView *VW_nav;
 
 
 @end

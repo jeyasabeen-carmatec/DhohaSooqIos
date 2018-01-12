@@ -96,7 +96,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cross.png" translatesAutoresizingMaskIntoConstraints="NO" id="cuY-rg-6Hy">
-                        <rect key="frame" x="315" y="8.5" width="20" height="20"/>
+                        <rect key="frame" x="315" y="21.5" width="20" height="20"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="20" id="1Rv-6W-Afa"/>
@@ -106,7 +106,7 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="K0Z-wZ-sTc" firstAttribute="centerY" secondItem="72e-nr-Arm" secondAttribute="centerY" id="1KC-4T-joz"/>
-                    <constraint firstItem="cuY-rg-6Hy" firstAttribute="top" secondItem="haQ-gJ-eDg" secondAttribute="top" id="2Ow-oq-d6r"/>
+                    <constraint firstItem="cuY-rg-6Hy" firstAttribute="top" secondItem="haQ-gJ-eDg" secondAttribute="top" constant="13" id="2Ow-oq-d6r"/>
                     <constraint firstItem="cuY-rg-6Hy" firstAttribute="leading" secondItem="haQ-gJ-eDg" secondAttribute="trailing" id="9wo-zs-jWc"/>
                     <constraint firstItem="FME-bQ-72W" firstAttribute="top" secondItem="scQ-sx-lqp" secondAttribute="bottom" id="9xO-VO-aqB"/>
                     <constraint firstItem="6TP-5R-IDO" firstAttribute="height" secondItem="H0m-Xp-8Pj" secondAttribute="height" id="BYk-Rx-sba"/>
