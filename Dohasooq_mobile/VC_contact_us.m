@@ -34,15 +34,17 @@
 //    _LBL_address.text = @"Doha Bank\n13th Floor,Doha Bank Tower,Near Sheraton\nCorniche Street,West Bay\nPO BOX 3818\nDoha,Qatar";
    
     
-    _VW_contact.layer.shadowColor = [UIColor lightGrayColor].CGColor;
-    _VW_contact.layer.shadowOffset = CGSizeMake(0.0, 0.0);
-    _VW_contact.layer.shadowOpacity = 1.0;
-    _VW_contact.layer.shadowRadius = 4.0;
+    _VW_contact.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    _VW_contact.layer.borderWidth = 0.8f;
+//    _VW_contact.layer.shadowOffset = CGSizeMake(0.0, 0.0);
+//    _VW_contact.layer.shadowOpacity = 1.0;
+//    _VW_contact.layer.shadowRadius = 4.0;
     
-    _VW_address.layer.shadowColor = [UIColor lightGrayColor].CGColor;
-    _VW_address.layer.shadowOffset = CGSizeMake(0.0, 0.0);
-    _VW_address.layer.shadowOpacity = 1.0;
-    _VW_address.layer.shadowRadius = 4.0;
+    _VW_address.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    _VW_address.layer.borderWidth = 0.8f;
+//    _VW_address.layer.shadowOffset = CGSizeMake(0.0, 0.0);
+//    _VW_address.layer.shadowOpacity = 1.0;
+//    _VW_address.layer.shadowRadius = 4.0;
     
     NSString *description =[NSString stringWithFormat:@"%@",[json_dic valueForKey:@"content"]];
     description = [description stringByAppendingString:[NSString stringWithFormat:@"<style>body{font-family: 'Poppins-Regular'; font-size:%dpx;}</style>",17]];
@@ -69,7 +71,7 @@
     
     frameset = _VW_contact_us.frame;
     frameset.origin.y = _VW_address.frame.origin.y + _VW_address.frame.size.height + 10;
-    frameset.size.width = _Scroll_contents.frame.size.width;
+  //  frameset.size.width = _Scroll_contents.frame.size.width;
     _VW_contact_us.frame = frameset;
     
     frameset = _BTN_submit.frame;
@@ -78,13 +80,14 @@
     
     frameset = _VW_contents.frame;
    // frameset.size.height = _BTN_submit.frame.origin.y + _BTN_submit.frame.size.height + 10;
-    frameset.size.height = _BTN_submit.frame.origin.y + _BTN_submit.frame.origin.y;
+   // frameset.size.height = _VW_contact_us.frame.origin.y + _VW_contact_us.frame.origin.y;
     frameset.size.width = _Scroll_contents.frame.size.width;
     _VW_contents.frame = frameset;
     [self.Scroll_contents addSubview:_VW_contents];
     
-    scroll_ht = _VW_contents.frame.origin.y +_VW_contents .frame.size.height;
+    scroll_ht = _VW_contact_us.frame.origin.y +_VW_contact_us .frame.size.height;
     [_BTN_submit addTarget:self action:@selector(contact_SUBMIT) forControlEvents:UIControlEventTouchUpInside];
+    [self viewDidLayoutSubviews];
     
   
     

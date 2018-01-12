@@ -12,7 +12,8 @@
 @interface VC_filter_product_list ()<UICollectionViewDelegate,UICollectionViewDataSource>
 {
     NSString *lower,*upper,*discount;
-    NSDictionary *product_arr;
+    NSArray *product_arr;
+    
     NSMutableArray *Brands_arr_post;
     BOOL filter_val;
     
@@ -25,11 +26,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    discount = @"0";
-    
-    product_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"brands_LISTs"];
+    discount = @"";
+    //sortedArray = [anArray sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+
+    NSArray  *Temp_arr =[[[NSUserDefaults standardUserDefaults] valueForKey:@"brands_LISTs"] allObjects];
+    product_arr = [Temp_arr sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     NSLog(@"THE userdefaults%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"brands_LIST"]);
-    CGRect framset = _VW_contents.frame;
+    
+      CGRect framset = _VW_contents.frame;
     framset.size.height = _BTN_submit.frame.origin.y + _BTN_submit.frame.size.height;
     framset.size.width = _scroll_contents.frame.size.width;
     _VW_contents.frame = framset;
@@ -42,51 +46,55 @@
     @try
     {
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"max_min"];
-        NSString *min = [NSString stringWithFormat:@"%@",[dict valueForKey:@"min"]];
-        NSString *max =[NSString stringWithFormat:@"%@",[dict valueForKey:@"max"]];
+        lower = [NSString stringWithFormat:@"%@",[dict valueForKey:@"min"]];
+       upper =[NSString stringWithFormat:@"%@",[dict valueForKey:@"max"]];
         
-        if ([max isEqualToString:min]) {
-            
-            
-            min = @"0";
-        }
-        
-        
+//        if ([max isEqualToString:min]) {
+//            
+//            
+//            min = @"0";
+//        }
         
         
-        max = [max stringByReplacingOccurrencesOfString:@"<nil>" withString:@"10"];
-        max = [max stringByReplacingOccurrencesOfString:@"<null>" withString:@"10"];
         
-        if ([max isEqualToString:@"1"]) {
-            
-            max = @"10";
-        }
+        
+        lower = [lower stringByReplacingOccurrencesOfString:@"<nil>" withString:@"10"];
+        upper = [upper stringByReplacingOccurrencesOfString:@"<null>" withString:@"10"];
+        
+//        if ([max isEqualToString:@"1"]) {
+//            
+//            max = @"10";
+//        }
         // max = [max stringByReplacingOccurrencesOfString:@"0" withString:@"10"];
         
-        _LBL_slider.trackColor =[UIColor colorWithRed:1.00 green:0.98 blue:0.80 alpha:1.0];
+       // _LBL_slider.trackColor =[UIColor colorWithRed:1.00 green:0.98 blue:0.80 alpha:1.0];
         
         
         // Set color for highlighted section of the slider track
-        _LBL_slider.trackHighlightColor =[UIColor colorWithRed:0.92 green:0.66 blue:0.27 alpha:1.0];
+       // _LBL_slider.trackHighlightColor =[UIColor colorWithRed:0.92 green:0.66 blue:0.27 alpha:1.0];
         // Set height of slider track
-        _LBL_slider.trackHeight = 8.0;
+       // _LBL_slider.trackHeight = 8.0;
         
         @try
         {
             
             
-            min = [min stringByReplacingOccurrencesOfString:@"<nil>" withString:@"0"];
-            min = [min stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
+            lower = [lower stringByReplacingOccurrencesOfString:@"<nil>" withString:@"0"];
+            lower = [lower stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
             
-            self.LBL_slider.minValue = [min floatValue];
-            self.LBL_slider.maxValue = [max floatValue];
+            self.LBL_slider.minValue =0;
+            self.LBL_slider.maxValue = [upper floatValue];
+            _LBL_slider.hideLabels = YES;
+            _LBL_slider.lineHeight = 7.0f;
+            _LBL_slider.handleImage = [UIImage imageNamed:@"UISliderHandleDefault.png"];
+        
             
-            self.LBL_slider.lowerValue = [min floatValue];
-            self.LBL_slider.upperValue = [max floatValue];
+            self.LBL_slider.selectedMinimum = [lower floatValue];
+            self.LBL_slider.selectedMaximum = [upper floatValue];
             
             
-            lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
-            upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];
+            lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMinimum];
+            upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
         }
         @catch(NSException *exceprtion)
         {
@@ -100,8 +108,8 @@
         
         @try {
             
-            self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"], (int)self.LBL_slider.maxValue];
-            self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d", [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],(int)self.LBL_slider.minValue];
+            self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"], (int)self.LBL_slider.selectedMaximum];
+            self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d", [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],(int)self.LBL_slider.selectedMinimum];
             NSLog(@"%@ /n %@",lower,upper);
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
@@ -163,12 +171,12 @@
     
 }
 
-- (IBAction)labelSliderChanged:(CCRangeSlider*)sender
+- (IBAction)labelSliderChanged:(TTRangeSlider*)sender
 {
-    lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
-    upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];
-    self.LBL_max.text = [NSString stringWithFormat:@"Max QAR %d", (int)self.LBL_slider.upperValue];
-    self.LBL_min.text = [NSString stringWithFormat:@"Min QAR %d", (int)self.LBL_slider.lowerValue];
+    lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMinimum];
+    upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
+    self.LBL_max.text = [NSString stringWithFormat:@"Max QAR %d", (int)self.LBL_slider.selectedMaximum];
+    self.LBL_min.text = [NSString stringWithFormat:@"Min QAR %d", (int)self.LBL_slider.selectedMinimum];
     
     
 }
@@ -183,8 +191,8 @@
     NSString *country = [user_dflts valueForKey:@"country_id"];
     NSString *languge = [user_dflts valueForKey:@"language_id"];
     NSDictionary *dict = [user_dflts valueForKey:@"userdata"];
-    NSString *min = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"min"]];
-    NSString *max = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"max"]];
+    NSString *min = [NSString stringWithFormat:@"%@",lower];
+    NSString *max = [NSString stringWithFormat:@"%@",upper];
     NSString *range = [NSString stringWithFormat:@"%@,%@",min,max];
     [[NSUserDefaults standardUserDefaults] setValue:range  forKey:@"Range_val"];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -194,7 +202,7 @@
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
 
     
-    NSString *url_str = [NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/Customer.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"product_list_key"],country,languge,user_id,discount,min,max,brands];
+    NSString *url_str = [NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/Customer/1.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"product_list_key"],country,languge,user_id,discount,min,max,brands];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
     
@@ -344,12 +352,12 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return [[product_arr allValues] count];
+    return product_arr.count;
 }
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     filter_cell *cell = (filter_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
-    cell.LBL_name.text = [[product_arr allValues] objectAtIndex:indexPath.row];
+    cell.LBL_name.text = [product_arr objectAtIndex:indexPath.row];
     cell.BTN_check.tag = indexPath.row;
     [cell.BTN_check addTarget:self action:@selector(check_action:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -367,7 +375,16 @@
     
     NSData *data1 = UIImagePNGRepresentation(cell.IMG_check.image);
     NSData *data2 = UIImagePNGRepresentation([UIImage imageNamed:@"uncheked_order"]);
-    NSString *temp_str = [[product_arr allKeys] objectAtIndex:sender.tag];
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"brands_LISTs"];
+     NSString *temp_str;
+    for(int i = 0;i<dict.count;i++)
+    {
+        if([[product_arr objectAtIndex:sender.tag] isEqualToString:[[dict allValues] objectAtIndex:i]])
+        {
+            temp_str = [NSString stringWithFormat:@"%@",[[dict allKeys] objectAtIndex:i]];
+        }
+    }
+   //= [[product_arr allKeys] objectAtIndex:sender.tag];
 
     if([data1 isEqual:data2])
     {

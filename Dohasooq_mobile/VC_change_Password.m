@@ -56,14 +56,30 @@
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
     
-    if( textField == _TXT_new_pwd)
+    if( textField == _TXT_old_pwd)
     {
-        [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
+        CGSize result = [[UIScreen mainScreen] bounds].size;
         
-    }
-    [UIView beginAnimations:nil context:NULL];
-    self.view.frame = CGRectMake(0,-110,self.view.frame.size.width,self.view.frame.size.height);
-    [UIView commitAnimations];
+        
+        if(result.height <= 480)
+        {
+            [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
+            [UIView beginAnimations:nil context:NULL];
+            self.view.frame = CGRectMake(0,-110,self.view.frame.size.width,self.view.frame.size.height);
+            [UIView commitAnimations];
+
+            
+        }
+       else if(result.height <= 568)
+       {
+        [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
+        [UIView beginAnimations:nil context:NULL];
+        self.view.frame = CGRectMake(0,-110,self.view.frame.size.width,self.view.frame.size.height);
+        [UIView commitAnimations];
+
+        }
+   
+        }
 }
 
 -(void)textFieldDidEndEditing:(UITextField *)textField
@@ -208,7 +224,7 @@
         
     }
 
-    if( textField == _TXT_new_pwd)
+    if( textField == _TXT_confirm_pwd)
     {
     self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
     [UIView commitAnimations];
@@ -367,35 +383,70 @@
  
     @try
     {
-        NSString *old_pwd = _TXT_old_pwd.text;
-        NSString *new_pwd = _TXT_new_pwd.text;
-        NSString *confirm_pwd = _TXT_confirm_pwd.text;
+        NSString *old_pwd = [NSString stringWithFormat:@"%@",_TXT_old_pwd.text];
+        NSString *new_pwd = [NSString stringWithFormat:@"%@",_TXT_new_pwd.text];
+        NSString *confirm_pwd = [NSString stringWithFormat:@"%@",_TXT_confirm_pwd.text];
 
         NSDictionary *parameters = @{
-                                     @"old_password": old_pwd,
-                                     @"password": new_pwd,
+                                     @"old_password":old_pwd,
+                                     @"password":new_pwd,
                                      @"confirm_password":confirm_pwd
                                      
                                      };
         NSError *error;
-        NSError *err;
+      //  NSError *err;
         NSHTTPURLResponse *response = nil;
         
-        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
+     //   NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
         NSLog(@"the posted data is:%@",parameters);
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+        NSString *str_id = @"user_id";
+        NSString *user_id;
+        for(int i = 0;i<[[dict allKeys] count];i++)
+        {
+            if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+            {
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                break;
+            }
+            else
+            {
+                
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+            }
+            
+        }
 
         NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/change-password/1/%@.json",SERVER_URL,user_id];
         // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
-        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-        [request setURL:urlProducts];
+       NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:[NSURL URLWithString:urlGetuser]];
         [request setHTTPMethod:@"POST"];
-        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-        [request setHTTPBody:postData];
-        //[request setAllHTTPHeaderFields:headers];
-        [request setHTTPShouldHandleCookies:NO];
+        
+        NSString *boundary = @"---------------------------14737809831466499882746641449";
+        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
+        [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+        
+        NSMutableData *body = [NSMutableData data];
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"old_password\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]]; //venu1@carmatec.com
+        [body appendData:[[NSString stringWithFormat:@"%@",old_pwd]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"password\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]]; //venu1@carmatec.com
+        [body appendData:[[NSString stringWithFormat:@"%@",new_pwd]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"confirm_password\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]]; //venu1@carmatec.com
+        [body appendData:[[NSString stringWithFormat:@"%@",confirm_pwd]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        // set request body
+        [request setHTTPBody:body];
+        
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         if(aData)
         {
@@ -410,11 +461,12 @@
             if([status isEqualToString:@"1"])
             {
                [HttpClient stop_activity_animation];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"The new password has been saved" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"The new password has been saved" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
                 [alert show];
 //                ViewController *login = [self.storyboard instantiateViewControllerWithIdentifier:@"login_VC"];
 //                [self presentViewController:login animated:NO completion:nil];
                // [self performSegueWithIdentifier:@"cahnge_password_identofier" sender:self];
+                 [self.navigationController popViewControllerAnimated:YES];
                 
             }
             else
@@ -440,24 +492,6 @@
     }
 
     
-}
-- (void)alertView:(UIAlertView *)alertView
-clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if(alertView.tag == 1)
-    {
-        if (buttonIndex == [alertView cancelButtonIndex])
-        {
-            NSLog(@"cancel:");
-            
-        }
-        else{
-            
-             NSLog(@"Ok:");
-           // [self.navigationController popViewControllerAnimated:YES];
-
-            
-        }
-    }
 }
 
 - (IBAction)back_action:(id)sender

@@ -38,7 +38,10 @@
 -(void)viewWillAppear:(BOOL)animated
 {
 
-       
+    CGRect frameset = _VW_nav.frame;
+    frameset.size.width = self.navigationController.navigationBar.frame.size.width - _BTN_search.frame.size.width-50;
+    _VW_nav.frame = frameset;
+
     
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
@@ -203,6 +206,7 @@
                         VW_overlay.hidden = YES;
                         [activityIndicatorView stopAnimating];
                     [_TBL_results reloadData];
+                    _TBL_results.hidden = NO;
                      NSLog(@"%@",json);
                     }
                     
