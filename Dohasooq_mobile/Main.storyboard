@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" colorMatched="YES" initialViewController="fHS-7d-jcx">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" colorMatched="YES" initialViewController="fHS-7d-jcx">
     <device id="retina3_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -28,7 +28,7 @@
         <array key="Poppins-SemiBold.ttf">
             <string>Poppins-SemiBold</string>
         </array>
-        <array key="Roboto-Regular_0.ttf">
+        <array key="Roboto-Regular.ttf">
             <string>Roboto-Regular</string>
         </array>
     </customFonts>
@@ -2333,7 +2333,7 @@
                             </collectionViewFlowLayout>
                             <cells>
                                 <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="cell" id="fer-Ig-eI0" customClass="filter_cell">
-                                    <rect key="frame" x="29" y="0.0" width="222" height="50"/>
+                                    <rect key="frame" x="29.5" y="0.0" width="222" height="50"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                         <rect key="frame" x="0.0" y="0.0" width="222" height="50"/>
@@ -7565,7 +7565,7 @@
                                     <rect key="frame" x="0.0" y="28" width="320" height="115"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="taD-4b-262" id="lVw-RY-Xq3">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="114.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="114"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="ASIAN TOWNأسيان، تون" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="E75-U2-nGm">
@@ -9219,27 +9219,27 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="X8l-5I-aGL"/>
-        <segue reference="Ia6-yw-sEr"/>
+        <segue reference="1fc-cP-jfH"/>
+        <segue reference="oiO-D6-0MQ"/>
+        <segue reference="PIq-gb-2yd"/>
         <segue reference="yWr-Gw-exm"/>
-        <segue reference="z2t-AS-he8"/>
-        <segue reference="WuY-ui-8aO"/>
+        <segue reference="VlJ-8X-e9R"/>
+        <segue reference="thM-tK-ujK"/>
+        <segue reference="pDU-cD-KDi"/>
         <segue reference="U1I-tg-KmK"/>
         <segue reference="hYs-TP-0oE"/>
-        <segue reference="pDU-cD-KDi"/>
-        <segue reference="thM-tK-ujK"/>
-        <segue reference="vMu-Y7-4Nz"/>
-        <segue reference="1fc-cP-jfH"/>
-        <segue reference="GAW-2H-hzI"/>
-        <segue reference="VlJ-8X-e9R"/>
-        <segue reference="Cw8-vV-nPW"/>
-        <segue reference="gcz-vd-Onb"/>
-        <segue reference="1PO-jV-8IF"/>
-        <segue reference="fdB-wy-FRl"/>
-        <segue reference="PIq-gb-2yd"/>
-        <segue reference="sNV-nt-3bv"/>
-        <segue reference="Gbu-bd-OSk"/>
         <segue reference="TQh-po-CZq"/>
+        <segue reference="Gbu-bd-OSk"/>
+        <segue reference="2i6-zz-H96"/>
+        <segue reference="Zyf-Jf-hDH"/>
+        <segue reference="lPl-E6-Uaw"/>
+        <segue reference="CGA-QG-v2I"/>
+        <segue reference="Fb4-74-wUL"/>
+        <segue reference="n8v-Km-OHF"/>
+        <segue reference="Eh1-NH-Qoz"/>
+        <segue reference="3zC-aM-lBx"/>
         <segue reference="Ikb-sa-4zg"/>
+        <segue reference="ydJ-dy-aD5"/>
+        <segue reference="7ng-B9-MHt"/>
     </inferredMetricsTieBreakers>
 </document>
