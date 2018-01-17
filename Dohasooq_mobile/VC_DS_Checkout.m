@@ -87,12 +87,13 @@
 //}
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     
-    [HttpClient animating_images:self];
+//    [HttpClient animating_images:self];
+
     
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     
-    [HttpClient stop_activity_animation];
+//    [HttpClient stop_activity_animation];
     NSLog(@"Loading Successful ");
     
     
@@ -106,6 +107,11 @@
 }
 - (IBAction)back_action:(id)sender {
     //VC_cart_list *list = [self.storyboard instantiateViewControllerWithIdentifier:@"cart_identifir"];
+    
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    
     [self.navigationController popToRootViewControllerAnimated:NO];
     
     
@@ -122,5 +128,12 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+}
 
 @end

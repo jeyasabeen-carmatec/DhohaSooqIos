@@ -25,7 +25,7 @@
     int i,j;
     NSInteger edit_tag,cntry_ID;
     NSMutableArray  *temp_arr;
-    BOOL isfirstTimeTransform,isAddClicked,is_Txt_date,isCountrySelected,orderCheckSelected,isCash_on_delivary;
+    BOOL isfirstTimeTransform,isAddClicked,is_Txt_date,isCountrySelected,orderCheckSelected;//isCash_on_delivary
     float scroll_height,shiiping_ht;
     UIView *VW_overlay;
     //UIActivityIndicatorView *activityIndicatorView;
@@ -489,11 +489,11 @@
             str_cntry_code = @"+974";
         }
         
-        _TXT_Cntry_code.text = [NSString stringWithFormat:@"+ %@",str_cntry_code];
+        _TXT_Cntry_code.text = [NSString stringWithFormat:@"%@",str_cntry_code];
        
         
         //Country_code for ShipCntryCode
-        _TXT_ship_cntry_code.text = [NSString stringWithFormat:@"+ %@",str_cntry_code];
+        _TXT_ship_cntry_code.text = [NSString stringWithFormat:@"%@",str_cntry_code];
        
         
       //Address1
@@ -1249,9 +1249,9 @@
                 
                 
      //Checking Cash On Delivary Available or Not For Payment Options
-                if ([[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"cod"]] isEqualToString:@"No"]) {
-                    isCash_on_delivary = NO;
-                }
+//                if ([[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"cod"]] isEqualToString:@"No"]) {
+//                    isCash_on_delivary = NO;
+//                }
                 
     //Delivary Slot checking Condition
                 
@@ -3496,16 +3496,40 @@
                                 NSLog(@"Payment Methods %@",data);
                                 
                          // Checking Cash on Delivary is Available or Not
+                                _BTN_cod.hidden = YES;
+                                _LBL_cash_on_Delivary.hidden = YES;
                                 
-                                if (isCash_on_delivary) {
-                                    _BTN_cod.hidden = NO;
-                                    _LBL_cash_on_Delivary.hidden = NO;
-                                    
+                                //                                        isCash_on_delivary = YES;
+                                
+//                                NSArray *keys = [data allKeys];
+//                                for (int kl = 0; kl < [keys count]; kl ++) {
+//                                    NSString *KY = [NSString stringWithFormat:@"%d",kl];
+//                                    NSString *STR_check = [data valueForKey:KY];
+//                                    if ([STR_check isEqualToString:@"Cash On Delivery"]) {
+//
+//                                        _BTN_cod.hidden = NO;
+//                                        _LBL_cash_on_Delivary.hidden = NO;
+//                                        kl = (int)[keys count];
+//                                    }
+//                                }
+                                for (NSString *key in data) {
+                                    id value = data[key];
+                                    NSLog(@"Value: %@ for key: %@", value, key);
+                                    if ([value isEqualToString:@"Cash On Delivery"]) {
+                                        _BTN_cod.hidden = NO;
+                                        _LBL_cash_on_Delivary.hidden = NO;
+                                    }
                                 }
-                                else{
-                                    _BTN_cod.hidden = YES;
-                                     _LBL_cash_on_Delivary.hidden = YES;
-                                }
+                                
+//                                if (isCash_on_delivary) {
+//                                    _BTN_cod.hidden = NO;
+//                                    _LBL_cash_on_Delivary.hidden = NO;
+//                                    
+//                                }
+//                                else{
+//                                    _BTN_cod.hidden = YES;
+//                                     _LBL_cash_on_Delivary.hidden = YES;
+//                                }
                                 
                             }
                             else{
