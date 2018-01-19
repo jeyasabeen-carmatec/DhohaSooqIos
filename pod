@@ -4,4 +4,4 @@ pod "FBSDKCoreKit";
 pod "FBSDKLoginKit";
 pod "FBSDKShareKit";
 pod "FBSDKMessengerShareKit";
-pod 'NewRelicAgent'
+pod 'NewRelicAgent', '5.8.1'

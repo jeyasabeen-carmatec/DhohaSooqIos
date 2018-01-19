@@ -8,7 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "MIBadgeButton.h"
+
 @interface Home_page_Qtickets : UIViewController
+/*{
+    NSTimer *TIMER_countdown;
+}*/
 
 @property(nonatomic,strong) NSArray *items;
 
@@ -28,8 +32,6 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_address;
 @property(nonatomic,strong) UIPickerView *lang_pickers;
 @property(nonatomic,weak) IBOutlet UILabel *invisible_LBL;
-
-
 
 
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_profile;
