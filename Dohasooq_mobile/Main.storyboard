@@ -2129,6 +2129,7 @@
                             </view>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="BTN_add_cart" destination="gjp-DN-JKB" id="MCf-Pq-WdQ"/>
@@ -2333,7 +2334,7 @@
                             </collectionViewFlowLayout>
                             <cells>
                                 <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="cell" id="fer-Ig-eI0" customClass="filter_cell">
-                                    <rect key="frame" x="29.5" y="0.0" width="222" height="50"/>
+                                    <rect key="frame" x="29" y="0.0" width="222" height="50"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                         <rect key="frame" x="0.0" y="0.0" width="222" height="50"/>
@@ -4756,8 +4757,8 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="WELCOME  TO DOHA SOOQ" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="76R-JL-YhU">
-                                <rect key="frame" x="60" y="220" width="217" height="40"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="WELCOME TO DOHA SOOQ" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="76R-JL-YhU">
+                                <rect key="frame" x="49" y="216" width="223" height="40"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
                                 <color key="textColor" red="0.98823529409999999" green="0.68235294120000001" blue="0.15686274510000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -5179,14 +5180,14 @@
                                     </collectionViewFlowLayout>
                                     <cells>
                                         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="brands_cell" id="UTf-td-uZA" customClass="cell_brands">
-                                            <rect key="frame" x="0.0" y="3.5" width="81" height="46"/>
+                                            <rect key="frame" x="0.0" y="3" width="81" height="47"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                                <rect key="frame" x="0.0" y="0.0" width="81" height="46"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="81" height="47"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="brand.png" id="Se2-8o-FOE">
-                                                        <rect key="frame" x="7" y="3" width="68" height="39"/>
+                                                        <rect key="frame" x="7" y="4" width="68" height="39"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     </imageView>
@@ -7565,7 +7566,7 @@
                                     <rect key="frame" x="0.0" y="28" width="320" height="115"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="taD-4b-262" id="lVw-RY-Xq3">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="114"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="114.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="ASIAN TOWNأسيان، تون" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="E75-U2-nGm">
@@ -8065,11 +8066,12 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="sgu-7W-yyW" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="dCA-6F-dQg">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -8086,6 +8088,8 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="lxk-ST-xil" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="TWH-4U-GVn"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Eqn-qb-vyB">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -8097,7 +8101,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="17f-WT-i9J" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-328" y="1072"/>
+            <point key="canvasLocation" x="-410" y="1042"/>
         </scene>
         <!--movie pay-->
         <scene sceneID="lrD-27-fPC">
@@ -8648,6 +8652,8 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="zBY-ra-WXU" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="BEq-DW-cyn"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="x4J-UD-pG6">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -8659,7 +8665,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hRu-m1-rch" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-4238" y="3435"/>
+            <point key="canvasLocation" x="-4233" y="3383"/>
         </scene>
         <!--upcoming movies-->
         <scene sceneID="yHb-2j-5Zx">
@@ -8894,6 +8900,8 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="D16-Tb-wmS" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="EKP-Aa-wZw">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -8991,6 +8999,8 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="FPi-38-55j" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="405-9R-GfA"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="rmh-Dm-dMb">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -9219,27 +9229,27 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="1fc-cP-jfH"/>
+        <segue reference="fdB-wy-FRl"/>
+        <segue reference="Ia6-yw-sEr"/>
         <segue reference="oiO-D6-0MQ"/>
-        <segue reference="PIq-gb-2yd"/>
+        <segue reference="c3Y-v1-gcs"/>
+        <segue reference="Cw8-vV-nPW"/>
         <segue reference="yWr-Gw-exm"/>
+        <segue reference="1PO-jV-8IF"/>
+        <segue reference="z2t-AS-he8"/>
         <segue reference="VlJ-8X-e9R"/>
+        <segue reference="WuY-ui-8aO"/>
+        <segue reference="ANP-ln-DYB"/>
+        <segue reference="vMu-Y7-4Nz"/>
         <segue reference="thM-tK-ujK"/>
-        <segue reference="pDU-cD-KDi"/>
-        <segue reference="U1I-tg-KmK"/>
+        <segue reference="gcz-vd-Onb"/>
+        <segue reference="1fc-cP-jfH"/>
         <segue reference="hYs-TP-0oE"/>
-        <segue reference="TQh-po-CZq"/>
-        <segue reference="Gbu-bd-OSk"/>
-        <segue reference="2i6-zz-H96"/>
-        <segue reference="Zyf-Jf-hDH"/>
-        <segue reference="lPl-E6-Uaw"/>
-        <segue reference="CGA-QG-v2I"/>
-        <segue reference="Fb4-74-wUL"/>
-        <segue reference="n8v-Km-OHF"/>
-        <segue reference="Eh1-NH-Qoz"/>
-        <segue reference="3zC-aM-lBx"/>
+        <segue reference="pDU-cD-KDi"/>
         <segue reference="Ikb-sa-4zg"/>
-        <segue reference="ydJ-dy-aD5"/>
+        <segue reference="TQh-po-CZq"/>
+        <segue reference="tAL-2b-bM6"/>
         <segue reference="7ng-B9-MHt"/>
+        <segue reference="Gbu-bd-OSk"/>
     </inferredMetricsTieBreakers>
 </document>

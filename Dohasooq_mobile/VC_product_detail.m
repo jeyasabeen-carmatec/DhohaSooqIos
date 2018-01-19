@@ -1264,7 +1264,7 @@
                             pro_cell.LBL_discount.text = @"";
                             
                         }
-                        else if([prec_price isEqualToString:current_price])
+                        else if([prec_price isEqualToString:current_price] ||[current_price isEqualToString:@"0.00"])
                         {
                             prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row]objectAtIndex:0]  valueForKey:@"product_price"]];
                             text = [NSString stringWithFormat:@"%@",prec_price];
@@ -4212,7 +4212,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     if([user_id isEqualToString:@"(null)"])
     {
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login ti proceed" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login to proceed" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
         alert.tag = 1;
         [alert show];
         

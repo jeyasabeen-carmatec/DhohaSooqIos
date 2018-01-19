@@ -25,7 +25,7 @@
     int i,j;
     NSInteger edit_tag,cntry_ID;
     NSMutableArray  *temp_arr;
-    BOOL isfirstTimeTransform,isAddClicked,is_Txt_date,isCountrySelected,orderCheckSelected;//isCash_on_delivary
+    BOOL isfirstTimeTransform,isAddClicked,is_Txt_date,isCountrySelected,orderCheckSelected,isCash_on_delivary;
     float scroll_height,shiiping_ht;
     UIView *VW_overlay;
     //UIActivityIndicatorView *activityIndicatorView;
@@ -1249,9 +1249,13 @@
                 
                 
      //Checking Cash On Delivary Available or Not For Payment Options
-//                if ([[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"cod"]] isEqualToString:@"No"]) {
-//                    isCash_on_delivary = NO;
-//                }
+                if ([[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"cod"]] isEqualToString:@"No"]) {
+                    isCash_on_delivary = NO;
+                }
+                else
+                {
+                    isCash_on_delivary = YES;
+                }
                 
     //Delivary Slot checking Condition
                 
@@ -3496,8 +3500,8 @@
                                 NSLog(@"Payment Methods %@",data);
                                 
                          // Checking Cash on Delivary is Available or Not
-                                _BTN_cod.hidden = YES;
-                                _LBL_cash_on_Delivary.hidden = YES;
+//                                _BTN_cod.hidden = YES;
+//                                _LBL_cash_on_Delivary.hidden = YES;
                                 
                                 //                                        isCash_on_delivary = YES;
                                 
@@ -3512,24 +3516,24 @@
 //                                        kl = (int)[keys count];
 //                                    }
 //                                }
-                                for (NSString *key in data) {
-                                    id value = data[key];
-                                    NSLog(@"Value: %@ for key: %@", value, key);
-                                    if ([value isEqualToString:@"Cash On Delivery"]) {
-                                        _BTN_cod.hidden = NO;
-                                        _LBL_cash_on_Delivary.hidden = NO;
-                                    }
-                                }
+//                                for (NSString *key in data) {
+//                                    id value = data[key];
+//                                    NSLog(@"Value: %@ for key: %@", value, key);
+//                                    if ([value isEqualToString:@"Cash On Delivery"]) {
+//                                        _BTN_cod.hidden = NO;
+//                                        _LBL_cash_on_Delivary.hidden = NO;
+//                                    }
+//                                }
                                 
-//                                if (isCash_on_delivary) {
-//                                    _BTN_cod.hidden = NO;
-//                                    _LBL_cash_on_Delivary.hidden = NO;
-//                                    
-//                                }
-//                                else{
-//                                    _BTN_cod.hidden = YES;
-//                                     _LBL_cash_on_Delivary.hidden = YES;
-//                                }
+                                if (isCash_on_delivary) {
+                                    _BTN_cod.hidden = NO;
+                                    _LBL_cash_on_Delivary.hidden = NO;
+                                    
+                                }
+                                else{
+                                    _BTN_cod.hidden = YES;
+                                     _LBL_cash_on_Delivary.hidden = YES;
+                                }
                                 
                             }
                             else{
@@ -4644,11 +4648,11 @@
 
  - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
      
-     VC_DS_Checkout *check_out_cntroller = [segue destinationViewController];
+     if ([segue.identifier isEqualToString:@"move_to_pay"]) {
+         VC_DS_Checkout *check_out_cntroller = [segue destinationViewController];
+         check_out_cntroller.rec_dic = sender;
+     }
      
-     check_out_cntroller.rec_dic = sender;
-     
-    
  }
 -(void)close_ACTION
 {

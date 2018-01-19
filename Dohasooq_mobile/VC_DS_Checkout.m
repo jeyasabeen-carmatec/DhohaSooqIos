@@ -57,19 +57,17 @@
         
          html_str = [self.rec_dic valueForKey:@"url"];
         NSURL *url = [[NSURL alloc]initWithString:html_str];
-        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+//        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
+        request.timeoutInterval = 60;
         [self.web_pay loadRequest:request];
        
     }
     else  {
        
-       
          html_str = [self.rec_dic valueForKey:@"formstring"];
        // [_web_pay loadHTMLString:[html_str stringByReplacingOccurrencesOfString:@"\n" withString:@"<br/>"] baseURL:nil];
         [_web_pay loadHTMLString:html_str baseURL:nil];
-
-
-        
     }
     
 
@@ -129,7 +127,14 @@
 }
 */
 
--(void)viewWillDisappear:(BOOL)animated
+/*-(void)viewWillDisappear:(BOOL)animated
+{
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+}*/
+
+-(void)viewDidDisappear:(BOOL)animated
 {
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
