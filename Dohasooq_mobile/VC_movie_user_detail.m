@@ -480,7 +480,7 @@
     {
         NSString *str_prefix =_TXT_code.text;
         str_prefix = [str_prefix stringByReplacingOccurrencesOfString:@"+" withString:@""];
-    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/send_lock_request?Transaction_Id=%@&name=%@&email=%@&mobile=%@&prefix=%@&VoucherCodes=null",[[temp_dict valueForKey:@"result"] valueForKey:@"_Transaction_Id"],_TXT_name.text,_TXT_mail.text,_TXT_phone.text,str_prefix];
+    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/send_lock_request?Transaction_Id=%@&name=%@&email=%@&mobile=%@&prefix=%@&VoucherCodes=null&AppSource=11",[[temp_dict valueForKey:@"result"] valueForKey:@"_Transaction_Id"],_TXT_name.text,_TXT_mail.text,_TXT_phone.text,str_prefix];
     
     NSURL *URL = [[NSURL alloc] initWithString:str_url];
     

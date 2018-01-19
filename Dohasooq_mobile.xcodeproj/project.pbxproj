@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		1F13698181D01B6EFE99B076 /* libPods-Dohasooq_mobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C41277D23F1B32E27A37F90E /* libPods-Dohasooq_mobile.a */; };
+		73E7EDC0200F2C0D00650C02 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73E7EDBF200F2C0D00650C02 /* CoreTelephony.framework */; };
+		73E7EDC2200F2C2700650C02 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 73E7EDC1200F2C2700650C02 /* libc++.tbd */; };
+		73E7EDC4200F2C3500650C02 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 73E7EDC3200F2C3500650C02 /* libz.tbd */; };
 		BE04D8A51FBDB082008926F6 /* Search_cell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE04D8A21FBDB082008926F6 /* Search_cell.xib */; };
 		BE04D8A61FBDB082008926F6 /* Search_cell.m in Sources */ = {isa = PBXBuildFile; fileRef = BE04D8A31FBDB082008926F6 /* Search_cell.m */; };
 		BE04D8D91FC02000008926F6 /* orders_cell.m in Sources */ = {isa = PBXBuildFile; fileRef = BE04D8D71FC02000008926F6 /* orders_cell.m */; };
@@ -309,11 +312,11 @@
 		BEE9FC1B2007A9FB002D1283 /* VC_cart_list.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE9FC182007A9FB002D1283 /* VC_cart_list.m */; };
 		BEE9FC1E2007AA96002D1283 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BEE9FC1D2007AA96002D1283 /* Main.storyboard */; };
 		BEE9FC222007B0DE002D1283 /* VC_filter_product_list.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE9FC212007B0DE002D1283 /* VC_filter_product_list.m */; };
-		BEE9FC242008AB19002D1283 /* VC_My_profile.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE9FC232008AB19002D1283 /* VC_My_profile.m */; };
 		BEE9FC262008AB2F002D1283 /* VC_myaddress.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE9FC252008AB2F002D1283 /* VC_myaddress.m */; };
 		BEE9FC282008AB44002D1283 /* VC_order_detail .m in Sources */ = {isa = PBXBuildFile; fileRef = BEE9FC272008AB44002D1283 /* VC_order_detail .m */; };
 		BEE9FC2A2008BDBA002D1283 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE9FC292008BDBA002D1283 /* ViewController.m */; };
 		BEE9FC2C2008CD10002D1283 /* Arabic.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BEE9FC2B2008CD0F002D1283 /* Arabic.storyboard */; };
+		BEE9FC2E2008EA3D002D1283 /* VC_My_profile.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE9FC2D2008EA3D002D1283 /* VC_My_profile.m */; };
 		BEEAA5432003AA21002823F5 /* VC_myorders.m in Sources */ = {isa = PBXBuildFile; fileRef = BEEAA5422003AA21002823F5 /* VC_myorders.m */; };
 		BEEAA54A2003AA31002823F5 /* paymentCell.h.m in Sources */ = {isa = PBXBuildFile; fileRef = BEEAA5452003AA31002823F5 /* paymentCell.h.m */; };
 		BEEAA54B2003AA31002823F5 /* paymentCells.xib in Resources */ = {isa = PBXBuildFile; fileRef = BEEAA5462003AA31002823F5 /* paymentCells.xib */; };
@@ -355,6 +358,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		73E7EDBF200F2C0D00650C02 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		73E7EDC1200F2C2700650C02 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		73E7EDC3200F2C3500650C02 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		7727555D1FB0517500989CB6 /* VC_Movie_booking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VC_Movie_booking.h; sourceTree = "<group>"; };
 		77BD48C61FA2FB3600602AF8 /* HttpClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HttpClient.h; sourceTree = "<group>"; };
 		81AB41A92C59F23F463B0423 /* Pods-Dohasooq_mobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dohasooq_mobile.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Dohasooq_mobile/Pods-Dohasooq_mobile.debug.xcconfig"; sourceTree = "<group>"; };
@@ -793,11 +799,11 @@
 		BEE9FC192007A9FB002D1283 /* VC_filter_product_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VC_filter_product_list.h; sourceTree = "<group>"; };
 		BEE9FC1D2007AA96002D1283 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		BEE9FC212007B0DE002D1283 /* VC_filter_product_list.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_filter_product_list.m; sourceTree = "<group>"; };
-		BEE9FC232008AB19002D1283 /* VC_My_profile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_My_profile.m; sourceTree = "<group>"; };
 		BEE9FC252008AB2F002D1283 /* VC_myaddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_myaddress.m; sourceTree = "<group>"; };
 		BEE9FC272008AB44002D1283 /* VC_order_detail .m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "VC_order_detail .m"; sourceTree = "<group>"; };
 		BEE9FC292008BDBA002D1283 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		BEE9FC2B2008CD0F002D1283 /* Arabic.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Arabic.storyboard; sourceTree = "<group>"; };
+		BEE9FC2D2008EA3D002D1283 /* VC_My_profile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_My_profile.m; sourceTree = "<group>"; };
 		BEEAA5422003AA21002823F5 /* VC_myorders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VC_myorders.m; sourceTree = "<group>"; };
 		BEEAA5442003AA31002823F5 /* paymentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = paymentCell.h; sourceTree = "<group>"; };
 		BEEAA5452003AA31002823F5 /* paymentCell.h.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = paymentCell.h.m; sourceTree = "<group>"; };
@@ -856,6 +862,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73E7EDC4200F2C3500650C02 /* libz.tbd in Frameworks */,
+				73E7EDC2200F2C2700650C02 /* libc++.tbd in Frameworks */,
+				73E7EDC0200F2C0D00650C02 /* CoreTelephony.framework in Frameworks */,
 				BE339AE11FD6D4D800FC80DC /* SystemConfiguration.framework in Frameworks */,
 				BE339ADF1FD6D4D000FC80DC /* SafariServices.framework in Frameworks */,
 				BE8338391FD2484A00C5EB25 /* Photos.framework in Frameworks */,
@@ -1764,6 +1773,9 @@
 		BE6795CE1F95DD71007C45EC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				73E7EDC3200F2C3500650C02 /* libz.tbd */,
+				73E7EDC1200F2C2700650C02 /* libc++.tbd */,
+				73E7EDBF200F2C0D00650C02 /* CoreTelephony.framework */,
 				BE339AE01FD6D4D800FC80DC /* SystemConfiguration.framework */,
 				BE339ADE1FD6D4D000FC80DC /* SafariServices.framework */,
 				BE8338381FD2484A00C5EB25 /* Photos.framework */,
@@ -1880,7 +1892,7 @@
 			isa = PBXGroup;
 			children = (
 				BE18E1021FF4C536004956A5 /* VC_My_profile.h */,
-				BEE9FC232008AB19002D1283 /* VC_My_profile.m */,
+				BEE9FC2D2008EA3D002D1283 /* VC_My_profile.m */,
 			);
 			name = "My profile";
 			sourceTree = "<group>";
@@ -2492,13 +2504,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Dohasooq_mobile-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		81DE91B0D5939E3C7EAC60E6 /* [CP] Copy Pods Resources */ = {
@@ -2507,9 +2522,15 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Dohasooq_mobile/Pods-Dohasooq_mobile-resources.sh",
+				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
+				"${PODS_ROOT}/GTMOAuth2/Source/Touch/GTMOAuth2ViewTouch.xib",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+				"${PODS_ROOT}/youtube-ios-player-helper/youtube-ios-player-helper/Assets.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2555,7 +2576,7 @@
 				BEE9FC222007B0DE002D1283 /* VC_filter_product_list.m in Sources */,
 				BE1C84991FE106AF002B9116 /* billing_address.m in Sources */,
 				BE1E355E1FE2C3FE0059518E /* VC_product_List.m in Sources */,
-				BEE9FC242008AB19002D1283 /* VC_My_profile.m in Sources */,
+				BEE9FC2E2008EA3D002D1283 /* VC_My_profile.m in Sources */,
 				BE04D8ED1FC2BC0D008926F6 /* Payment_summary_cell.m in Sources */,
 				BE6796AA1F975F7E007C45EC /* events_cell.m in Sources */,
 				BE10ABE31FEE6FE7000DA9C9 /* ZoomRotatePanImageView.m in Sources */,
@@ -2810,8 +2831,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.carmatec.Dohasooq;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "3e38271a-193c-4132-9122-07fb78afa253";
+				PROVISIONING_PROFILE = "c7a30230-6ff4-4b07-b148-1d7d0d110209";
 				PROVISIONING_PROFILE_SPECIFIER = dhohasooq_DEV;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -2837,6 +2859,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "3e38271a-193c-4132-9122-07fb78afa253";
 				PROVISIONING_PROFILE_SPECIFIER = dhohasooq_DEV;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

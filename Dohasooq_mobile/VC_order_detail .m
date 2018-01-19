@@ -489,11 +489,11 @@
             str_cntry_code = @"+974";
         }
         
-        _TXT_Cntry_code.text = [NSString stringWithFormat:@"+ %@",str_cntry_code];
+        _TXT_Cntry_code.text = [NSString stringWithFormat:@"%@",str_cntry_code];
        
         
         //Country_code for ShipCntryCode
-        _TXT_ship_cntry_code.text = [NSString stringWithFormat:@"+ %@",str_cntry_code];
+        _TXT_ship_cntry_code.text = [NSString stringWithFormat:@"%@",str_cntry_code];
        
         
       //Address1
@@ -1251,6 +1251,10 @@
      //Checking Cash On Delivary Available or Not For Payment Options
                 if ([[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"cod"]] isEqualToString:@"No"]) {
                     isCash_on_delivary = NO;
+                }
+                else
+                {
+                    isCash_on_delivary = YES;
                 }
                 
     //Delivary Slot checking Condition
@@ -3496,14 +3500,39 @@
                                 NSLog(@"Payment Methods %@",data);
                                 
                          // Checking Cash on Delivary is Available or Not
+//                                _BTN_cod.hidden = YES;
+//                                _LBL_cash_on_Delivary.hidden = YES;
+                                
+                                //                                        isCash_on_delivary = YES;
+                                
+//                                NSArray *keys = [data allKeys];
+//                                for (int kl = 0; kl < [keys count]; kl ++) {
+//                                    NSString *KY = [NSString stringWithFormat:@"%d",kl];
+//                                    NSString *STR_check = [data valueForKey:KY];
+//                                    if ([STR_check isEqualToString:@"Cash On Delivery"]) {
+//
+//                                        _BTN_cod.hidden = NO;
+//                                        _LBL_cash_on_Delivary.hidden = NO;
+//                                        kl = (int)[keys count];
+//                                    }
+//                                }
+//                                for (NSString *key in data) {
+//                                    id value = data[key];
+//                                    NSLog(@"Value: %@ for key: %@", value, key);
+//                                    if ([value isEqualToString:@"Cash On Delivery"]) {
+//                                        _BTN_cod.hidden = NO;
+//                                        _LBL_cash_on_Delivary.hidden = NO;
+//                                    }
+//                                }
                                 
                                 if (isCash_on_delivary) {
                                     _BTN_cod.hidden = NO;
                                     _LBL_cash_on_Delivary.hidden = NO;
-                                     _LBL_cash_on_Delivary.hidden = YES;
+                                    
                                 }
                                 else{
                                     _BTN_cod.hidden = YES;
+                                     _LBL_cash_on_Delivary.hidden = YES;
                                 }
                                 
                             }
@@ -4194,7 +4223,7 @@
         NSString *user_id;
         for(int h = 0;h<[[dict allKeys] count];h++)
         {
-            if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+            if([[[dict allKeys] objectAtIndex:h] isEqualToString:str_id])
             {
                 user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
                 break;
@@ -4619,11 +4648,11 @@
 
  - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
      
-     VC_DS_Checkout *check_out_cntroller = [segue destinationViewController];
+     if ([segue.identifier isEqualToString:@"move_to_pay"]) {
+         VC_DS_Checkout *check_out_cntroller = [segue destinationViewController];
+         check_out_cntroller.rec_dic = sender;
+     }
      
-     check_out_cntroller.rec_dic = sender;
-     
-    
  }
 -(void)close_ACTION
 {

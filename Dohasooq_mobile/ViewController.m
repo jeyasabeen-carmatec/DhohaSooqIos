@@ -72,10 +72,16 @@
 //    
 //    VW_overlay.hidden = YES;
     [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
-
+    UIView *view=[[UIView alloc] initWithFrame:CGRectMake(0, 0,[UIScreen mainScreen].bounds.size.width, 20)];
+    view.backgroundColor = [UIColor colorWithRed:0.98 green:0.69 blue:0.19 alpha:1.0];
+    [self.navigationController.view addSubview:view];
+//    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     
 }
-
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
 -(void)set_UP_View
 {
     
@@ -444,8 +450,8 @@ error:(NSError *)error{
             
             if([status isEqualToString:@"1"])
             {
-                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
+//                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
+//                [[NSUserDefaults standardUserDefaults] synchronize];
                 NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
                 [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
                 
@@ -542,8 +548,8 @@ error:(NSError *)error{
             {
                  [HttpClient stop_activity_animation];
                 
-                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
+//                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
+//                [[NSUserDefaults standardUserDefaults] synchronize];
                 NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
                 [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
                 
@@ -678,15 +684,15 @@ error:(NSError *)error{
             {
                
                 
-                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
+//                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
+//                [[NSUserDefaults standardUserDefaults] synchronize];
 
                 
                 NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
                 [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
                 
                 [[NSUserDefaults standardUserDefaults] setObject:dictMutable forKey:@"userdata"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
+//                [[NSUserDefaults standardUserDefaults] synchronize];
                 [[NSUserDefaults standardUserDefaults]setObject:self.TXT_username.text forKey:@"email"];
                 [[NSUserDefaults standardUserDefaults] setObject:email forKey:@"user_email"];
                 [[NSUserDefaults standardUserDefaults] synchronize];

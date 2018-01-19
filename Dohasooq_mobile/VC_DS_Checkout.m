@@ -57,19 +57,17 @@
         
          html_str = [self.rec_dic valueForKey:@"url"];
         NSURL *url = [[NSURL alloc]initWithString:html_str];
-        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+//        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
+        request.timeoutInterval = 60;
         [self.web_pay loadRequest:request];
        
     }
     else  {
        
-       
          html_str = [self.rec_dic valueForKey:@"formstring"];
        // [_web_pay loadHTMLString:[html_str stringByReplacingOccurrencesOfString:@"\n" withString:@"<br/>"] baseURL:nil];
         [_web_pay loadHTMLString:html_str baseURL:nil];
-
-
-        
     }
     
 
@@ -87,12 +85,13 @@
 //}
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     
-    [HttpClient animating_images:self];
+//    [HttpClient animating_images:self];
+
     
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     
-    [HttpClient stop_activity_animation];
+//    [HttpClient stop_activity_animation];
     NSLog(@"Loading Successful ");
     
     
@@ -106,6 +105,11 @@
 }
 - (IBAction)back_action:(id)sender {
     //VC_cart_list *list = [self.storyboard instantiateViewControllerWithIdentifier:@"cart_identifir"];
+    
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    
     [self.navigationController popToRootViewControllerAnimated:NO];
     
     
@@ -122,5 +126,19 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+/*-(void)viewWillDisappear:(BOOL)animated
+{
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+}*/
+
+-(void)viewDidDisappear:(BOOL)animated
+{
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+}
 
 @end

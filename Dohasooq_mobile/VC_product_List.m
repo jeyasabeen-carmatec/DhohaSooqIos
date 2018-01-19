@@ -112,9 +112,10 @@
 -(void)viewWillAppear:(BOOL)animated
 {
    
-   self.navigationItem.hidesBackButton = YES;
-    
-    
+    UIView *view=[[UIView alloc] initWithFrame:CGRectMake(0, 0,[UIScreen mainScreen].bounds.size.width, 20)];
+    view.backgroundColor = [UIColor colorWithRed:0.98 green:0.69 blue:0.19 alpha:1.0];
+    [self.navigationController.view addSubview:view];
+    self.navigationItem.hidesBackButton = YES;
     
 }
 -(void)scroll_top
@@ -272,9 +273,15 @@
 }
 - (IBAction)back_action:(id)sender
 {
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    
     @try
     {
        [self performSegueWithIdentifier:@"product_list_home" sender:self];
+        
+        
         
     }
     @catch(NSException *exception)
@@ -454,7 +461,7 @@
                 pro_cell.LBL_discount.text = @"";
                 
             }
-            else if([prec_price isEqualToString:current_price])
+            else if([prec_price isEqualToString:current_price] ||[current_price isEqualToString:@"0.00"])
             {
                   prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
                 text = [NSString stringWithFormat:@"%@",prec_price];

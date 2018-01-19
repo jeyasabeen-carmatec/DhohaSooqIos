@@ -40,7 +40,7 @@
     
     
     
-        [self.Collection_movies registerNib:[UINib nibWithNibName:@"Movies_cell" bundle:nil]  forCellWithReuseIdentifier:@"movie_cell"];
+    [self.Collection_movies registerNib:[UINib nibWithNibName:@"Movies_cell" bundle:nil]  forCellWithReuseIdentifier:@"movie_cell"];
 
     [self.Collection_movies registerNib:[UINib nibWithNibName:@"Image_qtickets" bundle:nil]  forCellWithReuseIdentifier:@"Image_qtickets"];
     
@@ -72,7 +72,8 @@
     _BTN_sports_venues.text = _BTN_venues.text;
     leng_text = @"ALL LANGUAGES";
     halls_text =@"ALL CINEMA HALLS";
-     [self ATTRIBUTE_TEXT];
+    
+    [self ATTRIBUTE_TEXT];
     [self Events_API_CALL];
     [self picker_view_set_UP];
     [self addSEgmentedControl];
@@ -81,9 +82,12 @@
 }
 -(void)viewWillAppear:(BOOL)animated
 {
-    NSLog(@"%@",_Header_name.titleLabel.text);
+    NSLog(@"Header name label %@",_Header_name.titleLabel.text);
     headre_name =[[NSUserDefaults standardUserDefaults] valueForKey:@"header_name"];
    
+    UIView *view=[[UIView alloc] initWithFrame:CGRectMake(0, 0,[UIScreen mainScreen].bounds.size.width, 20)];
+    view.backgroundColor = [UIColor colorWithRed:0.98 green:0.69 blue:0.19 alpha:1.0];
+    [self.navigationController.view addSubview:view];
 
 //    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
 //    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
@@ -196,9 +200,6 @@
     _sports_venue_picker= [[UIPickerView alloc] init];
     _sports_venue_picker.delegate = self;
     _sports_venue_picker.dataSource = self;
-    
-    
-    
     
     UIToolbar* conutry_close = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
     conutry_close.barStyle = UIBarStyleBlackTranslucent;
@@ -779,7 +780,7 @@
             @try
             {
                 
-                NSLog(@"the array count is:%lu",(unsigned long)Events_arr.count);
+                NSLog(@"the event array count is:%lu",(unsigned long)Events_arr.count);
                 
                 cell.LBL_event_name.text = [events_dict valueForKey:@"_eventname"];
                 NSDateFormatter *df = [[NSDateFormatter alloc]init];
@@ -808,7 +809,7 @@
             }
             @catch(NSException *exception)
             {
-                NSLog(@"%@",exception);
+                NSLog(@"Event array tabl exception %@",exception);
             }
             
             
@@ -888,7 +889,7 @@
             }
             @catch(NSException *exception)
             {
-                NSLog(@"%@",exception);
+                NSLog(@"event name eeee %@",exception);
             }
             return cell;
             
@@ -964,7 +965,7 @@
             }
             @catch(NSException *exception)
             {
-                NSLog(@"%@",exception);
+                NSLog(@"nnn event name %@",exception);
             }
         }
             return cell;
@@ -1048,7 +1049,7 @@
         }
         @catch (NSException *exception)
         {
-            NSLog(@"%@",exception);
+            NSLog(@"aaa sdf %@",exception);
             
         }
 
@@ -1079,7 +1080,7 @@
     
         @catch (NSException *exception)
         {
-            NSLog(@"%@",exception);
+            NSLog(@"sr rtwe we %@",exception);
         }
     }
    else  if(tableView == _TBL_lisure_list)
@@ -1108,7 +1109,7 @@
        
        @catch (NSException *exception)
        {
-           NSLog(@"%@",exception);
+           NSLog(@" swer  rt r %@",exception);
        }
    }
 
@@ -1391,13 +1392,13 @@
     if(self.segmentedControl4.selectedSegmentIndex == 1)
     {
         [[NSUserDefaults standardUserDefaults] setObject:[Movies_arr objectAtIndex:indexPath.row] forKey:@"Movie_detail"];
-        NSLog(@"..........Movie Detail .......%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"]);
+        NSLog(@"..........Movie Detail . dgdf ......%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"]);
         [[NSUserDefaults standardUserDefaults] synchronize];
         [self performSegueWithIdentifier:@"upcoming_movies" sender:self];
     }
     else
     {
-        NSLog(@"..........Movie Detail .......%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"]);
+        NSLog(@"..........Movie Detail .. asf asdf.....%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"]);
         
         [[NSUserDefaults standardUserDefaults]  setValue:[[Movies_arr objectAtIndex:indexPath.row] valueForKey:@"_id"] forKey:@"id"];
         [[NSUserDefaults standardUserDefaults]  synchronize];
@@ -1573,11 +1574,11 @@
         Movies_arr = [new_arr mutableCopy];
         [_Collection_movies reloadData];
         
-        NSLog(@"%lu",(unsigned long)Movies_arr.count);
+        NSLog(@"Moview count %lu",(unsigned long)Movies_arr.count);
     }
     @catch(NSException *exception)
     {
-        NSLog(@"Exception%@",exception);
+        NSLog(@"Exception %@",exception);
     }
     
     
@@ -1624,11 +1625,11 @@
         Movies_arr = [new_arr mutableCopy];
         [_Collection_movies reloadData];
         
-        NSLog(@"%lu",(unsigned long)Movies_arr.count);
+        NSLog(@"M count %lu",(unsigned long)Movies_arr.count);
     }
     @catch(NSException *exception)
     {
-        NSLog(@"Exception%@",exception);
+        NSLog(@"Exception %@",exception);
     }
     
 }
@@ -1674,11 +1675,11 @@
         Movies_arr = [new_arr mutableCopy];
         [_Collection_movies reloadData];
         
-        NSLog(@"%lu",(unsigned long)Movies_arr.count);
+        NSLog(@"MM cx momovie count %lu",(unsigned long)Movies_arr.count);
     }
     @catch(NSException *exception)
     {
-        NSLog(@"Exception%@",exception);
+        NSLog(@"Exception %@",exception);
     }
     
     
@@ -1755,7 +1756,7 @@
     }
     @catch(NSException *exception)
     {
-        NSLog(@"%@",exception);
+        NSLog(@"Event api call exception %@",exception);
         [HttpClient stop_activity_animation];
     }
     
@@ -1957,65 +1958,60 @@
 
 // #6
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    
     NSMutableArray *movie = [[NSMutableArray alloc]init];
     NSMutableArray *lang = [[NSMutableArray alloc]init];
     NSMutableArray *venues = [[NSMutableArray alloc]init];
-    
-    
-    
     
     if (pickerView == _halls_picker)
     {
         if([halls_arr[row] isEqualToString:@"ALL CINEMA HALLS"])
         {
-             [self movie_API_CALL];
+            [self movie_API_CALL];
         }
         else
         {
-        [self movie_API_CALL];
-        
-        for(int i=0;i<Movies_arr.count;i++)
-        {
-            @try
+            [self movie_API_CALL];
+            
+            for(int i=0;i<Movies_arr.count;i++)
             {
-               //   [movie addObject:@"ALL"];
-                for(int k=0;k< [[[Movies_arr objectAtIndex:i]valueForKey:@"Theatre"] count];k++)
+                @try
                 {
-                    
-                    if([[[[[Movies_arr objectAtIndex:i]valueForKey:@"Theatre"] objectAtIndex:k]valueForKey:@"_name"] isEqualToString:halls_arr[row]])
+                    //   [movie addObject:@"ALL"];
+                    for(int k=0;k< [[[Movies_arr objectAtIndex:i]valueForKey:@"Theatre"] count];k++)
                     {
-                        [movie addObject:[Movies_arr objectAtIndex:i]];
+                        
+                        if([[[[[Movies_arr objectAtIndex:i]valueForKey:@"Theatre"] objectAtIndex:k]valueForKey:@"_name"] isEqualToString:halls_arr[row]])
+                        {
+                            [movie addObject:[Movies_arr objectAtIndex:i]];
+                        }
                     }
+                    
                 }
-              
-                
-                
-                
-            }
-            @catch(NSException *exception)
-            {
-                // [movie addObject:@"ALL"];
-                
-                if([[[[Movies_arr objectAtIndex:i]valueForKey:@"Theatre"]valueForKey:@"_name"] isEqualToString:halls_arr[row]])
+                @catch(NSException *exception)
                 {
+                    // [movie addObject:@"ALL"];
                     
-                    [movie addObject:[Movies_arr objectAtIndex:i]];
-                    
+                    if([[[[Movies_arr objectAtIndex:i]valueForKey:@"Theatre"]valueForKey:@"_name"] isEqualToString:halls_arr[row]])
+                    {
+                        
+                        [movie addObject:[Movies_arr objectAtIndex:i]];
+                        
+                        
+                        
+                    }
                     
                     
                 }
-               
+                
+                
                 
             }
-            
-            
-            
-        }
-        [Movies_arr removeAllObjects];
-        [Movies_arr addObjectsFromArray:movie];
-        [_Collection_movies reloadData];
-        halls_text = halls_arr[row];
-        [self ATTRIBUTE_TEXT];
+            [Movies_arr removeAllObjects];
+            [Movies_arr addObjectsFromArray:movie];
+            [_Collection_movies reloadData];
+            halls_text = halls_arr[row];
+            [self ATTRIBUTE_TEXT];
         }
         
     }
@@ -2027,36 +2023,36 @@
         }
         else
         {
-
-        [self movie_API_CALL];
-              // [lang addObject:@"ALL"];
-        for(int l = 0;l<Movies_arr.count;l++)
-        {
-            if([[[Movies_arr objectAtIndex:l]valueForKey:@"_Languageid"] isEqualToString:langugage_arr[row]])
-            {
-                [lang addObject:[Movies_arr objectAtIndex:l]];
-            }
-        }
-         
-        
-        NSLog(@"The arr:%@",langugage_arr[row]);
-        
-        if(lang.count < 1)
-        {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No movies found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-            [alert show];
             
-        }
-        else
-        {
-            [Movies_arr removeAllObjects];
-            [Movies_arr addObjectsFromArray:lang];
-            [_Collection_movies reloadData];
-            leng_text = langugage_arr[row];
-        }
-        
-        [self ATTRIBUTE_TEXT];
-        // _BTN_all_lang.text = halls_text;
+            [self movie_API_CALL];
+            // [lang addObject:@"ALL"];
+            for(int l = 0;l<Movies_arr.count;l++)
+            {
+                if([[[Movies_arr objectAtIndex:l]valueForKey:@"_Languageid"] isEqualToString:langugage_arr[row]])
+                {
+                    [lang addObject:[Movies_arr objectAtIndex:l]];
+                }
+            }
+            
+            
+            NSLog(@"The langauge arr:%@",langugage_arr[row]);
+            
+            if(lang.count < 1)
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No movies found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                
+            }
+            else
+            {
+                [Movies_arr removeAllObjects];
+                [Movies_arr addObjectsFromArray:lang];
+                [_Collection_movies reloadData];
+                leng_text = langugage_arr[row];
+            }
+            
+            [self ATTRIBUTE_TEXT];
+            // _BTN_all_lang.text = halls_text;
         }
         
     }
@@ -2069,21 +2065,21 @@
         }
         else
         {
-        [self Events_API_CALL];
-        [self Event_API_CALL];
+            [self Events_API_CALL];
+            [self Event_API_CALL];
             //  [venues addObject:@"ALL"];
-        for(int l = 0;l<Events_arr.count;l++)
-        {
-            if([[[Events_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:venues_arr[row]])
+            for(int l = 0;l<Events_arr.count;l++)
             {
-                [venues addObject:[Events_arr objectAtIndex:l]];
+                if([[[Events_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:venues_arr[row]])
+                {
+                    [venues addObject:[Events_arr objectAtIndex:l]];
+                }
             }
-        }
-      
-        NSLog(@"The arr:%@",venues_arr[row]);
-        [Events_arr removeAllObjects];
-        [Events_arr addObjectsFromArray:venues];
-        [_TBL_event_list reloadData];
+            
+            NSLog(@"The venue arr:%@",venues_arr[row]);
+            [Events_arr removeAllObjects];
+            [Events_arr addObjectsFromArray:venues];
+            [_TBL_event_list reloadData];
         }
         
     }
@@ -2096,22 +2092,22 @@
         }
         else
         {
-
-        [self Events_API_CALL];
-        [self Event_API_CALL];
-          //  [venues addObject:@"ALL"];
-
-        for(int l = 0;l<Leisure_arr.count;l++)
-        {
-            if([[[Leisure_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:leisure_venues[row]])
+            
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+            //  [venues addObject:@"ALL"];
+            
+            for(int l = 0;l<Leisure_arr.count;l++)
             {
-                [venues addObject:[Leisure_arr objectAtIndex:l]];
+                if([[[Leisure_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:leisure_venues[row]])
+                {
+                    [venues addObject:[Leisure_arr objectAtIndex:l]];
+                }
             }
-        }
-              NSLog(@"The arr:%@",venues_arr[row]);
-        [Leisure_arr removeAllObjects];
-        [Leisure_arr addObjectsFromArray:venues];
-        [_TBL_lisure_list reloadData];
+            NSLog(@"Venue arr:%@",venues_arr[row]);
+            [Leisure_arr removeAllObjects];
+            [Leisure_arr addObjectsFromArray:venues];
+            [_TBL_lisure_list reloadData];
         }
         
     }
@@ -2124,30 +2120,26 @@
         }
         else
         {
-
-        [self Events_API_CALL];
-        [self Event_API_CALL];
-       // [venues addObject:@"ALL"];
-
-        for(int l = 0;l<Sports_arr.count;l++)
-        {
-            if([[[Sports_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:sports_venues[row]])
+            
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+            // [venues addObject:@"ALL"];
+            
+            for(int l = 0;l<Sports_arr.count;l++)
             {
-                [venues addObject:[Sports_arr objectAtIndex:l]];
+                if([[[Sports_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:sports_venues[row]])
+                {
+                    [venues addObject:[Sports_arr objectAtIndex:l]];
+                }
             }
-        }
-       
-        NSLog(@"The arr:%@",venues_arr[row]);
-        [Sports_arr removeAllObjects];
-        [Sports_arr addObjectsFromArray:venues];
-        [_TBL_sports_list reloadData];
+            
+            NSLog(@"Venue arr:%@",venues_arr[row]);
+            [Sports_arr removeAllObjects];
+            [Sports_arr addObjectsFromArray:venues];
+            [_TBL_sports_list reloadData];
         }
         
     }
-    
-    
-    
-    
 }
 - (void)filter_action
 {

@@ -28,6 +28,7 @@
     NSMutableURLRequest *requesti;
     NSMutableArray *temp_arr ;
     NSDictionary *country_dict;
+    NSString *cntry_code;
     
     
   
@@ -974,7 +975,7 @@
      NSString *STR_lname = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"lastname"]];
      NSString *STR_land_phone = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"lnumber"]];
      NSString *STR_mobile = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"mob_no"]];
-    NSString *cntry_code =  [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"country_code"]];
+    cntry_code =  [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"country_code"]];
     NSString *STR_dob = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"bdate"]];
     
     NSArray *temp_arrs = [STR_dob componentsSeparatedByString:@"T"];
@@ -1054,7 +1055,7 @@
     _TXT_last_name.text = STR_lname;
     _TXT_land_phone.text = STR_land_phone;
     _TXT_mobile_phone.text = STR_mobile;
-    _TXT_country_fld.text =[NSString stringWithFormat:@"+ %@",cntry_code];
+    _TXT_country_fld.text =[NSString stringWithFormat:@"%@",cntry_code];
     _TXT_Dob.text = STR_dob;
     _TXT_group.text = STR_customer_group;
     _TXT_name.text = [NSString stringWithFormat:@"%@ %@",STR_fname,STR_lname];
@@ -1365,7 +1366,7 @@
         NSString *dohabank_employee = @"0";
 
         
-        NSError *error;
+        NSError *error;//[NSString stringWithFormat:@"%@",cntry_code]
         NSError *err;
         NSHTTPURLResponse *response = nil;
         
@@ -1377,7 +1378,7 @@
                                       @"customer_group_id":customer_group,
                                       @"dohabank_customer":dohabank_customer,
                                       @"dohabank_employee":dohabank_employee,
-                                      @"gender":gender
+                                      @"gender":gender,@"countrycode_sel":cntry_code
                                       };
         NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
         NSLog(@"the posted data is:%@",parameters);
@@ -1408,6 +1409,10 @@
         //[request setAllHTTPHeaderFields:headers];
         [request setHTTPShouldHandleCookies:NO];
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if (error) {
+            [HttpClient stop_activity_animation];
+        }
+        
         if(aData)
         {
            [HttpClient stop_activity_animation];
@@ -1420,7 +1425,7 @@
                 [alert show];
                 _BTN_save.hidden = YES;
                 [_BTN_edit setTitle:@"" forState:UIControlStateNormal];
-                [self Edit_user_data];
+               // [self Edit_user_data];
                 [self scroll_HANDLER];
                 
                 
@@ -1663,7 +1668,7 @@
                 [self View_user_data];
                 _BTN_save_billing.hidden = YES;
                 [_BTN_edit_billing setTitle:@"" forState:UIControlStateNormal];
-                [self Edit_billing_addres];
+                //[self Edit_billing_addres];
 
                 [self scroll_HANDLER];
 
