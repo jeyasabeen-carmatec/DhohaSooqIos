@@ -681,6 +681,8 @@
         [HttpClient animating_images:self];
         [self performSelector:@selector(movies_VIEW) withObject:nil afterDelay:0.01];
         
+        _TBL_bookings.delegate = self;
+        _TBL_bookings.dataSource = self;
         [_TBL_bookings reloadData];
         not_found_image.hidden= YES;
     }
@@ -691,7 +693,10 @@
 
 //        VW_overlay.hidden = NO;
 //        [activityIndicatorView startAnimating];
-        [self performSelector:@selector(event_VIEW) withObject:nil afterDelay:0.01];       [_TBL_bookings reloadData];
+        [self performSelector:@selector(event_VIEW) withObject:nil afterDelay:0.01];
+        _TBL_bookings.delegate = self;
+        _TBL_bookings.dataSource = self;
+        [_TBL_bookings reloadData];
         
     }
 }
@@ -840,6 +845,8 @@
 
                 Total_QT_arr =[xmlDoc valueForKey:@"bookinghistory"];
               // [Total_QT_arr addObject:[xmlDoc valueForKey:@"bookinghistory"]];
+                _TBL_bookings.delegate = self;
+                _TBL_bookings.dataSource = self;
                 [_TBL_bookings reloadData];
                   _TBL_bookings.hidden = NO;
                 NSString *str_err = [NSString stringWithFormat:@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_errorcode"]];
@@ -916,6 +923,8 @@
 
            // Total_QT_arr = [xmlDoc valueForKey:@"bookinghistory"];
             Total_QT_arr =[[xmlDoc valueForKey:@"BookingHistories"] valueForKey:@"bookinghistory"];
+            _TBL_bookings.delegate = self;
+            _TBL_bookings.dataSource = self;
              [_TBL_bookings reloadData];
             _TBL_bookings.hidden = NO;
             NSString *str_err = [NSString stringWithFormat:@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_errorcode"]];

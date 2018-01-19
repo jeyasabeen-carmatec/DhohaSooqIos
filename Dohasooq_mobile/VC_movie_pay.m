@@ -176,7 +176,7 @@
 
    
     
-    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/lock_confirm_request?Transaction_Id=%@&AppSource=3&AppVersion=1.0",[[NSUserDefaults standardUserDefaults] valueForKey:@"TID"]];
+    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/lock_confirm_request?Transaction_Id=%@&AppSource=11&AppVersion=1.0",[[NSUserDefaults standardUserDefaults] valueForKey:@"TID"]];
 
     
     NSURL *URL = [[NSURL alloc] initWithString:str_url];

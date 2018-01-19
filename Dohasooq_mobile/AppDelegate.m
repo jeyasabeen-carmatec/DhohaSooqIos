@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
-
+//#import <NewRelicAgent/NewRelic.h>
 
 
 @interface AppDelegate ()
@@ -20,8 +20,15 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
+//    [NewRelicAgent startWithApplicationToken:@"AA3123e6889a5328f34d97da9b465121cd5dff47f7"];
   //  self.window.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Log in"]];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+    UIView *view=[[UIView alloc] initWithFrame:CGRectMake(0, 0,[UIScreen mainScreen].bounds.size.width, 20)];
+    view.backgroundColor = [UIColor colorWithRed:0.98 green:0.69 blue:0.19 alpha:1.0];
+    [self.window.rootViewController.view addSubview:view];
+    
     @try
     {
      [[FBSDKApplicationDelegate sharedInstance] application:application
@@ -36,9 +43,7 @@
     @catch(NSException *exception)
     {
     }
-    
     /***************** Google Sign In ******************/
-    
     return YES;
 }
 - (BOOL)application:(UIApplication *)app

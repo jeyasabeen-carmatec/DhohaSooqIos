@@ -20,8 +20,8 @@
 
 #define language_Url @"Languages/getLangByCountry/"
 //#define IMG_URL @"http://192.168.0.171"
-//#define IMG_URL @"http://test2.dohasooq.com"
-#define IMG_URL @"http://dohasooq.carmatec.com"
+#define IMG_URL @"http://test2.dohasooq.com"
+//#define IMG_URL @"http://dohasooq.carmatec.com"
 
 
 #define Product_List_Url @"Pages/catalog/Electronics/1/1.json"

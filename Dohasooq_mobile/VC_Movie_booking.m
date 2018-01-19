@@ -49,6 +49,9 @@
 {
     ARR_temp = [[NSMutableArray alloc]init];
     self.navigationController.navigationBar.hidden = NO;
+    UIView *view=[[UIView alloc] initWithFrame:CGRectMake(0, 0,[UIScreen mainScreen].bounds.size.width, 20)];
+    view.backgroundColor = [UIColor colorWithRed:0.98 green:0.69 blue:0.19 alpha:1.0];
+    [self.navigationController.view addSubview:view];
     
 //    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
 //    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
