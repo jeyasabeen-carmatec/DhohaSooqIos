@@ -175,8 +175,8 @@
 {
     lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMinimum];
     upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
-    self.LBL_max.text = [NSString stringWithFormat:@"Max QAR %d", (int)self.LBL_slider.selectedMaximum];
-    self.LBL_min.text = [NSString stringWithFormat:@"Min QAR %d", (int)self.LBL_slider.selectedMinimum];
+    self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"] ,(int)self.LBL_slider.selectedMaximum];
+    self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"] ,(int)self.LBL_slider.selectedMinimum];
     
     
 }

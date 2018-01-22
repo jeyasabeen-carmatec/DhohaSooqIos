@@ -70,8 +70,8 @@
    
     _BTN_leisure_venues.text = _BTN_venues.text;
     _BTN_sports_venues.text = _BTN_venues.text;
-    leng_text = @"ALL LANGUAGES";
-    halls_text =@"ALL CINEMA HALLS";
+    leng_text = @"LANGUAGE";
+    halls_text =@"CINEMA";
     
     [self ATTRIBUTE_TEXT];
     [self Events_API_CALL];
@@ -205,17 +205,20 @@
     conutry_close.barStyle = UIBarStyleBlackTranslucent;
     [conutry_close sizeToFit];
     
-    UIButton *close=[[UIButton alloc]init];
-    close.frame=CGRectMake(conutry_close.frame.origin.x -20, 0, 100, conutry_close.frame.size.height);
-    [close setTitle:@"Close" forState:UIControlStateNormal];
-    [close addTarget:self action:@selector(close_action) forControlEvents:UIControlEventTouchUpInside];
-    [conutry_close addSubview:close];
+  
+    
+//    UIButton *close=[[UIButton alloc]init];
+//    close.frame=CGRectMake(conutry_close.frame.origin.x -20, 0, 100, conutry_close.frame.size.height);
+//    [close setTitle:@"Close" forState:UIControlStateNormal];
+//    [close addTarget:self action:@selector(close_action) forControlEvents:UIControlEventTouchUpInside];
+//    [conutry_close addSubview:close];
     
     UIButton *done=[[UIButton alloc]init];
     done.frame=CGRectMake(conutry_close.frame.size.width - 100, 0, 100, conutry_close.frame.size.height);
     [done setTitle:@"Done" forState:UIControlStateNormal];
     [done addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
     [conutry_close addSubview:done];
+    
 
     
     _BTN_all_lang.inputAccessoryView=conutry_close;
@@ -252,33 +255,6 @@
     [_BTN_venues resignFirstResponder];
 }
 
--(void)all_action
-{
-//    [all setTitle:@"ALL CINEMA HALLS" forState:UIControlStateNormal];
-//    [all setTitle:@"ALL LANGUAGES" forState:UIControlStateNormal];
-//    [all setTitle:@"ALL VENUES" forState:UIControlStateNormal];
-//    [all setTitle:@"ALL VENUES" forState:UIControlStateNormal];
-//    [all setTitle:@"ALL VENUES" forState:UIControlStateNormal];
-    if([all.titleLabel.text isEqualToString:@"ALL CINEMA HALLS"])
-    {
-        [HttpClient animating_images:self];
-        [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
-    }
-    if([all.titleLabel.text isEqualToString:@"ALL LANGUAGES"])
-    {
-      [HttpClient animating_images:self];
-        [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
-      
-    }
-    if([all.titleLabel.text isEqualToString:@"ALL VENUES"])
-    {
-        [HttpClient animating_images:self];
-        [self performSelector:@selector(Events_API_CALL) withObject:nil afterDelay:0.01];
-        [self Event_API_CALL];
-    }
-    [self close_action];
-    
-}
 -(void)set_UP_VIEW
 {
      [self tab_BAR_set_UP];
@@ -1060,22 +1036,22 @@
         {
         NSMutableDictionary *sports_dtl = [Sports_arr objectAtIndex:indexPath.section];
         NSLog(@"the detail of sports is:%@",sports_dtl);
-        NSString *show_browser = [NSString stringWithFormat:@"%@",[sports_dtl valueForKey:@"_showBrowser"]];
+        //NSString *show_browser = [NSString stringWithFormat:@"%@",[sports_dtl valueForKey:@"_showBrowser"]];
         [[NSUserDefaults standardUserDefaults] setObject:sports_dtl forKey:@"event_detail"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         
         
-        if([show_browser intValue] == 1)
-        {
+//        if([show_browser intValue] == 1)
+//        {
             [self performSegueWithIdentifier:@"sports_webview" sender:self];
-        }
-        
-        else
-        {
-         [HttpClient animating_images:self];
-            [self performSelector:@selector(sports_detail) withObject:nil afterDelay:0.01];
-        }
+//        }
+//        
+//        else
+//        {
+//         [HttpClient animating_images:self];
+//            [self performSelector:@selector(sports_detail) withObject:nil afterDelay:0.01];
+//        }
         }
     
         @catch (NSException *exception)

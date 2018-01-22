@@ -11,6 +11,9 @@
 #import "MIBadgeButton.h"
 
 @interface VC_product_List : UIViewController <filter_protocol>
+{
+    NSTimer *TIMER_countdown;
+}
 
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_product;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_product;

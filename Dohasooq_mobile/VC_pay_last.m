@@ -11,6 +11,7 @@
 @interface VC_pay_last ()<UICollectionViewDelegate,UICollectionViewDataSource,UITextFieldDelegate,UIGestureRecognizerDelegate,UIPickerViewDataSource,UIPickerViewDelegate>
 {
     NSMutableArray *country_arr;
+    NSMutableDictionary *response_countries_dic;
     NSString *str_URL;
 }
 
@@ -23,7 +24,7 @@
     // Do any additional setup after loading the view.
     _TXT_countries.inputView = [[UIView alloc]init];
     country_arr = [[NSMutableArray alloc]init];
-    self.navigationController.navigationBar.hidden = NO;
+    self.navigationController.navigationBar.hidden = YES;
 
    
     [self picker_set_UP];
@@ -39,27 +40,28 @@
 -(void)viewWillAppear:(BOOL)animated{
     self.navigationItem.hidesBackButton = YES;
     
+    
 }
 
 -(void)picker_set_UP
 {
-    @try
-    {
-        NSArray *country_arr_temp =[[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
-        for(int i=0;i<country_arr_temp.count;i++)
-        {
-            [country_arr addObject:[[country_arr_temp objectAtIndex:i] valueForKey:@"name"]];
-        }
-        
-        [country_arr sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    }
-    @catch(NSException *exception)
-    {
-        
-    }
-    [country_arr sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+//    @try
+//    {
+//        NSArray *country_arr_temp =[[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
+//        for(int i=0;i<country_arr_temp.count;i++)
+//        {
+//            [country_arr addObject:[[country_arr_temp objectAtIndex:i] valueForKey:@"name"]];
+//        }
+//        
+//        [country_arr sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+//    }
+//    @catch(NSException *exception)
+//    {
+//        
+//    }
+//    [country_arr sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 
-    
+    [self CountryAPICall];
     _country_picker_view = [[UIPickerView alloc] init];
     _country_picker_view.delegate = self;
     _country_picker_view.dataSource = self;
@@ -71,7 +73,7 @@
     [_country_picker_view addGestureRecognizer:tapToSelect];
     
     
-    NSLog(@"%@",country_arr);
+  //  NSLog(@"%@",country_arr);
     
     UIToolbar* phone_close = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
     phone_close.barStyle = UIBarStyleBlackTranslucent;
@@ -91,6 +93,121 @@
     
 
 }
+-(void)CountryAPICall{
+    
+    @try {
+        response_countries_dic = [NSMutableDictionary dictionary];
+        NSString *country_ID = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/countriesapi/%@.json",SERVER_URL,country_ID];
+        @try
+        {
+            NSError *error;
+            // NSError *err;
+            NSHTTPURLResponse *response = nil;
+            
+            
+            // NSString *urlGetuser =[NSString stringWithFormat:@"%@customers/login/1.json",SERVER_URL];
+            // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+            NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+            [request setURL:urlProducts];
+            [request setHTTPMethod:@"POST"];
+            [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+            //[request setHTTPBody:postData];
+            //[request setAllHTTPHeaderFields:headers];
+            [request setHTTPShouldHandleCookies:NO];
+            NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            if (error) {
+                
+                
+              
+                
+            }
+            
+            if(aData)
+            {
+                
+                NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+                NSLog(@"The response Api post sighn up API %@",json_DATA);
+                
+                
+                
+                [response_countries_dic addEntriesFromDictionary:json_DATA];
+                [country_arr removeAllObjects];
+                //[response_picker_arr addObjectsFromArray:[response_countries_dic allKeys]]
+                for (int x=0; x<[[response_countries_dic allKeys] count]; x++) {
+                    NSDictionary *dic = @{@"cntry_id":[[response_countries_dic allKeys] objectAtIndex:x],@"cntry_name":[response_countries_dic valueForKey:[[response_countries_dic allKeys] objectAtIndex:x]]};
+                    
+                    [country_arr addObject:dic];
+                    
+                }
+                NSSortDescriptor *sortDescriptor;
+                sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"cntry_name"
+                                                             ascending:YES];
+                NSArray *sortedArr = [country_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
+                
+                
+                NSMutableArray  *required_format = [NSMutableArray array];
+                for (int l =0; l<sortedArr.count; l++) {
+                    
+                    if ([[[sortedArr objectAtIndex:l] valueForKey:@"cntry_name"] isEqualToString:@"Qatar"] ) {
+                        
+                        [required_format addObject:[sortedArr objectAtIndex:l]];
+                        
+                    }
+                    
+                }
+                for (int l =0; l<sortedArr.count; l++) {
+                    
+                    if ([[[sortedArr objectAtIndex:l] valueForKey:@"cntry_name"] isEqualToString:@"India"]) {
+                        
+                        [required_format addObject:[sortedArr objectAtIndex:l]];
+                        
+                    }
+                    
+                }
+                
+                for (int m =0; m<sortedArr.count; m++) {
+                    
+                    if (![[[sortedArr objectAtIndex:m] valueForKey:@"cntry_name"] isEqualToString:@"Qatar"] && ![[[sortedArr objectAtIndex:m] valueForKey:@"cntry_name"] isEqualToString:@"India"]) {
+                        
+                        [required_format addObject:[sortedArr objectAtIndex:m]];
+                        
+                    }
+                    
+                }
+                
+                
+                
+                NSLog(@"sortedArr %@",sortedArr);
+                
+                [country_arr removeAllObjects];
+                [country_arr addObjectsFromArray:required_format];
+                [_country_picker_view reloadAllComponents];
+            }
+            else
+            {
+              
+                
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+            }
+            
+        }
+        
+        @catch(NSException *exception)
+        {
+            NSLog(@"The error is:%@",exception);
+        }
+        
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"The error is:%@",exception);
+    }
+}
+
 -(void)countrybuttonClick
 {
     [self.TXT_countries resignFirstResponder];
@@ -168,7 +285,9 @@
     NSDictionary *order_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"order_details"];
     
     
-    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/Qpayment-registration.aspx?Currency=QAR&Amount=%@&OrderName=online&OrderID=%@&nationality=Qatar&paymenttype=%@",[[order_dict valueForKey:@"result"] valueForKey:@"_balanceamount"],[[order_dict valueForKey:@"result"] valueForKey:@"_orderid"],str_URL];
+    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/Qpayment-registration.aspx?Currency=QAR&Amount=%@&OrderName=online&OrderID=%@&nationality=Qatar&paymenttype=%@",[order_dict valueForKey:@"_balanceamount"],[order_dict  valueForKey:@"_orderid"],str_URL];
+            str_url = [str_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+
     [[NSUserDefaults standardUserDefaults] setValue:str_url forKey:@"payment_url"];
     [[NSUserDefaults standardUserDefaults]  synchronize];
     
@@ -179,6 +298,7 @@
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"connection error"delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
         [alert show];
+        NSLog(@"THe Exception in events Pay LAst:%@",exception);
 
     }
        

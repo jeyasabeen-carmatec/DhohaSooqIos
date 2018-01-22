@@ -53,7 +53,6 @@
     
     [VW_overlay addSubview:activityIndicatorView];
     
-    
     [self.view addSubview:VW_overlay];
     
     VW_overlay.hidden = YES;
@@ -78,7 +77,7 @@
     [self.Scroll_contents addSubview:_VW_contents];
     
     setup_frame = _BTN_close.frame;
-    setup_frame.origin.x = self.view.frame.size.width / 2;
+    setup_frame.origin.x = self.view.frame.size.width / 2 - _BTN_close.frame.size.width/2 + 10;
     _BTN_close.frame = setup_frame;
     
      scroll_height =_VW_contents.frame.origin.y+ _VW_contents.frame.size.height;

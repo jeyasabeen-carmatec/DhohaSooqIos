@@ -58,6 +58,13 @@
     
     
 }
+-(void)viewWillAppear:(BOOL)animated
+{
+    UIView *view=[[UIView alloc] initWithFrame:CGRectMake(0, 0,[UIScreen mainScreen].bounds.size.width, 20)];
+    view.backgroundColor = [UIColor colorWithRed:0.98 green:0.69 blue:0.19 alpha:1.0];
+    [self.navigationController.view addSubview:view];
+    
+}
 - (IBAction)back_action:(id)sender {
 //    [self dismissViewControllerAnimated:NO completion:nil];
     [self.navigationController popViewControllerAnimated:NO];

@@ -41,6 +41,7 @@
     NSInteger j,lang_count;
     int tag,collection_tag,temp_test;
     
+    
 //    UIView *VW_overlay;
 //
 //    UIActivityIndicatorView *activityIndicatorView;
@@ -53,6 +54,8 @@
     int statusbar_HEIGHT;
     NSDictionary *temp_dicts;
     NSString *language;
+//    NSTimer *TIMER_new;
+    
     int mn;
 
 }
@@ -76,6 +79,8 @@
     // Do any additional setup after loading the view.
     
       _Scroll_contents.delegate =self;
+    
+   // TIMER_new = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:nil repeats:YES];
     
     [self.collection_images registerNib:[UINib nibWithNibName:@"cell_image" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
     [self.collection_features registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"features_cell"];
@@ -174,9 +179,16 @@
 {
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-    
+    @try
+    {
+  //  [TIMER_countdown invalidate];
     [self performSelector:@selector(API_call_total) withObject:nil afterDelay:0.01];
-    [self set_up_VIEW];
+   // [self set_up_VIEW];
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
 }
 
 -(void)tab_BAR_set_UP
@@ -686,10 +698,10 @@
    // NSLog(@"THe deals keya are %@",[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys]);
     @try
     {
-    if([deals_ARR count] < 1)
+    if([hot_deals_ARR count] < 1)
     {
         _VW_second.hidden = YES;
-        if([hot_deals_ARR count] < 1)
+        if([deals_ARR count] < 1)
         {
             _VW_third.hidden = YES;
             if(brands_arr.count < 1)
@@ -769,7 +781,7 @@
     {
         _VW_second.hidden = NO;
         
-        if([hot_deals_ARR count] < 1)
+        if([deals_ARR count] < 1)
         {
             _VW_third.hidden = YES;
             if(brands_arr.count < 1)
@@ -1004,7 +1016,7 @@
         @try
         {
             
-            count =  [deals_ARR count];;
+            count =  [hot_deals_ARR count];;
         }
         @catch(NSException *exception)
         {
@@ -1022,7 +1034,7 @@
         @try
         {
             
-            count =  [hot_deals_ARR count];;
+            count =  [deals_ARR count];;
         }
         @catch(NSException *exception)
         {
@@ -1290,39 +1302,31 @@
                     pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",str_discount,str];
                     
                     
+                    
                     // prec_price = [currency stringByAppendingString:prec_price];
                     prec_price = [NSString stringWithFormat:@"%@ %@",currency, [[deals_ARR objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
                     text = [NSString stringWithFormat:@"%@ %@ %@",currency,current_price,prec_price];
+                    int sizeval = 12;
+                    if (prec_price.length >= 10) {
+                        sizeval = 10;
+                    }
+
                     
                     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                     
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0],}range:[text rangeOfString:currency] ];
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0],}range:[text rangeOfString:currency] ];
                     
                     NSRange ename = [text rangeOfString:current_price];
-                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:25.0]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                 range:ename];
-                    }
-                    else
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
-                                                range:ename];
-                    }
+                    
                     
                     NSRange cmp = [text rangeOfString:prec_price];
                     //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
                     
                     
-                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0],NSForegroundColorAttributeName:[UIColor grayColor]}
-                                                range:cmp];
-                    }
-                    else
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
-                    }
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:sizeval],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
+                    
                     [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
                     [attributedText addAttribute:NSStrikethroughStyleAttributeName
                                            value:@2
@@ -1387,22 +1391,26 @@
                                  placeholderImage:[UIImage imageNamed:@"logo.png"]
                                           options:SDWebImageRefreshCached];
             
-            @try
+           /* @try
             {
                 NSString *str =[NSString stringWithFormat:@"%@",[[hot_deals_ARR objectAtIndex:indexPath.row ]  valueForKey:@"stock_status"]];
                 str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
                 if([str isEqualToString:@"In stock"])
                 {
-                    pro_cell.LBL_stock.text =@"";
+//                    [pro_cell.LBL_stock setFont:[UIFont fontWithName:@"Poppins-Regular" size:8]];
+//                    pro_cell.LBL_stock.textColor = [UIColor darkGrayColor];
+//                    pro_cell.LBL_stock.text =[self runUpdateDisplayLoop:TIMER_new];
                 }
                 else{
-                    pro_cell.LBL_stock.text =[str uppercaseString];
+//                    [pro_cell.LBL_stock setFont:[UIFont fontWithName:@"Poppins-Regular" size:13]];
+//                    pro_cell.LBL_stock.textColor = [UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0];
+//                    pro_cell.LBL_stock.text =[str uppercaseString];
                 }
             }
             @catch(NSException *exception)
             {
                 
-            }
+            }*/
             pro_cell.LBL_item_name.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
             
             pro_cell.LBL_item_name.titleLabel.numberOfLines = 2;
@@ -1634,35 +1642,25 @@
                     prec_price = [NSString stringWithFormat:@"%@ %@",currency, [[hot_deals_ARR objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
                     text = [NSString stringWithFormat:@"%@ %@ %@",currency,current_price,prec_price];
                     
+                    int sizeval = 12;
+                    if (prec_price.length >= 10) {
+                        sizeval = 10;
+                    }
+                    
                     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                     
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0],}range:[text rangeOfString:currency] ];
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0],}range:[text rangeOfString:currency] ];
                     
                     NSRange ename = [text rangeOfString:current_price];
-                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:25.0]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                 range:ename];
-                    }
-                    else
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
-                                                range:ename];
-                    }
+                
                     
                     NSRange cmp = [text rangeOfString:prec_price];
                     //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
                     
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:sizeval],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
                     
-                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0],NSForegroundColorAttributeName:[UIColor grayColor]}
-                                                range:cmp];
-                    }
-                    else
-                    {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
-                    }
                     [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
                     [attributedText addAttribute:NSStrikethroughStyleAttributeName
                                            value:@2
@@ -1698,6 +1696,7 @@
         }
         @catch(NSException *exception)
         {
+            
             
         }
         //hotdeals_cell.LBL_discount.text = [temp_dict valueForKey:@"key4"];
@@ -3440,8 +3439,40 @@
         deals_ARR = [[NSMutableArray alloc]init];
         hot_deals_ARR = [[NSMutableArray alloc]init];
         deals_ARR = [[NSMutableArray alloc]init];
-        NSDictionary *dict = [user_defaults valueForKey:@"userdata"];
-        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+        NSString *user_id;
+        @try
+        {
+            NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+            if(dict.count == 0)
+            {
+                user_id = @"(null)";
+            }
+            else
+            {
+                NSString *str_id = @"user_id";
+                // NSString *user_id;
+                for(int i = 0;i<[[dict allKeys] count];i++)
+                {
+                    if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                    {
+                        user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                        break;
+                    }
+                    else
+                    {
+                        
+                        user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                    }
+                    
+                }
+            }
+        }
+        @catch(NSException *exception)
+        {
+            user_id = @"(null)";
+            
+        }
+        
         NSString *urlGetuser =[NSString stringWithFormat:@"%@Pages/home/%ld/%ld/%@/Customer.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"],user_id];
         NSLog(@"country id %ld ,language id %ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
         
@@ -3452,16 +3483,12 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
-//                    [activityIndicatorView stopAnimating];
-//                    VW_overlay.hidden = YES;
 
                     [HttpClient stop_activity_animation];
                 }
                 if (data) {
                 
                     [HttpClient stop_activity_animation];
-//                    VW_overlay.hidden=YES;
-//                    [activityIndicatorView stopAnimating];
                     @try {
                        @try
                         {
@@ -3514,6 +3541,14 @@
                             
                             
                         }
+                  //  TIMER_new = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:nil repeats:YES];
+                       
+                        
+                        for(int i = 0;i<hot_deals_ARR.count;i++)
+                        {
+                            NSDictionary *dict =@{@"tag":[NSString stringWithFormat:@"%d",i]}; //                            [dict setObject:[[hot_deals_ARR objectAtIndex:i] valueForKey:@"end_date"] forKey:@"timer"];
+                            TIMER_countdown = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:dict repeats:YES];
+                        }
 
                         NSString *currency = [json_Response_Dic valueForKey:@"currency"];
                         currency = [currency stringByReplacingOccurrencesOfString:@"(null)" withString:@"QAR"];
@@ -3536,8 +3571,7 @@
                          [self set_up_VIEW];
                       
                         [HttpClient stop_activity_animation];
-//                        VW_overlay.hidden=YES;
-//                        [activityIndicatorView stopAnimating];
+
 
                        
 
@@ -3545,11 +3579,8 @@
                        
                     } @catch (NSException *exception) {
                         NSLog(@"ecec sfdf sdfsf %@",exception);
-//                        VW_overlay.hidden=YES;
-//                        [activityIndicatorView stopAnimating];
                         [HttpClient stop_activity_animation];
-                        [self viewWillAppear:NO];
-                     
+                        
 
 
                     }
@@ -3561,7 +3592,7 @@
 //                        [activityIndicatorView stopAnimating];
                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                         [alert show];
-                        [self viewWillAppear:NO];
+                       // [self viewWillAppear:NO];
                        
 
 
@@ -3578,7 +3609,7 @@
         [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
 //        VW_overlay.hidden = YES;
 //        [activityIndicatorView stopAnimating];
-        [self viewWillAppear:NO];
+       // [self viewWillAppear:NO];
         
         [HttpClient stop_activity_animation];
         
@@ -4504,6 +4535,97 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     [self performSegueWithIdentifier:@"home_dohasooq_search" sender:self];
 
 }
+
+-(NSString *)runUpdateDisplayLoop : (NSTimer *) timer //:(NSString *)str_date
+{
+   
+   
+    NSDateFormatter *dateStringParser = [[NSDateFormatter alloc] init];
+    [dateStringParser setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+    [dateStringParser setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    
+    int tag1 =  [[timer.userInfo valueForKey:@"tag"] intValue];
+    
+    NSString *STR_bidDate =  [[hot_deals_ARR objectAtIndex:tag1]valueForKey:@"end_date"];//[TIMER_new.userInfo valueForKey:@"timer"];
+    NSDate *date = [dateStringParser dateFromString:STR_bidDate];
+    
+    NSDateFormatter *labelFormatter = [[NSDateFormatter alloc] init];
+    [labelFormatter setDateFormat:@"HH-dd-MM"];
+    
+    
+    NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
+    
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    
+    NSDate* currentDate = [NSDate date];
+    
+    NSTimeInterval timeInterval = [date timeIntervalSinceDate:currentDate];
+    
+    NSCalendar *sysCalendar = [NSCalendar currentCalendar];
+    NSDate *date2 = [[NSDate alloc] initWithTimeInterval:timeInterval sinceDate:date];
+    NSCalendarUnit unitFlags = NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitDay | NSCalendarUnitSecond;
+    
+    NSDateComponents *breakdownInfo = [sysCalendar components:unitFlags fromDate:date  toDate:date2  options:0];
+    
+    NSString *STR_timeRe;
+    
+    if ([breakdownInfo day] <= 0 ) {
+        
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d: %02d left",(int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+        
+    }
+    else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0)
+    {
+        
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d left",(int)[breakdownInfo minute], (int)[breakdownInfo second]];
+        
+    }
+    else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0 && [breakdownInfo minute] <= 0)
+    {
+        
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02dleft", (int)[breakdownInfo second]];
+        
+        
+    }
+    else
+    {
+        
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d Days: %02d: %02d: %02d left", (int)[breakdownInfo day], (int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+    }
+    
+    
+    NSString *text = [NSString stringWithFormat:@"%@",STR_timeRe];
+    NSLog(@"The timer is:%@",text);
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[[timer.userInfo valueForKey:@"tag"] intValue] inSection:0];
+    product_cell *cell = (product_cell *)[_collection_hot_deals cellForItemAtIndexPath:indexPath];
+    
+    NSString *str =[NSString stringWithFormat:@"%@",[[hot_deals_ARR objectAtIndex:indexPath.row ]  valueForKey:@"stock_status"]];
+    str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    if([str isEqualToString:@"In stock"])
+    {
+        cell.LBL_stock.font = [UIFont fontWithName:@"Poppins-Regular" size:8.0];
+        cell.LBL_stock.textColor = [UIColor darkGrayColor];
+        cell.LBL_stock.text = text;
+    }
+    else
+    {
+        cell.LBL_stock.text = [str uppercaseString];
+    }
+
+    
+    
+    
+    //    product_cell *cell =
+    return text;
+}
+-(void)viewDidDisappear:(BOOL)animated
+{
+    [TIMER_countdown invalidate];
+}
+
 /*
 #pragma mark - Navigation
 

@@ -553,12 +553,43 @@
 }
 -(void)Book_action
 {
-    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+    NSString *user_id;
+    @try
+    {
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
     if([user_id isEqualToString:@"(null)"])
     {
         [HttpClient stop_activity_animation];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please login to continue" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please login to continue" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
         alert.tag = 1;
         [alert show];
         
@@ -612,16 +643,16 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     {
         if (buttonIndex == [alertView cancelButtonIndex])
         {
-            NSLog(@"cancel:");
-              [alertView dismissWithClickedButtonIndex:0 animated:nil];
+            ViewController *intial = [self.storyboard instantiateViewControllerWithIdentifier:@"login_VC"];
+            [self presentViewController:intial animated:NO completion:nil];
             
         }
         
         else{
            
             
-            ViewController *intial = [self.storyboard instantiateViewControllerWithIdentifier:@"login_VC"];
-            [self presentViewController:intial animated:NO completion:nil];
+            NSLog(@"cancel:");
+            [alertView dismissWithClickedButtonIndex:0 animated:nil];
             
             
         }

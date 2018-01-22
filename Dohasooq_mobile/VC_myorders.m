@@ -924,7 +924,7 @@ int j ,i;
 {
   
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.TBL_orders.frame.size.width, 60)];
-    headerView.backgroundColor = [UIColor clearColor];
+    headerView.backgroundColor = [UIColor whiteColor];
     
     UILabel *label = [[UILabel alloc] initWithFrame: CGRectMake(10,0, self.TBL_orders.frame.size.width-20, 30)];
     label.backgroundColor = [UIColor whiteColor];
@@ -965,7 +965,10 @@ int j ,i;
         label.text= @"TRANSACTION DETAILS";
         
     }
-    
+    else
+    {
+        
+    }
     
     return headerView;
 }

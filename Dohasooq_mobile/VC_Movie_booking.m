@@ -336,7 +336,7 @@
     [_tbl_timings reloadData];
     
     
-  [self set_UP_VIEW];
+     [self set_UP_VIEW];
     
      [HttpClient stop_activity_animation];
      [self viewDidLayoutSubviews];
@@ -788,16 +788,16 @@
     if(result.height <= 480)
     {
         // iPhone Classic
-        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:12];
-        cell.BTN_time.textAlignment = NSTextAlignmentJustified;
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:10];
+        cell.BTN_time.textAlignment = NSTextAlignmentCenter;
         
         
     }
     else if(result.height <= 568)
     {
         // iPhone 5
-        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:12];
-        cell.BTN_time.textAlignment = NSTextAlignmentJustified;
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:10];
+        cell.BTN_time.textAlignment = NSTextAlignmentCenter;
         
         
         
@@ -905,6 +905,7 @@
             {
               return CGSizeMake(collectionView.frame.size.width/3.5, 40);
             }
+           
             else{
                 return CGSizeMake(collectionView.frame.size.width/4.37, 40);
             }

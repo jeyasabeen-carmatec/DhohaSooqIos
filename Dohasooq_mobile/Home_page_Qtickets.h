@@ -10,9 +10,9 @@
 #import "MIBadgeButton.h"
 
 @interface Home_page_Qtickets : UIViewController
-/*{
+{
     NSTimer *TIMER_countdown;
-}*/
+}
 
 @property(nonatomic,strong) NSArray *items;
 

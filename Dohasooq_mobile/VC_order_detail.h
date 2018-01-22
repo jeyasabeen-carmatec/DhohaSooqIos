@@ -129,4 +129,15 @@
 @property(strong,nonatomic)UIPickerView *country_code_Pickerview;
 @property (weak, nonatomic) IBOutlet UIButton *BTN_logo;
 
+//OTP Validation
+@property(nonatomic,weak) IBOutlet UIView *VW_otp_vw;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_validate_otp;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_resend_otp;
+@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_message_field;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_timer_lbl;
+
+
+
+
+
 @end

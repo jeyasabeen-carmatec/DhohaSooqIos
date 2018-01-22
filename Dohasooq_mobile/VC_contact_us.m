@@ -60,7 +60,8 @@
     frameset.size.height = _TXT_text.frame.origin.y + _TXT_text.frame.size.height;
     _VW_contact.frame =frameset;
     
-      _LBL_address.text = [json_dic valueForKey:@"fullAdress"];
+    _LBL_address.text = [json_dic valueForKey:@"fullAdress"];
+    _LBL_address.numberOfLines  = 0;
      [_LBL_address sizeToFit];
    
      frameset = _VW_address.frame;
@@ -79,7 +80,7 @@
     _BTN_submit.frame = frameset;
     
     frameset = _VW_contents.frame;
-   // frameset.size.height = _BTN_submit.frame.origin.y + _BTN_submit.frame.size.height + 10;
+    frameset.size.height = _VW_contact_us.frame.origin.y + _VW_contact_us.frame.size.height + 10;
    // frameset.size.height = _VW_contact_us.frame.origin.y + _VW_contact_us.frame.origin.y;
     frameset.size.width = _Scroll_contents.frame.size.width;
     _VW_contents.frame = frameset;
@@ -441,7 +442,7 @@
                 json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
                 NSLog(@"%@", [NSString stringWithFormat:@"JSON DATA OF ORDER DETAIL: %@", json_DATA]);
                 
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"msg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 alert.tag = 1;
                 [alert show];
             }

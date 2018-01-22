@@ -63,7 +63,7 @@
     
     
     
-    _LBL_event_name.numberOfLines = 0;
+  //  _LBL_event_name.numberOfLines = 0;
     
     
     

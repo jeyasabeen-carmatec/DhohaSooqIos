@@ -202,30 +202,21 @@
 }
 
 #pragma mark Save Bookings
-
 //http://192.168.0.171/dohasooq/apis/savebooking.json
 //full_name, email, mobile, bookingId, movie_event,user_id
 
--(void)save_bookings{
+-(void)save_bookings
+{
     @try {
-        
-        
-        /*saveBookings_dic {
-         email = "ysushmalatha@gmail.com";
-         "full_name" = sushma;
-         mobile = 9177288200;
-         }*/
-        
-        NSString *user_ID =[[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+
+        NSString *user_ID =[NSString stringWithFormat:@"%@", [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"]];
         
         NSDictionary *saveBookings_dic = [[NSUserDefaults standardUserDefaults] valueForKey:@"savebooking"];
         NSLog(@"saveBookings_dic %@",saveBookings_dic);
         
-        NSString *booking_info = [[NSUserDefaults standardUserDefaults] valueForKey:@"order_details"];
+        NSString *booking_info = [[NSUserDefaults standardUserDefaults] valueForKey:@"order_ID"];
         
         NSString *order_ID = [booking_info substringWithRange:NSMakeRange(2, booking_info.length-2)];
-        
-       
         
         NSString *movie_event = @"event";
         

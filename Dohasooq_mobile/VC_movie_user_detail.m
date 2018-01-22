@@ -130,7 +130,7 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     
-    self.navigationController.navigationBar.hidden = NO;
+    self.navigationController.navigationBar.hidden = YES;
 
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
@@ -478,9 +478,18 @@
 {
     @try
     {
-        NSString *str_prefix =_TXT_code.text;
-        str_prefix = [str_prefix stringByReplacingOccurrencesOfString:@"+" withString:@""];
-    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/send_lock_request?Transaction_Id=%@&name=%@&email=%@&mobile=%@&prefix=%@&VoucherCodes=null&AppSource=11",[[temp_dict valueForKey:@"result"] valueForKey:@"_Transaction_Id"],_TXT_name.text,_TXT_mail.text,_TXT_phone.text,str_prefix];
+        NSString *str_prefix = _TXT_code.text;
+        NSCharacterSet *notAllowedChars = [[NSCharacterSet characterSetWithCharactersInString:@",1234567890"] invertedSet];
+        NSString *resultString = [[str_prefix componentsSeparatedByCharactersInSet:notAllowedChars] componentsJoinedByString:@""];
+        
+        NSLog (@"Result: %@", resultString);
+        
+        str_prefix = resultString;
+        NSString* Identifier = [[[UIDevice currentDevice] identifierForVendor] UUIDString]; // IOS 6+
+        NSLog(@"output is : %@", Identifier);
+
+    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/send_lock_request?Transaction_Id=%@&name=%@&email=%@&mobile=%@&prefix=%@&VoucherCodes=null&AppSource=11&token=%@",[[temp_dict valueForKey:@"result"] valueForKey:@"_Transaction_Id"],_TXT_name.text,_TXT_mail.text,_TXT_phone.text,str_prefix,Identifier];
+        str_url = [str_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
     
     NSURL *URL = [[NSURL alloc] initWithString:str_url];
     
