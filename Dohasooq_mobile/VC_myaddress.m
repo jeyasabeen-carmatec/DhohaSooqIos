@@ -882,8 +882,9 @@
         [HttpClient createaAlertWithMsg:msg andTitle:@""];
     }
     else if (edit_tag == 999) {
-        [self edit_Billing_address_API];
-    }
+        
+         [HttpClient animating_images:self];
+        [self performSelector:@selector(edit_Billing_address_API) withObject:nil afterDelay:0.01];    }
     else if (is_add_new){
         
         [self add_new_ship_address];
@@ -1006,6 +1007,8 @@
                     if ([data isKindOfClass:[NSDictionary class]]) {
                         
                         @try {
+                            [HttpClient stop_activity_animation];
+
                              NSLog(@"edit_Shipping_Address Response%@",[data valueForKey:@"success"]);
                             NSString *succs = [NSString stringWithFormat:@"%@",[data valueForKey:@"success"]];
                             if ([succs isEqualToString:@"success"] || [succs isEqualToString:@"1"] ) {
@@ -1020,6 +1023,8 @@
                 
                         } @catch (NSException *exception) {
                             NSLog(@"%@",exception);
+                            [HttpClient stop_activity_animation];
+
                         }
                     }
                     
@@ -1035,6 +1040,8 @@
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
+        [HttpClient stop_activity_animation];
+
         
     }
 
@@ -1684,6 +1691,8 @@ if (textField.tag == 8) {
         }
         
         if (returnData) {
+            [HttpClient stop_activity_animation];
+
             
             NSMutableDictionary *json_DATA = [[NSMutableDictionary alloc]init];
             json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];

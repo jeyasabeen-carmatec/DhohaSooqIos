@@ -13,6 +13,10 @@
 
 
 @interface VC_product_detail : UIViewController
+{
+    NSTimer *TIMER_countdown;
+}
+
 @property(nonatomic,weak) IBOutlet UIScrollView *Scroll_content;
 
 

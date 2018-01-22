@@ -27,7 +27,7 @@
     // Do any additional setup after loading the view.
     country_arr = [[NSMutableArray alloc]init];
     _TXT_countries.inputView = [[UIView alloc]init];
-    self.navigationController.navigationBar.hidden = NO;
+    self.navigationController.navigationBar.hidden = YES;
 
     [_LBL_timer setText:@"Time :10:00"];
     currMinute=10;
@@ -42,6 +42,11 @@
     [_BTN_visa addTarget:self action:@selector(BTN_visa_action) forControlEvents:UIControlEventTouchUpInside];
 
     [_BTN_dohabank addTarget:self action:@selector(BTN_dohabank_action) forControlEvents:UIControlEventTouchUpInside];
+
+}
+-(void)viewWillAppear:(BOOL)animated
+{
+    self.navigationController.navigationBar.hidden = YES;
 
 }
 -(void)start
@@ -187,6 +192,8 @@
     NSDictionary *order_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"order_details"];
     
       NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/Qpayment-registration.aspx?Currency=QAR&Amount=%@&OrderName=online&OrderID=%@&nationality=%@&paymenttype=%@",[[order_dict valueForKey:@"result"] valueForKey:@"_balance"],[[order_dict valueForKey:@"result"] valueForKey:@"_OrderInfo"],_TXT_countries.text,str_URL];
+        str_url = [str_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+
     [[NSUserDefaults standardUserDefaults] setValue:str_url forKey:@"payment_url"];
     [[NSUserDefaults standardUserDefaults]  synchronize];
     

@@ -442,12 +442,20 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
         NSString *start_time = [event_dict valueForKey:@"_StartTime"];
         NSLog(@"The appended string is:%@",event_price_id);
         NSString *str_prefix = _TXT_code.text;
-        str_prefix = [str_prefix stringByReplacingOccurrencesOfString:@"+" withString:@""];
+        NSCharacterSet *notAllowedChars = [[NSCharacterSet characterSetWithCharactersInString:@",1234567890"] invertedSet];
+        NSString *resultString = [[str_prefix componentsSeparatedByCharactersInSet:notAllowedChars] componentsJoinedByString:@""];
+        
+        NSLog (@"Result: %@", resultString);
+
+        str_prefix = resultString;
+
+        NSString* Identifier = [[[UIDevice currentDevice] identifierForVendor] UUIDString]; // IOS 6+
+        NSLog(@"output is : %@", Identifier);
+        NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/eventbookings?eventid=%@&ticket_id=%@&amount=%@&tkt_count=%@&NoOftktPerid=%@&camount=0&email=%@&name=%@&phone=%@&prefix=%@&bdate=%@&btime=%@&balamount=0&couponcodes=null&AppSource=11&AppVersion=1.0",event_id,event_master_id,str_price,str_count,event_price_id,_TXT_mail.text,_TXT_name.text,_TXT_phone.text,str_prefix,start_date,start_time];
+        str_url = [str_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
 
         
-        NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/eventbookings?eventid=%@&ticket_id=%@&amount=%@&tkt_count=%@&NoOftktPerid=%@&camount=0&email=%@&name=%@&phone=%@&prefix=%@&bdate=%@&btime=%@&balamount=0&couponcodes=null&AppSource=11&AppVersion=1.0",event_id,event_master_id,str_price,str_count,event_price_id,_TXT_mail.text,_TXT_name.text,_TXT_phone.text,str_prefix,start_date,start_time];
-        
-        NSURL *URL = [[NSURL alloc] initWithString:str_url];
+        NSURL *URL = [[NSURL alloc] initWithString:str_url];  
         
         NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
         NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
@@ -464,7 +472,10 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
         [[NSUserDefaults standardUserDefaults]setObject:save_booking_dic forKey:@"savebooking"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        [[NSUserDefaults standardUserDefaults] setObject:[[xmlDoc valueForKey:@"result"] valueForKey:@"_orderid"] forKey:@"order_details"];
+        [[NSUserDefaults standardUserDefaults] setObject:[xmlDoc valueForKey:@"result"]  forKey:@"order_details"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        [[NSUserDefaults standardUserDefaults] setObject:[[xmlDoc valueForKey:@"result"] valueForKey:@"_orderid"] forKey:@"order_ID"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         

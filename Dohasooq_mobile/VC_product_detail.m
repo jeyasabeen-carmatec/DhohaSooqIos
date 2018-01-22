@@ -921,7 +921,7 @@
                         }
                         else
                         {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:17.0],NSForegroundColorAttributeName:[UIColor whiteColor]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:17.0],NSForegroundColorAttributeName:[UIColor redColor]}
                                                     range:ename];
                         }
                         [_BTN_wish setAttributedTitle:attributedText forState:UIControlStateNormal];
@@ -1157,7 +1157,7 @@
                                                   options:SDWebImageRefreshCached];
                     @try
                     {
-                        NSString *str = [NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row]objectAtIndex:0]  valueForKey:@"stock_status"]];
+                      /*  NSString *str = [NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row]objectAtIndex:0]  valueForKey:@"stock_status"]];
                         str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
                         
                         
@@ -1167,7 +1167,7 @@
                         }
                         else{
                             pro_cell.LBL_stock.text =[str uppercaseString];
-                        }
+                        }*/
                         
                     }
                     @catch(NSException *exception)
@@ -1304,7 +1304,11 @@
                             prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
                             text = [NSString stringWithFormat:@"%@ %@ %@",currency_code,current_price,prec_price];
                             
-                            
+                            int sizeval = 12;
+                            if (prec_price.length >= 10) {
+                                sizeval = 10;
+                            }
+
                             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                             {
                                 //                    prec_price = [prec_price stringByAppendingString:currency_code];
@@ -1318,29 +1322,15 @@
                             
                             
                             NSRange ename = [text rangeOfString:current_price];
-                            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:25.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                         range:ename];
-                            }
-                            else
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
-                                                        range:ename];
-                            }
+                        
                             
                             
                             NSRange qrname = [text rangeOfString:currency_code];
-                            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:25.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                         range:qrname];
-                            }
-                            else
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
-                                                        range:qrname];
-                            }
+                            
                             
                             
                             
@@ -1349,15 +1339,8 @@
                             //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
                             
                             
-                            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0],NSForegroundColorAttributeName:[UIColor grayColor]}
-                                                        range:cmp];
-                            }
-                            else
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
-                            }
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
+                            
                             [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
                             
                             
@@ -2928,7 +2911,23 @@
                             }
                     
                         }
-                            
+                            if([[json_Response_Dic valueForKey:@"relatedProducts"] isKindOfClass:[NSArray class]])
+                            {
+
+                            for(int i = 0;i<[[json_Response_Dic valueForKey:@"relatedProducts"] count];i++)
+                            {
+                                NSString *time_diff = [NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:i]objectAtIndex:0]  valueForKey:@"timeDiff"]];
+                                if([time_diff isEqualToString:@"No"] ||[time_diff isEqualToString:@"(null)"] ||[time_diff isEqualToString:@"<null>"]||!time_diff)
+                                {
+                                    
+                                }
+                                else{
+                                    NSDictionary *dict =@{@"tag":[NSString stringWithFormat:@"%d",i]}; //                            [dict setObject:[[hot_deals_ARR objectAtIndex:i] valueForKey:@"end_date"] forKey:@"timer"];
+                                    TIMER_countdown = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:dict repeats:YES];
+                                }
+                            }
+                            }
+
                         [self set_Data_to_UIElements];
                         [self.collection_images reloadData];
                         [self.collectionview_variants reloadData];
@@ -4228,4 +4227,101 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
      [self.Scroll_content setContentOffset:CGPointZero animated:YES];
     
 }
+-(NSString *)runUpdateDisplayLoop : (NSTimer *) timer //:(NSString *)str_date
+{
+    
+    NSDateFormatter *dateStringParser = [[NSDateFormatter alloc] init];
+    [dateStringParser setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+    [dateStringParser setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    
+    int tag1 =  [[timer.userInfo valueForKey:@"tag"] intValue];
+    
+    NSString *STR_bidDate = [[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:tag1]objectAtIndex:0]  valueForKey:@"timeDiff"];//[TIMER_new.userInfo valueForKey:@"timer"];
+    NSDate *date = [dateStringParser dateFromString:STR_bidDate];
+    
+    NSDateFormatter *labelFormatter = [[NSDateFormatter alloc] init];
+    [labelFormatter setDateFormat:@"HH-dd-MM"];
+    
+    
+    NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
+    
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    
+    NSDate* currentDate = [NSDate date];
+    
+    NSTimeInterval timeInterval = [date timeIntervalSinceDate:currentDate];
+    
+    NSCalendar *sysCalendar = [NSCalendar currentCalendar];
+    NSDate *date2 = [[NSDate alloc] initWithTimeInterval:timeInterval sinceDate:date];
+    NSCalendarUnit unitFlags = NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitDay | NSCalendarUnitSecond;
+    
+    NSDateComponents *breakdownInfo = [sysCalendar components:unitFlags fromDate:date  toDate:date2  options:0];
+    
+    NSString *STR_timeRe;
+    
+    if ([breakdownInfo day] <= 0 ) {
+        
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d: %02d left",(int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+        
+    }
+    else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0)
+    {
+        
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d left",(int)[breakdownInfo minute], (int)[breakdownInfo second]];
+        
+    }
+    else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0 && [breakdownInfo minute] <= 0)
+    {
+        
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02dleft", (int)[breakdownInfo second]];
+        
+        
+    }
+    else
+    {
+        
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d Days: %02d: %02d: %02d left", (int)[breakdownInfo day], (int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+    }
+    
+    
+    NSString *text = [NSString stringWithFormat:@"%@",STR_timeRe];
+    NSLog(@"The timer is:%@",text);
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[[timer.userInfo valueForKey:@"tag"] intValue] inSection:0];
+    product_cell *cell = (product_cell *)[_collection_related_products cellForItemAtIndexPath:indexPath];
+    
+    NSString *str = [NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row]objectAtIndex:0]  valueForKey:@"stock_status"]];
+    str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    NSString *time_diff = [NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row]objectAtIndex:0]  valueForKey:@"timeDiff"]];//[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"timeDiff"]];
+    if([str isEqualToString:@"In stock"])
+    {
+        if([time_diff isEqualToString:@"No"] ||[time_diff isEqualToString:@"(null)"] ||[time_diff isEqualToString:@"<null>"]||!time_diff)
+        {
+            cell.LBL_stock.text = @"";
+        }
+        else
+        {
+            cell.LBL_stock.font = [UIFont fontWithName:@"Poppins-Regular" size:8.0];
+            cell.LBL_stock.textColor = [UIColor darkGrayColor];
+            cell.LBL_stock.text = text;
+        }
+    }
+    else
+    {
+        cell.LBL_stock.font = [UIFont fontWithName:@"Poppins-Regular" size:14.0];
+        cell.LBL_stock.textColor = [UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0];
+        
+        cell.LBL_stock.text = [str uppercaseString];
+    }
+    
+    //    product_cell *cell =
+    return text;
+}
+-(void)viewDidDisappear:(BOOL)animated
+{
+    [TIMER_countdown invalidate];
+}
+
 @end

@@ -27,26 +27,33 @@
 
     self.LBL_slider.minValue = 1;
     self.LBL_slider.maxValue = 3000;
+    self.LBL_slider.selectedMinimum = 1;
+    self.LBL_slider.selectedMaximum = 3000;
     
-    self.LBL_slider.lowerValue = 1;
-    self.LBL_slider.upperValue = 3000;
-    
-    self.LBL_slider.minValue = 1;
+    _LBL_slider.hideLabels = YES;
+    _LBL_slider.lineHeight = 7.0f;
+    _LBL_slider.handleImage = [UIImage imageNamed:@"UISliderHandleDefault.png"];
     
     _TXT_start_date.text = @"Select start date";
     _TXT_end_date.text = @"Select end date";
     
-    lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
-    upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];
+    lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMinimum];
+    upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
     self.BTN_all.backgroundColor = self.BTN_submit.backgroundColor;
-    _LBL_slider.trackColor =[UIColor colorWithRed:1.00 green:0.98 blue:0.80 alpha:1.0];
     
     
     // Set color for highlighted section of the slider track
-    _LBL_slider.trackHighlightColor =[UIColor colorWithRed:0.92 green:0.66 blue:0.27 alpha:1.0];
     // Set height of slider track
-    _LBL_slider.trackHeight = 8.0;
 
+    @try {
+        
+        self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"], (int)self.LBL_slider.selectedMaximum];
+        self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d", [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],(int)self.LBL_slider.selectedMinimum];
+        NSLog(@"%@ /n %@",lower,upper);
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
+    
 
 
     [_BTN_submit addTarget:self action:@selector(submit_ACTION) forControlEvents:UIControlEventTouchUpInside];
@@ -54,12 +61,12 @@
     
     
 }
-- (IBAction)labelSliderChanged:(CCRangeSlider*)sender
+- (IBAction)labelSliderChanged:(TTRangeSlider*)sender
 {
-    lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.lowerValue];
-    upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.upperValue];
-    self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],(int)self.LBL_slider.upperValue];
-    self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"], (int)self.LBL_slider.lowerValue];
+    lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMinimum];
+    upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
+    self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],(int)self.LBL_slider.selectedMaximum];
+    self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"], (int)self.LBL_slider.selectedMinimum];
 
   
 }

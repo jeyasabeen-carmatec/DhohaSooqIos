@@ -13,9 +13,11 @@
 
 @interface ViewController ()<UITextFieldDelegate,FBSDKLoginButtonDelegate,GIDSignInUIDelegate,GIDSignInDelegate>
 {
-//    UIView *VW_overlay;
-//    UIActivityIndicatorView *activityIndicatorView;
+   UIView *VW_overlay;
+    UIImageView *activityIndicatorView;
     NSDictionary *social_dictl;
+    NSString *first_name,*last_name,*emails;
+    
     
 }
 
@@ -58,19 +60,29 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    
-//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-//    VW_overlay.clipsToBounds = YES;
-//    //    VW_overlay.layer.cornerRadius = 10.0;
-//    
-//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-//    activityIndicatorView.center = VW_overlay.center;
-//    [VW_overlay addSubview:activityIndicatorView];
-//    [self.view addSubview:VW_overlay];
-//    
-//    VW_overlay.hidden = YES;
+   
+        VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.0];
+        VW_overlay.clipsToBounds = YES;
+        
+        
+        VW_overlay.hidden = NO;
+        activityIndicatorView = [[UIImageView alloc] initWithImage:[UIImage new]];
+        activityIndicatorView.frame = CGRectMake(0, 0, 60, 60);
+        activityIndicatorView.center = VW_overlay.center;
+        
+        activityIndicatorView.animationImages = [NSArray arrayWithObjects:[UIImage imageNamed:@"loader1.png"],[UIImage imageNamed:@"loader2.png"],[UIImage imageNamed:@"loader3.png"],[UIImage imageNamed:@"loader4.png"],[UIImage imageNamed:@"loader5.png"],[UIImage imageNamed:@"loader6.png"],[UIImage imageNamed:@"loader7.png"],[UIImage imageNamed:@"loader8.png"],[UIImage imageNamed:@"loader9.png"],[UIImage imageNamed:@"loader10.png"],[UIImage imageNamed:@"loader11.png"],[UIImage imageNamed:@"loader12.png"],[UIImage imageNamed:@"loader13.png"],[UIImage imageNamed:@"loader14.png"],[UIImage imageNamed:@"loader15.png"],[UIImage imageNamed:@"loader16.png"],[UIImage imageNamed:@"loader17.png"],[UIImage imageNamed:@"loader18.png"],nil];
+        
+        activityIndicatorView.animationDuration = 3.0;
+        [activityIndicatorView startAnimating];
+        activityIndicatorView.center = VW_overlay.center;
+        
+        [VW_overlay addSubview:activityIndicatorView];
+        
+        [self.view addSubview:VW_overlay];
+        
+        VW_overlay.hidden = YES;
+
     [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
     UIView *view=[[UIView alloc] initWithFrame:CGRectMake(0, 0,[UIScreen mainScreen].bounds.size.width, 20)];
     view.backgroundColor = [UIColor colorWithRed:0.98 green:0.69 blue:0.19 alpha:1.0];
@@ -279,14 +291,14 @@
     NSString *str = [dict valueForKey:@"userName"];
     NSArray *arr = [str componentsSeparatedByString:@" "];
     NSLog(@"The first name is:%@",[arr objectAtIndex:0]);
-    NSString *first_name = [NSString stringWithFormat:@"%@",[arr objectAtIndex:0]];
-    NSString *last_name = [NSString stringWithFormat:@"%@",[arr objectAtIndex:1]];
-    NSString *emails = [NSString stringWithFormat:@"%@",[dict valueForKey:@"userEmail"]];
+    first_name = [NSString stringWithFormat:@"%@",[arr objectAtIndex:0]];
+    last_name = [NSString stringWithFormat:@"%@",[arr objectAtIndex:1]];
+    emails = [NSString stringWithFormat:@"%@",[dict valueForKey:@"userEmail"]];
 
 
-    [HttpClient animating_images:self];
-    [self performSelector:@selector(google_LOGIN) withObject:nil afterDelay:0.01];
-    [self Google_plus_login:first_name:last_name:emails];
+    VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(Google_plus_login) withObject:nil afterDelay:0.01];
 
     
 
@@ -379,7 +391,8 @@
                 
                 social_dictl = [[NSUserDefaults standardUserDefaults] objectForKey:@"login_details"];
                 NSLog(@"dict ------ %@",social_dictl);
-                [HttpClient animating_images:self];
+                VW_overlay.hidden = NO;
+                [activityIndicatorView startAnimating];
                 [self performSelector:@selector(Facebook_login) withObject:nil afterDelay:0.01];
 
                // [self Facebook_login];
@@ -399,23 +412,20 @@ error:(NSError *)error{
     NSLog(@"LOGGED IN TO FACEBOOK");
    // [self fetchUserInfo];
 }
--(void)google_LOGIN
+
+-(void)Google_plus_login
 {
-    
-}
--(void)Google_plus_login:(NSString *)f_name :(NSString *)l_name :(NSString *)e_mail
-{
-     [HttpClient animating_images:self];
+   
         NSString *type = @"Google_Plus";
-        NSString *first_name = f_name;
-        NSString *last_name = l_name;
-        NSString *email = e_mail;
+        NSString *first_names = first_name;
+    NSString *last_names = last_name;
+        NSString *email = emails;
 
         NSDictionary *parameters = @{
                                      @"login_type": type,
                                      @"email": email,
-                                     @"first_name": first_name,
-                                     @"last_name": last_name
+                                     @"first_name": first_names,
+                                     @"last_name": last_names
 
                                      };
         
@@ -452,6 +462,8 @@ error:(NSError *)error{
             {
 //                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
 //                [[NSUserDefaults standardUserDefaults] synchronize];
+                VW_overlay.hidden = YES;
+                [activityIndicatorView stopAnimating];
                 NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
                 [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
                 
@@ -462,15 +474,12 @@ error:(NSError *)error{
                 [self MENU_api_call];
                 
                 
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
-                 [HttpClient stop_activity_animation];
                 
             }
             else
             {
-                 [HttpClient stop_activity_animation];
-                if ([msg isEqualToString:@"User already exists"])
+                VW_overlay.hidden = YES;
+                [activityIndicatorView stopAnimating];                if ([msg isEqualToString:@"User already exists"])
                 { 
                     msg = @"Email address already in use, Please try with different email.";
                 }
@@ -482,7 +491,8 @@ error:(NSError *)error{
         }
         else
         {
-           [HttpClient stop_activity_animation];
+            VW_overlay.hidden = YES;
+            [activityIndicatorView stopAnimating];
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
@@ -493,7 +503,8 @@ error:(NSError *)error{
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
-        [HttpClient stop_activity_animation];
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
     }
 
     
@@ -503,7 +514,6 @@ error:(NSError *)error{
 {
     @try
     {
-     [HttpClient animating_images:self];
        
         NSString *type = @"Facebook";
         NSString *first_name = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"first_name"]];
@@ -546,8 +556,8 @@ error:(NSError *)error{
             
             if([status isEqualToString:@"1"])
             {
-                 [HttpClient stop_activity_animation];
-                
+                VW_overlay.hidden = YES;
+                [activityIndicatorView stopAnimating];
 //                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
 //                [[NSUserDefaults standardUserDefaults] synchronize];
                 NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
@@ -569,7 +579,8 @@ error:(NSError *)error{
             }
             else
             {
-                 [HttpClient stop_activity_animation];
+                VW_overlay.hidden = YES;
+                [activityIndicatorView stopAnimating];
                 if ([msg isEqualToString:@"User already exists"])
                 {
                     msg = @"Email address already in use, Please try with different email.";
@@ -582,8 +593,8 @@ error:(NSError *)error{
         }
         else
         {
-             [HttpClient stop_activity_animation];
-            
+            VW_overlay.hidden = YES;
+            [activityIndicatorView stopAnimating];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
         }
@@ -593,7 +604,8 @@ error:(NSError *)error{
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
-        [HttpClient stop_activity_animation];
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
     }
     
     
@@ -631,7 +643,8 @@ error:(NSError *)error{
     else
     {
         [self.view endEditing:TRUE];
-        [HttpClient animating_images:self];
+        VW_overlay.hidden = NO;
+        [activityIndicatorView startAnimating];
         [self performSelector:@selector(LOGIN_up_api_integration) withObject:nil afterDelay:0.01];
         
     }
@@ -647,7 +660,6 @@ error:(NSError *)error{
 {
     @try
     {
-        [HttpClient animating_images:self];
         NSString *email = _TXT_username.text;
         NSString *password = _TXT_password.text;
         NSDictionary *parameters = @{
@@ -686,20 +698,21 @@ error:(NSError *)error{
                 
 //                [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
 //                [[NSUserDefaults standardUserDefaults] synchronize];
+                VW_overlay.hidden = YES;
+                [activityIndicatorView stopAnimating];
 
                 
                 NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
                 [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
                 
                 [[NSUserDefaults standardUserDefaults] setObject:dictMutable forKey:@"userdata"];
-//                [[NSUserDefaults standardUserDefaults] synchronize];
+                [[NSUserDefaults standardUserDefaults] synchronize];
                 [[NSUserDefaults standardUserDefaults]setObject:self.TXT_username.text forKey:@"email"];
                 [[NSUserDefaults standardUserDefaults] setObject:email forKey:@"user_email"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
 
                 
                 [self MENU_api_call];
-                  [HttpClient stop_activity_animation];
                 
                 
                // UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
@@ -708,8 +721,8 @@ error:(NSError *)error{
             }
             else
             {
-                [HttpClient stop_activity_animation];
-
+                VW_overlay.hidden = YES;
+                [activityIndicatorView stopAnimating];
                 if ([msg isEqualToString:@"User already exists"])
                 {
                     msg = @"Email address already in use, Please try with different email.";
@@ -722,8 +735,8 @@ error:(NSError *)error{
         }
         else
         {
-            [HttpClient stop_activity_animation];
-            
+            VW_overlay.hidden = YES;
+            [activityIndicatorView stopAnimating];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
         }
@@ -732,7 +745,8 @@ error:(NSError *)error{
     
     @catch(NSException *exception)
     {
-         [HttpClient stop_activity_animation];
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
         NSLog(@"The error is:%@",exception);
     }
     

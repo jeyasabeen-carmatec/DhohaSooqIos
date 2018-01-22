@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CCRangeSlider.h"
+#import <TTRangeSlider.h>
 
 @protocol callldelegate <NSObject>
 -(void)get_url;
@@ -23,7 +23,7 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_min;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_max;
 
-@property(nonatomic,weak) IBOutlet CCRangeSlider *LBL_slider;
+@property(nonatomic,weak) IBOutlet TTRangeSlider *LBL_slider;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_submit;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_all;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_today;
