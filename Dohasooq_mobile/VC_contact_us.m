@@ -45,13 +45,22 @@
 //    _VW_address.layer.shadowOffset = CGSizeMake(0.0, 0.0);
 //    _VW_address.layer.shadowOpacity = 1.0;
 //    _VW_address.layer.shadowRadius = 4.0;
-    
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        _TXT_text.textAlignment = NSTextAlignmentRight;
+        
+    }
+
+  //  NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
+
     NSString *description =[NSString stringWithFormat:@"%@",[json_dic valueForKey:@"content"]];
     description = [description stringByAppendingString:[NSString stringWithFormat:@"<style>body{font-family: 'Poppins-Regular'; font-size:%dpx;}</style>",17]];
-    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithData:[description dataUsingEncoding:NSUTF8StringEncoding]options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}documentAttributes:nil error:nil];
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithData:[description dataUsingEncoding:NSUTF8StringEncoding]  options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}documentAttributes:nil  error:nil];
+    
     _TXT_text.attributedText = attributedString;
     NSString *str = _TXT_text.text;
     str = [str stringByReplacingOccurrencesOfString:@"/" withString:@"\n"];
+    
     _TXT_text.text = str;
     
 
@@ -61,6 +70,12 @@
     _VW_contact.frame =frameset;
     
     _LBL_address.text = [json_dic valueForKey:@"fullAdress"];
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        _LBL_address.textAlignment = NSTextAlignmentRight;
+        
+    }
+
     _LBL_address.numberOfLines  = 0;
      [_LBL_address sizeToFit];
    
@@ -108,6 +123,7 @@
 //    [VW_overlay addSubview:activityIndicatorView];
 //    [self.view addSubview:VW_overlay];
  //   [self address_API];
+    self.navigationItem.hidesBackButton = YES;
     
     [HttpClient animating_images:self];
 //        VW_overlay.hidden = NO;
@@ -268,7 +284,7 @@
         NSString *jsonString = xmlString;
         NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
         json_dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-   
+    [self set_up_VIEW];
      [self set_up_VIEW];
  [HttpClient stop_activity_animation];    }
     @catch(NSException *exception)

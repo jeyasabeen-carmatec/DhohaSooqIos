@@ -463,7 +463,7 @@
                       });
                 if (data) {
                   
-                    [HttpClient stop_activity_animation];
+                    
                     
                        response_Arr = data;
                     
@@ -474,6 +474,8 @@
                         {
                              _VW_empty.hidden = NO;
                             _TBL_wish_list_items.hidden =  YES;
+                            [HttpClient stop_activity_animation];
+                            
                             
                         }
                         else{

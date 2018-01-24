@@ -38,7 +38,15 @@
     _TXT_search.frame = frame_nav;
     
     frame_nav = _BTN_search.frame;
-    frame_nav.origin.x = _TXT_search.frame.size.width - _BTN_search.frame.size.width-2;
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+         frame_nav.origin.x = _TXT_search.frame.origin.x- _BTN_search.frame.size.width-2;
+    }
+    else
+    {
+         frame_nav.origin.x = _TXT_search.frame.size.width - _BTN_search.frame.size.width-2;
+    }
+   // frame_nav.origin.x = _TXT_search.frame.size.width - _BTN_search.frame.size.width-2;
     _BTN_search.frame =  frame_nav;
    //  _TBL_search_results.hidden = YES;
     
@@ -411,7 +419,12 @@
     }
     else
     {
-        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please enter a keyword to search for products" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+        [alert show];
+
+        
+      /*  NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
         NSString *list_TYPE = @"productList";
         NSString *str_key = [NSString stringWithFormat:@"%@/txt_%@/0",list_TYPE,_TXT_search.text];
@@ -421,7 +434,7 @@
         
         [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        [self performSegueWithIdentifier:@"search_product_list" sender:self];
+        [self performSegueWithIdentifier:@"search_product_list" sender:self];*/
 
 
     }

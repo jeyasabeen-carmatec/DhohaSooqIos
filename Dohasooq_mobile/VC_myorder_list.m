@@ -242,6 +242,13 @@
     NSString *str = [NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:indexPath.row] valueForKey:@"order_number"]];
     str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
     NSString *str_order = @"ORDER ID :";
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        str_order = @"تم إعداد الطلبية ";
+        str = [NSString stringWithFormat:@": %@",[[json_DATA objectAtIndex:indexPath.row] valueForKey:@"order_number"]];
+    }
+    
+    
     NSString *text = [NSString stringWithFormat:@"%@%@",str_order,str];
     
     
@@ -291,7 +298,12 @@
     }
     NSString *date = [NSString stringWithFormat:@"%@",[[json_DATA  objectAtIndex:indexPath.row] valueForKey:@"order_created"]];
     date = [date stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-    NSString *order_text = @"Ordered On ";
+    NSString *order_text = @"Ordered On :";
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        order_text = @"أنشأت الطلبية بتاريخ";
+        date = [NSString stringWithFormat:@": %@",[[json_DATA  objectAtIndex:indexPath.row] valueForKey:@"order_created"]];
+    }
     NSString *date_text = [NSString stringWithFormat:@"%@%@",order_text,date];
     
     
@@ -360,16 +372,9 @@
         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:price attributes:attribs];
         
         NSRange qrs = [price rangeOfString:qr];
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor redColor]}
                                     range:qrs];
-        }
-        else
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor redColor]}
-                                    range:qrs];
-        }
+        
         order_cell.LBL_price.attributedText = attributedText;
     }
     else

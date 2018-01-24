@@ -132,11 +132,14 @@
  */
 - (MZDayPickerCell *)cellForDay:(MZDay *)day;
 
+-(void)select_date:(NSIndexPath *) indexPath;
+
 @end
 
 @interface NSDate (Additional)
 + (NSDate *)dateFromDay:(NSInteger)day month:(NSInteger)month year:(NSInteger)year;
 + (NSDate *)dateWithNoTime:(NSDate *)dateTime middleDay:(BOOL)middle;
 - (NSUInteger)numberOfDaysInMonth;
+
 @end
 

@@ -27,26 +27,10 @@
     //_vw_align.center = self.view.center;
     
 }
--(void)viewWillAppear:(BOOL)animated{
-    
-    
-//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-//    VW_overlay.clipsToBounds = YES;
-//    //    VW_overlay.layer.cornerRadius = 10.0;
-//    
-//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-//    activityIndicatorView.center = VW_overlay.center;
-//    [VW_overlay addSubview:activityIndicatorView];
-//    VW_overlay.center = self.view.center;
-//    [self.view addSubview:VW_overlay];
-//    VW_overlay.hidden = YES;
-    
-    
-    
+-(void)viewWillAppear:(BOOL)animated
+{
+    self.navigationItem.hidesBackButton = YES;
 }
-
 #pragma textfield delgates
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {

@@ -245,9 +245,16 @@
                     
                     float productprice = [prec_price floatValue];
                     productprice = quantity*productprice;
-                    prec_price = [NSString stringWithFormat:@"%@ %.2f",currency_code,productprice];
                     
-                                        
+                    prec_price = [HttpClient currency_seperator:[NSString stringWithFormat:@"%.2f",productprice]];
+                    
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                         prec_price = [NSString stringWithFormat:@"%@ %@",prec_price,currency_code];
+                    }else{
+                    prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
+                    }
+                    
                     
                     if([current_price isEqualToString:@""]|| [current_price isEqualToString:@"null"]||[current_price isEqualToString:@"<null>"])
                     {
@@ -258,8 +265,10 @@
                         
                          spcl_prc = quantity*spcl_prc;
                         
-                        current_price = [NSString stringWithFormat:@"%.2f",spcl_prc];
+                        //current_price = [NSString stringWithFormat:@"%.2f",spcl_prc];
+                        current_price = [HttpClient currency_seperator:[NSString stringWithFormat:@"%.2f",spcl_prc]];
                     }
+                    
                     
                 } @catch (NSException *exception) {
                     
@@ -269,10 +278,6 @@
                 
             }
   
-            
-            
-            
-            
             
         NSString *text;
         
@@ -296,17 +301,19 @@
             }
             else{
                 
-//                float disc = [prec_price integerValue]-[current_price integerValue];
-//                float digits = disc/[prec_price integerValue];
+
                 NSString *str_discount =[NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"discount"]];
                 str_discount = [str_discount stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-//                int discount = digits *100;
                
                 cell.LBL_discount.text =[NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"discount"]];
                 
-                //prec_price = [currency_code stringByAppendingString:prec_price];
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    text = [NSString stringWithFormat:@"%@ %@ %@",prec_price,current_price,currency_code];
+                }
+                else{
                 text = [NSString stringWithFormat:@"%@ %@ %@",currency_code,current_price,prec_price];
-                
+                }
                 
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                 
@@ -326,11 +333,7 @@
                                             range:ename];
                 }
                 NSRange cmp = [text rangeOfString:prec_price];
-                //        [attributedText addAttribute: NSStrikethroughStyleAttributeName value:[NSNumber numberWithInteger: NSUnderlineStyleSingle] range: NSMakeRange(0, [prec_price length])];
-                //
-                
-                
-                //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
+        
                 if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
                 {
                     [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor]}
@@ -342,7 +345,17 @@
                                             range:cmp ];
                 }
                 @try {
-                    [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(current_price.length+currency_code.length+2, [prec_price length]+2)];
+                   
+                    
+                    
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                         [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(0, [prec_price length])];
+                    }
+                    else{
+                         [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(current_price.length+currency_code.length+2, [prec_price length]+2)];
+                    }
+                    
                 } @catch (NSException *exception) {
                     NSLog(@"%@",exception);
                 }
@@ -436,15 +449,25 @@
             cell = [nib objectAtIndex:index];
         }
         
-        cell.redempion_lbl.hidden = YES;
-        cell.redemption_amt.hidden = YES;
+       // cell.redempion_lbl.hidden = YES;
+        //cell.redemption_amt.hidden = YES;
         
         NSString *total_amt = [NSString stringWithFormat:@"%@",[json_dict valueForKey:@"sub_total"]];
         
         if ([total_amt isEqualToString:@"(null)"]|| [total_amt isEqualToString:@"<null>"]) {
             // NSString *code = @"QR";
             total_amt = @"0";
-            NSString *text = [NSString stringWithFormat:@"%@ %@",currency_code,total_amt];
+            
+            NSString *text;
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"]){
+                  text = [NSString stringWithFormat:@"%@ %@",total_amt,currency_code];
+            }else{
+                text = [NSString stringWithFormat:@"%@ %@",currency_code,total_amt];
+            }
+
+          
+            
+           
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor]}
                                     range:[text rangeOfString:total_amt]];
@@ -454,10 +477,29 @@
         }
         else{
             NSString *miles = [NSString stringWithFormat:@"%@",[json_dict valueForKey:@"dohamiles"]];
-            NSString *str_or = @"(OR)";
-            NSString *str_miles = [NSString stringWithFormat:@"%@\nDoha Miles %@",str_or,miles];
+            NSString *str_or ;
+            NSString *str_miles ;
+            
+             total_amt = [HttpClient currency_seperator:total_amt];
+             NSString *text;
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {   str_or = @"(أو)";
+                str_miles = [NSString stringWithFormat:@"%@\nأميال الدوحة %@",str_or,miles];
+                text = [NSString stringWithFormat:@"%@ %@",total_amt,currency_code];
+            }
+            else{
+                str_or = @"(OR)";
+                str_miles = [NSString stringWithFormat:@"%@\nDoha Miles %@",str_or,miles];
+                text = [NSString stringWithFormat:@"%@ %@",currency_code,total_amt];
+            }
 
-            NSString *text = [NSString stringWithFormat:@"%@ %@",currency_code,total_amt];
+
+           
+           
+            
+            
+            
             //cell.LBL_dohamiles.text = str_miles;
             
             if ([cell.LBL_total_amount respondsToSelector:@selector(setAttributedText:)]) {
@@ -477,9 +519,7 @@
               
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}
                                             range:cmp ];
-               
-                
-                
+            
                 cell.LBL_amount.text = text;
                 cell.LBL_total_amount.attributedText = attributedText;
             }
@@ -491,9 +531,8 @@
             if ([cell.LBL_dohamiles respondsToSelector:@selector(setAttributedText:)])
             {
                 NSDictionary *attribs = @{
-                                          NSForegroundColorAttributeName:cell.LBL_total_amount.textColor,
-                                          NSFontAttributeName:cell.LBL_total_amount.font
-                                          };
+                                          NSForegroundColorAttributeName:cell.LBL_dohamiles.textColor,
+                                          NSFontAttributeName:cell.LBL_dohamiles.font                                          };
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:str_miles attributes:attribs];
                 
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor blackColor],}
@@ -506,8 +545,9 @@
                 
                 
                 
-               
-                cell.LBL_dohamiles.attributedText = attributedText;
+               cell.LBL_dohamiles.text = str_miles;
+                //cell.LBL_dohamiles.attributedText = attributedText;
+                NSLog(@"%@",attributedText);
             }
             else
             {
@@ -552,8 +592,22 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0) {
-        return 170;
-         //return UITableViewAutomaticDimension;
+        
+        CGSize result = [[UIScreen mainScreen] bounds].size;
+        
+        if(result.height <= 480)
+        {
+            return 180;
+        }
+        else if(result.height <= 568)
+        {
+           return 190;
+        }
+        else
+        {
+           return 170;
+        }
+
         
     }
     else{
@@ -940,8 +994,20 @@ params.put("customerId",customerid);
             price = @"0";
         }
        
-        price = [NSString stringWithFormat:@"%.2f",total];
-        NSString *text =  [NSString stringWithFormat:@"%@ %@",qr,price];
+        price = [HttpClient currency_seperator:[NSString stringWithFormat:@"%.2f",total]];
+       
+        NSString *text;
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        { text =  [NSString stringWithFormat:@"%@ %@",price,qr];
+
+        }
+        else{
+            text =  [NSString stringWithFormat:@"%@ %@",qr,price];
+        }
+        
+        
+        
        // _LBL_miles.text = plans;
         NSLog(@"Value  %@",text);
         NSLog(@"%@",_LBL_price);

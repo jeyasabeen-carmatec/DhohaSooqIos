@@ -145,18 +145,21 @@
     framset = _VW_radio.frame;
     framset.origin.y = _Vw_line1.frame.origin.y + _Vw_line1.frame.size.height + 5;
     _VW_radio.frame = framset;
-    framset = _BTN_submit.frame;
+    
+    /*framset = _BTN_submit.frame;
     framset.origin.y = _VW_radio.frame.origin.y + _VW_radio.frame.size.height;
-    _BTN_submit.frame = framset;
+    _BTN_submit.frame = framset;*/
     
     framset = _VW_contents.frame;
     framset.size.width = _VW_contents.frame.size.width;
-    framset.size.height = _BTN_submit.frame.origin.y + _BTN_submit.frame.size.height;
+    framset.size.height = _VW_radio.frame.origin.y + _VW_radio.frame.size.height;
     _VW_contents.frame = framset;
+    
+    
     
     framset = _IMG_back_ground.frame;
     framset.size.width = _VW_contents.frame.size.width;
-    framset.size.height = _scroll_contents.frame.origin.y + _scroll_contents.frame.size.height;
+    framset.size.height = self.view.frame.size.height;
     _IMG_back_ground.frame = framset;
 }
 -(void)viewWillAppear:(BOOL)animated{

@@ -114,11 +114,11 @@
         
         NSString *sign_UP = @"SIGN UP";
 
-        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+       /* if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             sign_UP =@"تفضّل بالتسجيل ";
             need_sign = @"هل تحتاج إلى إنشاء حساب؟";
-        }
+        }*/
         
         
         NSString *text = [NSString stringWithFormat:@"%@ %@",need_sign,sign_UP];

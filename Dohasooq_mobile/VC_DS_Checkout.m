@@ -85,13 +85,13 @@
 //}
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     
-//    [HttpClient animating_images:self];
+   [HttpClient animating_images:self];
 
     
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     
-//    [HttpClient stop_activity_animation];
+    [HttpClient stop_activity_animation];
     NSLog(@"Loading Successful ");
     
     

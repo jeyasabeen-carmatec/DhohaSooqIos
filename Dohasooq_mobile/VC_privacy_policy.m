@@ -59,6 +59,10 @@
     [self.about_us_VW loadRequest:request];
 
 }
+-(void)viewWillAppear:(BOOL)animated
+{
+    self.navigationItem.hidesBackButton = YES;
+}
 - (IBAction)back_action:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }

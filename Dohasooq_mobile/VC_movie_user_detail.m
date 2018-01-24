@@ -31,6 +31,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    _TXT_name.delegate = self;
+    _TXT_code.delegate = self;
+    _TXT_mail.delegate = self;
+    _TXT_phone.delegate = self;
+    _TXT_voucher.delegate = self;
+    
     phone_code_arr = [[NSMutableArray alloc]init];
     CGRect frameset = _VW_contents.frame;
     frameset.size.height = _BTN_pay.frame.origin.y + _BTN_pay.frame.size.height;
@@ -130,7 +136,7 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     
-    self.navigationController.navigationBar.hidden = YES;
+    //self.navigationController.navigationBar.hidden = YES;
 
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];

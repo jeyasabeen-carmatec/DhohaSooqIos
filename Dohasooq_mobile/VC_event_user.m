@@ -28,6 +28,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    _TXT_name.delegate = self;
+    _TXT_code.delegate = self;
+    _TXT_mail.delegate = self;
+    _TXT_phone.delegate = self;
+    _TXT_voucher.delegate = self;
+    
     
     @try
     {

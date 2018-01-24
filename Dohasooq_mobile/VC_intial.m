@@ -109,7 +109,7 @@
     [timer invalidate];
     VW_overlay.hidden = NO;
   //  [activityIndicatorView startAnimating];
-    [self performSelector:@selector(MENU_api_call) withObject:activityIndicatorView afterDelay:0.01];
+    [self performSelector:@selector(API_call) withObject:activityIndicatorView afterDelay:0.01];
 
 
     
@@ -772,8 +772,8 @@
         NSHTTPURLResponse *response = nil;
         NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
         //    NSString *urlGetuser =[NSString stringWithFormat:@"%@menuList/%ld/%ld.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]];
-        NSString *lang = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
-        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        NSString *lang = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
 
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/menuList/%@/%@.json",SERVER_URL,country,lang];
         
@@ -799,6 +799,9 @@
           //  [self performSegueWithIdentifier:@"logint_to_home" sender:self];
             
             NSLog(@"the api_collection_product%@",json_DATA);
+            [[NSUserDefaults standardUserDefaults] setObject:json_DATA forKey:@"pho"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
             VW_overlay.hidden = YES;
            // [self dismissViewControllerAnimated:NO completion:nil];
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
@@ -808,6 +811,8 @@
                 Home_page_Qtickets *controller = [storyboard instantiateViewControllerWithIdentifier:@"Home_page_Qtickets"];
                 UINavigationController *navigationController =
                 [[UINavigationController alloc] initWithRootViewController:controller];
+                navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+                navigationController.navigationBar.barTintColor = [UIColor whiteColor];
                 [self  presentViewController:navigationController animated:NO completion:nil];
                 
             }
@@ -829,7 +834,105 @@
     }
        
 }
+-(void)API_call
+{
+    
+        @try
+        {
+            [HttpClient animating_images:self];
+            
+            /**********   After passing Language Id and Country ID ************/
+            NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
+           
+            NSString *user_id;
+            @try
+            {
+                NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+                if(dict.count == 0)
+                {
+                    user_id = @"(null)";
+                }
+                else
+                {
+                    NSString *str_id = @"user_id";
+                    // NSString *user_id;
+                    for(int i = 0;i<[[dict allKeys] count];i++)
+                    {
+                        if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                        {
+                            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                            break;
+                        }
+                        else
+                        {
+                            
+                            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                        }
+                        
+                    }
+                }
+            }
+            @catch(NSException *exception)
+            {
+                user_id = @"(null)";
+                
+            }
+            
+            NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/home/%ld/%ld/%@.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"],user_id];
+            NSLog(@"country id %ld ,language id %ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
+            
+            
+            
+            urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+            [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error) {
+                        [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                        
+                        [HttpClient stop_activity_animation];
+                    }
+                    if (data) {
+                        
+                        [self MENU_api_call];
+                        [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Home_data"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                        
+                        
+                    }
+                    else
+                    {
+                        [HttpClient stop_activity_animation];
+                        //                        VW_overlay.hidden = YES;
+                        //                        [activityIndicatorView stopAnimating];
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        [alert show];
+                        // [self viewWillAppear:NO];
+                        
+                        
+                        
+                    }
+                    
+                    [HttpClient stop_activity_animation];
+                    
+                });
+            }];
+        }
+        @catch(NSException *exception)
+        {
+            NSLog(@"The error is:%@",exception);
+            [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+            //        VW_overlay.hidden = YES;
+            //        [activityIndicatorView stopAnimating];
+            // [self viewWillAppear:NO];
+            
+            [HttpClient stop_activity_animation];
+            
+        }
+        
+        
+    
 
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

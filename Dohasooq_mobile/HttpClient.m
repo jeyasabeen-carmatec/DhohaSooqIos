@@ -184,10 +184,23 @@ UIView *VW_overlay;
     
 }
 
-
-
-
-
-
-
++(NSString*)currency_seperator:(NSString *)Str{
+    
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init] ;
+    [formatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    [formatter setGroupingSeparator:@","];
+    [formatter setDecimalSeparator:@"."];
+    
+    // Decimal values read from any db are always written with no grouping separator and a comma for decimal.
+    
+    NSNumber *numberFromString = [formatter numberFromString:Str];
+    
+    [formatter setGroupingSeparator:@","]; // Whatever you want here
+    [formatter setDecimalSeparator:@"."]; // Whatever you want here
+    
+    NSString *finalValue = [formatter stringFromNumber:numberFromString];
+    return finalValue;
+    
+}
 @end

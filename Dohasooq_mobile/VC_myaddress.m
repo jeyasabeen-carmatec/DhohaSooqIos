@@ -556,10 +556,10 @@
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,170, 60)];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,_TBL_address.frame.size.width, 60)];
     headerView.backgroundColor = [UIColor clearColor];
     
-    UILabel *label = [[UILabel alloc] initWithFrame: CGRectMake(10,0, 170, 30)];
+    UILabel *label = [[UILabel alloc] initWithFrame: CGRectMake(10,0, _TBL_address.frame.size.width, 30)];
     label.backgroundColor = [UIColor whiteColor];
     label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
     
@@ -777,69 +777,165 @@
     if ([str_fname isEqualToString:@""]) {
         
         [cell.TXT_first_name becomeFirstResponder];
-       msg = @"Fname Should Not be Empty";
+       msg = @"Please enter First Name field";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى تعبئة حقل الاسم الأول";
+        }
         
     }
-    else if (str_fname.length<3 || str_fname.length>30)
+    else if (str_fname.length<3 )
     {
         [cell.TXT_first_name becomeFirstResponder];
-         msg = @"Fname should be 3 to 30  characters Range";
+           msg = @"First name should not be less than 3 characters";
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يقل الاسم الأول عن 3 حروف";
+        }
+
     }
+    else if (str_fname.length > 30)
+    {
+        [cell.TXT_first_name becomeFirstResponder];
+        msg = @"First name should not be more than 30 characters";
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يزيد الاسم الأول عن 30 حرفاً";
+        }
+        
+    }
+
     
     else if ([str_lname isEqualToString:@""]) {
         
         [cell.TXT_last_name becomeFirstResponder];
-        msg = @"Lname Should Not be Empty";
+        msg = @"Please enter Last Name field";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى تعبئة حقل الاسم الأخير ";
+        }
+
         
     }
-    else if (str_lname.length<3 || str_lname.length>30)
+    else if(str_lname.length < 3)
     {
         [cell.TXT_last_name becomeFirstResponder];
-        msg = @"Lname Should be 3 to 30  Characters Range";
+        msg = @"Last name should not be less than 3 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"الكنية ألا يقل الاسم الأول عن 3 حروف";
+        }
+
+        
+    }
+    else if (str_lname.length>30)
+    {
+        [cell.TXT_last_name becomeFirstResponder];
+       msg = @"Last name should not be more than 30 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"ألا يزيد اسم العائلة عن 30 حرفا";
+        }
+
+        
     }
     else if ([str_addr1 isEqualToString:@""]) {
         
         [cell.TXT_address1 becomeFirstResponder];
         msg = @"Address1 Should Not be Empty";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب  1 عدم ترك حقل العنوان فارغا";
+        }
         
     }
-    else if (str_addr1.length<3 || str_addr1.length>30)
+    else if (str_addr1.length<10 )
     {
         [cell.TXT_address1 becomeFirstResponder];
-        msg = @"Address1 should be 3 to 30  characters Range";
+        msg = @"Address1 should not be less than 10 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب1 ألا يقل العنوان عن 10 رموز";
+        }
+
     }
-//        else if ([str_addr2 isEqualToString:@""]) {
-//        
-//        [cell.TXT_address2 becomeFirstResponder];
-//        msg = @"Address2 Should Not be Empty";
-//        
-//    }
-//    else if (str_addr2.length<3 || str_addr2.length>30)
-//    {
-//        [cell.TXT_address2 becomeFirstResponder];
-//        msg = @"Address2 should be 3 to 30  characters Range";
-//    }
+    else if (str_addr1.length > 200)
+    {
+        [cell.TXT_address1 becomeFirstResponder];
+        msg = @"Address should not be more than 200 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يزيد العنوان عن 200 رمز";
+        }
+        
+    }
+
+    
     else if ([str_city isEqualToString:@""]) {
         
         [cell.TXT_city becomeFirstResponder];
         msg = @"City Should Not be Empty";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب عدم ترك حقل المدينة فارغاً";
+        }
         
     }
-    else if (str_city.length<3 || str_city.length>15)
+    else if (str_city.length<3)
     {
         [cell.TXT_city becomeFirstResponder];
-        msg = @"City Should be 3 to 15  Characters Range";
+        msg = @"City should not be less than 3 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يقل حقل المدينة عن 3 أحرف";
+        }
+
     }
+    else if (str_city.length > 30)
+    {
+        [cell.TXT_city becomeFirstResponder];
+        msg = @"City should not be more than 30 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يزيد حقل المدينة عن 30 حرفاً";
+        }
+        
+    }
+
     else if ([str_zip_code isEqualToString:@""]) {
         
         [cell.TXT_zip becomeFirstResponder];
-        msg = @"Postal/Zipcode Should not be Empty";
+        msg = @"Zipcode Should not be Empty";
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب عدم ترك حقل الرمز البريدي فارغاً";
+        }
+   
         
     }
-    else if (str_zip_code.length<4 || str_zip_code.length>8)
+    else if (str_zip_code.length < 3)
     {
         [cell.TXT_zip becomeFirstResponder];
-        msg = @"Postal/Zipcode Should be 4 to 8  Characters Range";
+        msg = @"Zip code should not be less than 3 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يقل حقل الرمز البريدي عن 3 أرقام";
+        }
+        
+    }
+
+    else if (str_zip_code.length>10)
+    {
+        [cell.TXT_zip becomeFirstResponder];
+        msg = @"Zip code should not be more than 10 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يزيد حقل الرمز البريدي عن 10 أرقام ";
+        }
+
     }
     
     else if (edit_tag != 999){
@@ -847,18 +943,41 @@
         if ([str_phone isEqualToString:@""]) {
             
             [cell.TXT_phone becomeFirstResponder];
-            msg = @"Mobile Number  Should Not be Empty";
+            msg = @"Phone Number  Should Not be Empty";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"رقم الهاتف ترك حقل المدينة فارغاً";
+            }
             
         }
-        else if (str_phone.length<5 || str_phone.length >15)
+        else if (str_phone.length<5)
         {
             [cell.TXT_phone becomeFirstResponder];
-            msg = @"Mobile Number should be 5 to 15  Characters Range";
+            msg = @"Phone Number cannot be less than 5 digits";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"لا يجب ألا يقلّ رقم الجوال عن 5 أرقام ";
+            }
         }
+        else if (str_phone.length > 15)
+        {
+            [cell.TXT_phone becomeFirstResponder];
+            msg = @"Phone Number cannot be more than 15 digits";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يجب أن لا يتجاوز رقم الجوال 15 رقماً";
+            }
+        }
+
+        
         if ([code_cntry isEqualToString:@""]) {
             
             [cell.TXT_cntry_code becomeFirstResponder];
-            msg = @"Please Select Country Code";
+            msg = @"Country Code and Phone Number is required";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"رمز البلد ورقم الهاتف مطلوبين";
+            }
             
         }
        
@@ -869,17 +988,34 @@
     else if ([str_state isEqualToString:@""])
     {
         [cell.TXT_state becomeFirstResponder];
-        msg = @"Please Select State";
+        msg = @"Please Select State";//يرجى تحديد البلد
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى تحديد الدولة";
+        }
+
     }
     else if ([str_country isEqualToString:@""])
     {
         [cell.TXT_country becomeFirstResponder];
         msg = @"Please Select Country";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى تحديد البلد";
+        }
     }
     
     
     if (msg) {
-        [HttpClient createaAlertWithMsg:msg andTitle:@""];
+        
+        NSString *str = @"Ok";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"حسنا";
+        }
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:str, nil];
+        [alert show];
     }
     else if (edit_tag == 999) {
         
@@ -939,8 +1075,21 @@
                         NSString *succes = [NSString stringWithFormat:@"%@",[data valueForKey:@"success"]];
                         if ([succes isEqualToString:@"success"]) {
                             i=i-1;
-                            [HttpClient createaAlertWithMsg:@"Shipping Address Updated Successfully." andTitle:@""
-                             ];
+                            NSString *str = @"Ok";
+                            NSString *str_msg = @"Shipping Address Updated Successfully.";
+                            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                            {
+                                str = @"حسنا";
+                                str_msg =  @"عنوان الشحن تم تحديثه بنجاح.";
+                            }
+                            
+                            
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_msg delegate:self cancelButtonTitle:nil otherButtonTitles:str, nil];
+                            [alert show];
+
+                            
+                            //عنوان الشحن تم تحديثه بنجاح.[HttpClient createaAlertWithMsg:@"Shipping Address Updated Successfully." andTitle:@""
+                             //];
                             [self Shipp_address_API];
                         }
                     }
@@ -1013,7 +1162,20 @@
                             NSString *succs = [NSString stringWithFormat:@"%@",[data valueForKey:@"success"]];
                             if ([succs isEqualToString:@"success"] || [succs isEqualToString:@"1"] ) {
                                 i=i-1;
-                                [HttpClient createaAlertWithMsg:@"Billing Address saved successfully" andTitle:@""];
+                                NSString *str = @"Ok";
+                                NSString *str_msg = @"Billing Address saved successfully";
+                                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                                {
+                                    str = @"حسنا";
+                                    str_msg =  @"تم حفظ عنوان إرسال الفواتير بنجاح.";
+                                }
+                                
+                                
+                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_msg delegate:self cancelButtonTitle:nil otherButtonTitles:str, nil];
+                                [alert show];
+                                
+
+                                //[HttpClient createaAlertWithMsg:@"Billing Address saved successfully" andTitle:@""];
                                  [self Shipp_address_API];
                                }
                             
@@ -1120,9 +1282,19 @@ if (textField.tag == 8) {
 //    textFieldRowCell = (billing_address *)[self.TBL_address cellForRowAtIndexPath:indexPath];
     textField.text = cntry_selection;
     
+    
     if ([textField.text isEqualToString:@""]) {
-        [HttpClient createaAlertWithMsg:@"Please Select Country " andTitle:@""];
-    }else{
+        
+       NSString  *msg = @"Please Select Country";
+         NSString *str = @"Ok";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"حسنا";
+            msg = @"يرجى تحديد البلد";
+        }
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:str, nil];
+        [alert show];    }else{
         
     }
     //textFieldRowCell.TXT_state.placeholder = @" Select State";

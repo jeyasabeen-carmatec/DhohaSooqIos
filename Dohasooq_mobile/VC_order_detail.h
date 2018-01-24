@@ -136,8 +136,10 @@
 @property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_message_field;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_timer_lbl;
 
+//special instructions view
 
-
+@property(nonatomic,weak) IBOutlet UIView *VW_special;
+@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_instructions;
 
 
 @end

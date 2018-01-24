@@ -82,17 +82,19 @@
     
 
 
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-    {
-        [self.collection_product registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
-    }
-    else
-    {
-        [self.collection_product registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
-    }
+    [self.collection_product registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
+    
     _VW_filter.hidden = NO;
+    
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+         sort_array = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"الأفضل مبيعاً",@"bestSelling",@"الأحدث ",@"newListed",@"من الأعلى إلى الأقل",@"highToLow",@"من الأقل إلى الأعلى",@"lowToHigh",@"الخصم",@"discount", nil];
+    }
+    else{
+         sort_array = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Best Selling",@"bestSelling",@"Latest",@"newListed",@"High To Low",@"highToLow",@"Low To High",@"lowToHigh",@"Discount",@"discount", nil];
+    }
 
-    sort_array = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Best Selling",@"bestSelling",@"Latest",@"newListed",@"High To Low",@"highToLow",@"Low To High",@"lowToHigh",@"Discount",@"discount", nil];
+   
         // [self brands_STORE];
     
     CGRect frameset = _VW_empty.frame;
@@ -106,6 +108,7 @@
     _BTN_empty.layer.cornerRadius = self.BTN_empty.frame.size.width / 2;
     _BTN_empty.layer.masksToBounds = YES;
     [_BTN_top addTarget:self action:@selector(scroll_top) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_cart addTarget:self action:@selector(going_to_cart_action) forControlEvents:UIControlEventTouchUpInside];
     
 }
 
@@ -118,11 +121,80 @@
     self.navigationItem.hidesBackButton = YES;
     
 }
+#pragma Navigation bar Actions
 -(void)scroll_top
 {
     [self.collection_product scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
                                 atScrollPosition:UICollectionViewScrollPositionTop
                                         animated:YES];
+}
+-(void)going_to_cart_action
+{
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id;
+    @try
+    {
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
+    NSString *str_status_text;
+    if([user_id isEqualToString:@"(null)"])
+    {
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str_status_text = @"يرجى تسجيل الدخول للوصول إلى هذا";
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"تسجيل الدخول" otherButtonTitles:@"إلغاء", nil];
+            alert.tag = 1;
+            [alert show];
+            
+        }
+        else
+        {
+            str_status_text = @"Please login to access this";
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"Login" otherButtonTitles:@"Cancel", nil];
+            alert.tag = 1;
+            [alert show];
+            
+        }
+        
+        
+        
+    }
+    else
+    {
+        [self performSegueWithIdentifier:@"product_list_to_cart" sender:self];
+        
+    }
+
+    
 }
 -(void)set_appear
 {
@@ -298,29 +370,6 @@
    
 }
 
-- (IBAction)wish_list_action:(UIBarButtonItem *)sender
-{
-        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-        NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
-        if([user_id isEqualToString:@"(null)"])
-        {
-            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login First" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
-            alert.tag = 1;
-            [alert show];
-            
-        }
-        else
-        {
-            
-            
-            [self performSegueWithIdentifier:@"productList_to_wishList" sender:self];
-        }
-        
-    
-    
-    
-}
 
 #pragma Collection View Delgates
 
@@ -473,6 +522,7 @@
                 }
                 
                 
+                
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                 
                 
@@ -505,15 +555,23 @@
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
 //                    prec_price = [prec_price stringByAppendingString:currency_code];
-                    text = [NSString stringWithFormat:@"%@ %@ %@",prec_price,current_price,currency_code];
+                      prec_price = [NSString stringWithFormat:@"%@ %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"],currency_code];
+                    current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency_code];
+                    text = [NSString stringWithFormat:@"%@ %@",prec_price,current_price];
+                    
                 }
                 
                 
                 
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                 int sizeval = 12;
-                if (prec_price.length >= 10) {
+                
+                if (prec_price.length >= 10)
+                {
                     sizeval = 10;
+                }
+                else{
+                    sizeval = 12;
                 }
                 
                 
@@ -531,18 +589,10 @@
                 
                 
                 NSRange qrname = [text rangeOfString:currency_code];
-//                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-//                {
-//                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:25.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
-//                                            range:qrname];
-//                }
-//                else
-//                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                             range:qrname];
-//                }
-                
-                
+
                 
                 
                 NSRange cmp = [text rangeOfString:prec_price];
@@ -721,28 +771,61 @@
     {
         //        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-        NSString *str_id = @"user_id";
         NSString *user_id;
-        for(int i = 0;i<[[dict allKeys] count];i++)
+        @try
         {
-            if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+            if(dict.count == 0)
             {
-                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
-                break;
+                user_id = @"(null)";
             }
             else
             {
-                
-                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                NSString *str_id = @"user_id";
+                // NSString *user_id;
+                for(int i = 0;i<[[dict allKeys] count];i++)
+                {
+                    if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                    {
+                        user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                        break;
+                    }
+                    else
+                    {
+                        
+                        user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                    }
+                    
+                }
             }
+        }
+        @catch(NSException *exception)
+        {
+            user_id = @"(null)";
             
         }
+        NSString *str_status_text;
         if([user_id isEqualToString:@"(null)"])
         {
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                str_status_text = @"يرجى تسجيل الدخول للوصول إلى هذا";
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"تسجيل الدخول" otherButtonTitles:@"إلغاء", nil];
+                alert.tag = 1;
+                [alert show];
+                
+            }
+            else
+            {
+                str_status_text = @"Please login to access this";
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"Login" otherButtonTitles:@"Cancel", nil];
+                alert.tag = 1;
+                [alert show];
+                
+            }
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please login to add items to wishlist" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
-            alert.tag = 1;
-            [alert show];
+            
             
         }
         else

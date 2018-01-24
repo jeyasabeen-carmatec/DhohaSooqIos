@@ -169,6 +169,10 @@ int j ,i;
             qr = [qr stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
             
             NSString *price = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],qr];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                price = [NSString stringWithFormat:@"%@ %@",qr,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+            }
             
             if ([order_cell.LBL_price respondsToSelector:@selector(setAttributedText:)]) {
                 
@@ -212,7 +216,13 @@ int j ,i;
             
             date = [date stringByReplacingOccurrencesOfString:@"<null>" withString:@"No delivery time allocated "];
             date = [date stringByReplacingOccurrencesOfString:@"" withString:@"No delivery time allocated "];
-            NSString *expect_text = @"Expected Delivary On  ";
+            NSString *expect_text = @"Expected Delivary On :";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+               expect_text = @"الموعد المتوقع للتسليم";
+                date =[NSString stringWithFormat:@": %@",[[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Products"] objectAtIndex:indexPath.row] valueForKey:@"delivery_time"]];
+            }
+
             
             NSString *date_text = [NSString stringWithFormat:@"%@%@",expect_text,date];
             
@@ -369,7 +379,7 @@ int j ,i;
             NSString *item = [NSString stringWithFormat:@"%lu",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Products"] count]];
             item = [item stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             item = [item stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
-           cost_cell.LBL_Total_items.text = [NSString stringWithFormat:@"Total Items: %@",item];
+           cost_cell.LBL_Total_items.text = [NSString stringWithFormat:@"Total Items :%@",item];
             
             NSString *qr = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_total"]];
             qr = [qr stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
@@ -380,7 +390,7 @@ int j ,i;
             
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                cost_cell.LBL_Total_items.text = [NSString stringWithFormat:@" إجمالي العناصر: %@",item];
+                cost_cell.LBL_Total_items.text = [NSString stringWithFormat:@" إجمالي العناصر:%@",item];
                 price = [NSString stringWithFormat:@"%@ %@",qr,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
             }
             
@@ -647,14 +657,24 @@ int j ,i;
             @try
             {
             NSString *transaction_str;
-              NSString *str_pay = @" AMOUNT PAID THROUGH:";
+              NSString *str_pay = @" AMOUNT PAID THROUGH";
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    str_pay = @"المبلغ المدفوع عبر";
+                }
+                
+                
             NSString *type_str;
             @try {
                 if ([[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"transactionstatus"] isKindOfClass:[NSDictionary class]]) {
                 
-                    type_str =[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"transactionstatus"] valueForKey:@"payment_method"];
+                    type_str =[NSString stringWithFormat:@": %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"transactionstatus"] valueForKey:@"payment_method"]];
                     if ([type_str isEqualToString:@"<nil>"]||[type_str isEqualToString:@"<null>"]||[type_str isEqualToString:@""]) {
                         type_str = @"";
+                    }
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                         type_str =[NSString stringWithFormat:@":%@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"transactionstatus"] valueForKey:@"payment_method"]];
                     }
                    
                 }
@@ -898,20 +918,53 @@ int j ,i;
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (section == 2)
     {
-        return @"BILLING ADDRESS";
+        NSString *str = @"BILLING ADDRESS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"عنوان الفاتورة ";
+        }
+
+        
+        return str;
     }
     if (section == 3)
     {
-        return @"SHIPPING ADDRESS";
+        
+        NSString *str = @"SHIPPING ADDRESS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"عنوان الشحن";
+        }
+        
+        
+        return str;
     }
     if(section == 4)
     {
-        return @"PAYMENT STATUS";
+        NSString *str = @"PAYMENT STATUS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"حالة الدفع";
+        }
+        
+        
+        return str;
+
         
     }
     if(section == 5)
     {
-        return @"TRANSACTION DETAILS";
+        NSString *str = @"TRANSACTION DETAILS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"تفاصيل المعاملة ";
+        }
+        
+        
+        return str;
+
+        
+        
         
     }
 
@@ -959,10 +1012,23 @@ int j ,i;
     {
         label.text= @"PAYMENT STATUS";
         
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            label.text =@"حالة الدفع";
+            label.textAlignment = NSTextAlignmentRight;
+        }
+
+        
     }
     if(section == 5)
     {
         label.text= @"TRANSACTION DETAILS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            label.text =@"تفاصيل المعاملة ";
+            label.textAlignment = NSTextAlignmentRight;
+        }
+
         
     }
     else
@@ -1044,7 +1110,7 @@ int j ,i;
         
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-        od_id = @":رقم الطلبية";
+        od_id = @" :رقم الطلبية";
         text = [NSString stringWithFormat:@"%@%@",str,od_id];
         }
         
@@ -1066,7 +1132,7 @@ int j ,i;
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor grayColor]}
                                         range:[text rangeOfString:od_id]];
 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor blueColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
                                         range:ename];
  
             }
@@ -1075,7 +1141,7 @@ int j ,i;
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor grayColor]}
                                         range:[text rangeOfString:od_id]];
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor blueColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
                                         range:ename];
 
             }
@@ -1084,7 +1150,7 @@ int j ,i;
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName :[UIColor grayColor]}
                                         range:[text rangeOfString:od_id]];
 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName :[UIColor blueColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
                                         range:ename];
                 
 
@@ -1103,6 +1169,13 @@ int j ,i;
         date = [date stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
         
         NSString *date_txt= @"Ordered On:";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            date_txt = @" أنشأت الطلبية بتاريخ";
+            date = [NSString stringWithFormat:@": %@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_created"]];
+            date = [date stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+            date = [date stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
+        }
         NSString *date_text = [NSString stringWithFormat:@"%@%@",date_txt,date];
         
         

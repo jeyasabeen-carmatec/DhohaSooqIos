@@ -29,5 +29,6 @@
 +(void)animating_images:(UIViewController *_Nullable)my_controller;
 
 +(void)stop_activity_animation;
++(NSString *_Nullable)currency_seperator:(NSString *_Nullable)Str;
 
 @end
