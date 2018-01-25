@@ -7,7 +7,7 @@
 //
 
 #import "VC_privacy_policy.h"
-#import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_privacy_policy ()<UIWebViewDelegate>
 //{
@@ -72,11 +72,12 @@
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    [HttpClient animating_images:self];
+    [Helper_activity stop_activity_animation:self];
+    //[HttpClient animating_images:self];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -13,6 +13,7 @@
 #import "XMLDictionary/XMLDictionary.h"
 #import "MZDayPickerCell.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 
 @interface VC_Movie_booking ()<UITableViewDelegate,UITableViewDataSource,MZDayPickerDelegate, MZDayPickerDataSource,UICollectionViewDelegate,UICollectionViewDataSource,UIAlertViewDelegate>
@@ -76,7 +77,7 @@
 //    VW_overlay.hidden = YES;
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-     [HttpClient animating_images:self];
+     [Helper_activity animating_images:self];
     [self performSelector:@selector(movie_detil_api) withObject:nil afterDelay:0.01];
 }
 
@@ -364,7 +365,7 @@
     
      [self set_UP_VIEW];
     
-     [HttpClient stop_activity_animation];
+     [Helper_activity stop_activity_animation:self];
      [self viewDidLayoutSubviews];
 }
 
@@ -961,7 +962,7 @@
 
 -(void)ok_action
 {
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
     _VW_alert.hidden = YES;
 }
 - (IBAction)back_action:(id)sender

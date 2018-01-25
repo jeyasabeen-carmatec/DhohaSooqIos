@@ -10,6 +10,7 @@
 #import "XMLDictionary/XMLDictionary.h"
 #import "VC_Movie_booking.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_movie_user_detail ()<UITextFieldDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIWebViewDelegate>
 
@@ -390,7 +391,7 @@
         
     {
 
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
     [self performSelector:@selector(get_transaction_id) withObject:nil afterDelay:0.01];
         
     }
@@ -494,21 +495,31 @@
         NSString* Identifier = [[[UIDevice currentDevice] identifierForVendor] UUIDString]; // IOS 6+
         NSLog(@"output is : %@", Identifier);
 
-    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/send_lock_request?Transaction_Id=%@&name=%@&email=%@&mobile=%@&prefix=%@&VoucherCodes=null&AppSource=11&token=%@",[[temp_dict valueForKey:@"result"] valueForKey:@"_Transaction_Id"],_TXT_name.text,_TXT_mail.text,_TXT_phone.text,str_prefix,Identifier];
+    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/send_lock_request?Transaction_Id=%@&name=%@&email=%@&mobile=%@&prefix=%@&VoucherCodes=null&Source=11&token=%@",[[temp_dict valueForKey:@"result"] valueForKey:@"_Transaction_Id"],_TXT_name.text,_TXT_mail.text,_TXT_phone.text,str_prefix,Identifier];
         str_url = [str_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
     
     NSURL *URL = [[NSURL alloc] initWithString:str_url];
     
     NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
     NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
+    
+        
     NSLog(@"The booking_data is:%@",xmlDoc);
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
+        NSString *str_stat =[NSString stringWithFormat:@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_status"]];
     if(![xmlDoc valueForKey:@"result"])
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Some Thing Went Wrong" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
-        [self get_transaction_id];
+         [Helper_activity stop_activity_animation:self];
+       // [self get_transaction_id];
     }
+     else if([str_stat isEqualToString:@"False"])
+     {
+         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[[xmlDoc valueForKey:@"result"] valueForKey:@"_errormsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+         [alert show];
+          [Helper_activity stop_activity_animation:self];
+     }
     else
     {
         
@@ -529,7 +540,7 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         
         [self performSegueWithIdentifier:@"movie_user_detail_pay" sender:self];
     }
@@ -537,7 +548,7 @@
     }
     @catch(NSException *Exception)
     {
-       [HttpClient stop_activity_animation];
+       [Helper_activity stop_activity_animation:self];
     }
 }
 

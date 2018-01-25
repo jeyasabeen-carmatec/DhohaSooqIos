@@ -506,7 +506,7 @@
                                         <color key="titleColor" red="0.98823529409999999" green="0.68235294120000001" blue="0.15686274510000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </state>
                                 </button>
-                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Country" textAlignment="natural" minimumFontSize="17" id="FYx-wP-3H9" customClass="profile_Hoshi_Billing_ADDR">
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Select Country*" textAlignment="natural" minimumFontSize="17" id="FYx-wP-3H9" customClass="profile_Hoshi_Billing_ADDR">
                                     <rect key="frame" x="15" y="46" width="263" height="50"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                     <nil key="textColor"/>
@@ -516,7 +516,7 @@
                                         <outlet property="delegate" destination="TAi-Yz-SW1" id="PFu-zf-sgj"/>
                                     </connections>
                                 </textField>
-                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="State" textAlignment="natural" minimumFontSize="17" id="0Ap-E5-7Qt" customClass="profile_Hoshi_Billing_ADDR">
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Select State*" textAlignment="natural" minimumFontSize="17" id="0Ap-E5-7Qt" customClass="profile_Hoshi_Billing_ADDR">
                                     <rect key="frame" x="15" y="104" width="263" height="50"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                     <nil key="textColor"/>
@@ -526,7 +526,7 @@
                                         <outlet property="delegate" destination="TAi-Yz-SW1" id="7hB-gr-1q8"/>
                                     </connections>
                                 </textField>
-                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="City" textAlignment="natural" minimumFontSize="17" id="EJQ-Nm-khf" customClass="profile_Hoshi_Billing_ADDR">
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="City*" textAlignment="natural" minimumFontSize="17" id="EJQ-Nm-khf" customClass="profile_Hoshi_Billing_ADDR">
                                     <rect key="frame" x="15" y="162" width="263" height="50"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                     <nil key="textColor"/>
@@ -536,7 +536,7 @@
                                         <outlet property="delegate" destination="TAi-Yz-SW1" id="RQ6-yS-EUD"/>
                                     </connections>
                                 </textField>
-                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Zip Code" textAlignment="natural" minimumFontSize="17" id="R56-yP-zTm" customClass="profile_Hoshi_Billing_ADDR">
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Zip Code*" textAlignment="natural" minimumFontSize="17" id="R56-yP-zTm" customClass="profile_Hoshi_Billing_ADDR">
                                     <rect key="frame" x="15" y="309" width="263" height="50"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                     <nil key="textColor"/>
@@ -555,7 +555,7 @@
                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                 </button>
-                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Address" textAlignment="natural" minimumFontSize="17" id="D42-fI-ddN" customClass="profile_Hoshi_Billing_ADDR">
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Address*" textAlignment="natural" minimumFontSize="17" id="D42-fI-ddN" customClass="profile_Hoshi_Billing_ADDR">
                                     <rect key="frame" x="15" y="220" width="263" height="81"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                     <nil key="textColor"/>
@@ -1422,15 +1422,15 @@
                         </textField>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="+972" textAlignment="center" minimumFontSize="17" id="lYZ-fm-GaG">
                             <rect key="frame" x="23" y="118" width="76" height="50"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="16"/>
                             <textInputTraits key="textInputTraits"/>
                         </textField>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="K8Z-95-TSN">
-                            <rect key="frame" x="83" y="136" width="15" height="15"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="K8Z-95-TSN">
+                            <rect key="frame" x="23" y="136" width="72" height="15"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="15"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
@@ -3102,23 +3102,42 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="OGY-V3-cKs">
-                        <barButtonItem key="leftBarButtonItem" style="plain" id="ORA-1H-4OZ">
-                            <view key="customView" contentMode="scaleToFill" id="VXb-eJ-ml6">
-                                <rect key="frame" x="16" y="5" width="71" height="33"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" buttonType="roundedRect" lineBreakMode="middleTruncation" id="11T-Z3-FrN">
-                                        <rect key="frame" x="4" y="5" width="98" height="25"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
-                                        <state key="normal" backgroundImage="ds_logo.png">
-                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            </view>
-                        </barButtonItem>
+                        <leftBarButtonItems>
+                            <barButtonItem title="" style="plain" id="KzT-p7-C2G">
+                                <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Re3-Kg-PI4">
+                                    <rect key="frame" x="16" y="7" width="20" height="30"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="33"/>
+                                    <inset key="contentEdgeInsets" minX="0.5" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                    <inset key="titleEdgeInsets" minX="0.5" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                    <state key="normal" title="">
+                                        <color key="titleColor" red="0.27450980390000002" green="0.27450980390000002" blue="0.27450980390000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="back_action:" destination="pbc-hN-8EP" eventType="touchUpInside" id="bPy-Ug-yVA"/>
+                                        <action selector="back_action:" destination="HYj-dz-fwV" eventType="touchUpInside" id="n1n-Ba-lem"/>
+                                        <action selector="back_action_clicked:" destination="wMB-1W-bS2" eventType="touchUpInside" id="7Yn-w5-7N9"/>
+                                    </connections>
+                                </button>
+                            </barButtonItem>
+                            <barButtonItem style="plain" id="ORA-1H-4OZ">
+                                <view key="customView" contentMode="scaleToFill" id="VXb-eJ-ml6">
+                                    <rect key="frame" x="44" y="5" width="71" height="33"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" buttonType="roundedRect" lineBreakMode="middleTruncation" id="11T-Z3-FrN">
+                                            <rect key="frame" x="4" y="5" width="98" height="25"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
+                                            <state key="normal" backgroundImage="ds_logo.png">
+                                                <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                        </button>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </barButtonItem>
+                        </leftBarButtonItems>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
@@ -3333,7 +3352,7 @@
                                 <outlet property="delegate" destination="wMB-1W-bS2" id="DsX-I0-haG"/>
                             </connections>
                         </textField>
-                        <textField opaque="NO" clipsSubviews="YES" tag="8" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Country*" textAlignment="natural" minimumFontSize="17" id="3IX-tx-Hu3" customClass="Hoshi_Billing_ADDR">
+                        <textField opaque="NO" clipsSubviews="YES" tag="8" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Select Country*" textAlignment="natural" minimumFontSize="17" id="3IX-tx-Hu3" customClass="Hoshi_Billing_ADDR">
                             <rect key="frame" x="11" y="344" width="153" height="50"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
@@ -3368,7 +3387,7 @@
                                 <outlet property="delegate" destination="wMB-1W-bS2" id="gnN-O9-X4h"/>
                             </connections>
                         </textField>
-                        <textField opaque="NO" clipsSubviews="YES" tag="6" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="State*" textAlignment="natural" minimumFontSize="17" id="ObJ-35-pvj" customClass="Hoshi_Billing_ADDR">
+                        <textField opaque="NO" clipsSubviews="YES" tag="6" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Select State*" textAlignment="natural" minimumFontSize="17" id="ObJ-35-pvj" customClass="Hoshi_Billing_ADDR">
                             <rect key="frame" x="174" y="344" width="128" height="50"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
@@ -3378,7 +3397,7 @@
                                 <outlet property="delegate" destination="wMB-1W-bS2" id="5X6-7c-Svq"/>
                             </connections>
                         </textField>
-                        <textField opaque="NO" clipsSubviews="YES" tag="10" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Phone number*" textAlignment="natural" minimumFontSize="17" id="vZw-WO-RrE" customClass="Hoshi_Billing_ADDR">
+                        <textField opaque="NO" clipsSubviews="YES" tag="10" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Phone Number*" textAlignment="natural" minimumFontSize="17" id="vZw-WO-RrE" customClass="Hoshi_Billing_ADDR">
                             <rect key="frame" x="100" y="399" width="203" height="50"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
@@ -3424,7 +3443,7 @@
                             <rect key="frame" x="15" y="58" width="288" height="50"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="19"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                             <textInputTraits key="textInputTraits"/>
                             <connections>
                                 <outlet property="delegate" destination="wMB-1W-bS2" id="xzL-GM-RFV"/>
@@ -3434,7 +3453,7 @@
                             <rect key="frame" x="15" y="115" width="288" height="50"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="19"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                             <textInputTraits key="textInputTraits"/>
                             <connections>
                                 <outlet property="delegate" destination="wMB-1W-bS2" id="cuZ-Cq-4pJ"/>
@@ -3444,7 +3463,7 @@
                             <rect key="frame" x="15" y="172" width="288" height="51"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="19"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                             <textInputTraits key="textInputTraits"/>
                             <connections>
                                 <outlet property="delegate" destination="wMB-1W-bS2" id="otL-rj-HHr"/>
@@ -3454,7 +3473,7 @@
                             <rect key="frame" x="15" y="230" width="288" height="50"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="19"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                             <textInputTraits key="textInputTraits"/>
                             <connections>
                                 <outlet property="delegate" destination="wMB-1W-bS2" id="4V3-rH-m0T"/>
@@ -3464,7 +3483,7 @@
                             <rect key="frame" x="15" y="287" width="144" height="50"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="19"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                             <textInputTraits key="textInputTraits"/>
                             <connections>
                                 <outlet property="delegate" destination="wMB-1W-bS2" id="Q6C-lD-2OG"/>
@@ -3474,17 +3493,17 @@
                             <rect key="frame" x="166" y="287" width="136" height="50"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                             <textInputTraits key="textInputTraits"/>
                             <connections>
                                 <outlet property="delegate" destination="wMB-1W-bS2" id="58I-ct-PsC"/>
                             </connections>
                         </textField>
-                        <textField opaque="NO" clipsSubviews="YES" tag="6" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="State*" textAlignment="natural" minimumFontSize="17" id="3uK-8y-QuW" customClass="Hoshi_Billing_ADDR">
+                        <textField opaque="NO" clipsSubviews="YES" tag="6" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Select State*" textAlignment="natural" minimumFontSize="17" id="3uK-8y-QuW" customClass="Hoshi_Billing_ADDR">
                             <rect key="frame" x="166" y="345" width="135" height="50"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="19"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                             <textInputTraits key="textInputTraits"/>
                             <connections>
                                 <outlet property="delegate" destination="wMB-1W-bS2" id="ya9-wa-QcF"/>
@@ -3530,11 +3549,11 @@
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
-                        <textField opaque="NO" clipsSubviews="YES" tag="8" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Country*" textAlignment="natural" minimumFontSize="17" id="fOj-dr-fZA" customClass="Hoshi_Billing_ADDR">
+                        <textField opaque="NO" clipsSubviews="YES" tag="8" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Select Country*" textAlignment="natural" minimumFontSize="17" id="fOj-dr-fZA" customClass="Hoshi_Billing_ADDR">
                             <rect key="frame" x="15" y="344" width="144" height="50"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="19"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                             <textInputTraits key="textInputTraits"/>
                             <connections>
                                 <outlet property="delegate" destination="wMB-1W-bS2" id="TX3-Je-sN5"/>
@@ -3566,11 +3585,11 @@
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <textField opaque="NO" clipsSubviews="YES" tag="10" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Phone number*" textAlignment="natural" minimumFontSize="17" id="6Ez-th-vqr" customClass="Hoshi_Billing_ADDR">
+                        <textField opaque="NO" clipsSubviews="YES" tag="10" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Phone Number*" textAlignment="natural" minimumFontSize="17" id="6Ez-th-vqr" customClass="Hoshi_Billing_ADDR">
                             <rect key="frame" x="103" y="402" width="199" height="50"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="19"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                             <textInputTraits key="textInputTraits"/>
                             <connections>
                                 <outlet property="delegate" destination="wMB-1W-bS2" id="Jy1-PE-g7A"/>
@@ -3709,28 +3728,28 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" alpha="0.80000000000000004" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="characterWrap" baselineAdjustment="alignBaselines" minimumFontSize="8" id="Pag-1Z-LeA">
-                            <rect key="frame" x="228" y="50" width="83" height="24"/>
+                            <rect key="frame" x="227" y="50" width="83" height="24"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" alpha="0.80000000000000004" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="right" lineBreakMode="characterWrap" baselineAdjustment="alignBaselines" minimumFontSize="8" id="rVt-gX-Tow">
-                            <rect key="frame" x="227" y="77" width="84" height="24"/>
+                        <label opaque="NO" userInteractionEnabled="NO" alpha="0.80000000000000004" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="characterWrap" baselineAdjustment="alignBaselines" minimumFontSize="8" id="rVt-gX-Tow">
+                            <rect key="frame" x="227" y="77" width="83" height="24"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" name="Roboto-Regular" family="Roboto" pointSize="16"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="TOTAL AMOUNT" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Zzj-Qu-Jz9">
-                            <rect key="frame" x="7" y="201" width="117" height="28"/>
+                            <rect key="frame" x="7" y="192" width="117" height="28"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="15"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="right" lineBreakMode="characterWrap" baselineAdjustment="alignBaselines" minimumFontSize="8" id="QlS-2z-zRn">
-                            <rect key="frame" x="132" y="199" width="181" height="29"/>
+                            <rect key="frame" x="132" y="190" width="181" height="29"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
                             <nil key="textColor"/>
@@ -3769,9 +3788,9 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="8" id="XJR-a3-U1K">
-                            <rect key="frame" x="132" y="225" width="181" height="73"/>
+                            <rect key="frame" x="132" y="213" width="181" height="85"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="12"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
@@ -4166,7 +4185,7 @@
                                             <segue destination="JxF-FE-DwD" kind="push" id="5H5-cs-IyK"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="hRv-JK-7Tq" customClass="MIBadgeButton">
+                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="hRv-JK-7Tq">
                                         <rect key="frame" x="50" y="9" width="20" height="20"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" backgroundImage="online_shopping_cart.png"/>
@@ -4184,7 +4203,7 @@
                     <connections>
                         <outlet property="BTN_back" destination="3yI-Mc-r84" id="iEB-jZ-ykd"/>
                         <outlet property="BTN_buy_now" destination="aCI-qq-eso" id="Mht-Hf-gmS"/>
-                        <outlet property="BTN_cart" destination="hRv-JK-7Tq" id="efk-md-wh6"/>
+                        <outlet property="BTN_cart" destination="hRv-JK-7Tq" id="VOL-Io-KX7"/>
                         <outlet property="BTN_left" destination="LIi-os-0Vg" id="s6y-OB-fUd"/>
                         <outlet property="BTN_minus" destination="NpO-1e-Kbt" id="rVE-Gu-1qK"/>
                         <outlet property="BTN_plus" destination="4T1-4A-c6y" id="R5u-KY-59K"/>
@@ -4968,7 +4987,7 @@
                                                 <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                         </button>
-                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="QHO-LG-ZFt" customClass="MIBadgeButton">
+                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="QHO-LG-ZFt">
                                             <rect key="frame" x="203" y="7" width="20" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <inset key="imageEdgeInsets" minX="5" minY="6" maxX="5" maxY="5"/>
@@ -5012,7 +5031,7 @@
                         <outlet property="BTN_QT_view" destination="eln-cT-U7g" id="bu7-TV-KSB"/>
                         <outlet property="BTN_TOP" destination="eg7-a9-hDr" id="ZUw-EV-xrX"/>
                         <outlet property="BTN_address" destination="PiP-TE-37s" id="Hpk-Lv-Odz"/>
-                        <outlet property="BTN_cart" destination="QHO-LG-ZFt" id="Tfc-6A-nmU"/>
+                        <outlet property="BTN_cart" destination="QHO-LG-ZFt" id="QeF-ZR-Cmo"/>
                         <outlet property="BTN_fashion" destination="77e-hW-gvz" id="VHr-JU-qnD"/>
                         <outlet property="BTN_left" destination="bpW-nf-kSx" id="pdX-DH-Bzr"/>
                         <outlet property="BTN_log_out" destination="QAf-AU-Zas" id="56D-3A-P0W"/>
@@ -9287,25 +9306,25 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="GAW-2H-hzI"/>
-        <segue reference="oiO-D6-0MQ"/>
-        <segue reference="PIq-gb-2yd"/>
-        <segue reference="CxN-By-eWp"/>
-        <segue reference="ftO-4d-EKK"/>
-        <segue reference="LS8-aj-kn5"/>
-        <segue reference="u1i-KR-yL0"/>
-        <segue reference="faj-2O-9a0"/>
-        <segue reference="x0e-hc-baO"/>
+        <segue reference="xx1-cA-Spd"/>
+        <segue reference="thM-tK-ujK"/>
         <segue reference="TQh-po-CZq"/>
-        <segue reference="Gbu-bd-OSk"/>
+        <segue reference="scE-Vh-P52"/>
+        <segue reference="5H5-cs-IyK"/>
+        <segue reference="PIq-gb-2yd"/>
+        <segue reference="faj-2O-9a0"/>
         <segue reference="Cw8-vV-nPW"/>
         <segue reference="WuY-ui-8aO"/>
         <segue reference="1PO-jV-8IF"/>
+        <segue reference="VlJ-8X-e9R"/>
         <segue reference="vMu-Y7-4Nz"/>
         <segue reference="pDU-cD-KDi"/>
+        <segue reference="Ia6-yw-sEr"/>
+        <segue reference="U1I-tg-KmK"/>
         <segue reference="z2t-AS-he8"/>
         <segue reference="1fc-cP-jfH"/>
         <segue reference="ydJ-dy-aD5"/>
         <segue reference="Ikb-sa-4zg"/>
-        <segue reference="IW6-vt-Zbg"/>
+        <segue reference="Gbu-bd-OSk"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -9,6 +9,7 @@
 #import "VC_contact_us.h"
 #import "UIView+Shadow.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_contact_us ()<UITextFieldDelegate,UIAlertViewDelegate>
 {
@@ -125,7 +126,7 @@
  //   [self address_API];
     self.navigationItem.hidesBackButton = YES;
     
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
 //        VW_overlay.hidden = NO;
 //        [activityIndicatorView startAnimating];
         [self performSelector:@selector(address_API) withObject:nil afterDelay:0.01];
@@ -254,7 +255,7 @@
         msg = @" Message length should be more than 64 characters";
     }
     else{
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         [self performSelector:@selector(online_enquiry_API_calling) withObject:nil afterDelay:0.01];
 
     }
@@ -286,7 +287,7 @@
         json_dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     [self set_up_VIEW];
      [self set_up_VIEW];
- [HttpClient stop_activity_animation];    }
+ [Helper_activity stop_activity_animation:self];    }
     @catch(NSException *exception)
     {
         
@@ -453,7 +454,7 @@
             NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
             
             if (returnData) {
-                 [HttpClient stop_activity_animation];
+                 [Helper_activity stop_activity_animation:self];
                 NSMutableDictionary *json_DATA = [[NSMutableDictionary alloc]init];
                 json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
                 NSLog(@"%@", [NSString stringWithFormat:@"JSON DATA OF ORDER DETAIL: %@", json_DATA]);
@@ -466,7 +467,7 @@
         }
         @catch(NSException *exception)
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             NSLog(@"THE EXception:%@",exception);
             
         }

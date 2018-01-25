@@ -9,6 +9,7 @@
 #import "VC_sign_up.h"
 #import "Home_page_Qtickets.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_sign_up ()<UIGestureRecognizerDelegate,UITextFieldDelegate,UIAlertViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
 {
@@ -533,7 +534,7 @@
         if (returnData)
         
     {
-       // [HttpClient stop_activity_animation];
+       // [HttpClient stop_activity_animation:self];
         NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&error];
         NSLog(@"The response Api post sighn up API %@",json_DATA);
         NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
@@ -558,7 +559,7 @@
             
             [self.view endEditing:TRUE];
 
-//            [HttpClient stop_activity_animation];
+//            [HttpClient stop_activity_animation:self];
             [activityIndicatorView stopAnimating];
             VW_overlay.hidden = YES;
 
@@ -569,7 +570,7 @@
         {
             [activityIndicatorView stopAnimating];
             VW_overlay.hidden = YES;
-//             [HttpClient stop_activity_animation];
+//             [HttpClient stop_activity_animation:self];
             if ([msg isEqualToString:@"User already exists"])
             {
                 msg = @"Email address already in use, Please try with different email.";
@@ -583,7 +584,7 @@
     }
     else
     {
-//      [HttpClient stop_activity_animation];
+//      [HttpClient stop_activity_animation:self];
         [activityIndicatorView stopAnimating];
         VW_overlay.hidden = YES;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
@@ -595,14 +596,14 @@
         
     @catch(NSException *exception)
     {
-//         [HttpClient stop_activity_animation];
+//         [HttpClient stop_activity_animation:self];
         [activityIndicatorView stopAnimating];
         VW_overlay.hidden = YES;
         NSLog(@"The error is:%@",exception);
         
     }
     
-//    [HttpClient stop_activity_animation];
+//    [HttpClient stop_activity_animation:self];
     
 }
 - (void)alertView:(UIAlertView *)alertView
@@ -668,7 +669,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
             
             if([status isEqualToString:@"1"])
             {
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 
                 [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
@@ -687,7 +688,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
             }
             else
             {
-               [HttpClient stop_activity_animation];
+               [Helper_activity stop_activity_animation:self];
                 if ([msg isEqualToString:@"User already exists"])
                 {
                     msg = @"Email address already in use, Please try with different email.";
@@ -700,7 +701,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
         }
         else
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
         }

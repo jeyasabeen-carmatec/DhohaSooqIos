@@ -7,7 +7,7 @@
 //
 
 #import "VC_about_us.h"
-#import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_about_us ()<UIWebViewDelegate>
 //{
@@ -71,11 +71,11 @@
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

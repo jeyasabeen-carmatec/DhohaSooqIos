@@ -8,6 +8,7 @@
 
 #import "VC_intial.h"
 #import "HttpClient.h"
+//#import "Helper_activity.h"
 #import "ViewController.h"
 #import "Home_page_Qtickets.h"
 #import "Reachability.h"
@@ -87,7 +88,16 @@
         // Update the UI on the main thread
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please check Your Internet Connection" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            NSString *str_alert = @"No Internet Connection!";
+            NSString *str_ok = @"Ok";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                str_alert = @"لا يوجد اتصال بالإنترنت!";
+                str_ok = @"حسنا";
+            }
+
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_alert delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
             [alert show];
         });
     };
@@ -109,6 +119,7 @@
     [timer invalidate];
     VW_overlay.hidden = NO;
   //  [activityIndicatorView startAnimating];
+    [self cart_count];
     [self performSelector:@selector(API_call) withObject:activityIndicatorView afterDelay:0.01];
 
 
@@ -181,7 +192,7 @@
     VW_overlay.clipsToBounds = YES;
         VW_overlay.layer.cornerRadius = 10.0;
     // Custom Activity Indicator
-  [HttpClient animating_images:self];
+ // [Helper_activity animating_images:self];
 
     VW_overlay.hidden = YES;
     
@@ -231,7 +242,7 @@
     @try
     {
         
-        [HttpClient animating_images:self];
+       // [Helper_activity animating_images:self];
         
         NSString *urlGetuser =[NSString stringWithFormat:@"%@countries/index.json",SERVER_URL];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
@@ -311,7 +322,7 @@
 
     }
     
-[HttpClient stop_activity_animation];
+  //[Helper_activity stop_activity_animation:self];
 }
 #pragma Picker delegates
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
@@ -839,7 +850,7 @@
     
         @try
         {
-            [HttpClient animating_images:self];
+          //  [Helper_activity animating_images:self];
             
             /**********   After passing Language Id and Country ID ************/
             NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
@@ -889,7 +900,7 @@
                     if (error) {
                         [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
                         
-                        [HttpClient stop_activity_animation];
+                     //   [Helper_activity stop_activity_animation:self];
                     }
                     if (data) {
                         
@@ -901,7 +912,7 @@
                     }
                     else
                     {
-                        [HttpClient stop_activity_animation];
+                      //  [Helper_activity stop_activity_animation:self];
                         //                        VW_overlay.hidden = YES;
                         //                        [activityIndicatorView stopAnimating];
                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
@@ -912,7 +923,7 @@
                         
                     }
                     
-                    [HttpClient stop_activity_animation];
+                   // [Helper_activity stop_activity_animation:self];
                     
                 });
             }];
@@ -924,8 +935,7 @@
             //        VW_overlay.hidden = YES;
             //        [activityIndicatorView stopAnimating];
             // [self viewWillAppear:NO];
-            
-            [HttpClient stop_activity_animation];
+           // [Helper_activity stop_activity_animation:self];
             
         }
         
@@ -933,6 +943,42 @@
     
 
 }
+-(void)cart_count{
+    
+    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        if (error) {
+            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
+             ];
+            //            VW_overlay.hidden = YES;
+            //            [activityIndicatorView stopAnimating];
+            
+            
+        }
+        if (data) {
+            NSLog(@"cart count sadas %@",data);
+            NSDictionary *dict = data;
+            @try {
+                
+                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
+                //   NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
+                [[NSUserDefaults standardUserDefaults] setValue:badge_value forKey:@"cart_count"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+                
+                
+                
+            } @catch (NSException *exception) {
+                //                 VW_overlay.hidden = YES;
+                //                [activityIndicatorView stopAnimating];
+                
+                
+                NSLog(@"asjdas dasjbd asdas iccxv %@",exception);
+            }
+            
+        }
+    }];
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

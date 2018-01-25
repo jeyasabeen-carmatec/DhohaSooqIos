@@ -13,6 +13,7 @@
 #import "HttpClient.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "ViewController.h"
+#import "Helper_activity.h"
 
 @interface VC_cart_list ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,UIAlertViewDelegate>
 {
@@ -60,7 +61,7 @@
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
     
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(cartList_api_calling) withObject:nil afterDelay:0.01];
     
     
@@ -611,7 +612,7 @@
         
     }
     else{
-        return 147;
+        return 180;
     }
 }
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -644,7 +645,7 @@
    product_id = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"productid"]];
     
     
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
    // [self performSelector:@selector(delete_from_cart) withObject:activityIndicatorView afterDelay:0.01];
     [self delete_from_cart];
     
@@ -688,7 +689,7 @@
    
     
      //Update cart Api method calling
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     
     //[self updating_cart_List_api];
     
@@ -708,7 +709,7 @@
 
     // Update cart Api method calling
     
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     
     //[self updating_cart_List_api];
      [self performSelector:@selector(updating_cart_List_api) withObject:nil afterDelay:0.01];
@@ -880,7 +881,7 @@ params.put("customerId",customerid);
 //        [activityIndicatorView stopAnimating];
     }
     
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
     
 }
 /*
@@ -896,7 +897,7 @@ params.put("customerId",customerid);
     
     //[self performSelector:@selector(clear_cart_api) withObject:activityIndicatorView afterDelay:0.01];
     
-     [HttpClient animating_images:self];
+     [Helper_activity animating_images:self];
     [self clear_cart_api];
     
     
@@ -938,7 +939,7 @@ params.put("customerId",customerid);
 //        [activityIndicatorView stopAnimating];
     }
     
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
 }
 #pragma mark  cart_count_api
 -(void)cart_count{
@@ -1146,7 +1147,7 @@ params.put("customerId",customerid);
 //        [activityIndicatorView stopAnimating];
     }
 
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
     
 }
 #pragma mark updating_cart_API
@@ -1178,11 +1179,11 @@ params.put("customerId",customerid);
     [HttpClient api_with_post_params:urlGetuser andParams:parameters completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (error) {
-                 [HttpClient stop_activity_animation];
+                 [Helper_activity stop_activity_animation:self];
                 NSLog(@"%@",[error localizedDescription]);
             }
             if (data) {
-                 [HttpClient stop_activity_animation];
+                 [Helper_activity stop_activity_animation:self];
                 NSLog(@"%@",data);
                 @try {
                     NSString  *str = [NSString stringWithFormat:@"%@",[data valueForKey:@"success"]];

@@ -14,6 +14,7 @@
 
 //@property (strong, nonatomic, readwrite) UIImageView *actiIndicatorView;
 
+//+(void)stop_activity_animation:(UIViewController *_Nullable)my_controller;
 
 + (void)postServiceCall:(NSString*_Nullable)urlStr andParams:(NSDictionary*_Nullable)params completionHandler:(void (^_Nullable)(id  _Nullable data, NSError * _Nullable error))completionHandler;
 
@@ -26,9 +27,9 @@
 
 +(void)api_with_post_params:(NSString*_Nullable)urlStr andParams:(NSDictionary*_Nullable)params completionHandler:(void (^_Nullable)(id  _Nullable data, NSError * _Nullable error))completionHandler;
 
-+(void)animating_images:(UIViewController *_Nullable)my_controller;
+//+(void)animating_images:(UIViewController *_Nullable)my_controller;
 
-+(void)stop_activity_animation;
+
 +(NSString *_Nullable)currency_seperator:(NSString *_Nullable)Str;
 
 @end

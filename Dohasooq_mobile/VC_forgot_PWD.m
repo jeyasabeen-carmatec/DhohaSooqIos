@@ -8,6 +8,7 @@
 
 #import "VC_forgot_PWD.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_forgot_PWD ()<UITextFieldDelegate,UIGestureRecognizerDelegate>
 {
@@ -83,7 +84,7 @@
     else
     {
         [self.view endEditing:TRUE];
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         [self performSelector:@selector(Forgot_api_integration) withObject:nil afterDelay:0.01];
         
     }
@@ -181,7 +182,7 @@
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 
                 
-                 [HttpClient stop_activity_animation];
+                 [Helper_activity stop_activity_animation:self];
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 [alert show];
@@ -189,7 +190,7 @@
             }
             else
             {
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 
                 if ([msg isEqualToString:@"User already exists"])
                 {
@@ -203,7 +204,7 @@
         }
         else
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
 
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];

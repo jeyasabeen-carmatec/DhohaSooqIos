@@ -32,6 +32,7 @@
 #import "collection_MENU.h"
 #import "ViewController.h"
 #import "language_cellTableViewCell.h"
+#import "Helper_activity.h"
 
 
 @interface Home_page_Qtickets ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,UITabBarDelegate,UIPickerViewDelegate, UIPickerViewDataSource,UIAlertViewDelegate,UITextFieldDelegate>
@@ -94,8 +95,8 @@
     
     [self.Collection_movies registerNib:[UINib nibWithNibName:@"Image_qtickets" bundle:nil]  forCellWithReuseIdentifier:@"Image_qtickets"];
     [self.Collection_movies registerNib:[UINib nibWithNibName:@"upcoming_cell" bundle:nil]  forCellWithReuseIdentifier:@"upcoming_cell"];
+  
    
-    
     tag =0;
     
     /*TIMER_countdown = [NSTimer scheduledTimerWithTimeInterval:1.0
@@ -143,6 +144,9 @@
     frameset.size.width = self.navigationController.navigationBar.frame.size.width;
     _VW_nav.frame = frameset;
     
+    self.badgeView = [GIBadgeView new];
+    [_BTN_cart addSubview:self.badgeView];
+    
     self.navigationController.navigationBar.hidden = NO;
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
@@ -150,7 +154,8 @@
     
     
      self.Scroll_contents.hidden = YES;
-    [HttpClient animating_images:self];
+     [self cart_count];
+    [Helper_activity animating_images:self];
         
     [self performSelector:@selector(API_CALL_FETCH) withObject:nil afterDelay:0.01];
    // [self set_up_VIEW];
@@ -253,15 +258,18 @@
     if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
     {
         //self.view.frame.size.width-_VW_swipe.frame.size.width
-        _VW_swipe.frame = CGRectMake(self.view.frame.size.width-_VW_swipe.frame.size.width, self.view.frame.origin.y+statusbar_HEIGHT, _menuDraw_width, self.navigationController.view.frame.size.height - self.navigationController.navigationBar.frame.size.height-statusbar_HEIGHT);
+        _VW_swipe.frame = CGRectMake(self.view.frame.size.width-_VW_swipe.frame.size.width, self.view.frame.origin.y, _menuDraw_width, self.navigationController.view.frame.size.height - self.navigationController.navigationBar.frame.size.height-statusbar_HEIGHT);
     }
     else{
         
-        _VW_swipe.frame = CGRectMake(0, self.view.frame.origin.y+statusbar_HEIGHT, _menuDraw_width, self.navigationController.view.frame.size.height - self.navigationController.navigationBar.frame.size.height-statusbar_HEIGHT);
+        _VW_swipe.frame = CGRectMake(0, self.view.frame.origin.y, _menuDraw_width, self.navigationController.view.frame.size.height - self.navigationController.navigationBar.frame.size.height-statusbar_HEIGHT);
     }
     
     
-    _overlayView = [[UIView alloc] initWithFrame:self.navigationController.view.frame];
+    _overlayView = [[UIView alloc] init];
+    _overlayView.frame = CGRectMake(0, self.view.frame.origin.y+statusbar_HEIGHT, self.view.frame.size.width
+                                    , self.view.frame.size.height);
+    
     _overlayView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
     [self.navigationController.view addSubview:_overlayView];
     [_overlayView addSubview:_VW_swipe];
@@ -2003,6 +2011,7 @@
          [[NSUserDefaults standardUserDefaults] setValue:merchant_id forKey:@"Mercahnt_ID"];
         
         [[NSUserDefaults standardUserDefaults] synchronize];
+        [TIMER_countdown invalidate];
 
         [self performSegueWithIdentifier:@"QT_home_product_detail" sender:self];
     }
@@ -2014,7 +2023,7 @@
 
         
         [[NSUserDefaults standardUserDefaults] synchronize];
-        
+        [TIMER_countdown invalidate];
         [self performSegueWithIdentifier:@"QT_home_product_detail" sender:self];
 
     }
@@ -2046,7 +2055,7 @@
         
         [[NSUserDefaults standardUserDefaults] setValue:[[[[brands_arr objectAtIndex:indexPath.row] valueForKey:@"_matchingData"]valueForKey:@"BrandDescriptions"] valueForKey:@"name"] forKey:@"item_name"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        
+        [TIMER_countdown invalidate];
         [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
         }
         @catch(NSException *exception)
@@ -2098,7 +2107,7 @@
         [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        
+        [TIMER_countdown invalidate];
         [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
         }
         @catch(NSException *Exception)
@@ -2154,7 +2163,7 @@
         [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        
+        [TIMER_countdown invalidate];
         [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
         }
         }
@@ -2207,7 +2216,7 @@
         [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        
+        [TIMER_countdown invalidate];
         [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
 
     }
@@ -2215,6 +2224,7 @@
     {
         [[NSUserDefaults standardUserDefaults]  setValue:[[[temp_dicts valueForKey:@"movie"] objectAtIndex:indexPath.row] valueForKey:@"_id"]  forKey:@"id"];
         [[NSUserDefaults standardUserDefaults]  synchronize];
+        [TIMER_countdown invalidate];
         [self performSegueWithIdentifier:@"Movies_Booking" sender:self];
     }
 
@@ -2276,7 +2286,7 @@
             
         }
         [user_defafults synchronize];
-        
+        [TIMER_countdown invalidate];
         [self performSegueWithIdentifier:@"QTickets_identifier" sender:self];
         
 
@@ -2315,7 +2325,7 @@
     }
     if(section == 3)
     {
-        ceel_count = 5;
+        ceel_count = 4;
     }
          return ceel_count;
     }
@@ -2477,14 +2487,14 @@
                   NSString *contact_us = @"سياسة الخصوصية";
                 NSString *terms =@"الأحكام والشروط";
                 NSString *privacy =@"اتصل بنا";
-                NSString *help =@"نبذة عنا";
+               // NSString *help =@"نبذة عنا";
                 
                 
-            ARR_info = [NSArray arrayWithObjects:about_us,contact_us,terms,privacy,help, nil];
+            ARR_info = [NSArray arrayWithObjects:about_us,contact_us,terms,privacy, nil];
 
             }
             else{
-                ARR_info = [NSArray arrayWithObjects:@"ABOUT US",@"CONTACT US",@"TERMS AND CONDITIONS",@"PRIVACY POLICY",@"HELPDESK", nil];
+                ARR_info = [NSArray arrayWithObjects:@"ABOUT US",@"CONTACT US",@"TERMS AND CONDITIONS",@"PRIVACY POLICY",/*@"HELPDESK"*/ nil];
 
             }
 
@@ -2579,7 +2589,7 @@
             
             
             NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/Customer/1.json",SERVER_URL,list_key,country,languge,user_id];
-            
+            [TIMER_countdown invalidate];
             
             [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
             [[NSUserDefaults standardUserDefaults] synchronize];
@@ -2654,7 +2664,7 @@
                 }
                 else
                 {
-                    
+                  [TIMER_countdown invalidate];
                 [self performSegueWithIdentifier:@"home_address" sender:self];
                 }
 
@@ -2731,6 +2741,7 @@
                 }
                 else
                 {
+                    [TIMER_countdown invalidate];
                 [self performSegueWithIdentifier:@"login_forgot_pwd" sender:self];
                
                 }
@@ -2800,7 +2811,8 @@
                 }
                 else
                 {
-                    [HttpClient animating_images:self];
+                    [TIMER_countdown invalidate];
+                    [Helper_activity animating_images:self];
                     [self performSelector:@selector(load_Profile_VC) withObject:nil afterDelay:0.01];
               
                 }
@@ -2819,6 +2831,7 @@
             
         case 3:
             [self swipe_left];
+            [TIMER_countdown invalidate];
             if(indexPath.row == 0)
             {
                 [self performSegueWithIdentifier:@"Home_about_us" sender:self];
@@ -2843,10 +2856,10 @@
             {
                 [self performSegueWithIdentifier:@"Home_privacy" sender:self];
             }
-            if(indexPath.row == 4)
+           /*if(indexPath.row == 4)
             {
                  [self performSegueWithIdentifier:@"home_help_desk" sender:self];//home_help_desk
-            }
+            }*/
             break;
         default:
             break;
@@ -2858,8 +2871,9 @@
 
 -(void) load_Profile_VC
 {
+    [TIMER_countdown invalidate];
     [self performSegueWithIdentifier:@"edot_profile_VC" sender:self];
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)aTableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -3086,13 +3100,13 @@
     [_TBL_menu reloadData];
     
     
-  /*  if ([language isEqualToString:[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"]])
+    if ([language isEqualToString:[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"]])
     {
         
     }
     else{
         
-        */
+        
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"story_board_language"];
         [[NSUserDefaults  standardUserDefaults] setValue:language forKey:@"story_board_language"];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -3132,7 +3146,7 @@
             
         }
         
-  //  }
+    }
 
 }
 -(void)close_action
@@ -3590,12 +3604,12 @@
     if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
     {
         
-        _VW_swipe.frame = CGRectMake(self.view.frame.size.width-_VW_swipe.frame.size.width, self.navigationController.view.frame.origin.y + statusbar_HEIGHT, _menuDraw_width, self.navigationController.view.frame.size.height-statusbar_HEIGHT);
+        _VW_swipe.frame = CGRectMake(self.view.frame.size.width-_VW_swipe.frame.size.width, _overlayView.frame.origin.y-20, _menuDraw_width, self.navigationController.view.frame.size.height-statusbar_HEIGHT);
         
         
     }
     else{
-        _VW_swipe.frame = CGRectMake(0, self.navigationController.view.frame.origin.y + statusbar_HEIGHT, _menuDraw_width, self.navigationController.view.frame.size.height-statusbar_HEIGHT);
+        _VW_swipe.frame = CGRectMake(0, _overlayView.frame.origin.y - 20, _menuDraw_width, self.navigationController.view.frame.size.height-statusbar_HEIGHT);
     }
     
     
@@ -3625,10 +3639,10 @@
         
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-            _VW_swipe.frame = CGRectMake(self.view.frame.size.width-_VW_swipe.frame.size.width, self.navigationController.view.frame.origin.y +statusbar_HEIGHT, _menuDraw_width, self.navigationController.view.frame.size.height-statusbar_HEIGHT);
+            _VW_swipe.frame = CGRectMake(self.view.frame.size.width-_VW_swipe.frame.size.width, _overlayView.frame.origin.y-20, _menuDraw_width, self.navigationController.view.frame.size.height-statusbar_HEIGHT);
         }
         else{
-            _VW_swipe.frame = CGRectMake(0, self.navigationController.view.frame.origin.y +statusbar_HEIGHT, _menuDraw_width, self.navigationController.view.frame.size.height-statusbar_HEIGHT);
+            _VW_swipe.frame = CGRectMake(0, _overlayView.frame.origin.y-20, _menuDraw_width, self.navigationController.view.frame.size.height-statusbar_HEIGHT);
         }
         
         
@@ -3665,10 +3679,10 @@
         }
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-            _VW_swipe.frame = CGRectMake(self.view.frame.size.width-_VW_swipe.frame.size.width, self.navigationController.view.frame.origin.y +statusbar_HEIGHT, _menuDraw_width, self.navigationController.view.frame.size.height-statusbar_HEIGHT);
+            _VW_swipe.frame = CGRectMake(self.view.frame.size.width-_VW_swipe.frame.size.width,_overlayView.frame.origin.y, _menuDraw_width, self.navigationController.view.frame.size.height-statusbar_HEIGHT);
         }else{
             
-            _VW_swipe.frame = CGRectMake(0, self.navigationController.view.frame.origin.y + 20, _menuDraw_width, self.navigationController.view.frame.size.height-statusbar_HEIGHT);
+            _VW_swipe.frame = CGRectMake(0, _overlayView.frame.origin.y - 20, _menuDraw_width, self.navigationController.view.frame.size.height-statusbar_HEIGHT);
         }
         
         
@@ -3727,7 +3741,7 @@
                 [new_arr addObject:[old_arr objectAtIndex:index]];
             }
         }
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         
 //        VW_overlay.hidden = YES;
 //        [activityIndicatorView stopAnimating];
@@ -3845,11 +3859,11 @@
   
 
     [self set_up_VIEW];
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
     }
     @catch(NSException *exception)
     {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
 
@@ -3862,7 +3876,7 @@
     
     @try
     {
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         
         /**********   After passing Language Id and Country ID ************/
         NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
@@ -3914,11 +3928,11 @@
                 if (error) {
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
 
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
                 }
                 if (data) {
                 
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
                     @try {
                        
                         json_Response_Dic = data;
@@ -3975,7 +3989,7 @@
                         currency = [currency stringByReplacingOccurrencesOfString:@"(null)" withString:@"QAR"];
                         currency = [currency stringByReplacingOccurrencesOfString:@"<null>" withString:@"QAR"];
                         currency = [currency stringByReplacingOccurrencesOfString:@"" withString:@"QAR"];
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
 
 
                         [[NSUserDefaults standardUserDefaults] setValue:currency forKey:@"currency"];
@@ -3991,7 +4005,7 @@
 
                          [self set_up_VIEW];
                       
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
 
 
                        
@@ -4000,7 +4014,7 @@
                        
                     } @catch (NSException *exception) {
                         NSLog(@"ecec sfdf sdfsf %@",exception);
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         
 
 
@@ -4008,7 +4022,7 @@
                 }
                     else
                     {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
 //                        VW_overlay.hidden = YES;
 //                        [activityIndicatorView stopAnimating];
                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
@@ -4019,7 +4033,7 @@
 
                     }
                 
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 
             });
         }];
@@ -4032,7 +4046,7 @@
 //        [activityIndicatorView stopAnimating];
        // [self viewWillAppear:NO];
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         
     }
     
@@ -4442,7 +4456,7 @@ NSString *str_status_text;
     @try
     {
        
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -4457,7 +4471,7 @@ NSString *str_status_text;
                     if(json_Response)
                     {
                         
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         
 //                        VW_overlay.hidden=YES;
 //                        [activityIndicatorView stopAnimating];
@@ -4498,7 +4512,7 @@ NSString *str_status_text;
                         }
                             @catch(NSException *exception)
                             {
-                                [HttpClient stop_activity_animation];
+                                [Helper_activity stop_activity_animation:self];
                                 
 //                                VW_overlay.hidden=YES;
 //                                [activityIndicatorView stopAnimating];
@@ -4511,7 +4525,7 @@ NSString *str_status_text;
                     }
                     else
                     {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
 //                        VW_overlay.hidden=YES;
 //                        [activityIndicatorView stopAnimating];
                         
@@ -4528,7 +4542,7 @@ NSString *str_status_text;
     @catch(NSException *exception)
     {
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 //        VW_overlay.hidden=YES;
 //        [activityIndicatorView stopAnimating];
         
@@ -4555,7 +4569,7 @@ NSString *str_status_text;
      
      */
     
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *user_ID = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
@@ -4567,13 +4581,13 @@ NSString *str_status_text;
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
                     NSLog(@"Api error %@",[error localizedDescription]);
                 }
                 if (data) {
                     NSLog(@"delFromWishList data %@",data);
                     
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
                     NSDictionary *temp_dict = data;
 //                    if([[dict valueForKey:@"msg"] isEqualToString:@"Item deleted Succesfully"])
                     
@@ -4593,7 +4607,7 @@ NSString *str_status_text;
             
         }];
     } @catch (NSException *exception) {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         
         NSLog(@" sdfs sdf asfdrew we %@",exception);
         
@@ -4673,7 +4687,7 @@ NSString *str_status_text;
         NSLog(@"Sender ...........%ld",(long)[sender tag]);
         
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         
      urlGetuser =[NSString stringWithFormat:@"%@apis/addToWishList/%@/%@.json",SERVER_URL,[[deals_ARR objectAtIndex:sender.tag] valueForKey:@"product_id"],user_id];
         
@@ -4732,7 +4746,7 @@ NSString *str_status_text;
                 {
                 }
                 
-                  [HttpClient stop_activity_animation];
+                  [Helper_activity stop_activity_animation:self];
                 
                 NSLog(@"the api_collection_product %@",json_DATA);
 //                [activityIndicatorView stopAnimating];
@@ -4743,7 +4757,7 @@ NSString *str_status_text;
         @catch(NSException *exception)
         {
             NSLog(@"asdfghgf gf %@",exception);
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
 //            [activityIndicatorView stopAnimating];
 //            VW_overlay.hidden = YES;
         }
@@ -4809,6 +4823,7 @@ NSString *str_status_text;
     
     [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    [TIMER_countdown invalidate];
     [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
 
 
@@ -4865,7 +4880,7 @@ NSString *str_status_text;
      [[NSUserDefaults standardUserDefaults] setValue:url_key forKey:@"product_list_key"];
     [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-
+   [TIMER_countdown invalidate];
     [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
 
 }
@@ -4874,7 +4889,7 @@ NSString *str_status_text;
     
     @try
     {
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         
         NSError *error;
         
@@ -4904,7 +4919,7 @@ NSString *str_status_text;
         {
             // [activityIndicatorView stopAnimating];
             // VW_overlay.hidden = YES;
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             
             brands_arr= (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             [[NSUserDefaults standardUserDefaults] setObject:brands_arr forKey:@"brands_LIST"];
@@ -4920,7 +4935,7 @@ NSString *str_status_text;
         {
 //            VW_overlay.hidden=YES;
 //            [activityIndicatorView stopAnimating];
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Some thing went to wrong please try again later" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
@@ -4931,7 +4946,7 @@ NSString *str_status_text;
     {
         NSLog(@"The error is:%@",exception);
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
     }
     
 }
@@ -5031,7 +5046,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     @try
     {
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         
         NSError *error;
         
@@ -5055,7 +5070,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         if(aData)
         {
-             [HttpClient stop_activity_animation];
+             [Helper_activity stop_activity_animation:self];
             
             NSMutableArray *json_DATA = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             
@@ -5075,7 +5090,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     {
         NSLog(@"dfdsg dfgfgsdfg sdf %@",exception);
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         
 //        [activityIndicatorView stopAnimating];
 //        VW_overlay.hidden = YES;
@@ -5090,79 +5105,15 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     }
 }
 
--(void)cart_count{
+-(void)cart_count
+{
+    NSString *str_count = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"cart_count"]];
+    if([str_count intValue ] > 0)
+    {
+    _badgeView.badgeValue = [str_count integerValue];
+    }
     
-    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
-    [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-        if (error) {
-            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
-             ];
-//            VW_overlay.hidden = YES;
-//            [activityIndicatorView stopAnimating];
-            
-
-        }
-        if (data) {
-            NSLog(@"cart count sadas %@",data);
-            NSDictionary *dict = data;
-            @try {
-               
-                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
-             //   NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
-                
-                //NSString *badge_value = @"11";
-                if([badge_value intValue] < 1)
-                {
-                    _BTN_cart.badgeBackgroundColor = [UIColor whiteColor];
-                    
-                }
-               else if([badge_value intValue] > 0 )
-                {
-                    @try
-                    {
-                        
-                        [_BTN_cart setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
-                    }
-                    @catch(NSException *exception)
-                    {
-                        
-                    }
-
-                    _BTN_cart.badgeBackgroundColor =  [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
-                    [_BTN_cart setBadgeString:[NSString stringWithFormat:@"%@",badge_value]];
-                    
-                    
-                }
-                else{
-                    @try
-                    {
-                        
-                        [_BTN_cart setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
-                    }
-                    @catch(NSException *exception)
-                    {
-                        
-                    }
-
-                    _BTN_cart.badgeBackgroundColor =  [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
-
-                    [_BTN_cart setBadgeString: [NSString stringWithFormat:@"%@",badge_value]];
-                    
-                    
-                }
-                
-                
-            } @catch (NSException *exception) {
-//                 VW_overlay.hidden = YES;
-//                [activityIndicatorView stopAnimating];
-               
-
-                NSLog(@"asjdas dasjbd asdas iccxv %@",exception);
-            }
-            
-        }
-    }];
-}
+   }
 
 #pragma mark TimerMethod
 -(void)set_timer_to_collection_images{

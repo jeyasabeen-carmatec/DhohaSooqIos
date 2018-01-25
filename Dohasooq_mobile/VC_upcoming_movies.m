@@ -8,7 +8,7 @@
 
 #import "VC_upcoming_movies.h"
 #import <SDWebImage/UIImageView+WebCache.h>
-#import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_upcoming_movies ()
 {
@@ -55,7 +55,7 @@
     detail_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Movie_detail"];
     [self set_UP_VIEW];
     
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
     [self viewDidLayoutSubviews];
 }
 

@@ -9,6 +9,7 @@
 #import "VC_myorder_list.h"
 #import "orders_list_cell.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_myorder_list ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 {
@@ -65,7 +66,7 @@
 //    
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(Orders_list_API) withObject:nil afterDelay:0.01];
     
     
@@ -93,12 +94,12 @@
             [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
              ];
             
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
 
         }
         if (data) {
             
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             NSLog(@"%@",data);
             NSDictionary *dict = data;
             @try {
@@ -142,7 +143,7 @@
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
                 
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
 
             }
             
@@ -474,7 +475,7 @@
             {
              
                 
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 
 
                 _VW_empty.hidden = YES;
@@ -490,7 +491,7 @@
                 
             }
             else{
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 _TBL_orders.hidden =  YES;
                 _VW_empty.hidden = NO;
                 _VW_search_VW.hidden = YES;
@@ -508,14 +509,14 @@
 
             }
             [self.TBL_orders reloadData];
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
 
             
             
         }
         else
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
@@ -526,7 +527,7 @@
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];

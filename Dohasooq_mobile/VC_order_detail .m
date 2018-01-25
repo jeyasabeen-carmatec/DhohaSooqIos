@@ -15,6 +15,7 @@
 #import "HttpClient.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "VC_DS_Checkout.h"
+#import "Helper_activity.h"
 
 
 @interface VC_order_detail ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,UICollectionViewDataSource, UICollectionViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UITextFieldDelegate,UIGestureRecognizerDelegate>
@@ -685,29 +686,15 @@
         
         
         NSRange ename = [summary_text rangeOfString:currency];
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:25.0]}
+        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:16.0]}
                                     range:ename];
-        }
-        else
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:18.0]}
-                                    range:ename];
-        }
+        
         NSRange cmp = [summary_text rangeOfString:prec_price];
         
         
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:21.0],NSForegroundColorAttributeName:[UIColor blackColor]}
-                                    range:cmp];
-        }
-        else
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:18.0],NSForegroundColorAttributeName:[UIColor blackColor],}
+        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:16.0],NSForegroundColorAttributeName:[UIColor blackColor],}
                                     range:cmp ];
-        }
+        
           _LBL_total.attributedText = attributedText;
     }
     else
@@ -725,7 +712,7 @@
                                       };
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:str_miles attributes:attribs];
             
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor blackColor],}
+        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor blackColor],}
                                     range:[str_miles rangeOfString:str_or] ];
         
 
@@ -3231,7 +3218,7 @@
 {
     @try {
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         date_time_merId_Arr = [NSMutableArray array];
         jsonresponse_dic  = [[NSMutableDictionary alloc]init];
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
@@ -3248,12 +3235,12 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
                         NSLog(@"%@",[error localizedDescription]);
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
 
                     }
                     if (data) {
                         
-                       [HttpClient stop_activity_animation];
+                       [Helper_activity stop_activity_animation:self];
                             @try {
                                 
                                
@@ -3285,13 +3272,13 @@
                 
             }];
         } @catch (NSException *exception) {
-             [HttpClient stop_activity_animation];
+             [Helper_activity stop_activity_animation:self];
             NSLog(@"%@",exception);
                   }
         
       
     } @catch (NSException *exception) {
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",exception);
        
 
@@ -3306,7 +3293,7 @@
 {
     @try {
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         jsonresponse_dic_address = [[NSMutableDictionary alloc]init];
         
         //isAddClicked = NO;
@@ -3321,12 +3308,12 @@
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         NSLog(@"%@",[error localizedDescription]);
                     }
                     if (data) {
                         
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         
                         @try {
                             
@@ -3347,14 +3334,14 @@
                 
             }];
         } @catch (NSException *exception) {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             NSLog(@"%@",exception);
         }
         
        
     }
     @catch (NSException *exception) {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
         NSLog(@"%@",exception);
     }
@@ -3379,7 +3366,7 @@
     
     @try {
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
         NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
         
@@ -3397,12 +3384,12 @@
         [HttpClient api_with_post_params:urlGetuser andParams:parameters completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
                     NSLog(@"%@",[error localizedDescription]);
                 }
                 if (data) {
                     NSLog(@"%@",data);
-                     [HttpClient stop_activity_animation];
+                     [Helper_activity stop_activity_animation:self];
                     @try {
                         if ([[NSString stringWithFormat:@"%@",[data valueForKey:@"success"]] isEqualToString:@"1"]) {
                             [HttpClient createaAlertWithMsg:[data valueForKey:@"message"] andTitle:@""];
@@ -3421,7 +3408,7 @@
         }];
     } @catch (NSException *exception) {
         
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",exception);
     }
     
@@ -3512,7 +3499,7 @@
     @try {
         
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         delivary_slot_dic = [[NSMutableDictionary alloc]init];
         picker_Arr = [NSMutableArray array];
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/deliveryslotapi.json",SERVER_URL];
@@ -3520,7 +3507,7 @@
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
                     NSLog(@"%@",[error localizedDescription]);
                 }
                 if (data) {
@@ -3538,7 +3525,7 @@
                         
                     }
                     
-                  [HttpClient stop_activity_animation];
+                  [Helper_activity stop_activity_animation:self];
                 }
                 
             });
@@ -3548,7 +3535,7 @@
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
     }
 //    VW_overlay.hidden = YES;
 //    [activityIndicatorView stopAnimating];
@@ -3558,7 +3545,7 @@
 -(void)CountryAPICall{
     @try {
         
-         [HttpClient animating_images:self];
+         [Helper_activity animating_images:self];
         
         response_countries_dic = [NSMutableDictionary dictionary];
          NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
@@ -3568,7 +3555,7 @@
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
-                         [HttpClient stop_activity_animation];
+                         [Helper_activity stop_activity_animation:self];
                         
                         NSLog(@"%@",[error localizedDescription]);
                     }
@@ -3642,18 +3629,18 @@
                         }
                         
                     }
-                     [HttpClient stop_activity_animation];
+                     [Helper_activity stop_activity_animation:self];
                     
                 });
                 
             }];
         } @catch (NSException *exception) {
-             [HttpClient stop_activity_animation];
+             [Helper_activity stop_activity_animation:self];
             NSLog(@"%@",exception);
         }
         
     } @catch (NSException *exception) {
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",exception);
     }
    
@@ -3675,16 +3662,16 @@
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/getstatebyconapi/%ld.json",SERVER_URL,(long)cntry_ID];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         @try {
-            [HttpClient animating_images:self];
+            [Helper_activity animating_images:self];
             
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
                         NSLog(@"%@",[error localizedDescription]);
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                     }
                     if (data) {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         @try {
                             if ([data isKindOfClass:[NSArray class]]) {
                                 [arr_states addObjectsFromArray:data];
@@ -3709,12 +3696,12 @@
             }];
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
         }
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
         
     }
    
@@ -3857,18 +3844,18 @@
     @try {
         
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/paymentmethapi.json",SERVER_URL];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         @try {
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         NSLog(@"%@",[error localizedDescription]);
                     }
                     if (data) {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         @try {
                             if ([data isKindOfClass:[NSDictionary class]]) {
                                 NSLog(@"Payment Methods %@",data);
@@ -3923,12 +3910,12 @@
                 
             }];
         } @catch (NSException *exception) {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             NSLog(@"%@",exception);
         }
         
     } @catch (NSException *exception) {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",exception);
     }
     
@@ -3945,7 +3932,7 @@
     @try {
         
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         NSString *sub_total = [NSString stringWithFormat:@"%@",[jsonresponse_dic valueForKey:@"subsum"]];
         sub_total = [sub_total stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
         
@@ -3957,11 +3944,11 @@
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         NSLog(@"%@",[error localizedDescription]);
                     }
                     if (data) {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         @try {
                             if ([data isKindOfClass:[NSDictionary class]]) {
                                 
@@ -3989,12 +3976,12 @@
                 
             }];
         } @catch (NSException *exception) {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             NSLog(@"%@",exception);
         }
        
     } @catch (NSException *exception) {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",exception);
     }
    
@@ -4007,7 +3994,7 @@
 {
    
    
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
      NSString *msg;
   
        if ([_TXT_fname.text isEqualToString:@""])
@@ -4074,7 +4061,7 @@
            
            
        }
-       else if(_TXT_addr1.text.length < 10)
+     /*  else if(_TXT_addr1.text.length < 3)
        {
            [_TXT_addr1 becomeFirstResponder];
            msg = @"Address1 should not be less than 10 characters";
@@ -4083,7 +4070,7 @@
                msg = @"يجب1 ألا يقل العنوان عن 10 رموز";
            }
            
-       }
+       }*/
        else if([_TXT_addr1.text isEqualToString:@""])
        {
            [_TXT_addr1 becomeFirstResponder];
@@ -4505,7 +4492,7 @@
         }
 //    VW_overlay.hidden = YES;
 //    [activityIndicatorView stopAnimating];
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
 
 }
 
@@ -5169,7 +5156,7 @@
 -(void)place_order_One_more_method:(NSDictionary *)params{
     @try
         {
-            [HttpClient animating_images:self];
+            [Helper_activity animating_images:self];
             NSError *error;
             NSError *err;
             NSHTTPURLResponse *response = nil;
@@ -5196,14 +5183,14 @@
             [request setHTTPShouldHandleCookies:NO];
             NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
             if (err) {
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 [err localizedDescription];
             }
             
     
             if(aData)
             {
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                
                 NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
                 NSLog(@"%@",error);
@@ -5232,7 +5219,7 @@
         
         @catch(NSException *exception)
         {
-              [HttpClient stop_activity_animation];
+              [Helper_activity stop_activity_animation:self];
             NSLog(@"The error is:%@",exception);
         }
    }
@@ -5268,7 +5255,7 @@
 -(void)gettingOtpForCashOnDelivary{
     @try {
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
         NSString *str_id = @"user_id";
         NSString *user_id;
@@ -5321,13 +5308,13 @@
         
         if (returnData) {
             
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             NSLog(@"returnData :: %@",returnData);
             // json_DATA = [[NSMutableDictionary alloc]init];
             NSMutableDictionary   *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
             
             if (er) {
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 NSLog(@"er:%@",[er localizedDescription]);
             }
 
@@ -5340,7 +5327,7 @@
         
         
     } @catch (NSException *exception) {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
     }
 }
 

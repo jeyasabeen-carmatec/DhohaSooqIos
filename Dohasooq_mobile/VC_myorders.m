@@ -17,6 +17,7 @@
 #import "Transaction_Type_cell.h"
 #import "transaction_cell.h"
 #import "paymentCell.h"
+#import "Helper_activity.h"
 
 #import <SDWebImage/UIImageView+WebCache.h>
 
@@ -52,7 +53,7 @@ int j ,i;
 //    
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(orders_LIST_Detail) withObject:nil afterDelay:0.01];
     
     
@@ -1230,13 +1231,13 @@ int j ,i;
             _LBL_order_date.text = text;
         }
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
         
     }
     else
     {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection Failed" message:@"" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
@@ -1246,7 +1247,7 @@ int j ,i;
     }
     @catch(NSException *exception)
     {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         NSLog(@"THE EXception:%@",exception);
         
     }

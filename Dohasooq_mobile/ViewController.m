@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "HttpClient.h"
 #import <Google/SignIn.h>
+#import "Helper_activity.h"
 
 
 @interface ViewController ()<UITextFieldDelegate,FBSDKLoginButtonDelegate,GIDSignInUIDelegate,GIDSignInDelegate>
@@ -55,7 +56,7 @@
     
 }
 - (void)signInWillDispatch:(GIDSignIn *)signIn error:(NSError *)error {
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -794,7 +795,7 @@ error:(NSError *)error{
     @catch(NSException *exception)
     {
         NSLog(@"%@",exception);
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
         

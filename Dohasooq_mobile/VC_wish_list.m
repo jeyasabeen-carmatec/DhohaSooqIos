@@ -12,6 +12,7 @@
 #import "HttpClient.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "ViewController.h"
+#import "Helper_activity.h"
 @interface VC_wish_list ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,UIAlertViewDelegate>
 {
     NSMutableArray *response_Arr;
@@ -61,7 +62,7 @@
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
     
-       [HttpClient animating_images:self];
+       [Helper_activity animating_images:self];
     [self performSelector:@selector(wish_list_api_calling) withObject:nil afterDelay:0.01];
     
   
@@ -453,7 +454,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
                     
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
 
                     NSLog(@"%@",[error localizedDescription]);
                 }
@@ -474,7 +475,7 @@
                         {
                              _VW_empty.hidden = NO;
                             _TBL_wish_list_items.hidden =  YES;
-                            [HttpClient stop_activity_animation];
+                            [Helper_activity stop_activity_animation:self];
                             
                             
                         }
@@ -484,13 +485,13 @@
                             NSLog(@"Wish List Data*******%@*********",response_Arr);
                             
                             _TBL_wish_list_items.hidden =  NO;
-                             [HttpClient stop_activity_animation];
+                             [Helper_activity stop_activity_animation:self];
                             [self.TBL_wish_list_items reloadData];
                            }
                        }
                         else{
                             
-                            [HttpClient stop_activity_animation];
+                            [Helper_activity stop_activity_animation:self];
                             
 //                            VW_overlay.hidden=YES;
 //                            [activityIndicatorView stopAnimating];
@@ -500,13 +501,13 @@
                       
                       NSString *str_header_title = [NSString stringWithFormat:@"MY WISHLIST(%lu)",(unsigned long)response_Arr.count];
                       [_BTN_header setTitle:str_header_title forState:UIControlStateNormal];
-                       [HttpClient stop_activity_animation];
+                       [Helper_activity stop_activity_animation:self];
                       
                       
                     }
                 @catch (NSException *exception) {
                     
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
 //                    VW_overlay.hidden=YES;
 //                    [activityIndicatorView stopAnimating];
                     _TBL_wish_list_items.hidden =  YES;
@@ -523,12 +524,12 @@
     } @catch (NSException *exception) {
         
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",exception);
     }
     }
      @catch (NSException *exception) {
-           [HttpClient stop_activity_animation];
+           [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",exception);
     }
     
@@ -540,7 +541,7 @@
     
     @try {
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
         NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
@@ -563,13 +564,13 @@
         [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         if (error) {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
         }
         
         if(aData)
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             NSMutableDictionary *dict = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             
             if ([[dict valueForKey:@"success"] isEqualToString:@"1"]) {
@@ -588,7 +589,7 @@
         }
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
     }
     
     
@@ -630,7 +631,7 @@
             }
             
         }
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
     }];
 }
 
@@ -684,7 +685,7 @@
     
     @try {
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
         NSString *user_ID = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
@@ -697,12 +698,12 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
                         
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         NSLog(@"%@",[error localizedDescription]);
                     }
                     if (data) {
                         
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         NSLog(@"%@",data);
                         
                         if([[data valueForKey:@"msg"] isEqualToString:@"Customer not found"])
@@ -714,7 +715,7 @@
                         {
                         
                         @try {
-                             [HttpClient stop_activity_animation];
+                             [Helper_activity stop_activity_animation:self];
                             [HttpClient createaAlertWithMsg:@"Item Deleted Successfully" andTitle:@""];
                             
                             [self performSelector:@selector(wish_list_api_calling) withObject:nil afterDelay:0.01];
@@ -733,14 +734,14 @@
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
             
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
              [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
             
         }
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
          [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
     }
     
@@ -793,7 +794,7 @@
     
     @try {
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];

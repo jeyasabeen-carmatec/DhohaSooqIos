@@ -10,6 +10,7 @@
 #import "HttpClient.h"
 #import "address_cell.h"
 #import "billing_address.h"
+#import "Helper_activity.h"
 
 @interface VC_myaddress ()<UITableViewDataSource,UITableViewDataSource,UITextFieldDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
 {
@@ -59,7 +60,7 @@
 //    
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(Shipp_address_API) withObject:nil afterDelay:0.01];
     
  [self set_UP_VIEW];
@@ -110,7 +111,7 @@
     
     
     [self phone_code_view];
-     [HttpClient stop_activity_animation];
+     [Helper_activity stop_activity_animation:self];
     
 
 }
@@ -659,7 +660,7 @@
     
     
     @try {
-     [HttpClient animating_images:self];
+     [Helper_activity animating_images:self];
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
     
@@ -676,7 +677,7 @@
                 if (data) {
                     
                     
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
                     @try {
                         if ([data isKindOfClass:[NSDictionary class]]) {
                             jsonresponse_dic_address = data;
@@ -690,7 +691,7 @@
                         
                        
                     } @catch (NSException *exception) {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
 
                         
                     }
@@ -702,13 +703,13 @@
         }];
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
         
     }
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
     }
     
     }
@@ -851,15 +852,16 @@
         }
         
     }
-    else if (str_addr1.length<10 )
+    else if(str_addr1.length < 3)
     {
         [cell.TXT_address1 becomeFirstResponder];
-        msg = @"Address1 should not be less than 10 characters";
+        msg = @"Address name should be more than 3 characters";//يجب أن يكون اسم العنوان أكثر من 3 أحرف
+        
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-            msg = @"يجب1 ألا يقل العنوان عن 10 رموز";
+            msg = @"يجب أن يكون اسم العنوان أكثر من 3 أحرف";
         }
-
+        
     }
     else if (str_addr1.length > 200)
     {
@@ -1019,7 +1021,7 @@
     }
     else if (edit_tag == 999) {
         
-         [HttpClient animating_images:self];
+         [Helper_activity animating_images:self];
         [self performSelector:@selector(edit_Billing_address_API) withObject:nil afterDelay:0.01];    }
     else if (is_add_new){
         
@@ -1027,7 +1029,7 @@
     }
     else{
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
 
         [self performSelector:@selector(edit_Shipping_Address) withObject:nil afterDelay:0.01];
    
@@ -1060,12 +1062,12 @@
         [HttpClient api_with_post_params:urlGetuser andParams:params completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
                      ];
                 }
                 if (data) {
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
                     
 
                     NSLog(@"edit_Shipping_Address Response%@",data);
@@ -1104,7 +1106,7 @@
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
     }
 }
@@ -1156,7 +1158,7 @@
                     if ([data isKindOfClass:[NSDictionary class]]) {
                         
                         @try {
-                            [HttpClient stop_activity_animation];
+                            [Helper_activity stop_activity_animation:self];
 
                              NSLog(@"edit_Shipping_Address Response%@",[data valueForKey:@"success"]);
                             NSString *succs = [NSString stringWithFormat:@"%@",[data valueForKey:@"success"]];
@@ -1185,7 +1187,7 @@
                 
                         } @catch (NSException *exception) {
                             NSLog(@"%@",exception);
-                            [HttpClient stop_activity_animation];
+                            [Helper_activity stop_activity_animation:self];
 
                         }
                     }
@@ -1202,7 +1204,7 @@
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
         
     }
@@ -1342,7 +1344,7 @@ if (textField.tag == 8) {
             if (error) {
                 
                 
-                 [HttpClient stop_activity_animation];
+                 [Helper_activity stop_activity_animation:self];
                
             }
             
@@ -1409,7 +1411,7 @@ if (textField.tag == 8) {
             }
             else
             {
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
 
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
@@ -1863,7 +1865,7 @@ if (textField.tag == 8) {
         }
         
         if (returnData) {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
 
             
             NSMutableDictionary *json_DATA = [[NSMutableDictionary alloc]init];
@@ -1884,7 +1886,7 @@ if (textField.tag == 8) {
     }
     @catch(NSException *exception)
     {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
         NSLog(@"THE EXception:%@",exception);
         
