@@ -8130,8 +8130,8 @@ UVIgMAM
                         <outlet property="BTN_thirty" destination="ths-xj-Dd7" id="iWb-XX-x3Y"/>
                         <outlet property="BTN_twenty" destination="ML7-lC-REd" id="lmM-V0-HZ9"/>
                         <outlet property="IMG_back_ground" destination="Yxw-Xb-K7g" id="S2E-bT-lPx"/>
-                        <outlet property="LBL_max" destination="vcQ-uB-u1g" id="UQ1-Oa-CO9"/>
-                        <outlet property="LBL_min" destination="nKk-AD-M1M" id="MZG-V1-SSJ"/>
+                        <outlet property="LBL_max" destination="nKk-AD-M1M" id="oqB-L1-A4O"/>
+                        <outlet property="LBL_min" destination="vcQ-uB-u1g" id="R9I-4Y-SWk"/>
                         <outlet property="LBL_slider" destination="pLj-ZK-MOI" id="Ay1-cX-Wi4"/>
                         <outlet property="VW_contents" destination="jo8-Zl-Qxj" id="KgD-kK-4IO"/>
                         <outlet property="VW_radio" destination="1ji-hO-tgP" id="wLU-QN-Ccm"/>
@@ -8653,13 +8653,13 @@ UVIgMAM
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="z2t-AS-he8"/>
-        <segue reference="o1F-lI-VIX"/>
+        <segue reference="iWU-Hw-czL"/>
+        <segue reference="UCK-dQ-vRE"/>
+        <segue reference="Ah8-We-7n4"/>
         <segue reference="ZQz-cY-hR0"/>
         <segue reference="T1q-8G-uBq"/>
         <segue reference="8eD-Yu-RUD"/>
         <segue reference="s4c-Qx-Ots"/>
-        <segue reference="Ah8-We-7n4"/>
-        <segue reference="UCK-dQ-vRE"/>
         <segue reference="lT4-28-Wjm"/>
         <segue reference="gcz-vd-Onb"/>
         <segue reference="1PO-jV-8IF"/>

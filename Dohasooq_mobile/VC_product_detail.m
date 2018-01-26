@@ -1004,7 +1004,7 @@
 {
     [super viewDidLayoutSubviews];
     [_Scroll_content layoutIfNeeded];
-    _Scroll_content.contentSize = CGSizeMake(_Scroll_content.frame.size.width,scroll_ht + _VW_filter.frame.size.height);
+    _Scroll_content.contentSize = CGSizeMake(_Scroll_content.frame.size.width,scroll_ht);// + _VW_filter.frame.size.height);
     
     
 }
@@ -1300,11 +1300,11 @@
                             
                             
                             
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
                             
                             
                             
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                             
                             
                             
@@ -1332,11 +1332,11 @@
                             
                             
                             
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
                             
                             
                             
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                             
                             
                             
@@ -1477,9 +1477,8 @@
     if(collectionView == _collectionview_variants){
         return CGSizeMake(_collectionview_variants.frame.size.width/3, 64);
     }
-    else
-    {
-       return CGSizeMake(self.view.bounds.size.width/2.1, 336);
+    else    {
+       return CGSizeMake(self.view.bounds.size.width/2.1, 301);
     }
 
     
@@ -3261,12 +3260,59 @@
     // Dispose of any resources that can be recreated.
 }
 #pragma mark cart_count_api
--(void)cart_count{
-    
-    NSString *str_count = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"cart_count"]];
-    if([str_count intValue ] > 0)
+-(void)cart_count
+{
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id;
+    @try
     {
-        _badge_view.badgeValue = [str_count integerValue];
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
+    if([user_id isEqualToString:@"(null)"])
+    {
+        _badge_view.hidden = YES;
+    }
+    
+    else
+    {
+        NSString *str_count = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"cart_count"]];
+        if([str_count intValue ] > 0)
+        {
+           _badge_view.hidden = NO;
+            _badge_view.badgeValue = [str_count integerValue];
+        }
+        else{
+            _badge_view.hidden = YES;
+        }
+
+        
     }
 }
 

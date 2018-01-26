@@ -499,11 +499,11 @@
                 
                 
               
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
             
                 
 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                 
             
                 
@@ -532,11 +532,11 @@
                 
                 
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
                 
                 
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                 
                 
                 
@@ -565,21 +565,34 @@
                     text = [NSString stringWithFormat:@"%@ %@",prec_price,current_price];
                     
                 }
+              /*  pro_cell.LBL_current_price.textContainer.maximumNumberOfLines = 0;
                 
-                
-                
+               [pro_cell.LBL_current_price.layoutManager textContainerChangedGeometry:pro_cell.LBL_current_price.textContainer];
+
+                [pro_cell.LBL_current_price sizeToFit];
+
+                CGRect frameset = pro_cell.LBL_current_price.frame;
+                frameset.size.height = pro_cell.LBL_current_price.frame.origin.y+pro_cell.LBL_current_price.contentSize.height;
+                pro_cell.LBL_current_price.frame = frame;*/
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
+                
                 int sizeval = 14;
                 
-                if (prec_price.length >= 10)
+                if (prec_price.length >= 8)
                 {
-                    sizeval = 14;
+                    sizeval = 12;
+                    text = [NSString stringWithFormat:@"%@ %@\n%@",currency_code,current_price,prec_price];
+
                 }
                 else{
-                    sizeval = 14;
+                    sizeval = 12;
                 }
-                pro_cell.LBL_current_price.textContainer.maximumNumberOfLines = 2;
-                [pro_cell.LBL_current_price.layoutManager textContainerChangedGeometry:pro_cell.LBL_current_price.textContainer];
+               /* [pro_cell.LBL_current_price.text boundingRectWithSize:CGSizeMake(pro_cell.LBL_current_price.text.length, CGFLOAT_MAX)
+                                            options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                         attributes:[NSDictionary dictionaryWithObjectsAndKeys:pro_cell.LBL_current_price.font,NSFontAttributeName, nil] context:nil];*/
+              //  pro_cell.LBL_current_price.textContainer.maximumNumberOfLines = 2;
+               
+                //[pro_cell.LBL_current_price.layoutManager textContainerChangedGeometry:pro_cell.LBL_current_price.textContainer];
                 
                 NSRange ename = [text rangeOfString:current_price];
 //                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
@@ -675,7 +688,7 @@
 }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(self.view.bounds.size.width/2.011, 336);
+    return CGSizeMake(self.view.bounds.size.width/2.011, 301);
 }
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     return 1.5;
@@ -1325,15 +1338,59 @@
 }
 
 #pragma cart_count_api
--(void)cart_count{
-    
-    NSString *str_count = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"cart_count"]];
-    if([str_count intValue ] > 0)
+-(void)cart_count
+{
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id;
+    @try
     {
-        _badge_view.badgeValue = [str_count integerValue];
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
+    if([user_id isEqualToString:@"(null)"])
+    {
+        _badge_view.hidden = YES;
     }
     
+    else
+    {
+        NSString *str_count = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"cart_count"]];
+        if([str_count intValue ] > 0)
+        {
+            _badge_view.hidden = NO;
+            _badge_view.badgeValue = [str_count integerValue];
+        }
+        else{
+            _badge_view.hidden = YES;
+        }
 
+    }
 }
 #pragma mark set_badge_value_to_cart
 -(void)set_badge_value_to_cart:(NSString *)badge_value{

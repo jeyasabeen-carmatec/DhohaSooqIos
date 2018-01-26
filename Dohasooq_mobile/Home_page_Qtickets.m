@@ -168,7 +168,7 @@
 //    [activityIndicatorView startAnimating];
     @try
     {
-  //  [TIMER_countdown invalidate];
+  //  
         json_Response_Dic = [[NSMutableDictionary alloc]init];
           [self performSelector:@selector(view_appear) withObject:nil afterDelay:0.01];
    // [self set_up_VIEW];
@@ -201,7 +201,9 @@
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
-    
+    self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+
     
     UIView *view=[[UIView alloc] initWithFrame:CGRectMake(0, 0,[UIScreen mainScreen].bounds.size.width, 20)];
     view.backgroundColor = [UIColor colorWithRed:0.98 green:0.69 blue:0.19 alpha:1.0];
@@ -1266,10 +1268,10 @@
                     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                     
                     
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency] ];
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency] ];
                     
                     
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                     
                     [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
                     //NSParagraphStyleAttributeName
@@ -1295,11 +1297,11 @@
                     
                     
                     
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency] ];
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency] ];
                     
                     
                     
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                     
                     
                     
@@ -1340,7 +1342,7 @@
                     
                     int sizeval = 12;
                     if (prec_price.length >= 10) {
-                        sizeval = 10;
+                        sizeval = 12;
                     }
                     else{
                         sizeval = 12;
@@ -1624,10 +1626,10 @@
                     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                     
                     
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency] ];
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency] ];
                     
                     
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                     
                     [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
                     //NSParagraphStyleAttributeName
@@ -1653,11 +1655,11 @@
                     
                     
                     
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency] ];
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency] ];
                     
                     
                     
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                     
                     
                     
@@ -1695,7 +1697,7 @@
                     
                     int sizeval = 12;
                     if (prec_price.length >= 10) {
-                        sizeval = 10;
+                        sizeval = 12;
                     }
                     else{
                         sizeval = 12;
@@ -1921,7 +1923,7 @@
     }
     else if(collectionView == _collection_best_deals)
     {
-        return CGSizeMake(_collection_best_deals.frame.size.width/2.011, 336);
+        return CGSizeMake(_collection_best_deals.frame.size.width/2.011, 301);
         
     }
     else if(collectionView == _Collection_QT_menu)
@@ -1932,7 +1934,7 @@
     {
         NSLog(@"the size is width %f: THE height%d",(_collection_hot_deals.bounds.size.width/2),285);
 
-        return CGSizeMake(_collection_hot_deals.frame.size.width/2.011, 336);
+        return CGSizeMake(_collection_hot_deals.frame.size.width/2.011, 301);
         
     }
     else if( collectionView == _collection_brands)
@@ -2003,6 +2005,7 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+     TIMER_countdown = [[NSTimer alloc]init];
     if(collectionView == _collection_best_deals)
     {
         [[NSUserDefaults standardUserDefaults] setObject:[[deals_ARR objectAtIndex:indexPath.row]valueForKey:@"url_key"] forKey:@"product_list_key_sub"];
@@ -2011,7 +2014,7 @@
          [[NSUserDefaults standardUserDefaults] setValue:merchant_id forKey:@"Mercahnt_ID"];
         
         [[NSUserDefaults standardUserDefaults] synchronize];
-        [TIMER_countdown invalidate];
+        
 
         [self performSegueWithIdentifier:@"QT_home_product_detail" sender:self];
     }
@@ -2023,7 +2026,7 @@
 
         
         [[NSUserDefaults standardUserDefaults] synchronize];
-        [TIMER_countdown invalidate];
+        
         [self performSegueWithIdentifier:@"QT_home_product_detail" sender:self];
 
     }
@@ -2055,7 +2058,7 @@
         
         [[NSUserDefaults standardUserDefaults] setValue:[[[[brands_arr objectAtIndex:indexPath.row] valueForKey:@"_matchingData"]valueForKey:@"BrandDescriptions"] valueForKey:@"name"] forKey:@"item_name"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        [TIMER_countdown invalidate];
+        
         [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
         }
         @catch(NSException *exception)
@@ -2107,7 +2110,7 @@
         [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        [TIMER_countdown invalidate];
+        
         [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
         }
         @catch(NSException *Exception)
@@ -2163,7 +2166,7 @@
         [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        [TIMER_countdown invalidate];
+        
         [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
         }
         }
@@ -2216,7 +2219,7 @@
         [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        [TIMER_countdown invalidate];
+        
         [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
 
     }
@@ -2224,7 +2227,7 @@
     {
         [[NSUserDefaults standardUserDefaults]  setValue:[[[temp_dicts valueForKey:@"movie"] objectAtIndex:indexPath.row] valueForKey:@"_id"]  forKey:@"id"];
         [[NSUserDefaults standardUserDefaults]  synchronize];
-        [TIMER_countdown invalidate];
+        
         [self performSegueWithIdentifier:@"Movies_Booking" sender:self];
     }
 
@@ -2286,7 +2289,7 @@
             
         }
         [user_defafults synchronize];
-        [TIMER_countdown invalidate];
+        
         [self performSegueWithIdentifier:@"QTickets_identifier" sender:self];
         
 
@@ -2561,9 +2564,11 @@
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    TIMER_countdown = [[NSTimer alloc]init];
     
     if(tableView == _TBL_menu)
     {
+    
     switch (indexPath.section)
     {
         case 0:
@@ -2589,7 +2594,7 @@
             
             
             NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/Customer/1.json",SERVER_URL,list_key,country,languge,user_id];
-            [TIMER_countdown invalidate];
+            
             
             [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
             [[NSUserDefaults standardUserDefaults] synchronize];
@@ -2664,7 +2669,7 @@
                 }
                 else
                 {
-                  [TIMER_countdown invalidate];
+                  
                 [self performSegueWithIdentifier:@"home_address" sender:self];
                 }
 
@@ -2741,7 +2746,7 @@
                 }
                 else
                 {
-                    [TIMER_countdown invalidate];
+                    
                 [self performSegueWithIdentifier:@"login_forgot_pwd" sender:self];
                
                 }
@@ -2811,7 +2816,7 @@
                 }
                 else
                 {
-                    [TIMER_countdown invalidate];
+                    
                     [Helper_activity animating_images:self];
                     [self performSelector:@selector(load_Profile_VC) withObject:nil afterDelay:0.01];
               
@@ -2831,7 +2836,7 @@
             
         case 3:
             [self swipe_left];
-            [TIMER_countdown invalidate];
+            
             if(indexPath.row == 0)
             {
                 [self performSegueWithIdentifier:@"Home_about_us" sender:self];
@@ -2871,7 +2876,7 @@
 
 -(void) load_Profile_VC
 {
-    [TIMER_countdown invalidate];
+    
     [self performSegueWithIdentifier:@"edot_profile_VC" sender:self];
     [Helper_activity stop_activity_animation:self];
 }
@@ -4774,6 +4779,7 @@ NSString *str_status_text;
 #pragma IMAGE ACTIONS
 -(void)hot_deals_action
 {
+     TIMER_countdown = [[NSTimer alloc]init];
     [[NSUserDefaults standardUserDefaults] setValue:[[[json_Response_Dic valueForKey:@"dealSection" ] valueForKey:@"one"]  valueForKey:@"widgetTitle"] forKey:@"item_name"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
@@ -4823,14 +4829,14 @@ NSString *str_status_text;
     
     [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    [TIMER_countdown invalidate];
+    
     [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
 
 
 }
 -(void)best_deals_action
 {
-    
+     TIMER_countdown = [[NSTimer alloc]init];
     [[NSUserDefaults standardUserDefaults] setValue:[[[json_Response_Dic valueForKey:@"dealSection" ] valueForKey:@"two"]  valueForKey:@"widgetTitle"] forKey:@"item_name"];
     [[NSUserDefaults standardUserDefaults] synchronize];
    // http://192.168.0.171/dohasooq/apis/dealsList/Best%20Selling%20Products/(null)/(null)/27/Customer.json
@@ -4880,7 +4886,7 @@ NSString *str_status_text;
      [[NSUserDefaults standardUserDefaults] setValue:url_key forKey:@"product_list_key"];
     [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-   [TIMER_countdown invalidate];
+   
     [self performSegueWithIdentifier:@"qt_home_product_list" sender:self];
 
 }
@@ -5107,12 +5113,56 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
 
 -(void)cart_count
 {
-    NSString *str_count = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"cart_count"]];
-    if([str_count intValue ] > 0)
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id;
+    @try
     {
-    _badgeView.badgeValue = [str_count integerValue];
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
+    if([user_id isEqualToString:@"(null)"])
+    {
+        _badgeView.hidden = YES;
     }
     
+    else
+    {
+        NSString *str_count = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"cart_count"]];
+        if([str_count intValue ] > 0)
+        {
+            _badgeView.hidden = NO;
+            _badgeView.badgeValue = [str_count integerValue];
+        }
+        else{
+            _badgeView.hidden = YES;
+        }
+    }
    }
 
 #pragma mark TimerMethod
@@ -5242,7 +5292,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     if([str isEqualToString:@"In stock"])
     {
-        cell.LBL_stock.font = [UIFont fontWithName:@"Poppins-Regular" size:8.0];
+        cell.LBL_stock.font = [UIFont fontWithName:@"Poppins-Regular" size:10.0];
         cell.LBL_stock.textColor = [UIColor darkGrayColor];
         cell.LBL_stock.text = text;
     }
@@ -5259,7 +5309,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
 }
 -(void)viewDidDisappear:(BOOL)animated
 {
-    [TIMER_countdown invalidate];
+    TIMER_countdown = [[NSTimer alloc]init];
 }
 
 /*

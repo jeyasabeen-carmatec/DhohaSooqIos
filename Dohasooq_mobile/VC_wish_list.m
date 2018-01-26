@@ -171,12 +171,23 @@
         if([[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"stock_status"] isEqualToString:@"Out of stock"] )
         {
             cell.Btn_add_cart.enabled = NO;
+            
             [cell.Btn_add_cart setBackgroundImage:[UIImage imageNamed:@"out-of-stock-2.png"] forState:UIControlStateNormal];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                [cell.Btn_add_cart setBackgroundImage:[UIImage imageNamed:@"arbic_gray.png"] forState:UIControlStateNormal];
+
+            }
         }
         else
         {
             cell.Btn_add_cart.enabled = YES;
             [cell.Btn_add_cart setBackgroundImage:[UIImage imageNamed:@"Add-to-cart.png"] forState:UIControlStateNormal];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                [cell.Btn_add_cart setBackgroundImage:[UIImage imageNamed:@"arbic_wish.png"] forState:UIControlStateNormal];
+                
+            }
 
         }
     
