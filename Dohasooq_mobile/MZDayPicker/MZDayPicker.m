@@ -34,7 +34,7 @@ CGFloat const kDefaultCellHeight = 64.0f;
 CGFloat const kDefaultCellWidth = 64.0f;
 CGFloat const kDefaultCellFooterHeight = 0.0f;
 
-CGFloat const kDefaultDayLabelMaxZoomValue = 7.0f;
+//CGFloat const kDefaultDayLabelMaxZoomValue = 7.0f;
 
 NSInteger const kDefaultInitialInactiveDays = 0;
 NSInteger const kDefaultFinalInactiveDays = 8;
@@ -275,7 +275,7 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
         
         
       //  _bottomBorderColor = kDefaultColorBottomBorder;
-        _dayLabelZoomScale = kDefaultDayLabelMaxZoomValue;
+//        _dayLabelZoomScale = kDefaultDayLabelMaxZoomValue;
         _dayLabelFontSize = kDefaultDayLabelFontSize;
         _dayNameLabelFontSize = kDefaultDayNameLabelFontSize;
         
@@ -667,14 +667,14 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
     
     
     if (indexPath.row == 0) {
-        NSIndexPath *p = indexPath;
+//        NSIndexPath *p = indexPath;
        // NSInteger i = p.row;
         
 
-        [self tableView:self.tableView didHighlightRowAtIndexPath:indexPath];
-        [self tableView:self.tableView didSelectRowAtIndexPath:p];
+//        [self tableView:self.tableView didHighlightRowAtIndexPath:indexPath];
+//        [self tableView:self.tableView didSelectRowAtIndexPath:p];
 
-        //[cell.containerView setBackgroundColor:[UIColor colorWithRed:232.0f/255.0f green:158.0f/255.0f blue:27.0f/255.0f alpha:1.0f]];
+        [cell.containerView setBackgroundColor:[UIColor colorWithRed:232.0f/255.0f green:158.0f/255.0f blue:27.0f/255.0f alpha:1.0f]];
     }
     
     if ([self.dataSource respondsToSelector:@selector(dayPicker:titleForCellDayLabelInDay:)]) {
@@ -722,9 +722,41 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
     
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    //NSLog(@"..........................");
+    NSLog(@"..........................");
     
     
+}
+
+-(void)select_date:(NSIndexPath *) indexPath
+{
+    MZDayPickerCell *cell = (MZDayPickerCell *)[self.tableView cellForRowAtIndexPath:_currentIndex];
+
+    
+    if (NSRangeContainsRow(self.activeDays, indexPath.row - kDefaultInitialInactiveDays + 1))
+    {
+        if (indexPath) {
+            [self tableView:self.tableView didHighlightRowAtIndexPath:indexPath];
+            [[NSUserDefaults standardUserDefaults]setInteger:indexPath.row forKey:@"row"];
+            [[NSUserDefaults standardUserDefaults]setInteger:indexPath.section forKey:@"section"];
+            
+            
+            
+        }
+        if (indexPath.row != self.currentIndex.row) {
+            
+            if ([self.delegate respondsToSelector:@selector(dayPicker:willSelectDay:)])
+                [self.delegate dayPicker:self willSelectDay:self.tableDaysData[indexPath.row]];
+            
+            _currentDay = indexPath.row-1;
+            _currentDate = [(MZDay *)self.tableDaysData[indexPath.row] date];
+            [self setCurrentIndex:indexPath];
+            //                 [cell.containerView setBackgroundColor:[UIColor colorWithRed:36.0f/255.0f green:48.0f/255.0f blue:56.0f/255.0f alpha:1.0f]];
+            [cell.containerView setBackgroundColor:[UIColor colorWithRed:32.0f/255.0f green:46.0f/255.0f blue:55.0f/255.0f alpha:1.0f]];
+        }
+        
+    
+    }
+//    [self tableView:self.tableView didHighlightRowAtIndexPath:indexPath];
 }
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
        
@@ -734,7 +766,6 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
 - (void)tableView:(UITableView *)tableView didHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
     
     MZDayPickerCell *cell = (MZDayPickerCell *)[tableView cellForRowAtIndexPath:indexPath];
- 
     [cell.containerView setBackgroundColor:[UIColor colorWithRed:232.0f/255.0f green:158.0f/255.0f blue:27.0f/255.0f alpha:1.0f]];
    // NSLog(@"selected Indexpath ::%@",indexPath);
     

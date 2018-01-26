@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Hoshi_Billing_ADDR.h"
+#import "TXT_Placeholder.h"
 
 @interface VC_contact_us : UIViewController
 @property(nonatomic,weak) IBOutlet UIScrollView *Scroll_contents;

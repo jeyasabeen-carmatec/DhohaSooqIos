@@ -12,6 +12,7 @@
 #import "qtickets_cell.h"
 #import "upcoming_cell.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 #import <SDWebImage/UIImageView+WebCache.h>
 
@@ -70,7 +71,7 @@
    
     _BTN_leisure_venues.text = _BTN_venues.text;
     _BTN_sports_venues.text = _BTN_venues.text;
-    leng_text = @"LANGUAGE";
+    leng_text = @"Languages";
     halls_text =@"CINEMA";
     
     [self ATTRIBUTE_TEXT];
@@ -116,7 +117,7 @@
    if([headre_name isEqualToString:@"MOVIES"])
    {
         [self Movies_view];
-       [HttpClient animating_images:self];
+       [Helper_activity animating_images:self];
        [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:0]];
        
@@ -126,7 +127,7 @@
    else if([headre_name isEqualToString:@"EVENTS"])
    {
        [self Events_view];
-       [HttpClient animating_images:self];
+       [Helper_activity animating_images:self];
        [self performSelector:@selector(Events_API_CALL) withObject:nil afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:1]];
 
@@ -142,7 +143,7 @@
 //        VW_overlay.hidden = NO;
           _VW_sports.hidden = NO;
 //        [activityIndicatorView startAnimating];
-       [HttpClient animating_images:self];
+       [Helper_activity animating_images:self];
        
         [self performSelector:@selector(Sports_API_call) withObject:nil afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:2]];
@@ -157,7 +158,7 @@
        // VW_overlay.hidden = NO;
        _VW_Leisure.hidden = NO;
        // [activityIndicatorView startAnimating];
-       [HttpClient animating_images:self];
+       [Helper_activity animating_images:self];
        [self performSelector:@selector(Leisure_API_call) withObject:nil afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:3]];
 
@@ -171,7 +172,7 @@
         //[self.view addSubview:VW_overlay];
       //  VW_overlay.hidden = NO;
       //  [activityIndicatorView startAnimating];
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
         [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:0]];
         [_Header_name setTitle:@"Movies" forState:UIControlStateNormal];
@@ -389,7 +390,7 @@
       
         [user_defafults setValue:@"Events" forKey:@"header_name"];
         [self ATTRIBUTE_TEXT];
-      [HttpClient animating_images:self];
+      [Helper_activity animating_images:self];
         [self performSelector:@selector(Events_API_CALL) withObject:nil afterDelay:0.01];
         [self Event_API_CALL];
 
@@ -459,7 +460,7 @@
         [user_defafults setValue:@"MOVIES" forKey:@"header_name"];
 
         _VW_filter.hidden = NO;
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
 //        VW_overlay.hidden = NO;
 //        [activityIndicatorView startAnimating];
         [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
@@ -490,7 +491,7 @@
 //               [self.VW_Leisure addSubview:VW_overlay];
            [_Header_name setTitle:@"LEISURE" forState:UIControlStateNormal];
         [user_defafults setValue:@"LEISURE" forKey:@"header_name"];
-          [HttpClient animating_images:self];
+          [Helper_activity animating_images:self];
 //        VW_overlay.hidden = NO;
 //        [activityIndicatorView startAnimating];
         [self performSelector:@selector(Leisure_API_call) withObject:nil afterDelay:0.01];
@@ -1019,7 +1020,7 @@
         
         else
         {
-       [HttpClient animating_images:self];
+       [Helper_activity animating_images:self];
             [self performSelector:@selector(event_detail) withObject:nil afterDelay:0.01];
         }
         }
@@ -1078,7 +1079,7 @@
            
            else
            {
-              [HttpClient animating_images:self];
+              [Helper_activity animating_images:self];
                [self performSelector:@selector(event_detail) withObject:nil afterDelay:0.01];
            }
        }
@@ -1108,13 +1109,13 @@
 -(void)sports_detail
 {
     [self performSegueWithIdentifier:@"Home_sports_detail" sender:self];
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
 }
 -(void)event_detail
 {
     
     [self performSegueWithIdentifier:@"leisure_detail_segue" sender:self];
-  [HttpClient stop_activity_animation];
+  [Helper_activity stop_activity_animation:self];
 
 }
 
@@ -1417,7 +1418,7 @@
     if(self.segmentedControl4.selectedSegmentIndex == 0)
     {
         _VW_filter.hidden = NO;
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         
         [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
         
@@ -1427,7 +1428,7 @@
     else if(self.segmentedControl4.selectedSegmentIndex == 1)
     {
         _VW_filter.hidden = YES;
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
 
         [self performSelector:@selector(up_coming_API) withObject:nil afterDelay:0.01];
         
@@ -1435,7 +1436,7 @@
     }
     else{
         _VW_filter.hidden = YES;
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
 
         [self performSelector:@selector(Top_movies_API) withObject:nil afterDelay:0.01];
         
@@ -1545,7 +1546,7 @@
            // }
         }
       
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         [Movies_arr removeAllObjects];
         Movies_arr = [new_arr mutableCopy];
         [_Collection_movies reloadData];
@@ -1596,7 +1597,7 @@
         }
         
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         [Movies_arr removeAllObjects];
         Movies_arr = [new_arr mutableCopy];
         [_Collection_movies reloadData];
@@ -1646,7 +1647,7 @@
         }
         
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         [Movies_arr removeAllObjects];
         Movies_arr = [new_arr mutableCopy];
         [_Collection_movies reloadData];
@@ -1724,7 +1725,7 @@
         
         [_TBL_event_list reloadData];
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         
         //  [self performSegueWithIdentifier:@"Home_to_detail" sender:self];
         
@@ -1733,14 +1734,14 @@
     @catch(NSException *exception)
     {
         NSLog(@"Event api call exception %@",exception);
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
     }
     
 }
 
 -(void)Event_API_CALL
 {
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
     //[Events_arr removeAllObjects];
     Events_arr = [[[NSUserDefaults standardUserDefaults] valueForKey:@"Events_arr"] mutableCopy];
     if(Events_arr.count<1)
@@ -1765,7 +1766,7 @@
 -(void)Sports_API_call
 
 {
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
     Sports_arr = [[[NSUserDefaults standardUserDefaults] valueForKey:@"Sports_arr"] mutableCopy];
     if(Sports_arr.count < 1)
     {
@@ -1800,7 +1801,7 @@
 }
 -(void)Leisure_API_call
 {
-     [HttpClient stop_activity_animation];
+     [Helper_activity stop_activity_animation:self];
     
     Leisure_arr = [[[NSUserDefaults standardUserDefaults] valueForKey:@"leisure_arr"] mutableCopy];
     if(Leisure_arr.count < 1)
@@ -1834,7 +1835,7 @@
 
 -(void)API_movie
 {
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
     
 }

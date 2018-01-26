@@ -9,6 +9,7 @@
 #import "VC_myorder_list.h"
 #import "orders_list_cell.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_myorder_list ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 {
@@ -65,7 +66,7 @@
 //    
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(Orders_list_API) withObject:nil afterDelay:0.01];
     
     
@@ -93,12 +94,12 @@
             [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
              ];
             
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
 
         }
         if (data) {
             
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             NSLog(@"%@",data);
             NSDictionary *dict = data;
             @try {
@@ -142,7 +143,7 @@
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
                 
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
 
             }
             
@@ -242,6 +243,13 @@
     NSString *str = [NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:indexPath.row] valueForKey:@"order_number"]];
     str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
     NSString *str_order = @"ORDER ID :";
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        str_order = @"تم إعداد الطلبية ";
+        str = [NSString stringWithFormat:@": %@",[[json_DATA objectAtIndex:indexPath.row] valueForKey:@"order_number"]];
+    }
+    
+    
     NSString *text = [NSString stringWithFormat:@"%@%@",str_order,str];
     
     
@@ -291,7 +299,12 @@
     }
     NSString *date = [NSString stringWithFormat:@"%@",[[json_DATA  objectAtIndex:indexPath.row] valueForKey:@"order_created"]];
     date = [date stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-    NSString *order_text = @"Ordered On ";
+    NSString *order_text = @"Ordered On :";
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        order_text = @"أنشأت الطلبية بتاريخ";
+        date = [NSString stringWithFormat:@": %@",[[json_DATA  objectAtIndex:indexPath.row] valueForKey:@"order_created"]];
+    }
     NSString *date_text = [NSString stringWithFormat:@"%@%@",order_text,date];
     
     
@@ -360,16 +373,9 @@
         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:price attributes:attribs];
         
         NSRange qrs = [price rangeOfString:qr];
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor redColor]}
                                     range:qrs];
-        }
-        else
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor redColor]}
-                                    range:qrs];
-        }
+        
         order_cell.LBL_price.attributedText = attributedText;
     }
     else
@@ -469,7 +475,7 @@
             {
              
                 
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 
 
                 _VW_empty.hidden = YES;
@@ -485,7 +491,7 @@
                 
             }
             else{
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 _TBL_orders.hidden =  YES;
                 _VW_empty.hidden = NO;
                 _VW_search_VW.hidden = YES;
@@ -503,14 +509,14 @@
 
             }
             [self.TBL_orders reloadData];
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
 
             
             
         }
         else
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
@@ -521,7 +527,7 @@
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];

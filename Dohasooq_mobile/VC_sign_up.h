@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "HoshiTextField.h"
+#import "Hoshi_Billing_ADDR.h"
 
 @interface VC_sign_up : UIViewController
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sign_up;
@@ -21,7 +22,7 @@
 @property(nonatomic,weak) IBOutlet HoshiTextField *TXT_F_name;
 @property(nonatomic,weak) IBOutlet HoshiTextField *TXT_L_name;
 @property(nonatomic,weak) IBOutlet HoshiTextField *TXT_email;
-@property(nonatomic,weak) IBOutlet HoshiTextField *TXT_phone;
+@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_phone;
 @property(nonatomic,weak) IBOutlet HoshiTextField *TXT_password;
 @property(nonatomic,weak) IBOutlet HoshiTextField *TXT_con_password;
 @property(nonatomic,weak) IBOutlet UITextField *TXT_prefix;

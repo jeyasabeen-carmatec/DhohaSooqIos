@@ -8,12 +8,13 @@
 
 #import "VC_DS_Checkout.h"
 #import "VC_cart_list.h"
-#import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_DS_Checkout ()<UIWebViewDelegate>
 {
 //    UIView *loadingView;
 //    UIActivityIndicatorView *activityView;
+    int tag;
 }
 
 @end
@@ -24,6 +25,7 @@
     [super viewDidLoad];
     self.navigationItem.hidesBackButton = YES;
     self.navigationController.navigationBar.hidden = NO;
+    tag = 0;
     
 //    loadingView = [[UIView alloc]init];
 //    CGRect loadframe = loadingView.frame;
@@ -67,7 +69,9 @@
        
          html_str = [self.rec_dic valueForKey:@"formstring"];
        // [_web_pay loadHTMLString:[html_str stringByReplacingOccurrencesOfString:@"\n" withString:@"<br/>"] baseURL:nil];
+      
         [_web_pay loadHTMLString:html_str baseURL:nil];
+        
     }
     
 
@@ -85,13 +89,13 @@
 //}
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     
-//    [HttpClient animating_images:self];
+     [Helper_activity animating_images:self];
 
     
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     
-//    [HttpClient stop_activity_animation];
+   [Helper_activity stop_activity_animation:self];
     NSLog(@"Loading Successful ");
     
     
@@ -109,7 +113,8 @@
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
-    
+    self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+   self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
     [self.navigationController popToRootViewControllerAnimated:NO];
     
     
@@ -139,6 +144,9 @@
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    [self.navigationController popToRootViewControllerAnimated:NO];
 }
 
 @end

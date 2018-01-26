@@ -12,8 +12,8 @@
 
 @implementation HttpClient
 
-UIImageView *actiIndicatorView;
-UIView *VW_overlay;
+//UIImageView *actiIndicatorView;
+//UIView *VW_overlay;
 
 + (void)postServiceCall:(NSString*_Nullable)urlStr andParams:(NSDictionary*_Nullable)params completionHandler:(void (^_Nullable)(id  _Nullable data, NSError * _Nullable error))completionHandler{
     
@@ -31,7 +31,6 @@ UIView *VW_overlay;
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(id  _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
-            [self stop_activity_animation];
             completionHandler(error,nil);
 
             NSLog(@"eror 1:%@",[error localizedDescription]);
@@ -39,7 +38,6 @@ UIView *VW_overlay;
             NSError *err = nil;
             id resposeJSon = [NSJSONSerialization JSONObjectWithData:data options:0 error:&err];
             if (err) {
-                 [self stop_activity_animation];
                 completionHandler(err,nil);
                 //NSLog(@"eror 2:%@",[err localizedDescription]);
             }else{
@@ -55,7 +53,6 @@ UIView *VW_overlay;
                     //}
 
                 } @catch (NSException *exception) {
-                     [self stop_activity_animation];
                     NSLog(@" 3 %@",exception);
                 }
                             }
@@ -154,40 +151,63 @@ UIView *VW_overlay;
     [dataTask resume];
 }
 
-+(void)animating_images:(UIViewController *)my_controller{
+/*+(void)animating_images:(UIViewController *)my_controller{
     
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    UIView *VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.0];
     VW_overlay.clipsToBounds = YES;
+    VW_overlay.tag = 1234;
     
-
+    
     VW_overlay.hidden = NO;
-    actiIndicatorView = [[UIImageView alloc] initWithImage:[UIImage new]];
+    UIImageView *actiIndicatorView = [[UIImageView alloc] initWithImage:[UIImage new]];
     actiIndicatorView.frame = CGRectMake(0, 0, 60, 60);
     actiIndicatorView.center = my_controller.view.center;
+    actiIndicatorView.tag = 1235;
     
     actiIndicatorView.animationImages = [NSArray arrayWithObjects:[UIImage imageNamed:@"loader1.png"],[UIImage imageNamed:@"loader2.png"],[UIImage imageNamed:@"loader3.png"],[UIImage imageNamed:@"loader4.png"],[UIImage imageNamed:@"loader5.png"],[UIImage imageNamed:@"loader6.png"],[UIImage imageNamed:@"loader7.png"],[UIImage imageNamed:@"loader8.png"],[UIImage imageNamed:@"loader9.png"],[UIImage imageNamed:@"loader10.png"],[UIImage imageNamed:@"loader11.png"],[UIImage imageNamed:@"loader12.png"],[UIImage imageNamed:@"loader13.png"],[UIImage imageNamed:@"loader14.png"],[UIImage imageNamed:@"loader15.png"],[UIImage imageNamed:@"loader16.png"],[UIImage imageNamed:@"loader17.png"],[UIImage imageNamed:@"loader18.png"],nil];
     
-    actiIndicatorView.animationDuration = 3.0;
+    actiIndicatorView.animationDuration = 2.0;
     [actiIndicatorView startAnimating];
     actiIndicatorView.center = VW_overlay.center;
     
     [VW_overlay addSubview:actiIndicatorView];
-
-    [my_controller.navigationController.view addSubview:VW_overlay];
+    [my_controller.view addSubview:VW_overlay];
   }
-+(void)stop_activity_animation{
++(void)stop_activity_animation:(UIViewController *)my_controller{
     
-    [actiIndicatorView stopAnimating];
-    VW_overlay.hidden = YES;
+    for (UIImageView *activity in my_controller.view.subviews) {
+        if (activity.tag == 1235) {
+            [activity stopAnimating];
+        }
+    }
+       for (UIView *VW_main in my_controller.view.subviews) {
+           if (VW_main.tag == 1234) {
+               VW_main.hidden = YES;
+           }
+        
+       }
     
+    
+}*/
+
++(NSString*)currency_seperator:(NSString *)Str{
+    
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init] ;
+    [formatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    [formatter setGroupingSeparator:@","];
+    [formatter setDecimalSeparator:@"."];
+    
+    // Decimal values read from any db are always written with no grouping separator and a comma for decimal.
+    
+    NSNumber *numberFromString = [formatter numberFromString:Str];
+    
+    [formatter setGroupingSeparator:@","]; // Whatever you want here
+    [formatter setDecimalSeparator:@"."]; // Whatever you want here
+    
+    NSString *finalValue = [formatter stringFromNumber:numberFromString];
+    return finalValue;
     
 }
-
-
-
-
-
-
-
 @end

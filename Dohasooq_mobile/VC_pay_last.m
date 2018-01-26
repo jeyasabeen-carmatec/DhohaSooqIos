@@ -88,9 +88,8 @@
     _TXT_countries.layer.borderWidth = 0.5f;
     _TXT_countries.layer.borderColor = [UIColor lightGrayColor].CGColor;
     
-    _TXT_countries.inputAccessoryView=phone_close;
-    _TXT_countries.inputView = _country_picker_view;
-    
+    _TXT_countries.inputAccessoryView = phone_close;
+    _TXT_countries.delegate = self;
 
 }
 -(void)CountryAPICall{
@@ -181,7 +180,7 @@
                 
                 NSLog(@"sortedArr %@",sortedArr);
                 
-                [country_arr removeAllObjects];
+                country_arr = [[NSMutableArray alloc] init];
                 [country_arr addObjectsFromArray:required_format];
                 [_country_picker_view reloadAllComponents];
             }
@@ -343,18 +342,22 @@
 
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
-    return country_arr[row];
-    
+    @try {
+        return [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:row] valueForKey:@"cntry_name"]];
+    } @catch (NSException *exception) {
+        NSLog(@"exception pickerView titleForRow %@ ",exception);
+    }
 }
 
 // #6
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    
-    self.TXT_countries.text = country_arr[row];
-    NSLog(@"the text is:%@",_TXT_countries.text);
-    
-    
+    @try {
+        self.TXT_countries.text = [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:row] valueForKey:@"cntry_name"]];
+        NSLog(@"the text is:%@",_TXT_countries.text);
+    } @catch (NSException *exception) {
+        NSLog(@"Exception from picker country %@",exception);
+    }
 }
 
 
@@ -373,5 +376,12 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+#pragma mark - Uitextfield deligate
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    [_country_picker_view reloadAllComponents];
+    _TXT_countries.inputView = _country_picker_view;
+}
 
 @end

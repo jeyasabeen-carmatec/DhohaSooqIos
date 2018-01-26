@@ -13,7 +13,7 @@
 #import "ViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "HttpClient.h"
-
+#import "Helper_activity.h"
 
 @interface Event_detail ()<UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource,UIGestureRecognizerDelegate,UIAlertViewDelegate>
 {
@@ -325,7 +325,7 @@
 //   
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(getData) withObject:nil afterDelay:0.01];
    
     [self picker_set_UP];
@@ -382,7 +382,7 @@
          [event_cost_arr addObject:tem_dictin];
      }
     
-  [HttpClient stop_activity_animation];
+  [Helper_activity stop_activity_animation:self];
       [self set_UP_VIEW];
     [_TBL_quantity reloadData];
     [self set_UP_VIEW];
@@ -796,7 +796,7 @@
 -(void)BTN_book_action
 {
     
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(Book_action) withObject:nil afterDelay:0.01];
     
 }
@@ -839,7 +839,7 @@
 
     if([user_id isEqualToString:@"(null)"])
     {
-       [HttpClient stop_activity_animation];
+       [Helper_activity stop_activity_animation:self];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please login to continue" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
         alert.tag = 1;
         [alert show];
@@ -854,12 +854,12 @@
 
     if(_BTN_calneder.hidden == NO)
     {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
     if([_BTN_calneder.text isEqualToString:@"Calendar"])
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please selct Date" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
         [alert show];
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
     }
     else if(i <= 0)
@@ -867,7 +867,7 @@
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please selct Atleast one Ticket" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
             [alert show];
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
         }
     else
     {
@@ -887,7 +887,7 @@
             [[NSUserDefaults standardUserDefaults] setObject:_BTN_calneder.text forKey:@"event_book_date"];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         [self performSegueWithIdentifier:@"event_book_user" sender:self];
         
         
@@ -904,7 +904,7 @@
         [[NSUserDefaults standardUserDefaults] setObject:cost_arr forKey:@"Amount_dict"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
         [self performSegueWithIdentifier:@"event_book_user" sender:self];
         
         
