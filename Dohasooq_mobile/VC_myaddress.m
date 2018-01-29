@@ -243,9 +243,13 @@
             if ([addr1 containsString:@"<null>"]  ||[addr1 containsString:@"<nil>"] || [addr1 isEqualToString:@","]) {
                 addr1 = @"";
             }
+            str_zip_code = [[dict valueForKey:@"billingaddress"] valueForKey:@"zip_code"];
+            if ([str_zip_code isEqualToString:@"<null>"]  ||[str_zip_code isEqualToString:@"<nil>"] || [str_zip_code isEqualToString:@"(null)"],[str_zip_code isKindOfClass:[NSNull class]]||[str_zip_code isEqualToString:@"null"]) {
+                str_zip_code = @"";
+            }
             
         
-        NSString *address_str = [NSString stringWithFormat:@"%@\n%@ \n%@ %@ %@",addr1,str_city,state,country,[[dict valueForKey:@"billingaddress"] valueForKey:@"zip_code"]];
+        NSString *address_str = [NSString stringWithFormat:@"%@\n%@ \n%@ %@ %@",addr1,str_city,state,country,str_zip_code];
         
         address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
             
@@ -315,8 +319,13 @@
         if ([country1 containsString:@"<null>"]  ||[country1 containsString:@"<nil>"]) {
             country1 = @"";
         }
+       str_zip_code = [[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"zip_code"];
+        if ([str_zip_code isEqualToString:@"<null>"]  ||[str_zip_code isEqualToString:@"<nil>"] || [str_zip_code isEqualToString:@"(null)"],[str_zip_code isKindOfClass:[NSNull class]]||[str_zip_code isEqualToString:@"null"]) {
+            str_zip_code = @"";
+        }
         
-        NSString *address_str = [NSString stringWithFormat:@"%@,\n%@, \n%@ %@ %@\nMobile:%@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"address1"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"city"],state,country1,[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"zip_code"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"phone"]];
+        
+        NSString *address_str = [NSString stringWithFormat:@"%@,\n%@, \n%@ %@ %@\nMobile:%@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"address1"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"city"],state,country1,str_zip_code,[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"phone"]];
         
         address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@","];
         
@@ -488,7 +497,12 @@
                 str_addr2 = @"";
             }
             
-        
+            
+            if ([str_zip_code isEqualToString:@"<null>"]  ||[str_zip_code isEqualToString:@"<nil>"] || [str_zip_code isEqualToString:@"(null)"],[str_zip_code isKindOfClass:[NSNull class]]||[str_zip_code isEqualToString:@"null"]) {
+                str_zip_code = @"";
+            }
+
+            
             cell.TXT_first_name.text = str_fname;
             cell.TXT_last_name.text = str_lname;
             cell.TXT_address1.text = str_addr1;
@@ -615,7 +629,7 @@
         }
 //    return UITableViewAutomaticDimension;
         else{
-            return 147;
+            return 155;
         }
     
     
@@ -773,6 +787,10 @@
     str_zip_code = cell.TXT_zip.text ;
     str_phone =  cell.TXT_phone.text ;
     code_cntry = cell.TXT_cntry_code.text;
+    if ([str_zip_code isEqualToString:@""]) {
+        str_zip_code = @"null";
+    }
+    
     NSString *msg;
     
     if ([str_fname isEqualToString:@""]) {
@@ -906,43 +924,63 @@
         
     }
 
-    else if ([str_zip_code isEqualToString:@""]) {
-        
-        [cell.TXT_zip becomeFirstResponder];
-        msg = @"Zipcode Should not be Empty";
-        
+//    else if ([str_zip_code isEqualToString:@""]) {
+//        
+//        [cell.TXT_zip becomeFirstResponder];
+//        msg = @"Zipcode Should not be Empty";
+//        
+//        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+//        {
+//            msg = @"يجب عدم ترك حقل الرمز البريدي فارغاً";
+//        }
+//   
+//        
+//    }
+//    else if (str_zip_code.length < 3)
+//    {
+//        [cell.TXT_zip becomeFirstResponder];
+//        msg = @"Zip code should not be less than 3 characters";
+//        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+//        {
+//            msg = @"يجب ألا يقل حقل الرمز البريدي عن 3 أرقام";
+//        }
+//        
+//    }
+//
+//    else if (str_zip_code.length>10)
+//    {
+//        [cell.TXT_zip becomeFirstResponder];
+//        msg = @"Zip code should not be more than 10 characters";
+//        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+//        {
+//            msg = @"يجب ألا يزيد حقل الرمز البريدي عن 10 أرقام ";
+//        }
+//
+//    }
+    else if ([str_state isEqualToString:@""])
+    {
+        [cell.TXT_state becomeFirstResponder];
+        msg = @"Please Select State";//يرجى تحديد البلد
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-            msg = @"يجب عدم ترك حقل الرمز البريدي فارغاً";
+            msg = @"يرجى تحديد الدولة";
         }
-   
         
     }
-    else if (str_zip_code.length < 3)
+    else if ([str_country isEqualToString:@""])
     {
-        [cell.TXT_zip becomeFirstResponder];
-        msg = @"Zip code should not be less than 3 characters";
+        [cell.TXT_country becomeFirstResponder];
+        msg = @"Please Select Country";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-            msg = @"يجب ألا يقل حقل الرمز البريدي عن 3 أرقام";
+            msg = @"يرجى تحديد البلد";
         }
-        
     }
 
-    else if (str_zip_code.length>10)
-    {
-        [cell.TXT_zip becomeFirstResponder];
-        msg = @"Zip code should not be more than 10 characters";
-        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-        {
-            msg = @"يجب ألا يزيد حقل الرمز البريدي عن 10 أرقام ";
-        }
-
-    }
-    
     else if (edit_tag != 999){
         
-        if ([str_phone isEqualToString:@""]) {
+        if ([str_phone isEqualToString:@""])
+        {
             
             [cell.TXT_phone becomeFirstResponder];
             msg = @"Phone Number  Should Not be Empty";
@@ -970,9 +1008,17 @@
                 msg = @"يجب أن لا يتجاوز رقم الجوال 15 رقماً";
             }
         }
+        else if (![str_country isEqualToString:@"Qatar"])
+        {
+            [cell.TXT_country becomeFirstResponder];
+            msg = @"Sorry! we cannot Ship Products Outside Qatar";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يرجى تحديد البلد";
+            }
+        }
 
-        
-        if ([code_cntry isEqualToString:@""]) {
+        else if ([code_cntry isEqualToString:@""]) {
             
             [cell.TXT_cntry_code becomeFirstResponder];
             msg = @"Country Code and Phone Number is required";
@@ -982,31 +1028,7 @@
             }
             
         }
-       
     }
-    
-    
-    
-    else if ([str_state isEqualToString:@""])
-    {
-        [cell.TXT_state becomeFirstResponder];
-        msg = @"Please Select State";//يرجى تحديد البلد
-        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-        {
-            msg = @"يرجى تحديد الدولة";
-        }
-
-    }
-    else if ([str_country isEqualToString:@""])
-    {
-        [cell.TXT_country becomeFirstResponder];
-        msg = @"Please Select Country";
-        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-        {
-            msg = @"يرجى تحديد البلد";
-        }
-    }
-    
     
     if (msg) {
         
@@ -1165,7 +1187,7 @@
                             if ([succs isEqualToString:@"success"] || [succs isEqualToString:@"1"] ) {
                                 i=i-1;
                                 NSString *str = @"Ok";
-                                NSString *str_msg = @"Billing Address saved successfully";
+                                NSString *str_msg = @"Billing Address Saved Successfully";
                                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                                 {
                                     str = @"حسنا";
@@ -1275,16 +1297,17 @@
     
 if (textField.tag == 8) {
     
-//    billing_address *textFieldRowCell;
-//    textFieldRowCell = (billing_address *) textField.superview.superview.superview;
-//    NSIndexPath *indexPath = [self.TBL_address indexPathForCell:textFieldRowCell];
+     billing_address *textFieldRowCell;
+    textFieldRowCell = (billing_address *) textField.superview.superview.superview;
+     NSIndexPath *indexPath = [self.TBL_address indexPathForCell:textFieldRowCell];
 //    
 //    NSLog(@"The index path is %@",indexPath);
 //    
-//    textFieldRowCell = (billing_address *)[self.TBL_address cellForRowAtIndexPath:indexPath];
+    textFieldRowCell = (billing_address *)[self.TBL_address cellForRowAtIndexPath:indexPath];
     textField.text = cntry_selection;
+    [textFieldRowCell.TXT_state setText:state_selection];
     
-    
+    NSLog(@"%@",textFieldRowCell.TXT_state.text);
     if ([textField.text isEqualToString:@""]) {
         
        NSString  *msg = @"Please Select Country";
@@ -1400,13 +1423,15 @@ if (textField.tag == 8) {
                     }
                     
                 }
-                
-                
-                
                 NSLog(@"sortedArr %@",sortedArr);
-                
-                [response_picker_arr removeAllObjects];
-                [response_picker_arr addObjectsFromArray:required_format];
+                if (edit_tag!=999) {
+                    [response_picker_arr removeAllObjects];
+                    [response_picker_arr  addObject:[required_format objectAtIndex:0]];
+                }
+                else{
+                    [response_picker_arr removeAllObjects];
+                    [response_picker_arr addObjectsFromArray:required_format];
+                }
                 [_staes_country_pickr reloadAllComponents];
             }
             else
@@ -1427,54 +1452,6 @@ if (textField.tag == 8) {
         
 
         
-     /*        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-        @try {
-            [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if (error) {
-                        NSLog(@"%@",[error localizedDescription]);
-                    }
-                    if (data) {
-                        @try {
-                            if ([data isKindOfClass:[NSDictionary class]]) {
-      
-                                [response_countries_dic addEntriesFromDictionary:data];
-                                [response_picker_arr removeAllObjects];
-                                //[response_picker_arr addObjectsFromArray:[response_countries_dic allKeys]]
-                                for (int x=0; x<[[response_countries_dic allKeys] count]; x++) {
-                                    NSDictionary *dic = @{@"cntry_id":[[response_countries_dic allKeys] objectAtIndex:x],@"cntry_name":[response_countries_dic valueForKey:[[response_countries_dic allKeys] objectAtIndex:x]]};
-                                    
-                                    [response_picker_arr addObject:dic];
-                                    
-                                }
-                                NSSortDescriptor *sortDescriptor;
-                                sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"cntry_name"
-                                                                             ascending:YES];
-                                NSArray *sortedArr = [response_picker_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
-                                NSLog(@"sortedArr %@",sortedArr);
-                                
-                                [response_picker_arr removeAllObjects];
-                                [response_picker_arr addObjectsFromArray:sortedArr];
-                                [_staes_country_pickr reloadAllComponents];
-                                
-                                
-                                 }
-                            else{
-                                [HttpClient createaAlertWithMsg:@"The Data could not be read" andTitle:@""];
-                            }
-                        } @catch (NSException *exception) {
-                            NSLog(@"%@",exception);
-                        }
-                        
-                    }
-                    
-                });
-                
-            }];
-        } @catch (NSException *exception) {
-            NSLog(@"%@",exception);
-        }
-      */
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
@@ -1482,16 +1459,13 @@ if (textField.tag == 8) {
     
     
 }
-
-
-
 #pragma mark StateAPI Call
 
 //http://192.168.0.171/dohasooq/'apis/getstatebyconapi/countryid.json
 -(void)stateApiCall{
     
     @try {
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/getstatebyconapi/%@.json",SERVER_URL,[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/getstatebyconapi/%ld.json",SERVER_URL,(long)cntry_ID];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         @try {
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {

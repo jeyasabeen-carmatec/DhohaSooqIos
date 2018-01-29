@@ -29,6 +29,7 @@
 @property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_Dob;
 @property(nonatomic,weak) IBOutlet profile_Hoshi_Billing_ADDR *TXT_group;
 @property(nonatomic,weak) IBOutlet UITextField *TXT_country_fld;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_arrow;
 
 @property(nonatomic,weak) IBOutlet UIButton *BTN_bank_customer;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_bank_employee;

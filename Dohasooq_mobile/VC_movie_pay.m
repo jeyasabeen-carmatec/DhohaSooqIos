@@ -9,6 +9,7 @@
 #import "VC_movie_pay.h"
 #import "XMLDictionary/XMLDictionary.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_movie_pay ()
 {
@@ -165,18 +166,18 @@
     }
 -(void)pay_action_checked
 {
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(get_order_iD) withObject:activityIndicatorView afterDelay:0.01];
 }
 #pragma mark Generating Booking ID
 
 -(void)get_order_iD
 {
-
-   
     
-    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/lock_confirm_request?Transaction_Id=%@&AppSource=11&AppVersion=1.0",[[NSUserDefaults standardUserDefaults] valueForKey:@"TID"]];
+    NSString* Identifier = [[[UIDevice currentDevice] identifierForVendor] UUIDString]; // IOS 6+
+    NSLog(@"output is : %@", Identifier);
+    
+    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/lock_confirm_request?Transaction_Id=%@&Source=11&AppVersion=1.0",[[NSUserDefaults standardUserDefaults] valueForKey:@"TID"]];
 
     
     NSURL *URL = [[NSURL alloc] initWithString:str_url];
@@ -186,7 +187,19 @@
    
     
     NSLog(@"The Order Data is:%@",xmlDoc);
+    NSString *str_stat = [NSString stringWithFormat:@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_status"]];
+    if([str_stat isEqualToString:@"True"])
+    {
+        [Helper_activity stop_activity_animation:self];
+         [HttpClient createaAlertWithMsg:@"Some thing Went Wrong " andTitle:@""];
+        [self.navigationController popToRootViewControllerAnimated:NO];
+
+        
+    }
+    else{
+        
     
+    [Helper_activity stop_activity_animation:self];
     
     [[NSUserDefaults standardUserDefaults] setObject:xmlDoc forKey:@"order_details"];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -215,7 +228,7 @@
         [HttpClient createaAlertWithMsg:@"Please Conform Booking ID" andTitle:@""];
     }
 
-    
+    }
     }
  
 - (void)didReceiveMemoryWarning {

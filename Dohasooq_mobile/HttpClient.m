@@ -199,6 +199,41 @@
     [formatter setGroupingSeparator:@","];
     [formatter setDecimalSeparator:@"."];
     
+  
+
+    
+    // Decimal values read from any db are always written with no grouping separator and a comma for decimal.
+    
+    NSNumber *numberFromString = [formatter numberFromString:Str];
+    
+    [formatter setGroupingSeparator:@","]; // Whatever you want here
+    [formatter setDecimalSeparator:@"."]; // Whatever you want here
+    
+    NSString *finalValue = [formatter stringFromNumber:numberFromString];
+    if([finalValue containsString:@"."])
+    {
+        
+    }
+    else{
+       // finalValue = [finalValue stringByReplacingOccurrencesOfString:@"," withString:@""];
+        finalValue = [NSString stringWithFormat:@"%@.00",finalValue];
+     
+        }
+    return finalValue;
+    
+}
++(NSString *)doha_currency_seperator:(NSString *)Str
+{
+    
+    
+    Str = [NSString stringWithFormat:@"%f",ceil([Str floatValue])];
+    
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init] ;
+    [formatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    [formatter setGroupingSeparator:@","];
+    [formatter setDecimalSeparator:@"."];
+    
     // Decimal values read from any db are always written with no grouping separator and a comma for decimal.
     
     NSNumber *numberFromString = [formatter numberFromString:Str];

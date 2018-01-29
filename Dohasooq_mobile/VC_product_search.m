@@ -420,32 +420,7 @@
     
 
     [self performSegueWithIdentifier:@"search_product_list" sender:self];
-   // }
-//    else
-//    {
-//        NSString *url_key= [NSString stringWithFormat:@"%@",[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"name"]];
-//        url_key = [url_key lowercaseString];
-//        url_key = [url_key stringByReplacingOccurrencesOfString:@" " withString:@"-"];
-//        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
-//        NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-//        // NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
-//        // apis/productNamesList/" + country_val + "/" + language_val + "/.json
-//        NSString *list_TYPE = @"productList";
-//        NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/txt_%@/0/%@/%@.json",SERVER_URL,list_TYPE,_TXT_search.text,country,languge];
-//        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-//        
-//        [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
-//        [[NSUserDefaults standardUserDefaults] synchronize];
-//        
-//        [[NSUserDefaults standardUserDefaults] setValue:[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"name"] forKey:@"item_name"];
-//        [[NSUserDefaults standardUserDefaults] synchronize];
-//        
-//        
-//        [self performSegueWithIdentifier:@"search_product_list" sender:self];
-//
-//    }
-    
-    
+      
     
 }
 -(void)search_API_ALL
@@ -561,7 +536,6 @@
     {
         [Helper_activity stop_activity_animation:self];
         search_total_PRODUCT_ARR  = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
-        NSLog(@"The response Api post sighn up API %@",search_ARR);
        // search_ARR = [dictin valueForKey:@"products"];
         
         

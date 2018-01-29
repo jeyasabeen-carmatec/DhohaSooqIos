@@ -12,4 +12,8 @@
 @property(nonatomic,weak) IBOutlet UITableView *TBL_sub_brnds;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_title;
 
+//EMPTY VIEW
+@property(nonatomic,weak)IBOutlet UIView *VW_empty;
+@property(nonatomic,weak)IBOutlet UIButton *BTN_empty;
+
 @end

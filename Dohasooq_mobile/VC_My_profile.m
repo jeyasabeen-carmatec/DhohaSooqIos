@@ -1004,7 +1004,7 @@
    
     
     if ([cntry_code containsString:@"<null>"]||[cntry_code containsString:@"<nil>"]||[cntry_code isEqualToString:@""]) {
-        cntry_code = @"+974";
+        cntry_code = @"974";
     }
     
     NSString *unfilteredString =STR_mobile;
@@ -1034,8 +1034,10 @@
     STR_state = [STR_state stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
     STR_zip_code = [STR_zip_code stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     STR_zip_code = [STR_zip_code stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Images_path"];
+
     
-    NSString *img_url = [NSString stringWithFormat:@"%@%@%@",SERVER_URL,[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_path"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_img"]];
+    NSString *img_url = [NSString stringWithFormat:@"%@%@%@",[dict valueForKey:@"awsPath"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_path"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_img"]];
     
     [_IMG_Profile_pic sd_setImageWithURL:[NSURL URLWithString:img_url]
                         placeholderImage:[UIImage imageNamed:@"upload-27.png"]
@@ -1056,7 +1058,7 @@
     _TXT_last_name.text = STR_lname;
     _TXT_land_phone.text = STR_land_phone;
     _TXT_mobile_phone.text = STR_mobile;
-    _TXT_country_fld.text =[NSString stringWithFormat:@"%@",cntry_code];
+    _TXT_country_fld.text =[NSString stringWithFormat:@"+%@",cntry_code];
     _TXT_Dob.text = STR_dob;
     _TXT_group.text = STR_customer_group;
     _TXT_name.text = [NSString stringWithFormat:@"%@ %@",STR_fname,STR_lname];
@@ -1124,6 +1126,7 @@
 {
     if(_BTN_save.hidden == YES )
     {
+        _LBL_arrow .hidden = YES;
         _TXT_first_name.enabled = NO;
         _TXT_last_name.enabled = NO;
         _TXT_name.enabled = NO;
@@ -1148,6 +1151,7 @@
         
     }
     else{
+         _LBL_arrow .hidden = NO;
         _TXT_first_name.enabled = NO;
         _TXT_last_name.enabled = NO;
         _TXT_name.enabled = NO;
@@ -1582,7 +1586,7 @@
         
     }
 
-    else if(_TXT_zipcode.text.length < 3)
+   /* else if(_TXT_zipcode.text.length < 3)
     {
         [_TXT_zipcode becomeFirstResponder];
         msg = @"Zip code should not be less than 3 characters";
@@ -1603,7 +1607,7 @@
         }
         
         
-    }
+    }*/
     else
     {
         
@@ -2007,9 +2011,10 @@
                                   options:NSJSONReadingMutableLeaves
                                   error:nil];
         NSLog(@"jsonObject  %@",jsonObject);
+        NSString *str_image_profile = [NSString stringWithFormat:@"%@",[jsonObject valueForKey:@"path_detail"]];
         
         if ([[NSString stringWithFormat:@"%@",[jsonObject valueForKey:@"success"]] isEqualToString:@"1"]) {
-            [[NSUserDefaults standardUserDefaults] setObject:[jsonObject valueForKey:@"path_detail"] forKey:@"profile_image"];
+            [[NSUserDefaults standardUserDefaults] setObject:str_image_profile forKey:@"profile_image"];
             [[NSUserDefaults standardUserDefaults]synchronize];
         }
     }
