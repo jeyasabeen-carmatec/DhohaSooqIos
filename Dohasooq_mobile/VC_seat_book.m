@@ -603,7 +603,7 @@
     
     NSLog(@"%@",str);
     
-    NSURL *URL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/block_seats_qtickets?showid=%@&seats=%@&AppSource=11",[[NSUserDefaults standardUserDefaults] valueForKey:@"movie_id"],str]];
+    NSURL *URL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/block_seats_qtickets?showid=%@&seats=%@&Source=11",[[NSUserDefaults standardUserDefaults] valueForKey:@"movie_id"],str]];
     NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
     NSDictionary *jsonrespnse = [NSDictionary dictionaryWithXMLString:xmlString];
     NSLog(@"%@",jsonrespnse);

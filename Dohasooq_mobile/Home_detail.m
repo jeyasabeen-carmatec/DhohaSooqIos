@@ -71,7 +71,7 @@
    
     _BTN_leisure_venues.text = _BTN_venues.text;
     _BTN_sports_venues.text = _BTN_venues.text;
-    leng_text = @"Languages";
+    leng_text = @"LANGUAGES";
     halls_text =@"CINEMA";
     
     [self ATTRIBUTE_TEXT];
@@ -1147,7 +1147,7 @@
                 cell.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[dict valueForKey:@"_IMDB_rating"]];
                 cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
                 NSString *img_url = [dict valueForKey:@"_iphonethumb"];
-                img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+             //  img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
                 
                 [cell.IMG_banner sd_setImageWithURL:[NSURL URLWithString:img_url]
                                    placeholderImage:[UIImage imageNamed:@"upload-8.png"]
@@ -1218,7 +1218,7 @@
                 cell.LBL_rating.text = [NSString stringWithFormat:@"%@ votes",[dict valueForKey:@"_willwatch"]];
                 //cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
                 NSString *img_url = [dict valueForKey:@"_thumbURL"];
-                img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+               // img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
                 
                 [cell.IMG_banner sd_setImageWithURL:[NSURL URLWithString:img_url]
                                    placeholderImage:[UIImage imageNamed:@"upload-8.png"]
@@ -1283,7 +1283,7 @@
                 cell.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[dict valueForKey:@"_IMDB_rating"]];
                 cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
                 NSString *img_url = [dict valueForKey:@"_iphonethumb"];
-                img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+                //img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
                 
                 [cell.IMG_banner sd_setImageWithURL:[NSURL URLWithString:img_url]
                                    placeholderImage:[UIImage imageNamed:@"upload-8.png"]
@@ -1399,8 +1399,8 @@
     self.segmentedControl4.sectionTitles = @[@"Now Showing", @"Coming Soon",@"Top Movies"];
     
     self.segmentedControl4.backgroundColor = [UIColor clearColor];
-    self.segmentedControl4.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:16]};
-    self.segmentedControl4.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14]};
+    self.segmentedControl4.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:16]};
+    self.segmentedControl4.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:16]};
     self.segmentedControl4.selectionIndicatorColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
     //    self.segmentedControl4.selectionIndicatorColor
     self.segmentedControl4.selectionStyle = HMSegmentedControlSelectionStyleFullWidthStripe;

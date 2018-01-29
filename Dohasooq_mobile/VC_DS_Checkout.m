@@ -9,12 +9,18 @@
 #import "VC_DS_Checkout.h"
 #import "VC_cart_list.h"
 #import "Helper_activity.h"
+#import "HttpClient.h"
 
 @interface VC_DS_Checkout ()<UIWebViewDelegate>
 {
+    
+        UIView *loadingView;
+    
 //    UIView *loadingView;
 //    UIActivityIndicatorView *activityView;
     int tag;
+   
+
 }
 
 @end
@@ -26,31 +32,32 @@
     self.navigationItem.hidesBackButton = YES;
     self.navigationController.navigationBar.hidden = NO;
     tag = 0;
+    loadingView = [[UIView alloc]init];
+    CGRect loadframe = loadingView.frame;
+    loadframe.size.width = 100;
+    loadframe.size.height = 100;
+    loadingView.frame = loadframe;
+    loadingView.center = self.view.center;
     
-//    loadingView = [[UIView alloc]init];
-//    CGRect loadframe = loadingView.frame;
-//    loadframe.size.width = 100;
-//    loadframe.size.height = 100;
-//    loadingView.frame = loadframe;
-//    loadingView.center = self.view.center;
-//    
-//    loadingView.backgroundColor = [UIColor colorWithWhite:0. alpha:0.6];
-//    loadingView.layer.cornerRadius = 5;
-//    
-//   activityView=[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-//    activityView.center = CGPointMake(loadingView.frame.size.width / 2.0, 35);
-//    [activityView startAnimating];
-//    activityView.tag = 100;
-//    [loadingView addSubview:activityView];
+    loadingView.backgroundColor = [UIColor colorWithWhite:0. alpha:0.6];
+    loadingView.layer.cornerRadius = 5;
     
-//    UILabel* lblLoading = [[UILabel alloc]initWithFrame:CGRectMake(0, 48, 80, 30)];
-//    lblLoading.text = @"Loading...";
-//    lblLoading.textColor = [UIColor whiteColor];
-//    lblLoading.font = [UIFont fontWithName:lblLoading.font.fontName size:15];
-//    lblLoading.textAlignment = NSTextAlignmentCenter;
-//    [loadingView addSubview:lblLoading];
-//    
-//    [self.view addSubview:loadingView];
+    UIActivityIndicatorView *activityView=[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityView.center = CGPointMake(loadingView.frame.size.width / 2.0, 35);
+    [activityView startAnimating];
+    activityView.tag = 100;
+    [loadingView addSubview:activityView];
+    
+    UILabel* lblLoading = [[UILabel alloc]initWithFrame:CGRectMake(0, 48, 80, 30)];
+    lblLoading.text = @"Loading...";
+    lblLoading.textColor = [UIColor whiteColor];
+    lblLoading.font = [UIFont fontWithName:lblLoading.font.fontName size:15];
+    lblLoading.textAlignment = NSTextAlignmentCenter;
+    [loadingView addSubview:lblLoading];
+    
+    [self.view addSubview:loadingView];
+
+    
     
     NSString *html_str;
     self.web_pay.delegate = self;
@@ -88,14 +95,19 @@
 //    [self performSegueWithIdentifier:@"payment_cart" sender:self];
 //}
 - (void)webViewDidStartLoad:(UIWebView *)webView {
-    
-     [Helper_activity animating_images:self];
+    [loadingView setHidden:NO];
+
+    // [Helper_activity animating_images:self];
 
     
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     
-   [Helper_activity stop_activity_animation:self];
+    [loadingView setHidden:YES];
+    [self cart_count_intail];
+
+    
+   //[Helper_activity stop_activity_animation:self];
     NSLog(@"Loading Successful ");
     
     
@@ -109,35 +121,118 @@
 }
 - (IBAction)back_action:(id)sender {
     //VC_cart_list *list = [self.storyboard instantiateViewControllerWithIdentifier:@"cart_identifir"];
+    //direct_checkout_home
     
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Do you want to cancel the Transaction" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
+    alert.tag = 1;
+    [alert show];
+  /*  [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-    [self.navigationController popToRootViewControllerAnimated:NO];
+    [self.navigationController popToRootViewControllerAnimated:NO];*/
     
     
-    // [self performSegueWithIdentifier:@"payment_cart" sender:self];
+    // [self performSegueWithIdentifier:@"direct_checkout_home" sender:self];
 }
     
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+-(void)cart_count_intail{
+    
+    NSString *user_id;
+    @try
+    {
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
+    [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        if (error) {
+            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
+             ];
+            //            VW_overlay.hidden = YES;
+            //            [activityIndicatorView stopAnimating];
+            
+            
+        }
+        if (data) {
+            NSLog(@"cart count sadas %@",data);
+            NSDictionary *dict = data;
+            @try {
+                
+                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
+                //   NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
+                [[NSUserDefaults standardUserDefaults] setValue:badge_value forKey:@"cart_count"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+                
+                
+                
+            } @catch (NSException *exception) {
+                //                 VW_overlay.hidden = YES;
+                //                [activityIndicatorView stopAnimating];
+                
+                
+                NSLog(@"asjdas dasjbd asdas iccxv %@",exception);
+            }
+            
+        }
+    }];
 }
-*/
+- (void)alertView:(UIAlertView *)alertView
+clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if(alertView.tag == 1)
+    {
+        if (buttonIndex == [alertView cancelButtonIndex])
+        {
+            
+            [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                          forBarMetrics:UIBarMetricsDefault];
+            self.navigationController.navigationBar.shadowImage = [UIImage new];
+            self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+            self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+            [self.navigationController popViewControllerAnimated:NO];
 
-/*-(void)viewWillDisappear:(BOOL)animated
-{
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
-                                                  forBarMetrics:UIBarMetricsDefault];
-    self.navigationController.navigationBar.shadowImage = [UIImage new];
-}*/
+            
+        }
+        else
+        {
+            NSLog(@"cancel:");
+            
+        }
+        
+        
+    }
+    
+    
+    
+}
 
 -(void)viewDidDisappear:(BOOL)animated
 {

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="17B48" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -27,8 +27,8 @@
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="g6W-IO-VhK">
                         <rect key="frame" x="8" y="8" width="100" height="103"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="100" id="JH5-m7-1a8"/>
-                            <constraint firstAttribute="height" constant="103" id="cak-nH-zPi"/>
+                            <constraint firstAttribute="height" constant="103" id="cjd-nL-CMb"/>
+                            <constraint firstAttribute="width" constant="100" id="hmn-Ak-kgG"/>
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="The Movie SpiderMAn" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sys-Nu-Cfj">
@@ -37,35 +37,43 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VMX-LK-G7a">
-                        <rect key="frame" x="116" y="89" width="194" height="21"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="21" id="fTW-uu-axz"/>
-                        </constraints>
-                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0JN-Xt-yQa">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0JN-Xt-yQa">
                         <rect key="frame" x="116" y="37" width="194" height="23"/>
                         <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZIh-Yj-mhM">
+                        <rect key="frame" x="116" y="68" width="194" height="11"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="11" id="NUo-TY-coU"/>
+                            <constraint firstAttribute="width" constant="194" id="nti-mI-8EO"/>
+                        </constraints>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VMX-LK-G7a">
+                        <rect key="frame" x="116" y="87" width="194" height="23"/>
+                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="top" secondItem="Sys-Nu-Cfj" secondAttribute="bottom" constant="6" id="2K6-mT-iPm"/>
-                    <constraint firstItem="Sys-Nu-Cfj" firstAttribute="leading" secondItem="g6W-IO-VhK" secondAttribute="trailing" constant="8" id="5aJ-p4-eYh"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="Sys-Nu-Cfj" secondAttribute="trailing" id="8O2-aJ-2Bo"/>
-                    <constraint firstAttribute="bottom" secondItem="g6W-IO-VhK" secondAttribute="bottom" constant="7.5" id="Bci-Wg-55A"/>
-                    <constraint firstItem="Sys-Nu-Cfj" firstAttribute="top" secondItem="g6W-IO-VhK" secondAttribute="top" id="CP3-Qa-PT6"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="VMX-LK-G7a" secondAttribute="bottom" constant="0.75" id="EgV-tK-fe2"/>
-                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="leading" secondItem="g6W-IO-VhK" secondAttribute="trailing" constant="8" id="HeQ-hx-YeN"/>
-                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="trailing" secondItem="VMX-LK-G7a" secondAttribute="trailing" id="ObP-dM-0Ih"/>
-                    <constraint firstItem="g6W-IO-VhK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="Ywb-1c-Sxy"/>
-                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="leading" secondItem="VMX-LK-G7a" secondAttribute="leading" id="eU4-7I-Euf"/>
-                    <constraint firstItem="g6W-IO-VhK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="gaw-sE-hn7"/>
-                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="xUV-Cj-w2r"/>
+                    <constraint firstItem="Sys-Nu-Cfj" firstAttribute="leading" secondItem="g6W-IO-VhK" secondAttribute="trailing" constant="8" id="96t-MZ-JZe"/>
+                    <constraint firstItem="VMX-LK-G7a" firstAttribute="top" secondItem="ZIh-Yj-mhM" secondAttribute="bottom" constant="8" id="Aj4-8B-xuv"/>
+                    <constraint firstItem="VMX-LK-G7a" firstAttribute="leading" secondItem="g6W-IO-VhK" secondAttribute="trailing" constant="8" id="CQc-ZC-vbR"/>
+                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="g6W-IO-VhK" secondAttribute="bottom" constant="7.5" id="FgQ-6y-cja"/>
+                    <constraint firstItem="Sys-Nu-Cfj" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="Ujk-TY-nqF"/>
+                    <constraint firstItem="Sys-Nu-Cfj" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="Xhb-ZI-ioo"/>
+                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="leading" secondItem="g6W-IO-VhK" secondAttribute="trailing" constant="8" id="amh-fL-6lZ"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="VMX-LK-G7a" secondAttribute="bottom" constant="0.5" id="d23-tx-dCr"/>
+                    <constraint firstItem="g6W-IO-VhK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="eSi-7s-YML"/>
+                    <constraint firstItem="VMX-LK-G7a" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="hpG-RG-wZN"/>
+                    <constraint firstItem="g6W-IO-VhK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="psF-xP-nXC"/>
+                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="top" secondItem="Sys-Nu-Cfj" secondAttribute="bottom" constant="6" id="t03-do-Mec"/>
+                    <constraint firstItem="ZIh-Yj-mhM" firstAttribute="leading" secondItem="g6W-IO-VhK" secondAttribute="trailing" constant="8" id="uaS-h2-u81"/>
+                    <constraint firstItem="ZIh-Yj-mhM" firstAttribute="top" secondItem="0JN-Xt-yQa" secondAttribute="bottom" constant="8" id="xvT-fk-baH"/>
+                    <constraint firstItem="0JN-Xt-yQa" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="zxT-y4-gRv"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

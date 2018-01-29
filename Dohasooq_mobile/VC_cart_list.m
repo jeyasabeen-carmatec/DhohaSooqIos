@@ -25,7 +25,8 @@
     UITapGestureRecognizer *tapGesture1;
     NSString *currency_code,*product_id,*item_count;
     UIImageView *image_empty;
-    NSInteger doha_miles_value, qr_dm_value;
+   // NSInteger doha_miles_value, qr_dm_value;
+    
 
 }
 
@@ -478,6 +479,8 @@
         }
         else{
             NSString *miles = [NSString stringWithFormat:@"%@",[json_dict valueForKey:@"dohamiles"]];
+            miles = [HttpClient doha_currency_seperator:miles];
+            
             NSString *str_or ;
             NSString *str_miles ;
             
@@ -622,7 +625,7 @@
 
     }
     else{
-        return 147;
+        return 155;
     }
 
 }
@@ -670,6 +673,12 @@
     Cart_cell *cell = (Cart_cell *)[_TBL_cart_items cellForRowAtIndexPath:index];
     
     product_count = [cell._TXT_count.text integerValue];
+    if ([cell._TXT_count.text isEqualToString:@"1"]) {
+        
+    }
+
+    else{
+    
     product_count = product_count-1;
     
 //    
@@ -694,6 +703,7 @@
     //[self updating_cart_List_api];
     
     [self performSelector:@selector(updating_cart_List_api) withObject:nil afterDelay:0.01];
+    }
     
 }
 -(void)plus_action:(UIButton*)btn
@@ -811,8 +821,8 @@ params.put("customerId",customerid);
                         [cart_array addObject:[[json_dict valueForKey:@"data"] valueForKey:[allkeysArr objectAtIndex:i]]];
                     }
                         @try {
-                            doha_miles_value = [[json_dict valueForKey:@"dohamiles"] integerValue];
-                            qr_dm_value = [[json_dict valueForKey:@"oneQARtoDM"] integerValue] ;
+                           // doha_miles_value = [[json_dict valueForKey:@"dohamiles"] integerValue];
+                            //qr_dm_value = [[json_dict valueForKey:@"oneQARtoDM"] integerValue] ;
                             
                         } @catch (NSException *exception) {
                             NSLog(@"doha_miles_value & qr_dm_value  COULD NOT BE READ%@",exception);
@@ -1049,10 +1059,12 @@ params.put("customerId",customerid);
         
         
         
-         NSString *plans = [NSString stringWithFormat:@"Doha Miles %ld",doha_miles_value];
+         NSString *plans = [NSString stringWithFormat:@"Doha Miles %@",[json_dict valueForKey:@"dohamiles"]];
+        plans = [HttpClient doha_currency_seperator:plans];
+        
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"]){
             
-            plans =[NSString stringWithFormat:@"%ld أميال الدوحة",doha_miles_value];
+            plans =[NSString stringWithFormat:@"%@ أميال الدوحة",plans];
         }
         
         
@@ -1072,10 +1084,10 @@ params.put("customerId",customerid);
 //            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0]}
 //                                    range:ename];
             
-            NSRange cmp = [plans rangeOfString:[NSString stringWithFormat:@"%ld",(long)doha_miles_value]];
+            //NSRange cmp = [plans rangeOfString:[NSString stringWithFormat:@"%ld",(long)doha_miles_value]];
             
             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}
-                                    range:cmp ];
+                                    range:NSMakeRange(0, plans.length) ];
             //
             //            NSRange prc = [text rangeOfString:plans];
             //          [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]}

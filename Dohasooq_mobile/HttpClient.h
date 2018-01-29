@@ -29,6 +29,7 @@
 
 //+(void)animating_images:(UIViewController *_Nullable)my_controller;
 
++(NSString *_Nullable)doha_currency_seperator:(NSString *_Nullable)Str;
 
 +(NSString *_Nullable)currency_seperator:(NSString *_Nullable)Str;
 

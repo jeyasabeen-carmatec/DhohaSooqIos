@@ -86,70 +86,6 @@
     
 }
 #pragma cart_count_api
--(void)cart_count{
-    
-    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
-    [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-        if (error) {
-            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
-             ];
-            
-            [Helper_activity stop_activity_animation:self];
-
-        }
-        if (data) {
-            
-            [Helper_activity stop_activity_animation:self];
-            NSLog(@"%@",data);
-            NSDictionary *dict = data;
-            @try {
-                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
-                NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
-                
-                
-                
-                if([wishlist intValue] > 0)
-                {
-                    
-                    @try
-                    {
-                        [_BTN_wish_list setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
-                        [_BTN_wish_list setBadgeString:[NSString stringWithFormat:@"%@",wishlist]];
-                    }
-                    @catch(NSException *Exception)
-                    {
-                        
-                    }
-                    
-                }
-                
-                if([badge_value intValue] > 0 )
-                {
-                    @try
-                    {
-                        
-                        [_BTN_cart setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
-                    }
-                    @catch(NSException *Exception)
-                    {
-                        
-                    }
-                    
-                    [_BTN_cart setBadgeString:[NSString stringWithFormat:@"%@",badge_value]];
-                    
-                    
-                }
-                
-            } @catch (NSException *exception) {
-                NSLog(@"%@",exception);
-                
-                [Helper_activity stop_activity_animation:self];
-
-            }
-            
-        }
-    }];
-}
 
 -(void)search_ORDERS
 {
@@ -267,19 +203,19 @@
         
         if(result.height <= 480)
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
                                     range: [text rangeOfString:str_order]];
 
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
                                     range:ename];
             
         }
         else if(result.height <= 568)
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
                                     range: [text rangeOfString:str_order]];
 
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
                                     range:ename];
         }
         else
@@ -324,30 +260,47 @@
           NSRange ename = [date_text rangeOfString:date];
         if(result.height <= 480)
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
+            int sizeval = 10.0;
+            if(date.length > 19.0)
+            {
+                sizeval = 8.0;
+            }
+            else{
+                sizeval = 10.0;
+            }
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:sizeval],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
                                     range:[date_text rangeOfString:order_text]];
 
             
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:sizeval],NSForegroundColorAttributeName :[UIColor blackColor]}
                                     range:ename];
         }
 
             else if(result.height <= 568)
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
+                int sizeval = 12.0;
+                if(date.length > 19.0)
+                {
+                    sizeval = 9.0;
+                }
+                else{
+                    sizeval = 12.0;
+                }
+
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:sizeval],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
                                         range:[date_text rangeOfString:order_text]];
                 
 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:sizeval],NSForegroundColorAttributeName :[UIColor blackColor]}
                                         range:ename];
             }
            else
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
                                             range:[date_text rangeOfString:order_text]];
                     
 
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor blackColor]}
                                             range:ename];
                 }
 
@@ -359,7 +312,9 @@
     {
         order_cell.LBL_order_date.text = text;
     }
-    NSString *qr = [NSString stringWithFormat:@"%@",[[json_DATA  objectAtIndex:indexPath.row] valueForKey:@"order_total"]];
+    NSString *qr = [NSString stringWithFormat:@"%.2f",[[[json_DATA  objectAtIndex:indexPath.row] valueForKey:@"order_total"] floatValue]];
+    qr = [HttpClient currency_seperator:qr];
+    
     qr = [qr stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
     NSString *price = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],qr];
     

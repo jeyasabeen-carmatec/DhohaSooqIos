@@ -122,7 +122,8 @@
     view.backgroundColor = [UIColor colorWithRed:0.98 green:0.69 blue:0.19 alpha:1.0];
     [self.navigationController.view addSubview:view];
     self.navigationItem.hidesBackButton = YES;
-     [self cart_count];
+    [self cart_count_intail];
+    [self cart_count];
     
 }
 #pragma Navigation bar Actions
@@ -412,7 +413,7 @@
                              placeholderImage:[UIImage imageNamed:@"logo.png"]
                                       options:SDWebImageRefreshCached];
     
-       /*  NSString *str = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"stock_status"]];
+         NSString *str = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"stock_status"]];
         str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
         
         
@@ -422,7 +423,7 @@
             }
             else{
                 pro_cell.LBL_stock.text =[str uppercaseString];
-            }*/
+            }
 
         }
         @catch(NSException *exception)
@@ -483,13 +484,16 @@
             
             if ([current_price isEqualToString:@"<null>"] || [current_price isEqualToString:@"<nil>"] || [current_price isEqualToString:@" "]||[current_price isEqualToString:@"0"]) {
                 
-                
-                prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
+                prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
+                prec_price = [HttpClient currency_seperator:prec_price];
+                prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
                 
                 text = [NSString stringWithFormat:@"%@",prec_price];
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
+                    prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
+                    prec_price = [HttpClient currency_seperator:prec_price];
                     prec_price = [NSString stringWithFormat:@"%@ %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"],currency_code];
                     text = [NSString stringWithFormat:@"%@",prec_price];
                 }
@@ -499,11 +503,11 @@
                 
                 
               
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
             
                 
 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                 
             
                 
@@ -517,26 +521,30 @@
             }
             else if([prec_price isEqualToString:current_price] ||[current_price isEqualToString:@"0.00"])
             {
-                  prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
+                prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
+                prec_price = [HttpClient currency_seperator:prec_price];
+                prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
+                
                 text = [NSString stringWithFormat:@"%@",prec_price];
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
+                    prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
+                    prec_price = [HttpClient currency_seperator:prec_price];
                     prec_price = [NSString stringWithFormat:@"%@ %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"],currency_code];
                     text = [NSString stringWithFormat:@"%@",prec_price];
                 }
-                
                 
                 
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                 
                 
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
                 
                 
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                 
                 
                 
@@ -552,60 +560,68 @@
             else{
                 
                 //prec_price = [currency_code stringByAppendingString:prec_price];
-                  prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
-                
+                prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
+                prec_price = [HttpClient currency_seperator:prec_price];
+                prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
+
+                current_price =  [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"] floatValue]];
+                current_price = [HttpClient currency_seperator:current_price];
+
+
                 text = [NSString stringWithFormat:@"%@ %@ %@",currency_code,current_price,prec_price];
-                
-                
+
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-//                    prec_price = [prec_price stringByAppendingString:currency_code];
-                      prec_price = [NSString stringWithFormat:@"%@ %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"],currency_code];
+                    prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
+                    prec_price = [HttpClient currency_seperator:prec_price];
+                    prec_price = [NSString stringWithFormat:@"%@ %@",prec_price,currency_code];
+                    current_price =  [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"] floatValue]];
+                    current_price = [HttpClient currency_seperator:current_price];
                     current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency_code];
+
+
                     text = [NSString stringWithFormat:@"%@ %@",prec_price,current_price];
-                    
                 }
-              /*  pro_cell.LBL_current_price.textContainer.maximumNumberOfLines = 0;
+
+               
                 
-               [pro_cell.LBL_current_price.layoutManager textContainerChangedGeometry:pro_cell.LBL_current_price.textContainer];
+                
 
-                [pro_cell.LBL_current_price sizeToFit];
-
-                CGRect frameset = pro_cell.LBL_current_price.frame;
-                frameset.size.height = pro_cell.LBL_current_price.frame.origin.y+pro_cell.LBL_current_price.contentSize.height;
-                pro_cell.LBL_current_price.frame = frame;*/
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                 
                 int sizeval = 14;
                 
-                if (prec_price.length >= 8)
+                if (prec_price.length >= 10)
                 {
                     sizeval = 12;
-                    text = [NSString stringWithFormat:@"%@ %@\n%@",currency_code,current_price,prec_price];
+                    pro_cell.LBL_current_price.textContainer.maximumNumberOfLines = 2;
+                    [pro_cell.LBL_current_price.layoutManager textContainerChangedGeometry:pro_cell.LBL_current_price.textContainer];
+                    
+                    text = [NSString stringWithFormat:@"%@ %@  \n%@",currency_code,current_price,prec_price];
+                    
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                        prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
+                        prec_price = [HttpClient currency_seperator:prec_price];
+                        prec_price = [NSString stringWithFormat:@"%@ %@",prec_price,currency_code];
+                        current_price =  [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
+                        current_price = [HttpClient currency_seperator:current_price];
+
+                        current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency_code];
+                        text = [NSString stringWithFormat:@"%@\n%@",prec_price,current_price];
+                        
+                    }
+
 
                 }
                 else{
-                    sizeval = 12;
+                    sizeval = 14;
                 }
-               /* [pro_cell.LBL_current_price.text boundingRectWithSize:CGSizeMake(pro_cell.LBL_current_price.text.length, CGFLOAT_MAX)
-                                            options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
-                                         attributes:[NSDictionary dictionaryWithObjectsAndKeys:pro_cell.LBL_current_price.font,NSFontAttributeName, nil] context:nil];*/
-              //  pro_cell.LBL_current_price.textContainer.maximumNumberOfLines = 2;
-               
-                //[pro_cell.LBL_current_price.layoutManager textContainerChangedGeometry:pro_cell.LBL_current_price.textContainer];
+           
                 
                 NSRange ename = [text rangeOfString:current_price];
-//                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-//                {
-//                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:25.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
-//                                            range:ename];
-//                }
-//                else
-//                {
                     [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                             range:ename];
-//                }
-                
                 
                 NSRange qrname = [text rangeOfString:currency_code];
                 
@@ -688,7 +704,7 @@
 }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(self.view.bounds.size.width/2.011, 301);
+    return CGSizeMake(self.view.bounds.size.width/2.011, 310);
 }
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     return 1.5;
@@ -1134,6 +1150,15 @@
                     
                     self.collection_product.hidden = NO;
                   json_DATA = data;
+                    if(!json_DATA)
+                    {
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        [alert show];
+                        [Helper_activity stop_activity_animation:self];
+
+                    }
+                    else
+                    {
                     
                     if([json_DATA isKindOfClass:[NSDictionary class]])
                     {
@@ -1226,6 +1251,21 @@
                                         NSString *time_diff = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:i] valueForKey:@"timeDiff"]];
                                         if([time_diff isEqualToString:@"No"] ||[time_diff isEqualToString:@"(null)"] ||[time_diff isEqualToString:@"<null>"]||!time_diff)
                                         {
+                                            NSDictionary *dict =@{@"tag":[NSString stringWithFormat:@"%d",i]};
+                                            [self setdata:dict];
+                                            
+                                          /*  NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+                                            product_cell *cell = (product_cell *)[_collection_product cellForItemAtIndexPath:indexPath];
+                                            NSString *str =[NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row ]  valueForKey:@"stock_status"]];
+                                            str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+                                            
+                                            if([str isEqualToString:@"In stock"])
+                                            {
+                                                cell.LBL_stock.text =@"";
+                                            }
+                                            else{
+                                                cell.LBL_stock.text =[str uppercaseString];
+                                            }*/
                                            
                                         }
                                         else{
@@ -1316,9 +1356,12 @@
                         
                     }
                                        
-                      
+                    }
                    
                 }
+               
+
+                   [Helper_activity stop_activity_animation:self];
                 
             });
         }];
@@ -1331,7 +1374,7 @@
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
-        [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+      //  [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
        
     }
 
@@ -1503,16 +1546,57 @@
     
     NSString *country = [user_dflts valueForKey:@"country_id"];
     NSString *languge = [user_dflts valueForKey:@"language_id"];
-    NSDictionary *dict = [user_dflts valueForKey:@"userdata"];
     NSString *min = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"min"]];
     NSString *max = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"max"]];
+    min = [min stringByReplacingOccurrencesOfString:@"," withString:@""];
+    max = [max stringByReplacingOccurrencesOfString:@"," withString:@""];
+
     NSString *brands = [user_dflts valueForKey:@"brnds"];
     NSString *discount = [user_dflts valueForKey:@"discount_val"];
-    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+     discount = [discount stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    discount = [discount stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+
+   
+        //        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *user_id;
+        @try
+        {
+            if(dict.count == 0)
+            {
+                user_id = @"null";
+            }
+            else
+            {
+                NSString *str_id = @"user_id";
+                // NSString *user_id;
+                for(int i = 0;i<[[dict allKeys] count];i++)
+                {
+                    if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                    {
+                        user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                        break;
+                    }
+                    else
+                    {
+                        
+                        user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                    }
+                    
+                }
+            }
+        }
+        @catch(NSException *exception)
+        {
+            user_id = @"null";
+            
+        }
     
     NSString *url_str = [NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/Customer/1.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=%@",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"product_list_key"],country,languge,user_id,discount,min,max,brands,sort_key];
-    url_str = [url_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+   url_str = [url_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+
+    url_str = [url_str stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
     
     [[NSUserDefaults standardUserDefaults] setValue:url_str forKey:@"product_list_sort"];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -2098,9 +2182,33 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     }
     [self performSelector:@selector(finishRefresh) withObject:nil afterDelay:0.01];
 }
--(NSString *)runUpdateDisplayLoop : (NSTimer *) timer //:(NSString *)str_date
+
+-(void)setdata:(NSDictionary *)dict
 {
     
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[[dict valueForKey:@"tag"] intValue] inSection:0];
+    product_cell *cell = (product_cell *)[_collection_product cellForItemAtIndexPath:indexPath];
+    
+    NSString *str =[NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row ]  valueForKey:@"stock_status"]];
+    str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+   // NSString *time_diff = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"timeDiff"]];
+    if([str isEqualToString:@"In stock"])
+    {
+          cell.LBL_stock.text = @"";
+    }
+    else
+    {
+        cell.LBL_stock.font = [UIFont fontWithName:@"Poppins-Regular" size:14.0];
+        cell.LBL_stock.textColor = [UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0];
+        
+        cell.LBL_stock.text = [str uppercaseString];
+    }
+}
+
+
+-(NSString *)runUpdateDisplayLoop : (NSTimer *) timer //:(NSString *)str_date
+{
+    NSString *text;
     NSDateFormatter *dateStringParser = [[NSDateFormatter alloc] init];
     [dateStringParser setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
     [dateStringParser setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
@@ -2109,7 +2217,22 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     int tag1 =  [[timer.userInfo valueForKey:@"tag"] intValue];
     
     NSString *STR_bidDate =  [[productDataArray objectAtIndex:tag1]valueForKey:@"end_date"];//[TIMER_new.userInfo valueForKey:@"timer"];
-    NSDate *date = [dateStringParser dateFromString:STR_bidDate];
+    if([STR_bidDate isKindOfClass:[NSNull class]]||[STR_bidDate isEqualToString:@"<null>"]||[STR_bidDate isEqualToString:@"(null)"]||!STR_bidDate)
+    {
+        
+    }
+    else{
+    NSDate *date;
+    
+    @try
+    {
+    
+    date = [dateStringParser dateFromString:STR_bidDate];
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
     
     NSDateFormatter *labelFormatter = [[NSDateFormatter alloc] init];
     [labelFormatter setDateFormat:@"HH-dd-MM"];
@@ -2157,7 +2280,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     }
     
     
-    NSString *text = [NSString stringWithFormat:@"%@",STR_timeRe];
+    text = [NSString stringWithFormat:@"%@",STR_timeRe];
     NSLog(@"The timer is:%@",text);
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[[timer.userInfo valueForKey:@"tag"] intValue] inSection:0];
@@ -2186,13 +2309,80 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
 
         cell.LBL_stock.text = [str uppercaseString];
     }
-    
+    }
     //    product_cell *cell =
     return text;
 }
 -(void)viewDidDisappear:(BOOL)animated
 {
     [TIMER_countdown invalidate];
+}
+-(void)cart_count_intail{
+    
+    NSString *user_id;
+    @try
+    {
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
+    [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        if (error) {
+            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
+             ];
+            //            VW_overlay.hidden = YES;
+            //            [activityIndicatorView stopAnimating];
+            
+            
+        }
+        if (data) {
+            NSLog(@"cart count sadas %@",data);
+            NSDictionary *dict = data;
+            @try {
+                
+                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
+                //   NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
+                [[NSUserDefaults standardUserDefaults] setValue:badge_value forKey:@"cart_count"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+                
+                
+                
+            } @catch (NSException *exception) {
+                //                 VW_overlay.hidden = YES;
+                //                [activityIndicatorView stopAnimating];
+                
+                
+                NSLog(@"asjdas dasjbd asdas iccxv %@",exception);
+            }
+            
+        }
+    }];
 }
 
 @end

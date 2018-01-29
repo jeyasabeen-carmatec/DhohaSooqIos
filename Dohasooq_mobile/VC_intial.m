@@ -758,6 +758,7 @@
             //NSLog(@"The response Api post sighn up API %@",json_DATA);
             
             lang_arr = [json_DATA valueForKey:@"languages"];
+            
                       //NSLog(@"%@",lang_arr);
           
             
@@ -804,8 +805,7 @@
             
             NSMutableArray *json_DATA = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             
-            [[NSUserDefaults standardUserDefaults] setObject:json_DATA forKey:@"menu_detail"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+          
             
           //  [self performSegueWithIdentifier:@"logint_to_home" sender:self];
             
@@ -905,6 +905,8 @@
                     if (data) {
                         
                         [self MENU_api_call];
+                        [self IMAGE_PATH_API];
+                        
                         [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Home_data"];
                         [[NSUserDefaults standardUserDefaults] synchronize];
                         
@@ -941,6 +943,61 @@
         
         
     
+
+}
+-(void)IMAGE_PATH_API
+{
+    @try
+    {
+    NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/allImagePaths",SERVER_URL];
+    
+    
+    
+    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                
+                //   [Helper_activity stop_activity_animation:self];
+            }
+            @try
+            {
+            if (data) {
+                
+                
+                [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Images_path"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                
+            }
+            else
+            {
+                //  [Helper_activity stop_activity_animation:self];
+                //                        VW_overlay.hidden = YES;
+                //                        [activityIndicatorView stopAnimating];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                // [self viewWillAppear:NO];
+                
+                
+                
+            }
+            }
+            @catch(NSException *exception)
+            {
+                
+            }
+            
+            // [Helper_activity stop_activity_animation:self];
+            
+        });
+    }];
+    }
+        @catch(NSException *exception)
+        {
+            
+        }
 
 }
 -(void)cart_count{

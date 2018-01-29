@@ -193,21 +193,57 @@
 
     NSString *country = [user_dflts valueForKey:@"country_id"];
     NSString *languge = [user_dflts valueForKey:@"language_id"];
-    NSDictionary *dict = [user_dflts valueForKey:@"userdata"];
     NSString *min = [NSString stringWithFormat:@"%@",lower];
     NSString *max = [NSString stringWithFormat:@"%@",upper];
+    min = [min stringByReplacingOccurrencesOfString:@"," withString:@""];
+    max = [max stringByReplacingOccurrencesOfString:@"," withString:@""];
     NSString *range = [NSString stringWithFormat:@"%@,%@",min,max];
     [[NSUserDefaults standardUserDefaults] setValue:range  forKey:@"Range_val"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 
     NSString *brands = [Brands_arr_post componentsJoinedByString:@","];
 
-    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id;
+    @try
+    {
+        if(dict.count == 0)
+        {
+            user_id = @"null";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"null";
+        
+    }
+    
 
     
     NSString *url_str = [NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/Customer/1.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"product_list_key"],country,languge,user_id,discount,min,max,brands];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+
+    url_str = [url_str stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
     
     
     [[NSUserDefaults standardUserDefaults] setValue:brands forKey:@"brnds"];
