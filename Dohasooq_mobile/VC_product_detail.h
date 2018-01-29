@@ -9,19 +9,25 @@
 #import <UIKit/UIKit.h>
 #import "HMSegmentedControl.h"
 #import "MIBadgeButton.h"
+#import "GIBadgeView.h"
 
 
 
 @interface VC_product_detail : UIViewController
+{
+    NSTimer *TIMER_countdown;
+}
+
 @property(nonatomic,weak) IBOutlet UIScrollView *Scroll_content;
 
 
-@property(nonatomic,strong) IBOutlet MIBadgeButton *BTN_cart;
+@property(nonatomic,strong) IBOutlet UIButton *BTN_cart;
 @property(nonatomic,strong) IBOutlet MIBadgeButton *BTN_fav;
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_back;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_back_modal;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_cart_list;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_wish_list;
+@property(nonatomic,strong) IBOutlet GIBadgeView *badge_view;
 //@property(nonatomic,weak) IBOutlet UIButton *header_name;
 
 

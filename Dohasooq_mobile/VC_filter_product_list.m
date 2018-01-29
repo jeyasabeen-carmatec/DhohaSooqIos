@@ -145,18 +145,21 @@
     framset = _VW_radio.frame;
     framset.origin.y = _Vw_line1.frame.origin.y + _Vw_line1.frame.size.height + 5;
     _VW_radio.frame = framset;
-    framset = _BTN_submit.frame;
+    
+    /*framset = _BTN_submit.frame;
     framset.origin.y = _VW_radio.frame.origin.y + _VW_radio.frame.size.height;
-    _BTN_submit.frame = framset;
+    _BTN_submit.frame = framset;*/
     
     framset = _VW_contents.frame;
     framset.size.width = _VW_contents.frame.size.width;
-    framset.size.height = _BTN_submit.frame.origin.y + _BTN_submit.frame.size.height;
+    framset.size.height = _VW_radio.frame.origin.y + _VW_radio.frame.size.height;
     _VW_contents.frame = framset;
+    
+    
     
     framset = _IMG_back_ground.frame;
     framset.size.width = _VW_contents.frame.size.width;
-    framset.size.height = _scroll_contents.frame.origin.y + _scroll_contents.frame.size.height;
+    framset.size.height = self.view.frame.size.height;
     _IMG_back_ground.frame = framset;
 }
 -(void)viewWillAppear:(BOOL)animated{
@@ -175,8 +178,8 @@
 {
     lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMinimum];
     upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
-    self.LBL_max.text = [NSString stringWithFormat:@"Max QAR %d", (int)self.LBL_slider.selectedMaximum];
-    self.LBL_min.text = [NSString stringWithFormat:@"Min QAR %d", (int)self.LBL_slider.selectedMinimum];
+    self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"] ,(int)self.LBL_slider.selectedMaximum];
+    self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"] ,(int)self.LBL_slider.selectedMinimum];
     
     
 }
@@ -190,21 +193,57 @@
 
     NSString *country = [user_dflts valueForKey:@"country_id"];
     NSString *languge = [user_dflts valueForKey:@"language_id"];
-    NSDictionary *dict = [user_dflts valueForKey:@"userdata"];
     NSString *min = [NSString stringWithFormat:@"%@",lower];
     NSString *max = [NSString stringWithFormat:@"%@",upper];
+    min = [min stringByReplacingOccurrencesOfString:@"," withString:@""];
+    max = [max stringByReplacingOccurrencesOfString:@"," withString:@""];
     NSString *range = [NSString stringWithFormat:@"%@,%@",min,max];
     [[NSUserDefaults standardUserDefaults] setValue:range  forKey:@"Range_val"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 
     NSString *brands = [Brands_arr_post componentsJoinedByString:@","];
 
-    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id;
+    @try
+    {
+        if(dict.count == 0)
+        {
+            user_id = @"null";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"null";
+        
+    }
+    
 
     
     NSString *url_str = [NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/Customer/1.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"product_list_key"],country,languge,user_id,discount,min,max,brands];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+
+    url_str = [url_str stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
     
     
     [[NSUserDefaults standardUserDefaults] setValue:brands forKey:@"brnds"];

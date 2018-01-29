@@ -9,6 +9,7 @@
 #import "VC_contact_us.h"
 #import "UIView+Shadow.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_contact_us ()<UITextFieldDelegate,UIAlertViewDelegate>
 {
@@ -45,13 +46,22 @@
 //    _VW_address.layer.shadowOffset = CGSizeMake(0.0, 0.0);
 //    _VW_address.layer.shadowOpacity = 1.0;
 //    _VW_address.layer.shadowRadius = 4.0;
-    
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        _TXT_text.textAlignment = NSTextAlignmentRight;
+        
+    }
+
+  //  NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
+
     NSString *description =[NSString stringWithFormat:@"%@",[json_dic valueForKey:@"content"]];
     description = [description stringByAppendingString:[NSString stringWithFormat:@"<style>body{font-family: 'Poppins-Regular'; font-size:%dpx;}</style>",17]];
-    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithData:[description dataUsingEncoding:NSUTF8StringEncoding]options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}documentAttributes:nil error:nil];
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithData:[description dataUsingEncoding:NSUTF8StringEncoding]  options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}documentAttributes:nil  error:nil];
+    
     _TXT_text.attributedText = attributedString;
     NSString *str = _TXT_text.text;
     str = [str stringByReplacingOccurrencesOfString:@"/" withString:@"\n"];
+    
     _TXT_text.text = str;
     
 
@@ -60,7 +70,14 @@
     frameset.size.height = _TXT_text.frame.origin.y + _TXT_text.frame.size.height;
     _VW_contact.frame =frameset;
     
-      _LBL_address.text = [json_dic valueForKey:@"fullAdress"];
+    _LBL_address.text = [json_dic valueForKey:@"fullAdress"];
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        _LBL_address.textAlignment = NSTextAlignmentRight;
+        
+    }
+
+    _LBL_address.numberOfLines  = 0;
      [_LBL_address sizeToFit];
    
      frameset = _VW_address.frame;
@@ -79,7 +96,7 @@
     _BTN_submit.frame = frameset;
     
     frameset = _VW_contents.frame;
-   // frameset.size.height = _BTN_submit.frame.origin.y + _BTN_submit.frame.size.height + 10;
+    frameset.size.height = _VW_contact_us.frame.origin.y + _VW_contact_us.frame.size.height + 10;
    // frameset.size.height = _VW_contact_us.frame.origin.y + _VW_contact_us.frame.origin.y;
     frameset.size.width = _Scroll_contents.frame.size.width;
     _VW_contents.frame = frameset;
@@ -107,8 +124,9 @@
 //    [VW_overlay addSubview:activityIndicatorView];
 //    [self.view addSubview:VW_overlay];
  //   [self address_API];
+    self.navigationItem.hidesBackButton = YES;
     
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
 //        VW_overlay.hidden = NO;
 //        [activityIndicatorView startAnimating];
         [self performSelector:@selector(address_API) withObject:nil afterDelay:0.01];
@@ -237,7 +255,7 @@
         msg = @" Message length should be more than 64 characters";
     }
     else{
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         [self performSelector:@selector(online_enquiry_API_calling) withObject:nil afterDelay:0.01];
 
     }
@@ -267,9 +285,9 @@
         NSString *jsonString = xmlString;
         NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
         json_dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-   
+    [self set_up_VIEW];
      [self set_up_VIEW];
- [HttpClient stop_activity_animation];    }
+ [Helper_activity stop_activity_animation:self];    }
     @catch(NSException *exception)
     {
         
@@ -436,12 +454,12 @@
             NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
             
             if (returnData) {
-                 [HttpClient stop_activity_animation];
+                 [Helper_activity stop_activity_animation:self];
                 NSMutableDictionary *json_DATA = [[NSMutableDictionary alloc]init];
                 json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
                 NSLog(@"%@", [NSString stringWithFormat:@"JSON DATA OF ORDER DETAIL: %@", json_DATA]);
                 
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"msg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 alert.tag = 1;
                 [alert show];
             }
@@ -449,7 +467,7 @@
         }
         @catch(NSException *exception)
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             NSLog(@"THE EXception:%@",exception);
             
         }

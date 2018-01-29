@@ -13,6 +13,7 @@
 #import "XMLDictionary/XMLDictionary.h"
 #import "MZDayPickerCell.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 
 @interface VC_Movie_booking ()<UITableViewDelegate,UITableViewDataSource,MZDayPickerDelegate, MZDayPickerDataSource,UICollectionViewDelegate,UICollectionViewDataSource,UIAlertViewDelegate>
@@ -26,6 +27,8 @@
     NSMutableArray *ARR_temp;
     NSString *dateString;
     NSDateFormatter *dateFormat;
+    
+    NSDate *selec_date;
 
 }
 @property (nonatomic,strong) NSDateFormatter *dateFormatter;
@@ -43,6 +46,8 @@
     
 
     detail_dict  = [[NSMutableDictionary alloc]init];
+    
+    
     
 }
 -(void)viewWillAppear:(BOOL)animated
@@ -72,7 +77,7 @@
 //    VW_overlay.hidden = YES;
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-     [HttpClient animating_images:self];
+     [Helper_activity animating_images:self];
     [self performSelector:@selector(movie_detil_api) withObject:nil afterDelay:0.01];
 }
 
@@ -143,7 +148,7 @@
             
             for (int j=0; j<[[date_Arr objectAtIndex:i] count]; j++) {
                 NSDate *tomorrow = [cal dateByAddingUnit:NSCalendarUnitDay
-                                                   value:1
+                                                   value:0
                                                   toDate:[dateFormat dateFromString:[[date_Arr objectAtIndex:i] objectAtIndex:j]]
                                                  options:0];
                 [arry_with_Dates addObject:tomorrow];
@@ -154,7 +159,7 @@
         }
         else{
             NSDate *tomorrow = [cal dateByAddingUnit:NSCalendarUnitDay
-                                               value:1
+                                               value:0
                                               toDate:[dateFormat dateFromString:[date_Arr objectAtIndex:i]]
                                              options:0];
             [arry_with_Dates addObject:tomorrow];
@@ -177,6 +182,8 @@
     
     [self.dayPicker setStartDate:[reverseOrder lastObject] endDate:endDate];
     
+//    [self dayPicker:self.dayPicker didSelectDay:[reverseOrder lastObject]];
+    
     NSDate *yesterDay = [cal dateByAddingUnit:NSCalendarUnitDay
                                         value:-1
                                        toDate:[reverseOrder lastObject]
@@ -187,7 +194,26 @@
     NSArray *arr = [dateString componentsSeparatedByString:@"/"];
     
     
+//    [self.dayPicker setCurrentDay:[[arr objectAtIndex:1] intValue]];
+    
+    selec_date = [NSDate dateFromDay:[[arr objectAtIndex:1] intValue] month:[[arr objectAtIndex:0]intValue] year:[[arr objectAtIndex:2]intValue]];
+    
     [self.dayPicker setCurrentDate:[NSDate dateFromDay:[[arr objectAtIndex:1] intValue] month:[[arr objectAtIndex:0]intValue] year:[[arr objectAtIndex:2]intValue]] animated:NO];
+    
+    
+//    MZDay *day_sel = [[MZDay alloc]init];
+//    day_sel.date = [NSDate dateFromDay:[[arr objectAtIndex:1] intValue] month:[[arr objectAtIndex:0]intValue] year:[[arr objectAtIndex:2]intValue]];
+    
+//    - (void)setCurrentIndex:(NSIndexPath *)currentIndex
+    [self.dayPicker select_date:[NSIndexPath indexPathForRow:0 inSection:0]];
+    [self.dayPicker select_date:[NSIndexPath indexPathForRow:0 inSection:0]];
+    
+//    [self dayPicker:self.dayPicker titleForCellDayLabelInDay:day_sel];
+//    [self dayPicker:self.dayPicker didSelectDay:day_sel];
+    
+//    [self.dayPicker setCurrentDay:[[arr objectAtIndex:1] intValue] animated:NO];
+    
+//    [self.dayPicker setCurrentDay:[[arr objectAtIndex:1] intValue]];
     
 //    NSString *temp_s = [arr componentsJoinedByString:@"/"];
 //    NSDateFormatter *df = [[NSDateFormatter alloc]init];
@@ -198,7 +224,8 @@
 
     [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-
+    
+//    [self.dayPicker setCurrentDay:[[arr objectAtIndex:1] intValue]];
     
 }
 
@@ -336,9 +363,9 @@
     [_tbl_timings reloadData];
     
     
-  [self set_UP_VIEW];
+     [self set_UP_VIEW];
     
-     [HttpClient stop_activity_animation];
+     [Helper_activity stop_activity_animation:self];
      [self viewDidLayoutSubviews];
 }
 
@@ -539,8 +566,9 @@
 //
 //    
 //    [self.dayPicker setStartDate:currentDate endDate:sevenDays];
-//    [self.dayPicker setCurrentDate:currentDate animated:NO];
-//    
+//    [self.dayPicker setCurrentDate:selec_date animated:NO];
+//    - (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day
+//    [self dayPicker:self.dayPicker didSelectDay:selec_date];
 }
 
 -(void)viewDidLayoutSubviews
@@ -788,16 +816,16 @@
     if(result.height <= 480)
     {
         // iPhone Classic
-        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:12];
-        cell.BTN_time.textAlignment = NSTextAlignmentJustified;
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:10];
+        cell.BTN_time.textAlignment = NSTextAlignmentCenter;
         
         
     }
     else if(result.height <= 568)
     {
         // iPhone 5
-        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:12];
-        cell.BTN_time.textAlignment = NSTextAlignmentJustified;
+        cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:10];
+        cell.BTN_time.textAlignment = NSTextAlignmentCenter;
         
         
         
@@ -806,8 +834,6 @@
     {
         cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:13];
         cell.BTN_time.textAlignment = NSTextAlignmentCenter;
-
-        
     }
 
 
@@ -905,6 +931,7 @@
             {
               return CGSizeMake(collectionView.frame.size.width/3.5, 40);
             }
+           
             else{
                 return CGSizeMake(collectionView.frame.size.width/4.37, 40);
             }
@@ -935,7 +962,7 @@
 
 -(void)ok_action
 {
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
     _VW_alert.hidden = YES;
 }
 - (IBAction)back_action:(id)sender

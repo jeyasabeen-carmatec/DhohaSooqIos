@@ -12,6 +12,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "XMLDictionary.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 @interface VC_my_bookings ()<UITableViewDelegate,UITableViewDataSource>
 {
     NSMutableArray *Total_QT_arr;
@@ -64,6 +65,9 @@
     
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
+    self.TBL_bookings.hidden = YES;
+    [Helper_activity animating_images:self];
+    
     [self performSelector:@selector(booking_API) withObject:nil afterDelay:0.01];
   
     
@@ -84,7 +88,6 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 
 {
-    
     
     NSInteger index;
     
@@ -118,6 +121,11 @@
              book_cell.LBL_event_name.text = str_event_name;
              NSString *str_code = [NSString stringWithFormat:@"%@",[[Total_QT_arr objectAtIndex:indexPath.row] valueForKey:@"_confirmationCode"]];
              NSString *str_confirm_code = [NSString stringWithFormat:@"Confirmation code %@",str_code];
+             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+             {
+                str_confirm_code = [NSString stringWithFormat:@"Confirmation code %@",str_code];
+
+             }
              
              if ([book_cell.LBL_confirmation_code respondsToSelector:@selector(setAttributedText:)]) {
                  
@@ -183,6 +191,11 @@
         book_cell.LBL_seats.text = str_seats;
         NSString *str_amount = [NSString stringWithFormat:@"%@ %@",[[Total_QT_arr objectAtIndex:indexPath.row] valueForKey:@"_total_Cost"],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
           NSString *str_AMT = @"Total Amount:";
+             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+             {
+                 str_AMT = @"المبلغ الإجمالي";
+             }
+             
         
         NSString *total_amount = [NSString stringWithFormat:@"%@ %@",str_AMT,str_amount];
         
@@ -313,6 +326,11 @@
         book_cell.LBL_seats.text = str_seats;
         NSString *str_amount = [NSString stringWithFormat:@"%@ %@",[Total_QT_arr valueForKey:@"_total_Cost"],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
         NSString *str_AMT = @"Total Amount:";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str_AMT = @"المبلغ الإجمالي";
+        }
+
         
         NSString *total_amount = [NSString stringWithFormat:@"%@ %@",str_AMT,str_amount];
 
@@ -444,6 +462,11 @@
         NSString *str_amount = [NSString stringWithFormat:@"%@ %@",[[Total_QT_arr objectAtIndex:indexPath.row] valueForKey:@"_total_Cost"],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
         
         NSString *str_AMT = @"Total Amount:";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str_AMT = @"المبلغ الإجمالي";
+        }
+
         
         NSString *total_amount = [NSString stringWithFormat:@"%@ %@",str_AMT,str_amount];
 
@@ -567,6 +590,11 @@
         NSString *str_amount = [NSString stringWithFormat:@"%@ %@",[Total_QT_arr valueForKey:@"_total_Cost"],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
         
         NSString *str_AMT = @"Total Amount:";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str_AMT = @"المبلغ الإجمالي";
+        }
+
         
         NSString *total_amount = [NSString stringWithFormat:@"%@ %@",str_AMT,str_amount];
         
@@ -657,6 +685,12 @@
     
     
     self.segmentedControl4.sectionTitles = @[@" Movies  ",@" Events "];
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        self.segmentedControl4.sectionTitles = @[@" الأفلام   ",@" المناسبات  "];
+
+    }
+
     
     self.segmentedControl4.backgroundColor = [UIColor clearColor];
     self.segmentedControl4.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15]};
@@ -678,7 +712,7 @@
     {
 //        VW_overlay.hidden = NO;
 //        [activityIndicatorView startAnimating];
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         [self performSelector:@selector(movies_VIEW) withObject:nil afterDelay:0.01];
         
         _TBL_bookings.delegate = self;
@@ -689,7 +723,7 @@
     else
     {
         not_found_image.hidden= YES;
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
 
 //        VW_overlay.hidden = NO;
 //        [activityIndicatorView startAnimating];
@@ -743,7 +777,7 @@
                 {
                     
                     
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
                     _VW_empty.hidden = NO;
                     _VW_segment.hidden = YES;
                     _TBL_bookings.hidden = YES;
@@ -759,7 +793,7 @@
 //                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No Bookings found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
 //                [alert show];
                 
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
 
 
             }
@@ -771,7 +805,7 @@
                 _TBL_bookings.hidden = NO;
                 self.segmentedControl4.selectedSegmentIndex = 0;
                 [self segmentedControlChangedValue:self.segmentedControl4];
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
 
 
 
@@ -788,7 +822,7 @@
         {
 //            [activityIndicatorView stopAnimating];
 //            VW_overlay.hidden = YES;
-             [HttpClient stop_activity_animation];
+             [Helper_activity stop_activity_animation:self];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
         }
@@ -797,7 +831,7 @@
     
     @catch(NSException *exception)
     {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         NSLog(@"The error is:%@",exception);
 //        [activityIndicatorView stopAnimating];
 //        VW_overlay.hidden = YES;
@@ -817,7 +851,7 @@
             NSString *unfilteredString =[json_DATA valueForKey:@"mbookid"];
             if([unfilteredString isKindOfClass:[NSNull class]])
             {
-                 [HttpClient stop_activity_animation];
+                 [Helper_activity stop_activity_animation:self];
                 _TBL_bookings.hidden = YES;
                 _VW_empty.hidden = NO;
                 _VW_segment.hidden = YES;
@@ -841,7 +875,7 @@
                        NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
             if([[xmlDoc valueForKey:@"_status"] isEqualToString:@"true"])
             {
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
 
                 Total_QT_arr =[xmlDoc valueForKey:@"bookinghistory"];
               // [Total_QT_arr addObject:[xmlDoc valueForKey:@"bookinghistory"]];
@@ -873,7 +907,7 @@
                 
             }
             else{
-              [HttpClient stop_activity_animation];
+              [Helper_activity stop_activity_animation:self];
                 _TBL_bookings.hidden = YES;
                 _VW_empty.hidden = NO;
                 _VW_segment.hidden = YES;
@@ -888,7 +922,7 @@
              }
         @catch(NSException *exception)
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
 
             NSLog(@"exception");
             
@@ -900,10 +934,22 @@
 {
     Total_QT_arr = [[NSMutableArray alloc]init];
 
-    @try {
+   
        // https://api.q-tickets.com/V2.0/bookingconfirmaionevents?booking_id=897694,897693,897690,897689,897688
         
         NSString *unfilteredString =[json_DATA valueForKey:@"ebookid"];
+        if([unfilteredString isKindOfClass:[NSNull class]])
+        {
+            [Helper_activity stop_activity_animation:self];
+            _TBL_bookings.hidden = YES;
+            _VW_empty.hidden = NO;
+            _VW_segment.hidden = YES;
+            _TBL_bookings.hidden = YES;
+            
+        }
+        else{
+            
+         @try {
         NSCharacterSet *notAllowedChars = [[NSCharacterSet characterSetWithCharactersInString:@",1234567890"] invertedSet];
         NSString *resultString = [[unfilteredString componentsSeparatedByCharactersInSet:notAllowedChars] componentsJoinedByString:@""];
         
@@ -919,7 +965,7 @@
         NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
         if(xmlDoc)
         {
-           [HttpClient stop_activity_animation];
+           [Helper_activity stop_activity_animation:self];
 
            // Total_QT_arr = [xmlDoc valueForKey:@"bookinghistory"];
             Total_QT_arr =[[xmlDoc valueForKey:@"BookingHistories"] valueForKey:@"bookinghistory"];
@@ -952,28 +998,27 @@
             
         }
         else{
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             _TBL_bookings.hidden = YES;
             _VW_empty.hidden = NO;
             _VW_segment.hidden = YES;
             _TBL_bookings.hidden = YES;
             
 
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No bookings Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-            [alert show];
+           
             
         }
         
     }
     @catch(NSException *exception)
     {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
         NSLog(@"exception");
         
     }
     
-
+    }
     
 }
 - (IBAction)back_ACTION:(id)sender {

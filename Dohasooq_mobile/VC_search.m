@@ -139,12 +139,13 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    return UITableViewAutomaticDimension;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     return 120;
 }
-//-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    return 10;
-//}
 -(void)close_action
 {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -154,15 +155,16 @@
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(api_calling) withObject:activityIndicatorView afterDelay:0.01];
+  
 
     return YES;
 }
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
     _TBL_results.hidden = NO;
+ /*   VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(api_calling) withObject:activityIndicatorView afterDelay:0.01];*/
     
 }
 -(void)textFieldDidEndEditing:(UITextField *)textField
@@ -197,16 +199,20 @@
                     [arr_events removeAllObjects];
                     if([[json valueForKey:@"items"] count]<1)
                     {
-                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"NO data Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                        [alert show];
+                        VW_overlay.hidden = YES;
+                        [activityIndicatorView stopAnimating];
+                        
+                      //  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"NO data Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                      //  [alert show];
 
                     }
                     else{
                     [arr_events addObjectsFromArray:[json valueForKey:@"items"]];
                         VW_overlay.hidden = YES;
                         [activityIndicatorView stopAnimating];
-                    [_TBL_results reloadData];
+                   
                     _TBL_results.hidden = NO;
+                         [_TBL_results reloadData];
                      NSLog(@"%@",json);
                     }
                     

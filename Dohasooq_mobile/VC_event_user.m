@@ -7,8 +7,9 @@
 //
 
 #import "VC_event_user.h"
-#import "HttpClient.h"
+#import "Helper_activity.h"
 #import "XMLDictionary/XMLDictionary.h"
+
 
 @interface VC_event_user ()<UITextFieldDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIWebViewDelegate>
 {
@@ -27,6 +28,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    _TXT_name.delegate = self;
+    _TXT_code.delegate = self;
+    _TXT_mail.delegate = self;
+    _TXT_phone.delegate = self;
+    _TXT_voucher.delegate = self;
     
     
     @try
@@ -386,7 +393,7 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
     
     else
     {
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         [self performSelector:@selector(get_oreder_ID) withObject:nil afterDelay:0.01];
 
      
@@ -442,16 +449,42 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
         NSString *start_time = [event_dict valueForKey:@"_StartTime"];
         NSLog(@"The appended string is:%@",event_price_id);
         NSString *str_prefix = _TXT_code.text;
-        str_prefix = [str_prefix stringByReplacingOccurrencesOfString:@"+" withString:@""];
+        NSCharacterSet *notAllowedChars = [[NSCharacterSet characterSetWithCharactersInString:@",1234567890"] invertedSet];
+        NSString *resultString = [[str_prefix componentsSeparatedByCharactersInSet:notAllowedChars] componentsJoinedByString:@""];
+        
+        NSLog (@"Result: %@", resultString);
+
+        str_prefix = resultString;
+
+        NSString* Identifier = [[[UIDevice currentDevice] identifierForVendor] UUIDString]; // IOS 6+
+        NSLog(@"output is : %@", Identifier);
+        NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/eventbookings?eventid=%@&ticket_id=%@&amount=%@&tkt_count=%@&NoOftktPerid=%@&camount=0&email=%@&name=%@&phone=%@&prefix=%@&bdate=%@&btime=%@&balamount=0&couponcodes=null&Source=11&AppVersion=1.0",event_id,event_master_id,str_price,str_count,event_price_id,_TXT_mail.text,_TXT_name.text,_TXT_phone.text,str_prefix,start_date,start_time];
+        str_url = [str_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
 
         
-        NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/eventbookings?eventid=%@&ticket_id=%@&amount=%@&tkt_count=%@&NoOftktPerid=%@&camount=0&email=%@&name=%@&phone=%@&prefix=%@&bdate=%@&btime=%@&balamount=0&couponcodes=null&AppSource=11&AppVersion=1.0",event_id,event_master_id,str_price,str_count,event_price_id,_TXT_mail.text,_TXT_name.text,_TXT_phone.text,str_prefix,start_date,start_time];
-        
-        NSURL *URL = [[NSURL alloc] initWithString:str_url];
+        NSURL *URL = [[NSURL alloc] initWithString:str_url];  
         
         NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
         NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
         NSLog(@"The booking_data is:%@",xmlDoc);
+        NSString *str_stat =[NSString stringWithFormat:@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_status"]];
+        if(![xmlDoc valueForKey:@"result"])
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Some Thing Went Wrong" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+             [Helper_activity stop_activity_animation:self];
+            // [self get_transaction_id];
+        }
+
+        else  if([str_stat isEqualToString:@"False"])
+        {
+             [Helper_activity stop_activity_animation:self];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[[xmlDoc valueForKey:@"result"] valueForKey:@"_errormsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+        }
+        else
+        {
+
         
         
         //_Transaction_Id
@@ -464,13 +497,18 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
         [[NSUserDefaults standardUserDefaults]setObject:save_booking_dic forKey:@"savebooking"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        [[NSUserDefaults standardUserDefaults] setObject:[[xmlDoc valueForKey:@"result"] valueForKey:@"_orderid"] forKey:@"order_details"];
+        [[NSUserDefaults standardUserDefaults] setObject:[xmlDoc valueForKey:@"result"]  forKey:@"order_details"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        [[NSUserDefaults standardUserDefaults] setObject:[[xmlDoc valueForKey:@"result"] valueForKey:@"_orderid"] forKey:@"order_ID"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         
-        [HttpClient stop_activity_animation];
-        // Move to next 
-        [self performSegueWithIdentifier:@"user_detail_pay" sender:self];
+        [Helper_activity stop_activity_animation:self];
+            [self performSegueWithIdentifier:@"user_detail_pay" sender:self];
+
+        }
+        // Move to next
     }
     @catch(NSException *exception)
     {

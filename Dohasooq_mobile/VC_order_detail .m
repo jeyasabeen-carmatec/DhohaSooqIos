@@ -15,6 +15,7 @@
 #import "HttpClient.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "VC_DS_Checkout.h"
+#import "Helper_activity.h"
 
 
 @interface VC_order_detail ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,UICollectionViewDataSource, UICollectionViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UITextFieldDelegate,UIGestureRecognizerDelegate>
@@ -39,9 +40,9 @@
     
     float total;
     float charge_ship; //For lbl shipping charge
+    
     //payment parameters
-//    NSMutableDictionary *shippinglatlog_dic,*billiinglatlog_dic;
-    NSString *payment_type_str,*billcheck_clicked,*blng_cntry_ID,*ship_cntry_ID,*blng_state_ID,*ship_state_ID;
+    NSString *payment_type_str,*billcheck_clicked,*blng_cntry_ID,*ship_cntry_ID,*blng_state_ID,*ship_state_ID,*newaddressinput;
     NSMutableArray *date_time_merId_Arr;
     BOOL select_blng_ctry_state; // finding which state/country selected instead of creating new pickerview
     
@@ -51,6 +52,14 @@
     NSMutableArray *phone_code_arr;
     NSString *flag;
     
+    //Delivary Slot
+    NSDateFormatter *dateFormatter;
+    
+   //OneTime Pwd
+    NSTimer *timer;
+    int currMinute;
+    int currSeconds;
+    NSString *otp_str;
 }
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
@@ -63,15 +72,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //_TBL_address.backgroundColor = [UIColor yellowColor];
+    //self.TBL_address.backgroundColor = [UIColor orangeColor];
+    
     [_BTN_logo addTarget:self action:@selector(go_To_Home) forControlEvents:UIControlEventTouchUpInside];
     
-    
+    _TXT_instructions.delegate = self;
     title_page_str = @"ORDER DETAIL";
     
     // Do any additional setup after loading the view.
     isfirstTimeTransform = YES;
     stat_arr = [[NSMutableArray alloc]init];
     stat_arr = [NSMutableArray arrayWithObjects:@"0", nil];
+    
+    // For Payment
+    newaddressinput=@"0";
     billcheck_clicked = @"0";
     
     //[apply_promo_action
@@ -85,13 +100,18 @@
     
    
     [_BTN_apply_promo addTarget:self action:@selector(apply_promo_action) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_resend_otp addTarget:self action:@selector(resend_action) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_validate_otp addTarget:self action:@selector(validate_OTP) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_validate_otp setBackgroundColor:[UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0]];
     
     //Country Code Related
     [self phone_code_view];
     
-    
+    dateFormatter = [[NSDateFormatter alloc] init];
+
     
     _LBL_arrow.hidden = YES;
+    isCash_on_delivary = YES;
     
 }
 -(void)viewWillAppear:(BOOL)animated
@@ -110,13 +130,25 @@
     [self.view addSubview:VW_overlay];
      VW_overlay.hidden = YES;
     
-
+    UITapGestureRecognizer *close_Views = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(Close_Views_on_overLay:)];
+    close_Views.delegate = self;
+    close_Views.numberOfTapsRequired = 1;
+    [VW_overlay addGestureRecognizer:close_Views];
+    
     [self performSelector:@selector(order_detail_API_call) withObject:nil afterDelay:0.01];
    
-    
-    
-    
 }
+
+// Implementing tap Gesture For VW_overLay
+-(void)Close_Views_on_overLay:(UITapGestureRecognizer *)tapGesture{
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDuration:-5];
+    VW_overlay.hidden = YES;
+    [UIView commitAnimations];
+}
+
+
 -(void)set_UP_VIEW
 {
     
@@ -170,6 +202,18 @@
     _VW_BILLING_ADDRESS.frame = frame_set;
     [self.scroll_shipping addSubview:_VW_BILLING_ADDRESS];
     
+    // ADD Special Instructions
+    
+    
+    frame_set  = _VW_special.frame;
+    frame_set.origin.x = _TXT_Cntry_code.frame.origin.x;
+    frame_set.origin.y = _VW_BILLING_ADDRESS.frame.origin.y + _VW_BILLING_ADDRESS.frame.size.height;
+    _VW_special.frame = frame_set;
+    [self.scroll_shipping addSubview:_VW_special];
+
+    _VW_special.layer.borderWidth = 0.5f;
+    _VW_special.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    
      _TBL_address.hidden = YES;
     
     [_TBL_address reloadData];
@@ -183,7 +227,7 @@
     _VW_SHIIPING_ADDRESS.hidden = YES;
 
     
-    shiiping_ht = _VW_BILLING_ADDRESS.frame.origin.y + _VW_BILLING_ADDRESS.frame.size.height;
+    shiiping_ht = _VW_special.frame.origin.y + _VW_special.frame.size.height;
     
     
     
@@ -458,45 +502,45 @@
         
         //fnaem
         str_fname = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"firstname"];
-         str_fname = [str_fname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-          _TXT_fname.text =  str_fname;
+        str_fname = [str_fname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+        _TXT_fname.text =  str_fname;
         
-//lname
+        //lname
         str_lname = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"lastname"];
-         str_lname = [str_lname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-         _TXT_lname.text =  str_lname;
+        str_lname = [str_lname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+        _TXT_lname.text =  str_lname;
         
         //phone
         str_phone = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"phone"];
         
         if ([str_phone isEqualToString:@"<null>"] ||[str_phone isEqualToString:@"<nil>"]||[str_phone isEqualToString:@""] ) {
             str_phone = @"";
-           _TXT_phone.userInteractionEnabled = YES;
-             _TXT_phone.backgroundColor = [UIColor clearColor];
+            _TXT_phone.userInteractionEnabled = YES;
+            _TXT_phone.backgroundColor = [UIColor clearColor];
         }
         else{
             _TXT_phone.userInteractionEnabled = NO;
             _TXT_phone.backgroundColor = [UIColor lightGrayColor];
         }
-         str_phone = [str_phone stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+        str_phone = [str_phone stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
         _TXT_phone.text =  str_phone;
         
         //Phone_Country_code
         str_cntry_code = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"phonecode"];
-         str_cntry_code = [str_cntry_code stringByReplacingOccurrencesOfString:@"<null>" withString:@"+974"];
+        str_cntry_code = [str_cntry_code stringByReplacingOccurrencesOfString:@"<null>" withString:@"974"];
         
         if ([str_cntry_code isEqualToString:@"<null>"] ||[str_cntry_code isEqualToString:@"<nil>"]||[str_cntry_code isEqualToString:@""] ) {
-            str_cntry_code = @"+974";
+            str_cntry_code = @"974";
         }
         
-        _TXT_Cntry_code.text = [NSString stringWithFormat:@"%@",str_cntry_code];
-       
+        _TXT_Cntry_code.text = [NSString stringWithFormat:@"+%@",str_cntry_code];
+        
         
         //Country_code for ShipCntryCode
-        _TXT_ship_cntry_code.text = [NSString stringWithFormat:@"%@",str_cntry_code];
-       
+        _TXT_ship_cntry_code.text = [NSString stringWithFormat:@"+%@",str_cntry_code];
         
-      //Address1
+        
+        //Address1
         str_addr1 = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"address1"];
         
         str_addr2 = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"address2"];
@@ -505,7 +549,21 @@
         
         str_country = country;
         str_state =state;
-        str_email = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"user_email"]];
+        
+        // Country
+        if ([str_country isEqualToString:@"<null>"] ||[str_country isEqualToString:@"<nil>"]||[str_country isEqualToString:@"null"] ||[str_country isEqualToString:@""]) {
+            str_country = @"";
+            _TXT_country.placeholder = @"Select Country";
+        }
+        
+        //State
+        if ([str_state isKindOfClass:[NSNull class]]||[str_state isEqualToString:@"<null>"] ||[str_state isEqualToString:@"<nil>"]||[str_state isEqualToString:@"null"] ||[str_state isEqualToString:@""]) {
+            str_state = @"";
+            _TXT_state.placeholder = @"Select State*";
+        }
+        
+        
+        //str_email = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"user_email"]];
         
         //cell.Btn_save.hidden = YES;
         
@@ -514,7 +572,9 @@
         blng_cntry_ID = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"country_id"]];
         blng_state_ID = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"state_id"]];
         
-        ship_cntry_ID = blng_cntry_ID;
+        
+        // Shipping Country  ID Must Be  Qatar Country ID
+        ship_cntry_ID = @"173";
         
         
         
@@ -526,33 +586,38 @@
         str_city = [str_city stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
         str_zip_code = [str_zip_code stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
         str_phone = [str_phone stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-    
+        
+        
+        if ([str_zip_code isEqualToString:@"<null>"] ||[str_zip_code isEqualToString:@"<nil>"]||[str_zip_code isEqualToString:@"null"] ) {
+            str_zip_code = @"";
+        }
+        
         _TXT_addr1.text =  str_addr1;
         _TXT_addr2.text =  str_addr2;
         _TXT_city.text =  str_city;
         _TXT_zip.text =  str_zip_code;
         _TXT_email.text =  str_email;
-      
+        
         
         //_TXT_phone.backgroundColor = [UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1];;
         
         
-        str_country = [str_country stringByReplacingOccurrencesOfString:@"<null>" withString:@"Select Country"];
         
-        str_state = [str_state stringByReplacingOccurrencesOfString:@"<null>" withString:@""];        str_email = [str_state stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+        str_state = [str_state stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
         
-         _TXT_country.text =  str_country;
-         _TXT_state.text =  str_state;
+        _TXT_country.text =  str_country;
+        _TXT_state.text =  str_state;
         
-        _TXT_ship_country.text = str_country;
-
+        _TXT_ship_country.text = @"Qatar";
+        
         
     }
     @catch(NSException *exception)
     {
     }
-
+    
 }
+
 -(void)set_data_to_product_Summary_View{
   
     @try {
@@ -565,8 +630,18 @@
     NSString *sub_total = [NSString stringWithFormat:@"%@",[jsonresponse_dic valueForKey:@"subsum"]];
     
     sub_total = [sub_total stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
-    
-    _LBL_sub_total.text = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],sub_total];
+        
+    NSString *sub_total_seperator = [HttpClient currency_seperator:sub_total];
+        
+
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+             _LBL_sub_total.text = [NSString stringWithFormat:@"%@ %@",sub_total_seperator,[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"]];
+        }else{
+             _LBL_sub_total.text = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],sub_total_seperator];
+        }
+        
+        
 
     total = [sub_total floatValue]+ charge_ship;
         
@@ -574,21 +649,45 @@
    
 
         
-    self.LBL_shipping_charge.text = [NSString stringWithFormat:@"%@ %.2f",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],charge_ship];
         
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            self.LBL_shipping_charge.text = [NSString stringWithFormat:@"%.2f %@",charge_ship,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+        }
+        else{
+            self.LBL_shipping_charge.text = [NSString stringWithFormat:@"%@ %.2f",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],charge_ship];
+        }
 
-    NSString *prec_price = [NSString stringWithFormat:@"%.2f",total];
+
+//    NSString *prec_price = [NSString stringWithFormat:@"%.2f",total];
+         NSString *prec_price = [HttpClient currency_seperator:[NSString stringWithFormat:@"%.2f",total]];
         
     
         [self fill_value_to_Lbl_product_summary:@" "];
         
           NSString *currency = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
-    NSString *summary_text = [NSString stringWithFormat:@"%@ %@",currency,prec_price];
-        NSString *doha_value = [NSString stringWithFormat:@"%.2f",doha_val];
-          NSString *str_or = @"(OR)";
+    NSString *summary_text;
+        NSString *doha_value = [NSString stringWithFormat:@"%f",doha_val];
+        doha_value = [HttpClient doha_currency_seperator:doha_value];
         
-        NSString *str_miles= [NSString stringWithFormat:@"%@\n Doha Miles %@",str_or,doha_value];
-    
+        
+        NSString *str_miles;
+        NSString *str_or;
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+        summary_text = [NSString stringWithFormat:@"%@ %@",prec_price,currency];
+         str_or = @"(أو)";
+        str_miles = [NSString stringWithFormat:@"%@\nأميال الدوحة %@",doha_value,str_or];
+        
+        }
+        else{
+             summary_text = [NSString stringWithFormat:@"%@ %@",currency,prec_price];
+             str_or = @"(OR)";
+            str_miles= [NSString stringWithFormat:@"%@\n Doha Miles %@",str_or,doha_value];
+        }
+        
     if ([_LBL_total respondsToSelector:@selector(setAttributedText:)]) {
         
         // Define general attributes for the entire text
@@ -601,34 +700,15 @@
         
         
         NSRange ename = [summary_text rangeOfString:currency];
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:25.0]}
+        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:16.0]}
                                     range:ename];
-        }
-        else
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:18.0]}
-                                    range:ename];
-        }
+        
         NSRange cmp = [summary_text rangeOfString:prec_price];
-        //        [attributedText addAttribute: NSStrikethroughStyleAttributeName value:[NSNumber numberWithInteger: NSUnderlineStyleSingle] range: NSMakeRange(0, [prec_price length])];
-        //
         
         
-        //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
-        
-        
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:21.0],NSForegroundColorAttributeName:[UIColor blackColor]}
-                                    range:cmp];
-        }
-        else
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:18.0],NSForegroundColorAttributeName:[UIColor blackColor],}
+        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:16.0],NSForegroundColorAttributeName:[UIColor blackColor],}
                                     range:cmp ];
-        }
+        
           _LBL_total.attributedText = attributedText;
     }
     else
@@ -641,24 +721,26 @@
             
             // Define general attributes for the entire text
             NSDictionary *attribs = @{
-                                      NSForegroundColorAttributeName:_LBL_total.textColor,
-                                      NSFontAttributeName:_LBL_total.font
+                                      NSForegroundColorAttributeName:_LBL_summry_miles.textColor,
+                                      NSFontAttributeName:_LBL_summry_miles.font
                                       };
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:str_miles attributes:attribs];
             
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor blackColor],}
+            
+            NSRange doha_va = [str_miles rangeOfString:str_miles];
+            
+            
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:16.0],NSForegroundColorAttributeName:[UIColor blackColor],}
+                                    range:doha_va ];
+            
+        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor blackColor],}
                                     range:[str_miles rangeOfString:str_or] ];
         
 
-        
-        NSRange doha_va = [str_miles rangeOfString:doha_value];
-            
-        
-        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:16.0],NSForegroundColorAttributeName:[UIColor blackColor],}
-                                    range:doha_va ];
+       
         _LBL_summry_miles.attributedText = attributedText;
         
-        
+        // _LBL_summry_miles.text = str_miles;
         
       
     }
@@ -674,21 +756,27 @@
 -(void)fill_value_to_Lbl_product_summary:(NSString *)arrow{
     
     
-      NSString *price =[NSString stringWithFormat:@"%.2f %@",total,arrow];
+    NSString *seperator = [HttpClient currency_seperator:[NSString stringWithFormat:@"%.2f",total]];
+    
+      NSString *price;
     
     NSString *currency = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
 
     
-    NSString *text = [NSString stringWithFormat:@"%@ %@ ",currency,price];
+    NSString *text;
     
     
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
     {
+        price =[NSString stringWithFormat:@"%@ %@",arrow,seperator];
+        text = [NSString stringWithFormat:@"%@ %@ ",price,currency];
         [paragraphStyle setAlignment:NSTextAlignmentCenter];
         
     }
     else{
+        price =[NSString stringWithFormat:@"%@ %@",seperator,arrow];
+        text = [NSString stringWithFormat:@"%@ %@ ",currency,price];
         [paragraphStyle setAlignment:NSTextAlignmentLeft];
         
         
@@ -909,8 +997,7 @@
             @try
             {
                 NSString *str = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"merchantId"]];
-                //  str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-//                NSString *img_url = [NSString stringWithFormat:@"%@Merchant%@/Small/%@",MERCHANT_URL,str,[[arr_product objectAtIndex:indexPath.row] valueForKey:@"productimage"]];
+               
                 
                 NSString *img_url = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"productimage"]];
 
@@ -983,6 +1070,11 @@
                 else
                 {
                     mils  = @"Doha Miles";
+                    
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                         mils  = @"أميال الدوحة";
+                    }
                 }
                 
     // Calculating Dohamiles Value and Prices Based on Quantity
@@ -996,12 +1088,14 @@
 
                         float productprice = [prev_price floatValue];
                         productprice = quantity*productprice;
-                        prev_price = [NSString stringWithFormat:@"%.2f",productprice];
+                        prev_price = [HttpClient currency_seperator:[NSString stringWithFormat:@"%.2f",productprice]];
+                            //prev_price = [NSString stringWithFormat:@"%.2f",productprice];
                            
                             //Miles Price Multiplication
-                            NSInteger price_mls = [doha_miles integerValue];
+                            float price_mls = [doha_miles floatValue];
                             price_mls = quantity * price_mls;
-                            doha_miles = [NSString stringWithFormat:@"%ld",(long)price_mls];
+                            doha_miles = [NSString stringWithFormat:@"%f",price_mls];
+                            doha_miles = [HttpClient doha_currency_seperator:doha_miles];
                            
                             
                             if([price isEqualToString:@""]|| [price isEqualToString:@"null"]||[price isEqualToString:@"<null>"])
@@ -1011,7 +1105,9 @@
                             else{
                                 float spcl_prc = [price floatValue];
                                 spcl_prc = quantity * spcl_prc;
-                                price = [NSString stringWithFormat:@"%.2f",spcl_prc];
+                                
+                                price = [HttpClient currency_seperator:[NSString stringWithFormat:@"%.2f",spcl_prc]];
+                               // price = [NSString stringWithFormat:@"%.2f",spcl_prc];
                             }
                             
                     } @catch (NSException *exception) {
@@ -1024,9 +1120,89 @@
                 
         
                 
-//                NSString *text = [NSString stringWithFormat:@"%@ %@ %@%@ / %@ %@",qr,price,qr,prev_price,doha_miles,mils];
-                NSString *only_price = [NSString stringWithFormat:@"%@ %@ / %@ %@",qr,prev_price,mils,doha_miles];
+
+                NSString *only_price;
+                
+             /*  if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+//                   only_price = [NSString stringWithFormat:@"%@ أميال الدوحة / %@ %@",doha_miles,prev_price,qr];
+                    //only_price = [NSString stringWithFormat:@"%@ %@ / %@ %@",qr,prev_price,doha_miles,mils];
+//                    only_price = [NSString stringWithFormat:@"أميال الدوحة %@ / %@ %@",doha_miles,prev_price,qr];
+//                    only_price = [NSString stringWithFormat:@"%@ %@ أميال الدوحة %@ / ",doha_miles,prev_price,qr];
+//                    only_price = [NSString stringWithFormat:@"%@ %@ / أميال الدوحة %@",doha_miles,prev_price,qr];
+//                    only_price = [NSString stringWithFormat:@"%@ %@ %@ / أميال الدوحة",doha_miles,prev_price,qr];
+//                    only_price = [NSString stringWithFormat:@"%@ %@ / %@ أميال الدوحة",doha_miles,prev_price,qr];
+//                    only_price = [NSString stringWithFormat:@"%@ %@ / أميال الدوحة %@",doha_miles,prev_price,qr];
+//                    only_price = [NSString stringWithFormat:@"%@ %@ / أميال الدوحة %@",qr,prev_price,doha_miles];
+//                    only_price = [NSString stringWithFormat:@"%@ %@ أميال الدوحة %@ /",qr,prev_price,doha_miles];
+//                    only_price = [NSString stringWithFormat:@"أميال الدوحة %@ / %@ %@",doha_miles,qr,prev_price];
+//                    only_price = [NSString stringWithFormat:@"/ أميال الدوحة %@ %@ %@",doha_miles,prev_price,qr];
+//                    only_price = [NSString stringWithFormat:@"%@ %@ أميال الدوحة %@",doha_miles,prev_price,];
+                    
+                    
+                    NSString *STR_rr = [NSString stringWithFormat:@"%@ %@",prev_price,qr];
+                    only_price = [NSString stringWithFormat:@"أميال الدوحة %@",doha_miles];
+                    NSString *STR_fina = [NSString stringWithFormat:@"%@ / %@",only_price,STR_rr];
+                    NSArray *temp_arr1 = [STR_fina componentsSeparatedByString:@"/"];
+                    NSLog(@"Final STR = %@ / %@",[temp_arr1 objectAtIndex:0],[temp_arr1 objectAtIndex:1]);
+                    
+                    NSString *STTST = [NSString stringWithFormat:@"A %@",[temp_arr1 objectAtIndex:0]];
+                    NSLog(@"Final STR sdf %@",STTST);
+                    NSString *STTST1 = [NSString stringWithFormat:@"%@ A",[temp_arr1 objectAtIndex:0]];
+                    NSLog(@"Final STR1 sdf %@",STTST1);
+                    
+                    NSString *STTST11 = [NSString stringWithFormat:@"%@ / %@ %@",[temp_arr1 objectAtIndex:0],qr,prev_price];
+                    NSLog(@"Final STR1 sdf %@",STTST11);
+                    
+                    NSString *STTST12 = [NSString stringWithFormat:@"%@",temp_arr1];
+                    
+                    char c = '"';
+                    NSString *SEP = [NSString stringWithFormat:@"%c,",c];
+                    NSString *RFF = [NSString stringWithFormat:@"%c",c];
+                    
+                    STTST12 = [STTST12 stringByReplacingOccurrencesOfString:@"(" withString:@""];
+                    STTST12 = [STTST12 stringByReplacingOccurrencesOfString:@")" withString:@""];
+                    STTST12 = [STTST12 stringByReplacingOccurrencesOfString:SEP withString:@""];
+                    STTST12 = [STTST12 stringByReplacingOccurrencesOfString:RFF withString:@""];
+                    STTST12 = [STTST12 stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+                    STTST12 = [STTST12 stringByReplacingOccurrencesOfString:@"      " withString:@" "];
+                    STTST12 = [STTST12 stringByReplacingOccurrencesOfString:@"    " withString:@""];
+                    
+                    NSLog(@"Final STR1 sdf %@",STTST12);
+                    
+                    only_price = STTST12;
+                
+
+                }
+                else
+                {*/
+                    only_price = [NSString stringWithFormat:@"%@ %@ / %@ %@",qr,prev_price,mils,doha_miles];
+               // }
+        
                 NSString *india_currency = [NSString stringWithFormat:@"%@ %@ %@%@",qr,price,qr,prev_price];
+                
+            // Font size Based on Screen
+                
+                
+                float font_size;
+                
+                CGSize result = [[UIScreen mainScreen] bounds].size;
+                if(result.height <= 480)
+                {
+                    // iPhone Classic
+                    font_size = 09.0;
+                    
+                }
+                else if(result.height <= 568)
+                {
+                    // iPhone 5
+                    font_size = 09.0;
+                }
+                else
+                {
+                    font_size = 13.0;
+                }
+
                 
 #pragma mark LBL_current_price Attributed Text
                 
@@ -1041,23 +1217,34 @@
                         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:only_price attributes:nil];
                         
                         NSRange qrs = [only_price rangeOfString:qr];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName:[UIColor blackColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:font_size],NSForegroundColorAttributeName:[UIColor blackColor]}
                                                 range:qrs];
                         
                         NSRange ename = [only_price rangeOfString:prev_price];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:13.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:font_size],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                 range:ename];
                         
                         NSRange miles_price = [only_price rangeOfString:doha_miles];
                         if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
                         {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:19.0]}
                                                     range:miles_price];
                         }
                         else
                         {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:13.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:font_size],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                     range:miles_price];
+                        }
+                        NSRange milsr = [only_price rangeOfString:mils];
+                        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+                        {
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:19.0]}
+                                                    range:milsr];
+                        }
+                        else
+                        {
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:font_size]}
+                                                    range:milsr];
                         }
                         
                         
@@ -1072,37 +1259,21 @@
                         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:india_currency attributes:nil];
                         
                         NSRange qrs = [india_currency rangeOfString:qr];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName:[UIColor blackColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:font_size],NSForegroundColorAttributeName:[UIColor blackColor]}
                                                 range:qrs];
                         
                         NSRange ename = [india_currency rangeOfString:prev_price];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:font_size],NSForegroundColorAttributeName:[UIColor grayColor]}
                                                 range:ename];
                         
                         NSRange ePrice = [india_currency rangeOfString:price];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:13.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:font_size],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                 range:ePrice];
                         
                         cell.LBL_current_price.attributedText = attributedText;
                         //                        cell.LBL_discount.text = @"0 %off";
                         
                     }
-                    // when sno offer and  No doha miles
-                    else if ([price isEqualToString:@""] && [doha_miles isEqualToString:@""]){
-                        
-                        NSString *text = [NSString stringWithFormat:@"%@ %@",qr,prev_price];
-                        
-                        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
-                        
-                        NSRange qrs = [text rangeOfString:prev_price];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
-                                                range:qrs];
-                        cell.LBL_current_price.attributedText = attributedText;
-                        //cell.LBL_discount.text = @"0 %off";
-                        
-                        
-                    }
-                    
                     
                     else{
                         
@@ -1116,8 +1287,23 @@
                         
              /*************************************/
                         //prev_price= [qr stringByAppendingString:prev_price];
-                        prev_price = [NSString stringWithFormat:@"%@ %@",qr,prev_price];
-                         NSString *text = [NSString stringWithFormat:@"%@ %@ %@ / %@ %@",qr,price,prev_price,mils,doha_miles];
+                        
+                        
+                        
+    
+                        NSString *text;
+                        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                        {
+                            prev_price = [NSString stringWithFormat:@"%@ %@",prev_price,qr];
+                            text = [NSString stringWithFormat:@" %@ %@ / %@ %@ %@",mils,doha_miles,prev_price,price,qr];
+                            
+
+                        }else{
+                            prev_price = [NSString stringWithFormat:@"%@ %@",qr,prev_price];
+                            text = [NSString stringWithFormat:@"%@ %@ %@ / %@ %@",qr,price,prev_price,mils,doha_miles];
+  
+                        }
+                        
                         
                         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                         
@@ -1129,7 +1315,7 @@
                         }
                         else
                         {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName:[UIColor redColor]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:font_size],NSForegroundColorAttributeName:[UIColor redColor]}
                                                     range:qrs];
                         }
                         
@@ -1143,7 +1329,7 @@
                         }
                         else
                         {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:13.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:font_size],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                     range:ename];
                         }
                         
@@ -1159,13 +1345,19 @@
                         }
                         else
                         {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:font_size],NSForegroundColorAttributeName:[UIColor grayColor]}
                                                     range:cmp];
                         }
                         @try {
-//                            [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(price.length+qr.length+2, [prev_price length]+[qr length])];
+
+                            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                            {
+                                 [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(mils.length+doha_miles.length+5, [prev_price length])];
+                            }
+                            else{
+                                 [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(price.length+qr.length+2, [prev_price length])];
+                            }
                             
-                             [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(price.length+qr.length+2, [prev_price length])];
                             
                         } @catch (NSException *exception) {
                             NSLog(@"%@",exception);
@@ -1180,7 +1372,7 @@
                         }
                         else
                         {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:13.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:font_size],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                     range:miles_price];
                         }
                         NSRange miles = [text rangeOfString:mils];
@@ -1191,7 +1383,7 @@
                         }
                         else
                         {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName:[UIColor blackColor]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:font_size],NSForegroundColorAttributeName:[UIColor blackColor]}
                                                     range:miles];
                         }
                         
@@ -1252,10 +1444,10 @@
                 if ([[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"cod"]] isEqualToString:@"No"]) {
                     isCash_on_delivary = NO;
                 }
-                else
-                {
-                    isCash_on_delivary = YES;
-                }
+//                else
+//                {
+//                    isCash_on_delivary = YES;
+//                }
                 
     //Delivary Slot checking Condition
                 
@@ -1672,7 +1864,7 @@
                     cell.BTN_edit_addres.hidden = YES;
                 }
                 
-                
+#pragma Shipping address Table DATA
                 NSString *name_str =[NSString stringWithFormat:@"%@ %@",[[[dict_shipping valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"firstname"],[[[dict_shipping valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"lastname"]];
                 name_str = [name_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
                 
@@ -1688,7 +1880,7 @@
                 country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
                 
                 
-                NSString *address_str = [NSString stringWithFormat:@"%@,\n %@ \n%@,%@,%@",[[[dict_shipping valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"address1"],[[[dict_shipping valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"city"],state,country,[[[dict_shipping valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"zip_code"]];
+                NSString *address_str = [NSString stringWithFormat:@"%@,\n%@ \n%@,\n%@, %@",[[[dict_shipping valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"address1"],[[[dict_shipping valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"city"],state,country,[[[dict_shipping valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"zip_code"]];
                 
                 address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
                 
@@ -1931,13 +2123,18 @@
         self.LBL_stat.image = [UIImage imageNamed:@"checkbox_select.png"];
        _TBL_address.hidden = YES;
         _VW_SHIIPING_ADDRESS.hidden = YES;
-        shiiping_ht = _VW_BILLING_ADDRESS.frame.origin.y + _VW_BILLING_ADDRESS.frame.size.height;
+       CGRect frame_set  = _VW_special.frame;
+        frame_set.origin.y = _VW_BILLING_ADDRESS.frame.origin.y + _VW_BILLING_ADDRESS.frame.size.height;
+        _VW_special.frame = frame_set;
+        shiiping_ht = _VW_special.frame.origin.y + _VW_special.frame.size.height;
 
 
         
     }
     else
     {
+        //Checking Shippng Country is Quater Or Not
+        
         billcheck_clicked = @"1"; // for place order
 
         isCompare = YES;
@@ -1946,11 +2143,25 @@
         
         if([[jsonresponse_dic_address valueForKey:@"shipaddress"] isKindOfClass:[NSDictionary class]]){
             _TBL_address.hidden = NO;
+            NSLog(@"Before lay Out frame%@",NSStringFromCGRect(_TBL_address.frame));
+            NSLog(@"Before lay Out frame Content Hesigtht%f",_TBL_address.contentSize.height);
+
             [_TBL_address reloadData];
+            NSLog(@"After lay Out frame%@",NSStringFromCGRect(_TBL_address.frame));
+            NSLog(@"After lay Out frame Content Hesigtht%f",_TBL_address.contentSize.height);
+
+
+           
+            
              CGRect frame_set = _TBL_address.frame;
             frame_set.size.height = _TBL_address.frame.origin.y + _TBL_address.contentSize.height;
             _TBL_address.frame= frame_set;
-            shiiping_ht = _TBL_address.frame.origin.y + _TBL_address.frame.size.height;
+            
+            frame_set = _VW_special.frame;
+            frame_set.origin.y =  _TBL_address.frame.origin.y+  _TBL_address.contentSize.height + ([[[jsonresponse_dic_address valueForKey:@"shipaddress"] allKeys]count] *180);
+            _VW_special.frame = frame_set;
+            
+            shiiping_ht = _VW_special.frame.origin.y + _VW_special.frame.size.height;
              [self viewDidLayoutSubviews];
             
         }
@@ -1964,7 +2175,11 @@
             _VW_SHIIPING_ADDRESS.frame = frameset;
             [self.scroll_shipping addSubview:_VW_SHIIPING_ADDRESS];
             
-            shiiping_ht = _VW_SHIIPING_ADDRESS.frame.origin.y + _VW_SHIIPING_ADDRESS.frame.size.height;
+            frameset = _VW_special.frame;
+            frameset.origin.y = _VW_SHIIPING_ADDRESS.frame.origin.y + _VW_SHIIPING_ADDRESS.frame.size.height;
+            _VW_special.frame = frameset;
+            
+            shiiping_ht = _VW_special.frame.origin.y + _VW_special.frame.size.height;
             [self viewDidLayoutSubviews];
 
         }
@@ -2003,7 +2218,7 @@
     if([title_page_str isEqualToString:@"ORDER DETAIL"])
     {
 
-//            VW_overlay.hidden = NO;
+            VW_overlay.hidden = YES;
 //            [activityIndicatorView startAnimating];
         
             [self performSelector:@selector(move_to_shipping) withObject:nil afterDelay:0.01];
@@ -2016,7 +2231,7 @@
     {
         
         
-//            VW_overlay.hidden = NO;
+             VW_overlay.hidden = YES;
 //            [activityIndicatorView startAnimating];
             [self performSelector:@selector(validatingTextField) withObject:nil afterDelay:0.01];
            
@@ -2024,7 +2239,7 @@
     }
     
       else if ([title_page_str isEqualToString:@"PAYMENT"] && _VW_payment.hidden == NO) {
-//          VW_overlay.hidden = NO;
+        VW_overlay.hidden = YES;
 //          [activityIndicatorView startAnimating];
           
           [self performSelector:@selector(move_to_payment_integration) withObject:nil afterDelay:0.01];
@@ -2070,21 +2285,39 @@
     
         NSLog(@"%@",payment_type_str);
     
-//    VW_overlay.hidden = YES;
-//    [activityIndicatorView stopAnimating];
     
         if ([payment_type_str isEqualToString:@"1"]||[payment_type_str isEqualToString:@"2"] ||[payment_type_str isEqualToString:@"3"] ||[payment_type_str isEqualToString:@"4"] || [payment_type_str isEqualToString:@"5"]) {
             
-           
+        
+            
+            VW_overlay.hidden = NO;
             [self.view addSubview:VW_overlay];
             
-//            VW_overlay.hidden = NO;
-//            [activityIndicatorView startAnimating];
             
+            [_LBL_timer_lbl setText:@"02:00"];
+            currMinute=02;
+            currSeconds=00;
             
-            [self performSelector:@selector(place_oredr_API) withObject:nil afterDelay:0.01];
+            [_BTN_resend_otp setEnabled:NO];
+            [_BTN_resend_otp setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
 
-            //[self place_oredr_API];
+            if ([payment_type_str isEqualToString:@"5"]) {
+                [self gettingOtpForCashOnDelivary];
+                
+                self.VW_otp_vw.hidden = NO;
+                self.VW_otp_vw.frame = self.VW_otp_vw.frame;
+                self.VW_otp_vw.center = VW_overlay.center;
+                [self->VW_overlay addSubview:self.VW_otp_vw];
+                timer=[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerFired) userInfo:nil repeats:YES];
+                
+                
+                
+            }
+            else{
+                self.VW_otp_vw.hidden = YES;
+               [self performSelector:@selector(place_oredr_API) withObject:nil afterDelay:0.01];
+            }
+
             
             
         }
@@ -2092,7 +2325,50 @@
             [HttpClient createaAlertWithMsg:@"Please Select Payment Type" andTitle:@""];
         }
     }
+#pragma mark Timer Implementation
 
+-(void)timerFired
+{
+    if((currMinute>0 || currSeconds>=0) && currMinute>=0)
+    {
+        if(currSeconds==0)
+        {
+            currMinute-=1;
+            currSeconds=59;
+        }
+        else if(currSeconds>0)
+        {
+            currSeconds-=1;
+        }
+        if(currMinute>-1)
+            [_LBL_timer_lbl setText:[NSString stringWithFormat:@"%d%@%02d",currMinute,@":",currSeconds]];
+    }
+    else
+    {
+        [timer invalidate];
+        [_BTN_resend_otp setEnabled:YES];
+         [_BTN_resend_otp setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+    }
+   }
+// Validate_OTP Action
+-(void)validate_OTP{
+    if ([_TXT_message_field.text isEqualToString:otp_str]) {
+       NSLog(@"VAlidate");
+        [self place_oredr_API];
+    }
+    else{
+        NSLog(@"Please Enter Valid OTP");
+        [_TXT_message_field becomeFirstResponder];
+    }
+   }
+//resend_action
+-(void)resend_action{
+    [self gettingOtpForCashOnDelivary];
+    [_LBL_timer_lbl setText:@"02:00"];
+    currMinute=02;
+    currSeconds=00;
+    timer=[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerFired) userInfo:nil repeats:YES];
+}
 
 
 -(void)move_to_payment_types{
@@ -2201,16 +2477,20 @@
 }
 -(void)BTN_edit_clickd:(UIButton*)sender
 {
-    
+   
     
     _VW_SHIIPING_ADDRESS.hidden = NO;
     CGRect frameset = _VW_SHIIPING_ADDRESS.frame;
-    frameset.origin.y = _TBL_address.frame.origin.y + _TBL_address.contentSize.height;
+    frameset.origin.y = _TBL_address.frame.origin.y + _TBL_address.contentSize.height + 20;
     frameset.size.width = _VW_shipping.frame.size.width;
     _VW_SHIIPING_ADDRESS.frame = frameset;
     [self.scroll_shipping addSubview:_VW_SHIIPING_ADDRESS];
     
-    shiiping_ht = _VW_SHIIPING_ADDRESS.frame.origin.y + _VW_SHIIPING_ADDRESS.frame.size.height;
+    frameset = _VW_special.frame;
+    frameset.origin.y = _VW_SHIIPING_ADDRESS.frame.origin.y + _VW_SHIIPING_ADDRESS.frame.size.height;
+    _VW_special.frame = frameset;
+    
+    shiiping_ht = _VW_special.frame.origin.y + _VW_special.frame.size.height;
     [self viewDidLayoutSubviews];
     
 //    isAddClicked = NO;
@@ -2288,6 +2568,11 @@
     
     str_state = [str_state stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
         str_email = [str_email stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+        
+        
+        if ([str_zip_code isEqualToString:@"<null>"] ||[str_zip_code isEqualToString:@"<nil>"]||[str_zip_code isEqualToString:@"null"] ) {
+            str_zip_code = @"";
+        }
 
         
         _TXT_ship_fname.text =  str_fname;
@@ -2311,19 +2596,21 @@
 }
 -(void)add_new_address:(UIButton*)sender{
     
-//    i = 3;
-//    isAddClicked = YES;
-//    [self.TBL_address reloadData];
-    
+    //Shipping Address  For PAyment Paramater
+     newaddressinput= @"1";
     
     _VW_SHIIPING_ADDRESS.hidden = NO;
     CGRect frameset = _VW_SHIIPING_ADDRESS.frame;
-    frameset.origin.y = _TBL_address.frame.origin.y + _TBL_address.contentSize.height;
+    frameset.origin.y = _TBL_address.frame.origin.y + _TBL_address.contentSize.height + 20;
     frameset.size.width = _VW_shipping.frame.size.width;
     _VW_SHIIPING_ADDRESS.frame = frameset;
     [self.scroll_shipping addSubview:_VW_SHIIPING_ADDRESS];
     
-    shiiping_ht = _VW_SHIIPING_ADDRESS.frame.origin.y + _VW_SHIIPING_ADDRESS.frame.size.height;
+    frameset = _VW_special.frame;
+    frameset.origin.y = _VW_SHIIPING_ADDRESS.frame.origin.y + _VW_SHIIPING_ADDRESS.frame.size.height;
+    _VW_special.frame = frameset;
+    
+    shiiping_ht = _VW_special.frame.origin.y + _VW_special.frame.size.height;
     [self viewDidLayoutSubviews];
     
     _TXT_ship_fname.text =  nil;
@@ -2333,7 +2620,7 @@
     _TXT_ship_city.text =  nil;
     _TXT_ship_state.text =  nil;
     _TXT_ship_zip.text =  nil;
-    _TXT_ship_country.text =  _TXT_country.text;
+    _TXT_ship_country.text =  @"Qatar";
     _TXT_ship_email.text =  nil;
     _TXT_ship_phone.text =  nil;
     
@@ -2366,6 +2653,11 @@
         
         VW_overlay.hidden = YES;
         _VW_delivery_slot.hidden = YES;
+        
+        _TXT_Date.text = nil;
+        _TXT_Time.text = nil;
+        
+        
     }
     else{
         [HttpClient createaAlertWithMsg:@"Plese select Time and  Day/Date" andTitle:@""];
@@ -2423,7 +2715,12 @@
         [self.TBL_address reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
         [self.TBL_address endUpdates];
         if (edit_tag != sender.tag) {
+           CGRect frameset = _VW_special.frame;
+            frameset.origin.y = _TBL_address.frame.origin.y + _TBL_address.frame.size.height - 150;
+            _VW_special.frame = frameset;
             
+            shiiping_ht = _VW_special.frame.origin.y + _VW_special.frame.size.height;
+            [self viewDidLayoutSubviews];
             [self.VW_SHIIPING_ADDRESS removeFromSuperview];
             
         }
@@ -2526,10 +2823,27 @@
             charge_ship = charge_ship+[reduce_amount floatValue];
         }
         
-        self.LBL_shipping_charge.text = [NSString stringWithFormat:@"%@ %.2f",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],charge_ship];
+        
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            self.LBL_shipping_charge.text = [NSString stringWithFormat:@"%.2f %@",charge_ship,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+        }
+        else{
+          self.LBL_shipping_charge.text = [NSString stringWithFormat:@"%@ %.2f",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],charge_ship];
+        }
+        
     } @catch (NSException *exception) {
         
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            self.LBL_shipping_charge.text = [NSString stringWithFormat:@"%.2f %@",charge_ship,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+        }
+        else{
+        
         self.LBL_shipping_charge.text = [NSString stringWithFormat:@"%@ %.2f",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],charge_ship];
+        }
         
     }
     [self set_data_to_product_Summary_View];
@@ -2562,6 +2876,10 @@
     order_cell *cell = (order_cell*)[self.TBL_orders cellForRowAtIndexPath:indexPath];
     
 
+    if ([cell._TXT_count.text isEqualToString:@"1"]) {
+        
+    }
+    else{
         NSString *cnt = [NSString stringWithFormat:@"%ld",[cell._TXT_count.text integerValue]-1];
     
         item_count = cnt;
@@ -2587,16 +2905,16 @@
     NSInteger subTtl;
     @try {
           subTtl = total + [price integerValue];
-        [self  updating_cart_List_api:[NSString stringWithFormat:@"%ld",(long)subTtl]];
+        [self  updating_cart_List_api:[NSString stringWithFormat:@"%@",item_count]];
        
     } @catch (NSException *exception) {
         
           subTtl = total + [prev_price integerValue];
-         [self  updating_cart_List_api:[NSString stringWithFormat:@"%ld",(long)subTtl]];
+         [self  updating_cart_List_api:[NSString stringWithFormat:@"%@",item_count]];
         
     }
     
-    
+    }
 }
 -(void)plus_action:(UIButton*)btn
 {
@@ -2625,12 +2943,12 @@
     NSInteger subTtl;
     @try {
         subTtl = total + [price integerValue];
-        [self  updating_cart_List_api:[NSString stringWithFormat:@"%ld",(long)subTtl]];
+        [self  updating_cart_List_api:[NSString stringWithFormat:@"%@",item_count]];
         
     } @catch (NSException *exception) {
         
         subTtl = total + [prev_price integerValue];
-        [self  updating_cart_List_api:[NSString stringWithFormat:@"%ld",(long)subTtl]];
+        [self  updating_cart_List_api:[NSString stringWithFormat:@"%@",item_count]];
         
     }
 
@@ -2656,11 +2974,7 @@
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
     
-    //    if(textField)
-    //    {
-    //        scroll_height = scroll_height + 100;
-    //        [self viewDidLayoutSubviews];
-    //    }
+  
     [textField becomeFirstResponder];
     if (textField == _TXT_Date ) {
         
@@ -2669,20 +2983,41 @@
             is_Txt_date = YES;
             [picker_Arr removeAllObjects];
             
-           // NSLog(@"%@",[[delivary_slot_dic valueForKey:@"days"] valueForKey:@"1"]);
-            
+            NSDate *day_date;
             if ([[delivary_slot_dic valueForKey:@"days"] isKindOfClass:[NSDictionary class]]) {
                 
                 slot_keys_arr = [[delivary_slot_dic valueForKey:@"days"]allKeys];
-                
                 for (int slot = 0; slot< slot_keys_arr.count; slot++) {
                     
+                    NSString *str = [[delivary_slot_dic valueForKey:@"days"] valueForKey:[slot_keys_arr objectAtIndex:slot]];
+                    NSRange startRange = [str rangeOfString:@"(" options:NSBackwardsSearch];
+                    str= [str substringFromIndex:startRange.location+startRange.length];
+                    str = [str stringByReplacingOccurrencesOfString:@")" withString:@""];
                     
-                    [picker_Arr addObject:[[delivary_slot_dic valueForKey:@"days"] valueForKey:[slot_keys_arr objectAtIndex:slot]]];
+                    dateFormatter.dateFormat = @"MMM d,yyyy";
+                    
+                    // Converting String(Eg.. Jan 29,2018) To Date
+                    day_date = [dateFormatter dateFromString:str];
+                    [picker_Arr addObject: @{@"key1":day_date,@"key2":[[delivary_slot_dic valueForKey:@"days"] valueForKey:[slot_keys_arr objectAtIndex:slot]],@"key3":[slot_keys_arr objectAtIndex:slot]}];
+                    
                 }
+                // Sorting By Using Date
+                NSSortDescriptor *descriptor=[[NSSortDescriptor alloc] initWithKey:@"key1" ascending:YES];
+                NSArray *descriptors=[NSArray arrayWithObject: descriptor];
+                NSArray *reverseOrder=[picker_Arr sortedArrayUsingDescriptors:descriptors];
+                NSLog(@" After sorting%@",reverseOrder);
+                 [picker_Arr removeAllObjects];
+                [picker_Arr addObjectsFromArray:reverseOrder];
+                
+           }
+        
+            if (!picker_Arr.count) {
+                NSLog(@"Sorry! There is no options." );
+            }else{
+                [self.pickerView becomeFirstResponder];
+                [self.pickerView reloadAllComponents];
             }
-            [self.pickerView becomeFirstResponder];
-            [self.pickerView reloadAllComponents];
+            
             
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
@@ -2699,11 +3034,93 @@
             
             for (int slot = 0; slot< slot_keys_arr.count; slot++) {
                 
-                [picker_Arr addObject:[[delivary_slot_dic valueForKey:@"delivery"] valueForKey:[slot_keys_arr objectAtIndex:slot]]];
+               // [picker_Arr addObject:[[delivary_slot_dic valueForKey:@"delivery"] valueForKey:[slot_keys_arr objectAtIndex:slot]]];
+                
+                 [picker_Arr addObject: @{@"time":[[delivary_slot_dic valueForKey:@"delivery"] valueForKey:[slot_keys_arr objectAtIndex:slot]],@"id":[slot_keys_arr objectAtIndex:slot]}];
             }
         }
-        [self.pickerView becomeFirstResponder];
-        [self.pickerView reloadAllComponents];
+        
+      // Comparing Current time with below time(API Response)
+        if ([_TXT_Date.text containsString:@"Today"]) {
+            
+            NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+            [dateFormatter setTimeZone:timeZone];
+            NSDate *now = [NSDate date];
+           dateFormatter.dateFormat = @"hh:mm a";
+        
+    
+            
+            NSTimeInterval secondsInEightHours = 3 * 60 * 60;
+            NSDate *datethreeHoursAhead=[now dateByAddingTimeInterval:secondsInEightHours];
+            
+            [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
+            
+            NSLog(@"The Current Time is %@",[dateFormatter stringFromDate:now]);
+            
+            NSString *current_date = [dateFormatter stringFromDate:datethreeHoursAhead];
+            NSDate *current_time= [dateFormatter dateFromString:current_date];
+            
+            NSLog(@"current_time After Adding time %@",[dateFormatter stringFromDate:datethreeHoursAhead]);
+            
+            NSMutableArray *data_arr = [[NSMutableArray alloc]initWithArray:picker_Arr];
+            
+            for (int b=0; b<picker_Arr.count; b++) {
+                
+                NSString *str = [[picker_Arr objectAtIndex:b] valueForKey:@"time"];
+                NSRange equalRange = [str rangeOfString:@"-" options:NSBackwardsSearch];
+                
+                
+                if (equalRange.location != NSNotFound) {
+                    
+                    //NSString *result_after = [str substringFromIndex:equalRange.location + equalRange.length];
+                    NSString *result_before = [str substringWithRange:NSMakeRange(0, equalRange.location)];
+                   // NSLog(@"The result%@ = %@",result_before,result_after);
+                    
+                
+                    //Converting starting time into NSDate
+                    NSDate *time1 = [dateFormatter dateFromString:result_before];
+                    NSLog(@" %d::::b  %@  ------- %@",b,time1,current_time);
+                    
+                    @try {
+                    NSComparisonResult result = [current_time compare:time1];
+                    
+                    //Comparing Starting Time with Current time
+                    if(result == NSOrderedDescending)
+                    {
+                        NSLog(@"Current Time %@ is later than time1 %@",current_date,result_before);
+                    
+                        //[picker_Arr removeObjectAtIndex:b];
+                        [data_arr removeObject:[picker_Arr objectAtIndex:b]];
+                    }
+                    else if (result == NSOrderedAscending){
+                        
+                         NSLog(@"Current Time %@ is less than time1 %@",current_date,result_before);
+                    }
+                    else{
+                        NSLog(@"Current Time %@  time1 %@ are equal",current_date,result_before);
+                    }
+                    } @catch (NSException *exception) {
+                        NSLog(@"**********");
+                    }
+                        
+                    
+                } else {
+                    NSLog(@"There is no = in the string");
+                } //eof If
+                
+               
+            }
+            [picker_Arr removeAllObjects];
+            [picker_Arr addObjectsFromArray:data_arr];
+        }
+        if (!picker_Arr.count) {
+            [HttpClient createaAlertWithMsg:@"No Slots Available For This Day" andTitle:@""];
+            NSLog(@"Sorry! There is no options,Please Select Another Day" );
+            [textField resignFirstResponder];
+        }else{
+            [self.pickerView becomeFirstResponder];
+            [self.pickerView reloadAllComponents];
+        }
     }
     if (textField == _TXT_country|| textField == _TXT_state) {
         select_blng_ctry_state = YES;
@@ -2733,7 +3150,7 @@
         
     }
     
-    if(textField == _TXT_phone ||textField == _TXT_Cntry_code || textField ==_TXT_ship_cntry_code || textField ==_TXT_country || textField ==_TXT_state||textField == _TXT_ship_phone||textField == _TXT_city||textField == _TXT_zip||textField == _TXT_ship_zip||textField == _TXT_ship_city||textField == _TXT_ship_country||textField == _TXT_ship_state||textField == _TXT_ship_addr2)
+    if(textField == _TXT_phone ||textField == _TXT_Cntry_code || textField ==_TXT_ship_cntry_code || textField ==_TXT_country || textField ==_TXT_state||textField == _TXT_ship_phone||textField == _TXT_city||textField == _TXT_zip||textField == _TXT_ship_zip||textField == _TXT_ship_city||textField == _TXT_ship_country||textField == _TXT_ship_state||textField == _TXT_ship_addr2 || textField == _TXT_instructions)
     {
         [UIView beginAnimations:nil context:NULL];
         self.view.frame = CGRectMake(0,-170,self.view.frame.size.width,self.view.frame.size.height);
@@ -2779,11 +3196,11 @@
         
         
         if (textField == _TXT_country) {
-            _TXT_state.placeholder = @"select State";
+            _TXT_state.placeholder = @"Select State";
 
         }
         if (textField == _TXT_ship_country) {
-             _TXT_ship_state.placeholder = @"select State";
+             _TXT_ship_state.placeholder = @"Select State";
         }
         
         if ([textField.text isEqualToString:@""]) {
@@ -2857,7 +3274,7 @@
 {
     @try {
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         date_time_merId_Arr = [NSMutableArray array];
         jsonresponse_dic  = [[NSMutableDictionary alloc]init];
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
@@ -2874,12 +3291,12 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
                         NSLog(@"%@",[error localizedDescription]);
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
 
                     }
                     if (data) {
                         
-                       [HttpClient stop_activity_animation];
+                       [Helper_activity stop_activity_animation:self];
                             @try {
                                 
                                
@@ -2891,6 +3308,7 @@
                                     [self filtering_MerchantId];
                                     [self Shipp_address_API];
                                     [self set_UP_VIEW];
+                                    
                                   
                                    
                                     
@@ -2911,13 +3329,13 @@
                 
             }];
         } @catch (NSException *exception) {
-             [HttpClient stop_activity_animation];
+             [Helper_activity stop_activity_animation:self];
             NSLog(@"%@",exception);
                   }
         
       
     } @catch (NSException *exception) {
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",exception);
        
 
@@ -2932,7 +3350,7 @@
 {
     @try {
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         jsonresponse_dic_address = [[NSMutableDictionary alloc]init];
         
         //isAddClicked = NO;
@@ -2947,12 +3365,12 @@
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         NSLog(@"%@",[error localizedDescription]);
                     }
                     if (data) {
                         
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         
                         @try {
                             
@@ -2973,14 +3391,14 @@
                 
             }];
         } @catch (NSException *exception) {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             NSLog(@"%@",exception);
         }
         
        
     }
     @catch (NSException *exception) {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
         NSLog(@"%@",exception);
     }
@@ -3005,7 +3423,7 @@
     
     @try {
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
         NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
         
@@ -3023,16 +3441,19 @@
         [HttpClient api_with_post_params:urlGetuser andParams:parameters completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
                     NSLog(@"%@",[error localizedDescription]);
                 }
                 if (data) {
                     NSLog(@"%@",data);
-                     [HttpClient stop_activity_animation];
+                     [Helper_activity stop_activity_animation:self];
                     @try {
                         if ([[NSString stringWithFormat:@"%@",[data valueForKey:@"success"]] isEqualToString:@"1"]) {
                             [HttpClient createaAlertWithMsg:[data valueForKey:@"message"] andTitle:@""];
                             [self order_detail_API_call];
+                        }
+                        else{
+                            [HttpClient createaAlertWithMsg:[data valueForKey:@"message"] andTitle:@""];
                         }
                     
                     } @catch (NSException *exception) {
@@ -3047,7 +3468,7 @@
         }];
     } @catch (NSException *exception) {
         
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",exception);
     }
     
@@ -3138,7 +3559,7 @@
     @try {
         
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         delivary_slot_dic = [[NSMutableDictionary alloc]init];
         picker_Arr = [NSMutableArray array];
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/deliveryslotapi.json",SERVER_URL];
@@ -3146,7 +3567,7 @@
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
                     NSLog(@"%@",[error localizedDescription]);
                 }
                 if (data) {
@@ -3164,7 +3585,7 @@
                         
                     }
                     
-                  [HttpClient stop_activity_animation];
+                  [Helper_activity stop_activity_animation:self];
                 }
                 
             });
@@ -3174,7 +3595,7 @@
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
     }
 //    VW_overlay.hidden = YES;
 //    [activityIndicatorView stopAnimating];
@@ -3184,7 +3605,7 @@
 -(void)CountryAPICall{
     @try {
         
-         [HttpClient animating_images:self];
+         [Helper_activity animating_images:self];
         
         response_countries_dic = [NSMutableDictionary dictionary];
          NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
@@ -3194,7 +3615,7 @@
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
-                         [HttpClient stop_activity_animation];
+                         [Helper_activity stop_activity_animation:self];
                         
                         NSLog(@"%@",[error localizedDescription]);
                     }
@@ -3249,12 +3670,27 @@
                                     
                                 }
                                 
-                                
-                                
+                                                               
                                 NSLog(@"sortedArr %@",sortedArr);
-                                
                                 [response_picker_arr removeAllObjects];
-                                [response_picker_arr addObjectsFromArray:required_format];
+                                if (!select_blng_ctry_state) {
+                                    
+                                    @try {
+                                        [response_picker_arr addObject:[required_format objectAtIndex:0]];
+                                    } @catch (NSException *exception) {
+                                        NSLog(@"No Countries");
+                                    }
+                                }
+                                
+                                else{
+                                    @try {
+                                     [response_picker_arr addObjectsFromArray:required_format];
+                                    } @catch (NSException *exception) {
+                                        NSLog(@"No Countries");
+                                    }
+                                    
+                            
+                                }
                                 [_staes_country_pickr reloadAllComponents];
                                 
                                 [self.staes_country_pickr reloadAllComponents];
@@ -3268,18 +3704,18 @@
                         }
                         
                     }
-                     [HttpClient stop_activity_animation];
+                     [Helper_activity stop_activity_animation:self];
                     
                 });
                 
             }];
         } @catch (NSException *exception) {
-             [HttpClient stop_activity_animation];
+             [Helper_activity stop_activity_animation:self];
             NSLog(@"%@",exception);
         }
         
     } @catch (NSException *exception) {
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",exception);
     }
    
@@ -3301,16 +3737,16 @@
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/getstatebyconapi/%ld.json",SERVER_URL,(long)cntry_ID];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         @try {
-            [HttpClient animating_images:self];
+            [Helper_activity animating_images:self];
             
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
                         NSLog(@"%@",[error localizedDescription]);
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                     }
                     if (data) {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         @try {
                             if ([data isKindOfClass:[NSArray class]]) {
                                 [arr_states addObjectsFromArray:data];
@@ -3335,12 +3771,12 @@
             }];
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
         }
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
         
     }
    
@@ -3392,8 +3828,12 @@
         
         }
     else{
-        
-        return [picker_Arr objectAtIndex:row];
+          if (is_Txt_date) {
+        return [[picker_Arr objectAtIndex:row] valueForKey:@"key2"];
+          }
+          else{
+              return  [[picker_Arr objectAtIndex:row] valueForKey:@"time"];
+          }
     }
 }
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
@@ -3407,13 +3847,15 @@
         
         @try {
             if (is_Txt_date) {
-                _TXT_Date.text = [picker_Arr objectAtIndex:row];
-                date_str = [NSString stringWithFormat:@"%@",[slot_keys_arr objectAtIndex:row]];
+                _TXT_Date.text = [[picker_Arr objectAtIndex:row] valueForKey:@"key2"];
+                date_str = [NSString stringWithFormat:@"%@",[[picker_Arr objectAtIndex:row] valueForKey:@"key3"]];
+                _TXT_Time.text = nil;
+                _TXT_Time.placeholder = @"Select Time";
                 
             }
             else{
-                _TXT_Time.text = [picker_Arr objectAtIndex:row];
-                time_str = [NSString stringWithFormat:@"%@",[slot_keys_arr objectAtIndex:row]];
+                _TXT_Time.text = [[picker_Arr objectAtIndex:row] valueForKey:@"time"];
+                time_str = [NSString stringWithFormat:@"%@",[[picker_Arr objectAtIndex:row] valueForKey:@"id"]];
                 
             }
         } @catch (NSException *exception) {
@@ -3429,10 +3871,12 @@
                 state_selection = @"";
                 
                 if (select_blng_ctry_state) {
+                    _TXT_state.text = nil;
                     blng_cntry_ID = [[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_id"];
                 }
                 else{
                     ship_cntry_ID = [[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_id"];
+                    _TXT_ship_state.text = nil;
                 }
                 
                 
@@ -3483,18 +3927,18 @@
     @try {
         
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/paymentmethapi.json",SERVER_URL];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         @try {
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         NSLog(@"%@",[error localizedDescription]);
                     }
                     if (data) {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         @try {
                             if ([data isKindOfClass:[NSDictionary class]]) {
                                 NSLog(@"Payment Methods %@",data);
@@ -3524,8 +3968,8 @@
 //                                        _LBL_cash_on_Delivary.hidden = NO;
 //                                    }
 //                                }
-                                
-                                if (isCash_on_delivary) {
+                              //////////////
+                               if (isCash_on_delivary) {
                                     _BTN_cod.hidden = NO;
                                     _LBL_cash_on_Delivary.hidden = NO;
                                     
@@ -3534,7 +3978,7 @@
                                     _BTN_cod.hidden = YES;
                                      _LBL_cash_on_Delivary.hidden = YES;
                                 }
-                                
+                               
                             }
                             else{
                                 [HttpClient createaAlertWithMsg:@"The Data could not be read" andTitle:@""];
@@ -3549,12 +3993,12 @@
                 
             }];
         } @catch (NSException *exception) {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             NSLog(@"%@",exception);
         }
         
     } @catch (NSException *exception) {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",exception);
     }
     
@@ -3571,7 +4015,7 @@
     @try {
         
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         NSString *sub_total = [NSString stringWithFormat:@"%@",[jsonresponse_dic valueForKey:@"subsum"]];
         sub_total = [sub_total stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
         
@@ -3583,11 +4027,11 @@
             [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         NSLog(@"%@",[error localizedDescription]);
                     }
                     if (data) {
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         @try {
                             if ([data isKindOfClass:[NSDictionary class]]) {
                                 
@@ -3615,12 +4059,12 @@
                 
             }];
         } @catch (NSException *exception) {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             NSLog(@"%@",exception);
         }
        
     } @catch (NSException *exception) {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",exception);
     }
    
@@ -3633,63 +4077,101 @@
 {
    
    
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
      NSString *msg;
   
        if ([_TXT_fname.text isEqualToString:@""])
        {
            [_TXT_fname becomeFirstResponder];
            msg = @"Please Enter First Name field";
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"يرجى تعبئة حقل الاسم الأول";
+           }
            
        }
        else if(_TXT_fname.text.length < 3 )
        {
            [_TXT_fname becomeFirstResponder];
            msg = @"First Name should not be less than 3 characters";
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"يجب ألا يقل الاسم الأول عن 3 حروف";
+           }
            
        }
-       else if([_TXT_fname.text isEqualToString:@" "])
+       else if(_TXT_fname.text.length >30)
        {
            [_TXT_fname becomeFirstResponder];
-           msg = @"Blank Spaces are not Allowed";
+           msg = @"First name should not be more than 30 characters";
+           
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"يجب ألا يزيد الاسم الأول عن 30 حرفاً";
+           }
            
        }
        else if ([_TXT_lname.text isEqualToString:@""])
        {
            [_TXT_lname becomeFirstResponder];
            msg = @"Please Enter Last Name field";
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"يرجى تعبئة حقل الاسم الأخير ";
+           }
+
            
        }
-       else if(_TXT_lname.text.length < 1)
+       else if(_TXT_lname.text.length < 3)
        {
            [_TXT_lname becomeFirstResponder];
-           msg = @"Last Name should not be less than 1 character";
+           msg = @"Last Name should not be less than 3 character";
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"الكنية ألا يقل الاسم الأول عن 3 حروف";
+           }
            
            
        }
-       else if([_TXT_lname.text isEqualToString:@" "])
+       else if(_TXT_lname.text.length >30)
        {
            [_TXT_lname becomeFirstResponder];
-            msg = @"Blank Spaces are not Allowed";
+           msg = @"Last name should not be more than 30 characters";
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"ألا يزيد اسم العائلة عن 30 حرفا";
+           }
            
            
        }
-       else if(_TXT_addr1.text.length < 1)
+     /*  else if(_TXT_addr1.text.length < 3)
        {
            [_TXT_addr1 becomeFirstResponder];
-           msg = @"Address1  should not be less than 1 character";
+           msg = @"Address1 should not be less than 10 characters";
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"يجب1 ألا يقل العنوان عن 10 رموز";
+           }
            
-           
-       }
-       else if([_TXT_addr1.text isEqualToString:@" "])
+       }*/
+       else if([_TXT_addr1.text isEqualToString:@""])
        {
            [_TXT_addr1 becomeFirstResponder];
-           msg = @"Blank Spaces are not Allowed";
+           msg = @"Address1 Should Not be Empty";
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"يجب  1 عدم ترك حقل العنوان فارغا";
+           }
+
        }
-       else if(_TXT_addr1.text.length > 256)
+       else if(_TXT_addr1.text.length > 200)
        {
            [_TXT_addr1 becomeFirstResponder];
-           msg = @"Address1  should not be greater than 256 character";
+           msg = @"Address should not be more than 200 characters";
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"يجب ألا يزيد العنوان عن 200 رمز";
+           }
            
            
        }
@@ -3729,7 +4211,10 @@
        {
            [_TXT_phone becomeFirstResponder];
            msg = @"Phone Number cannot be less than 5 digits";
-           
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"لا يجب ألا يقلّ رقم الجوال عن 5 أرقام ";
+           }
            
            
        }
@@ -3737,78 +4222,103 @@
        {
            [_TXT_phone becomeFirstResponder];
            msg = @"Phone Number should not be more than 15 characters";
-           
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"يجب أن لا يتجاوز رقم الجوال 15 رقماً";
+           }
            
        }
-       else if([_TXT_phone.text isEqualToString:@" "])
+       else if([_TXT_phone.text isEqualToString:@""])
        {
            [_TXT_phone becomeFirstResponder];
-           msg = @"Blank Space are Not Allowed";
+           msg = @"Phone Number  Should Not be Empty";
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"رقم الهاتف ترك حقل المدينة فارغاً";
+           }
            
            
        }
        else if ([_TXT_Cntry_code.text isEqualToString:@""])
        {
            [_TXT_Cntry_code becomeFirstResponder];
-           msg = @"Please Select Country Code";
+           msg = @"Country Code and Phone Number is required";
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"رمز البلد ورقم الهاتف مطلوبين";
+           }
+
 
        }
     
        else if([_TXT_city.text isEqualToString:@""])
        {
            [_TXT_city becomeFirstResponder];
-           msg = @"Please Enter city";
+           msg = @"City Should Not be Empty";
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"يجب عدم ترك حقل المدينة فارغاً";
+           }
            
            
        }
-       else if (_TXT_city.text.length < 1)
+       else if (_TXT_city.text.length < 3)
        {
            [_TXT_city becomeFirstResponder];
-          msg = @"Blank Space are Not Allowed";
+           msg = @"City should not be less than 3 characters";
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"يجب ألا يقل حقل المدينة عن 3 أحرف";
+           }
+           
+       }
+       else if (_TXT_city.text.length > 30)
+       {
+           [_TXT_city becomeFirstResponder];
+           msg = @"City should not be more than 30 characters";
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"يجب ألا يزيد حقل المدينة عن 30 حرفاً";
+           }
            
        }
        else if([_TXT_state.text isEqualToString:@""])
        {
            [_TXT_state becomeFirstResponder];
-           msg = @"Please Select State";
-           
-           
+           msg = @"Please Select State";//يرجى تحديد البلد
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"يرجى تحديد الدولة";
+           }
+ 
        }
-       else if (_TXT_state.text.length < 1)
-       {
-           [_TXT_state becomeFirstResponder];
-           msg = @"Blank Space are Not Allowed";
-           
-           
-           
-       }
+    
        else if([_TXT_country.text isEqualToString:@""])
        {
            [_TXT_country becomeFirstResponder];
            msg = @"Please Select Country";
-           
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           {
+               msg = @"يرجى تحديد البلد";
+           }
            
        }
-       else if (_TXT_country.text.length < 1)
+//    if (![blng_cntry_ID isEqualToString:@"173"]) {
+//        [HttpClient createaAlertWithMsg:@"Sorry We Cannott ship Products out side of Qatar,Please Enter Diffirent Shipping Address to Proceed" andTitle:@""];
+//    }
+
+       else if(![blng_cntry_ID isEqualToString:@"173"])
        {
            [_TXT_country becomeFirstResponder];
-         msg = @"Blank Space are Not Allowed";
-           
-           
-           
-       }
-       else if([_TXT_zip.text isEqualToString:@""])
-       {
-           [_TXT_zip becomeFirstResponder];
-           msg = @"Please Enter Zip code";
+           msg = @"Sorry we cannot ship products out side Qatar, Please enter different shipping address to proceed";
            
            
        }
-       else if (_TXT_zip.text.length < 1)
-       {
-           [_TXT_zip becomeFirstResponder];
-          msg = @"Blank Space are Not Allowed";       }
-       
+//       else if (_TXT_zip.text.length < 1)
+//       {
+//           [_TXT_zip becomeFirstResponder];
+//          msg = @"Blank Space are Not Allowed";       }
+    
   
       if(  _VW_SHIIPING_ADDRESS.hidden == NO)
     {
@@ -3818,79 +4328,111 @@
         {
             [_TXT_ship_fname becomeFirstResponder];
             msg = @"Please Enter First Name field";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يرجى تعبئة حقل الاسم الأول";
+            }
             
         }
         else if(_TXT_ship_fname.text.length < 3)
         {
             [_TXT_ship_fname becomeFirstResponder];
             msg = @"First Name should not be less than 3 characters";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يجب ألا يقل الاسم الأول عن 3 حروف";
+            }
             
         }
-        else if([_TXT_ship_fname.text isEqualToString:@" "])
+        else if(_TXT_ship_fname.text.length > 30)
         {
             [_TXT_ship_fname becomeFirstResponder];
-           msg = @"Blank Space are Not Allowed";
+            msg = @"First name should not be more than 30 characters";
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يجب ألا يزيد الاسم الأول عن 30 حرفاً";
+            }
             
         }
         else if ([_TXT_ship_lname.text isEqualToString:@""])
         {
             [_TXT_ship_lname becomeFirstResponder];
             msg = @"Please Enter Last Name field";
-            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يرجى تعبئة حقل الاسم الأخير ";
+            }
         }
-        else if(_TXT_ship_lname.text.length < 1)
+        else if(_TXT_ship_lname.text.length < 3)
         {
             [_TXT_ship_lname becomeFirstResponder];
-            msg = @"Last Name should not be Less than 1 Character";
-            
-            
+            msg = @"Last name should not be less than 3 characters";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"الكنية ألا يقل الاسم الأول عن 3 حروف";
+            }
         }
-        else if([_TXT_ship_lname.text isEqualToString:@" "])
+        else if(_TXT_ship_lname.text.length>30)
         {
             [_TXT_ship_lname becomeFirstResponder];
-          msg = @"Blank Space are Not Allowed";
+            msg = @"Last name should not be more than 30 characters";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"ألا يزيد اسم العائلة عن 30 حرفا";
+            }
             
             
         }
-        else if(_TXT_ship_addr1.text.length < 1)
+        else if(_TXT_ship_addr1.text.length < 3)
         {
             [_TXT_ship_addr1 becomeFirstResponder];
-            msg = @"Address1  should not be less than 1 character";
-            
+            msg = @"Address1 should not be less than 3characters";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يجب1 ألا يقل العنوان عن 10 رموز";
+            }
             
         }
-        else if([_TXT_ship_addr1.text isEqualToString:@" "])
+        else if([_TXT_ship_addr1.text isEqualToString:@""])
         {
             [_TXT_ship_addr1 becomeFirstResponder];
-           msg = @"Blank Space are Not Allowed";
+            msg = @"Address1 Should Not be Empty";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يجب  1 عدم ترك حقل العنوان فارغا";
+            }
         }
-        else if(_TXT_ship_addr1.text.length > 256)
+        else if(_TXT_ship_addr1.text.length > 200)
         {
             [_TXT_ship_addr1 becomeFirstResponder];
-            msg = @"Address1  should not be greater than 256 character";
-            
+            msg = @"Address should not be more than 200 characters";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يجب ألا يزيد العنوان عن 200 رمز";
+            }
             
         }
         
-        else if(_TXT_ship_addr2.text.length < 1)
-        {
-            [_TXT_ship_addr2 becomeFirstResponder];
-            msg = @"Address2 should not be less than 1 character";
-            
-            
-        }
-        else if(_TXT_ship_addr2.text.length > 256)
-        {
-            [_TXT_ship_addr2 becomeFirstResponder];
-            msg = @"Address2 should not be greater than 256 character";
-            
-            
-        }
-        else if([_TXT_ship_addr2.text isEqualToString:@" "])
-        {
-            [_TXT_ship_addr2 becomeFirstResponder];
-            msg = @"Blank Space are Not Allowed";
-        }
+//        else if(_TXT_ship_addr2.text.length < 1)
+//        {
+//            [_TXT_ship_addr2 becomeFirstResponder];
+//            msg = @"Address2 should not be less than 1 character";
+//            
+//            
+//        }
+//        else if(_TXT_ship_addr2.text.length > 256)
+//        {
+//            [_TXT_ship_addr2 becomeFirstResponder];
+//            msg = @"Address2 should not be greater than 256 character";
+//            
+//            
+//        }
+//        else if([_TXT_ship_addr2.text isEqualToString:@""])
+//        {
+//            [_TXT_ship_addr2 becomeFirstResponder];
+//            msg = @"Blank Space are Not Allowed";
+//        }
         
         
         
@@ -3898,16 +4440,21 @@
         else if ([_TXT_ship_phone.text isEqualToString:@""])
         {
             [_TXT_ship_phone becomeFirstResponder];
-            msg = @"Please Enter Phone Number";
-            
-            
-            
+            msg = @"Phone Number  Should Not be Empty";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"رقم الهاتف ترك حقل المدينة فارغاً";
+            }
         }
         
         else if (_TXT_ship_phone.text.length < 5)
         {
             [_TXT_ship_phone becomeFirstResponder];
-            msg = @"Phone Number Should not be be less than 5 Digits";
+            msg = @"Phone Number cannot be less than 5 digits";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"لا يجب ألا يقلّ رقم الجوال عن 5 أرقام ";
+            }
             
             
             
@@ -3915,78 +4462,88 @@
         else if(_TXT_ship_phone.text.length>15)
         {
             [_TXT_ship_phone becomeFirstResponder];
-            msg = @"Phone Number Should not be More Than 15 Characters";
-            
-            
+            msg = @"Phone Number cannot be more than 15 digits";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يجب أن لا يتجاوز رقم الجوال 15 رقماً";
+            }
+           
         }
-        else if([_TXT_ship_phone.text isEqualToString:@" "])
-        {
-            [_TXT_ship_phone becomeFirstResponder];
-            msg = @"Blank Space are not Allowed";
-            
-            
-        }
+      
         else if ([_TXT_ship_cntry_code.text isEqualToString:@""])
         {
             [_TXT_ship_cntry_code becomeFirstResponder];
-            msg = @"Please Select Country Code";
-            
-            
-            
+            msg = @"Country Code and Phone Number is required";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"رمز البلد ورقم الهاتف مطلوبين";
+            }
+
+        
         }
         else if([_TXT_ship_city.text isEqualToString:@""])
         {
             [_TXT_ship_city becomeFirstResponder];
-            msg = @"Please Enter City";
-            
+            msg = @"City Should Not be Empty";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يجب عدم ترك حقل المدينة فارغاً";
+            }
             
         }
-        else if (_TXT_ship_city.text.length < 1)
+        else if (_TXT_ship_city.text.length < 3)
         {
             [_TXT_ship_city becomeFirstResponder];
-           msg = @"Blank Space are Not Allowed";
+            msg = @"City should not be less than 3 characters";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يجب ألا يقل حقل المدينة عن 3 أحرف";
+            }
+            
+        }
+        else if (_TXT_ship_city.text.length > 30)
+        {
+            [_TXT_ship_city becomeFirstResponder];
+            msg = @"City should not be more than 30 characters";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يجب ألا يزيد حقل المدينة عن 30 حرفاً";
+            }
             
         }
         else if([_TXT_ship_state.text isEqualToString:@""])
         {
             [_TXT_ship_state becomeFirstResponder];
-            msg = @"Please Select State in Shipping Address";
-            
-            
-        }
-        else if (_TXT_ship_state.text.length < 1)
-        {
-            [_TXT_ship_state becomeFirstResponder];
-           msg = @"Blank Space are Not Allowed";
+            msg = @"Please Select State";//يرجى تحديد البلد
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يرجى تحديد الدولة";
+            }
             
             
         }
         else if([_TXT_ship_country.text isEqualToString:@""])
         {
             [_TXT_ship_country becomeFirstResponder];
-            msg = @"Please Selecct Country in Shipping Address";
+            msg = @"Please Select Country";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"يرجى تحديد البلد";
+            }
             
             
         }
-        else if (_TXT_ship_country.text.length < 1)
+        else if(![_TXT_ship_country.text isEqualToString:@"Qatar"])
         {
             [_TXT_ship_country becomeFirstResponder];
-           msg = @"Blank Space are Not Allowed";
-            
-            
-            
-        }
-        else if([_TXT_ship_zip.text isEqualToString:@""])
-        {
-            [_TXT_ship_zip becomeFirstResponder];
-            msg = @"Please Enter Zipcode in Shipping Address";
+            msg = @"Sorry We cannot ship products Outside of Qatar ";
             
             
         }
-        else if (_TXT_ship_zip.text.length < 1)
-        {
-            [_TXT_ship_zip becomeFirstResponder];
-           msg = @"Blank Space are Not Allowed";        }
+//        else if (_TXT_ship_zip.text.length < 1)
+//        {
+//            [_TXT_ship_zip becomeFirstResponder];
+//           msg = @"Blank Space are Not Allowed";        }
 
             }
     if(msg)
@@ -4022,7 +4579,7 @@
         }
 //    VW_overlay.hidden = YES;
 //    [activityIndicatorView stopAnimating];
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
 
 }
 
@@ -4030,9 +4587,10 @@
 // Payment Type Radio Buttons Setting
 -(void)credit_cerd_action
 {
-    payment_type_str = @"1";
+    
     if(_BTN_credit.tag == 1)
     {
+         payment_type_str = @"1";
         [_BTN_credit setImage:[UIImage imageNamed:@"radiobtn-2"] forState:UIControlStateNormal];
         [_BTN_debit_card setImage:[UIImage imageNamed:@"radio"] forState:UIControlStateNormal];
         [_BTN_doha_bank_account setImage:[UIImage imageNamed:@"radio"] forState:UIControlStateNormal];
@@ -4043,6 +4601,7 @@
     }
     else
     {
+         payment_type_str = @"0";
         [_BTN_credit setImage:[UIImage imageNamed:@"radio"] forState:UIControlStateNormal];
         _BTN_credit.tag = 1;
         _BTN_debit_card.tag = 1;
@@ -4056,10 +4615,11 @@
 }
 -(void)debit_card_action
 {
-    payment_type_str = @"2";
+    
     
     if(_BTN_debit_card.tag == 1)
     {
+        payment_type_str = @"2";
         [_BTN_debit_card setImage:[UIImage imageNamed:@"radiobtn-2"] forState:UIControlStateNormal];
         [_BTN_credit setImage:[UIImage imageNamed:@"radio"] forState:UIControlStateNormal];
         [_BTN_doha_bank_account setImage:[UIImage imageNamed:@"radio"] forState:UIControlStateNormal];
@@ -4070,6 +4630,7 @@
     }
     else
     {
+         payment_type_str = @"0";
         [_BTN_debit_card setImage:[UIImage imageNamed:@"radio"] forState:UIControlStateNormal];
         _BTN_debit_card.tag = 1;
         _BTN_credit.tag = 1;
@@ -4083,9 +4644,12 @@
 }
 -(void)doha_bank_action
 {
+    
+    
     payment_type_str = @"3";
     if(_BTN_doha_bank_account.tag == 1)
     {
+          payment_type_str = @"3";
         [_BTN_doha_bank_account setImage:[UIImage imageNamed:@"radiobtn-2"] forState:UIControlStateNormal];
         [_BTN_credit setImage:[UIImage imageNamed:@"radio"] forState:UIControlStateNormal];
         [_BTN_debit_card setImage:[UIImage imageNamed:@"radio"] forState:UIControlStateNormal];
@@ -4096,6 +4660,7 @@
     }
     else
     {
+         payment_type_str = @"0";
         [_BTN_doha_bank_account setImage:[UIImage imageNamed:@"radio"] forState:UIControlStateNormal];
         _BTN_doha_bank_account.tag = 1;
         _BTN_debit_card.tag = 1;
@@ -4111,9 +4676,12 @@
 
 -(void)doha_miles_action
 {
-    payment_type_str = @"4";
+    
+    
+   
     if(_BTN_doha_miles.tag == 1)
     {
+         payment_type_str = @"4";
         [_BTN_doha_miles setImage:[UIImage imageNamed:@"radiobtn-2"] forState:UIControlStateNormal];
         [_BTN_credit setImage:[UIImage imageNamed:@"radio"] forState:UIControlStateNormal];
         [_BTN_debit_card setImage:[UIImage imageNamed:@"radio"] forState:UIControlStateNormal];
@@ -4124,6 +4692,7 @@
     }
     else
     {
+         payment_type_str = @"0";
         [_BTN_doha_miles setImage:[UIImage imageNamed:@"radio_unSlt"] forState:UIControlStateNormal];
         _BTN_doha_miles.tag = 1;
         _BTN_doha_bank_account.tag = 1;
@@ -4136,9 +4705,9 @@
 }
 -(void)cod_action
 {
-    payment_type_str = @"5";
     if(_BTN_cod.tag == 1)
     {
+        payment_type_str = @"5";
         [_BTN_cod setImage:[UIImage imageNamed:@"radiobtn-2"] forState:UIControlStateNormal];
         [_BTN_credit setImage:[UIImage imageNamed:@"radio_unSlt"] forState:UIControlStateNormal];
         [_BTN_debit_card setImage:[UIImage imageNamed:@"radio_unSlt"] forState:UIControlStateNormal];
@@ -4149,6 +4718,8 @@
     }
     else
     {
+        payment_type_str = @"0";
+
         [_BTN_cod setImage:[UIImage imageNamed:@"radio_unSlt"] forState:UIControlStateNormal];
         _BTN_cod.tag = 1;
         _BTN_doha_miles.tag = 1;
@@ -4165,8 +4736,19 @@
 -(void)place_oredr_API{
     @try {
         
-   
-   NSString *ctry_id = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        
+        
+        //Special Instruction
+        
+        NSString *SpecialInstruction = _TXT_instructions.text;
+        if ([SpecialInstruction isEqualToString:@""]) {
+            SpecialInstruction = @"";
+        }
+        
+        NSString *ctry_id = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        NSString *lan_id = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+        
+        //language_id
         
         
         NSString *sub_total = [NSString stringWithFormat:@"%.2f",total];
@@ -4184,13 +4766,9 @@
         
         NSData *data = [NSJSONSerialization dataWithJSONObject:Formpaymenthidden options:NSJSONWritingPrettyPrinted error:nil];
         NSString *Formpaymenthidden_str = [[NSString alloc] initWithData:data
-                                                      encoding:NSUTF8StringEncoding];
-      
+                                                                encoding:NSUTF8StringEncoding];
         
         
-   
-        
-     
         //        NSDictionary *params = @{@"b_user_firstname":@"",@"b_user_lastname":@"",@"b_user_address1":@"",@"b_user_address2":@"",@"b_user_city":@"",@"b_user_zip_code":@"",@"b_user_phone":@"",@"b_user_country":@"",@"b_user_state":@""};
         
         /*Formshipping = {
@@ -4217,7 +4795,7 @@
         country = blng_cntry_ID;
         phone = _TXT_phone.text;
         str_code = _TXT_Cntry_code.text;
-    
+        
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
         NSString *str_id = @"user_id";
         NSString *user_id;
@@ -4244,14 +4822,14 @@
         } @catch (NSException *exception) {
             
         }
-
+        
         
         data = [NSJSONSerialization dataWithJSONObject:FormBilling options:NSJSONWritingPrettyPrinted error:nil];
         NSString *form_billing_str = [[NSString alloc] initWithData:data
-                                                                encoding:NSUTF8StringEncoding];
-       
+                                                           encoding:NSUTF8StringEncoding];
         
-          NSString *sfname,*slname,*saddr1,*saddr2,*scity,*sstate,*szip_code,*scountry,*sphone,*str_ph_code;
+        
+        NSString *sfname,*slname,*saddr1,*saddr2,*scity,*sstate,*szip_code,*scountry,*sphone,*str_ph_code;
         
         sfname =_TXT_ship_fname.text;
         slname = _TXT_ship_lname.text;
@@ -4263,14 +4841,14 @@
         scountry = ship_cntry_ID;
         sphone = _TXT_ship_phone.text;
         str_ph_code = _TXT_ship_cntry_code.text;
-
+        
         NSDictionary *Formshipping;
         if ([billcheck_clicked isEqualToString:@"0"]) {
             
             
             @try {
-              
-                Formshipping = @{@"FirstName1":fname,@"LastName1":lname,@"address11":addr1,@"address12":addr2,@"city1":city,@"state":state,@"country":country,@"phone1":phone,@"zipcode1":zip_code,@"phonecode":str_code};
+                
+                Formshipping = @{@"FirstName1":fname,@"LastName1":lname,@"address11":addr1,@"address12":addr2,@"city1":city,@"state":state,@"country":country,@"phone1":phone,@"zipcode1":zip_code,@"phonecode":str_code,@"newaddressinput":newaddressinput};
             } @catch (NSException *exception) {
                 
             }
@@ -4279,27 +4857,27 @@
         else{
             
             @try {
-                 Formshipping = @{@"FirstName1":sfname,@"LastName1":slname,@"address11":saddr1,@"address12":saddr2,@"city1":scity,@"state":sstate,@"country":scountry,@"phone1":sphone,@"zipcode1":szip_code,@"phonecode":str_ph_code};
+                Formshipping = @{@"FirstName1":sfname,@"LastName1":slname,@"address11":saddr1,@"address12":saddr2,@"city1":scity,@"state":sstate,@"country":scountry,@"phone1":sphone,@"zipcode1":szip_code,@"phonecode":str_ph_code,@"newaddressinput":newaddressinput};
             } @catch (NSException *exception) {
                 
             }
             
-           
+            
             
         }
-
+        
         
         data = [NSJSONSerialization dataWithJSONObject:Formshipping options:NSJSONWritingPrettyPrinted error:nil];
         NSString *form_shipping_str = [[NSString alloc] initWithData:data
-                                                           encoding:NSUTF8StringEncoding];
-        
-       
-       
-        
-       // NSLog(@"THe single string:Form shipping%@",[form_arr componentsJoinedByString:@","]);
+                                                            encoding:NSUTF8StringEncoding];
         
         
-
+        
+        
+        // NSLog(@"THe single string:Form shipping%@",[form_arr componentsJoinedByString:@","]);
+        
+        
+        
         
         /* FormBilling = {
          "FirstName": "Venu",
@@ -4314,31 +4892,31 @@
          "userId": "17"
          },
          */
-       
-
+        
+        
         // Ship charge , ship method ,time and Date
         NSString *shiip_charge,*ship_method,*deliveydate,*deliveytime,*pickMethod;
         
         
         @try {
             
-        if (date_time_merId_Arr.count != 0) {
-            if ([[date_time_merId_Arr objectAtIndex:0] isKindOfClass:[NSDictionary class]]) {
-                //NSArray *param_keys = [[date_time_merId_Arr objectAtIndex:0] allKeys];
-                
-                NSMutableArray *chrg_array = [NSMutableArray array];
-                  NSMutableArray *ship_array = [NSMutableArray array];
-                NSMutableArray *deliveydate_arr = [NSMutableArray array];
-                NSMutableArray *deliveytime_arr = [NSMutableArray array];
-                NSMutableArray *pickMethod_arr = [NSMutableArray array];
-                
+            if (date_time_merId_Arr.count != 0) {
+                if ([[date_time_merId_Arr objectAtIndex:0] isKindOfClass:[NSDictionary class]]) {
+                    //NSArray *param_keys = [[date_time_merId_Arr objectAtIndex:0] allKeys];
+                    
+                    NSMutableArray *chrg_array = [NSMutableArray array];
+                    NSMutableArray *ship_array = [NSMutableArray array];
+                    NSMutableArray *deliveydate_arr = [NSMutableArray array];
+                    NSMutableArray *deliveytime_arr = [NSMutableArray array];
+                    NSMutableArray *pickMethod_arr = [NSMutableArray array];
+                    
                     for (int b= 0; b<date_time_merId_Arr.count; b++) {
                         
-                       
+                        
                         NSString *str = [NSString stringWithFormat:@"%@",[[date_time_merId_Arr objectAtIndex:b] valueForKey:@"ship_chrge"]];
                         
                         str = [str stringByReplacingOccurrencesOfString:@"<nil>" withString:@" "];
-                         str = [str stringByReplacingOccurrencesOfString:@"(null)" withString:@" "];
+                        str = [str stringByReplacingOccurrencesOfString:@"(null)" withString:@" "];
                         
                         
                         NSString *method = [NSString stringWithFormat:@"%@",[[date_time_merId_Arr objectAtIndex:b] valueForKey:@"ship_method"]];
@@ -4349,10 +4927,10 @@
                         NSString *date = [NSString stringWithFormat:@"%@",[[date_time_merId_Arr objectAtIndex:b] valueForKey:@"date"]];
                         date =[date stringByReplacingOccurrencesOfString:@"<nil>" withString:@" "];
                         date = [date stringByReplacingOccurrencesOfString:@"(null)" withString:@" "];
-
                         
                         
-                         NSString *time = [NSString stringWithFormat:@"%@",[[date_time_merId_Arr objectAtIndex:b] valueForKey:@"time"]];
+                        
+                        NSString *time = [NSString stringWithFormat:@"%@",[[date_time_merId_Arr objectAtIndex:b] valueForKey:@"time"]];
                         time = [time stringByReplacingOccurrencesOfString:@"<nil>" withString:@" "];
                         time = [time stringByReplacingOccurrencesOfString:@"(null)" withString:@" "];
                         
@@ -4367,35 +4945,35 @@
                         [chrg_array addObject:str];
                         [ship_array addObject:method];
                         
-                         NSLog(@" ::::: %@ :::::%@ ",str,method);
+                        NSLog(@" ::::: %@ :::::%@ ",str,method);
                         
+                    }
+                    shiip_charge = [chrg_array componentsJoinedByString:@","];
+                    ship_method = [ship_array componentsJoinedByString:@","];
+                    deliveydate = [deliveydate_arr componentsJoinedByString:@","];
+                    deliveytime = [deliveydate_arr componentsJoinedByString:@","];
+                    pickMethod = [pickMethod_arr componentsJoinedByString:@","];
+                    
+                    
+                    shiip_charge = [shiip_charge stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+                    shiip_charge = [shiip_charge stringByReplacingOccurrencesOfString:@"<nil>" withString:@""];
+                    
+                    ship_method = [ship_method stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+                    ship_method = [ship_method stringByReplacingOccurrencesOfString:@"<nil>" withString:@""];
+                    
+                    deliveydate = [deliveydate stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+                    deliveydate = [deliveydate stringByReplacingOccurrencesOfString:@"<nil>" withString:@""];
+                    
+                    pickMethod = [pickMethod stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+                    pickMethod = [pickMethod stringByReplacingOccurrencesOfString:@"<nil>" withString:@""];
+                    
+                    
+                    
+                    NSLog(@"%@",deliveytime);
+                    
+                    
                 }
-                shiip_charge = [chrg_array componentsJoinedByString:@","];
-                ship_method = [ship_array componentsJoinedByString:@","];
-                deliveydate = [deliveydate_arr componentsJoinedByString:@","];
-                deliveytime = [deliveydate_arr componentsJoinedByString:@","];
-                pickMethod = [pickMethod_arr componentsJoinedByString:@","];
-                
-                
-                shiip_charge = [shiip_charge stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-                   shiip_charge = [shiip_charge stringByReplacingOccurrencesOfString:@"<nil>" withString:@""];
-                
-                ship_method = [ship_method stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-                ship_method = [ship_method stringByReplacingOccurrencesOfString:@"<nil>" withString:@""];
-                
-                deliveydate = [deliveydate stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-                deliveydate = [deliveydate stringByReplacingOccurrencesOfString:@"<nil>" withString:@""];
-                
-                pickMethod = [pickMethod stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-                pickMethod = [pickMethod stringByReplacingOccurrencesOfString:@"<nil>" withString:@""];
-
-                
-                
-                NSLog(@"%@",deliveytime);
-               
-
             }
-        }
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
         }
@@ -4403,7 +4981,7 @@
         
         data = [NSJSONSerialization dataWithJSONObject:FormpickupMethod options:NSJSONWritingPrettyPrinted error:nil];
         NSString *FormpickupMethod_str = [[NSString alloc] initWithData:data
-                                                            encoding:NSUTF8StringEncoding];
+                                                               encoding:NSUTF8StringEncoding];
         
         
         
@@ -4411,63 +4989,63 @@
         NSDictionary *FormPayment = @{@"paymenttype":payment_type_str};
         data = [NSJSONSerialization dataWithJSONObject:FormPayment options:NSJSONWritingPrettyPrinted error:nil];
         NSString *FormPayment_str = [[NSString alloc] initWithData:data
-                                                               encoding:NSUTF8StringEncoding];
+                                                          encoding:NSUTF8StringEncoding];
         
         
         
         NSDictionary  *FormshipMethod = @{@"charge":shiip_charge,@"shipmethod":ship_method};
-
+        
         data = [NSJSONSerialization dataWithJSONObject:FormshipMethod options:NSJSONWritingPrettyPrinted error:nil];
         NSString *FormshipMethod_str = [[NSString alloc] initWithData:data
-                                                          encoding:NSUTF8StringEncoding];
-      
+                                                             encoding:NSUTF8StringEncoding];
+        
         
         
         
         NSDictionary *FormDeliverySlot = @{@"deliveydate":deliveydate,@"deliveytime":deliveytime};
         data = [NSJSONSerialization dataWithJSONObject:FormDeliverySlot options:NSJSONWritingPrettyPrinted error:nil];
         NSString *FormDeliverySlot_str = [[NSString alloc] initWithData:data
-                                                             encoding:NSUTF8StringEncoding];
+                                                               encoding:NSUTF8StringEncoding];
         
         
         
         NSDictionary *FormSameasBilling = @{@"check":billcheck_clicked};
         data = [NSJSONSerialization dataWithJSONObject:FormSameasBilling options:NSJSONWritingPrettyPrinted error:nil];
         NSString *FormSameasBilling_str = [[NSString alloc] initWithData:data
-                                                               encoding:NSUTF8StringEncoding];
-      
+                                                                encoding:NSUTF8StringEncoding];
+        
         
         NSDictionary *Formcouponcode = @{@"couponcode":@""};
         data = [NSJSONSerialization dataWithJSONObject:Formcouponcode options:NSJSONWritingPrettyPrinted error:nil];
         NSString *Formcouponcode_str = [[NSString alloc] initWithData:data
-                                                                encoding:NSUTF8StringEncoding];
+                                                             encoding:NSUTF8StringEncoding];
         
         
         
-
+        
         //[shippinglatlog_dic removeAllObjects];
         
         //data = [NSJSONSerialization dataWithJSONObject:shippinglatlog_dic options:NSJSONWritingPrettyPrinted error:nil];
-//        NSString *shippinglatlog_str = [[NSString alloc] initWithData:data
-//                                                             encoding:NSUTF8StringEncoding];
-         NSString *shippinglatlog_str = [NSString stringWithFormat:@"{}"];
-    
-    
+        //        NSString *shippinglatlog_str = [[NSString alloc] initWithData:data
+        //                                                             encoding:NSUTF8StringEncoding];
+        NSString *shippinglatlog_str = [NSString stringWithFormat:@"{}"];
         
-//        [billiinglatlog_dic removeAllObjects];
-//        
-//        data = [NSJSONSerialization dataWithJSONObject:billiinglatlog_dic options:NSJSONWritingPrettyPrinted error:nil];
-//        NSString *billiinglatlog_str = [[NSString alloc] initWithData:data
-//                                                             encoding:NSUTF8StringEncoding];
-            NSString *billiinglatlog_str = [NSString stringWithFormat:@"{}"];
+        
+        
+        //        [billiinglatlog_dic removeAllObjects];
+        //
+        //        data = [NSJSONSerialization dataWithJSONObject:billiinglatlog_dic options:NSJSONWritingPrettyPrinted error:nil];
+        //        NSString *billiinglatlog_str = [[NSString alloc] initWithData:data
+        //                                                             encoding:NSUTF8StringEncoding];
+        NSString *billiinglatlog_str = [NSString stringWithFormat:@"{}"];
         
         NSDictionary *params;
-
+        
         @try {
             
             
             
-             params = @{@"countryId":ctry_id,@"Formpaymenthidden":Formpaymenthidden_str,@"FormpickupMethod":FormpickupMethod_str,@"FormPayment":FormPayment_str,@"Formshipping":form_shipping_str,@"FormshipMethod":FormshipMethod_str,@"FormBilling":form_billing_str,@"billinglatlog":billiinglatlog_str,@"FormDeliverySlot":FormDeliverySlot_str,@"FormSameasBilling":FormSameasBilling_str,@"shippinglatlog":shippinglatlog_str,@"Formcouponcode":Formcouponcode_str};
+            params = @{@"countryId":ctry_id,@"lanId":lan_id,@"Formpaymenthidden":Formpaymenthidden_str,@"FormpickupMethod":FormpickupMethod_str,@"FormPayment":FormPayment_str,@"Formshipping":form_shipping_str,@"FormshipMethod":FormshipMethod_str,@"FormBilling":form_billing_str,@"billinglatlog":billiinglatlog_str,@"FormDeliverySlot":FormDeliverySlot_str,@"FormSameasBilling":FormSameasBilling_str,@"shippinglatlog":shippinglatlog_str,@"Formcouponcode":Formcouponcode_str,@"SpecialInstruction":SpecialInstruction};
             
             
             
@@ -4475,173 +5053,17 @@
             NSLog(@"Some values are missing in dic");
             NSLog(@"%@",exception);
         }
-    
-        // Calling Place Order API
+        
+        /******************Calling Place Order API*******************/
         [self place_order_One_more_method:params];
         
         
-    /*   // This is Calling Place Order API with diffirent method likeForm Data
-    
-        @try
-        {
-            
-            NSString *urlString =[NSString stringWithFormat:@"%@apis/placeorderapi.json",SERVER_URL];
-            NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:[NSURL URLWithString:urlString]];
-           
-            [request setHTTPMethod:@"POST"];
-            
-            NSString *boundary = @"---------------------------14737809831466499882746641449";
-            NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
-            [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
-            
-            NSMutableData *body = [NSMutableData data];
-          
-            
-            
-            
-            
-            // FormBilling
-            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"FormBilling\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"%@",form_billing_str]dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-            
-            
-            // Formshipping
-            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"Formshipping\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"%@",form_shipping_str]dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-            
-            
-            //FormPayment
-            
-            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"FormPayment\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"%@",FormPayment_str]dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-            
-            
-            //FormSameasBilling
-            
-            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"FormSameasBilling\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"%@",FormSameasBilling_str]dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-
-            
-            //FormshipMethod
-            
-            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"FormshipMethod\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"%@",FormshipMethod_str]dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-            
-            
-            
-            //Formcouponcode
-            
-            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"Formcouponcode\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"%@",Formcouponcode_str]dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-
-            
-            //FormpickupMethod
-            
-            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"FormpickupMethod\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"%@",FormpickupMethod_str]dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-
-            
-            
-            //FormDeliverySlot
-            
-            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"FormDeliverySlot\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"%@",FormDeliverySlot_str]dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-            
-            
-            
-            
-            //Formpaymenthidden
-            
-            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"Formpaymenthidden\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"%@",Formpaymenthidden_str]dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-
-
-            
-            
-            //billinglatlog
-            
-            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"billinglatlog\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"%@",billiinglatlog_str]dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-            
-            
-            
-            //shippinglatlog
-            
-            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"shippinglatlog\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"%@",shippinglatlog_str]dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-            
-            
-            
-            
-            //countryId
-            
-            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"countryId\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"%@",ctry_id]dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-
-            
-                        NSError *er;
-           
-            
-            // close form
-            [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            
-            // set request body
-            [request setHTTPBody:body];
-            
-            NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-            
-            if (returnData) {
-                
-                NSLog(@"returnData :: %@",returnData);
-                           // json_DATA = [[NSMutableDictionary alloc]init];
-                id            json_DATA = (id )[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
-                
-                if (er) {
-                    NSLog(@"er:%@",[er localizedDescription]);
-                }
-                
-                     NSLog(@"%@", [NSString stringWithFormat:@"JSON DATA OF ORDER DETAIL: %@", json_DATA]);
-                
-            }
-            
-        }
-        @catch(NSException *exception)
-        {
-            [activityIndicatorView stopAnimating];
-            VW_overlay.hidden = YES;
-            NSLog(@"THE EXception:%@",exception);
-            
-        }*/
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
     }
-
-   
+    
+    
 }
 
  #pragma mark - Navigation
@@ -4665,7 +5087,7 @@
 -(void)place_order_One_more_method:(NSDictionary *)params{
     @try
         {
-            [HttpClient animating_images:self];
+            [Helper_activity animating_images:self];
             NSError *error;
             NSError *err;
             NSHTTPURLResponse *response = nil;
@@ -4692,14 +5114,14 @@
             [request setHTTPShouldHandleCookies:NO];
             NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
             if (err) {
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 [err localizedDescription];
             }
             
     
             if(aData)
             {
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                
                 NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
                 NSLog(@"%@",error);
@@ -4728,7 +5150,7 @@
         
         @catch(NSException *exception)
         {
-              [HttpClient stop_activity_animation];
+              [Helper_activity stop_activity_animation:self];
             NSLog(@"The error is:%@",exception);
         }
    }
@@ -4758,4 +5180,86 @@
     [self.navigationController popToRootViewControllerAnimated:YES];
     
 }
+#pragma mark Getting One Time Password For Cash On Delivary (API CALLING)
+//http://dohasooq.carmatec.com/apis/productOtpOfCod
+//user_id
+-(void)gettingOtpForCashOnDelivary{
+    @try {
+        
+        [Helper_activity animating_images:self];
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *str_id = @"user_id";
+        NSString *user_id;
+        for(int h = 0;h<[[dict allKeys] count];h++)
+        {
+            if([[[dict allKeys] objectAtIndex:h] isEqualToString:str_id])
+            {
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                break;
+            }
+            else
+            {
+                
+                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+            }
+            
+        }
+        
+        
+        NSString *urlString =[NSString stringWithFormat:@"%@apis/productOtpOfCod",SERVER_URL];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:[NSURL URLWithString:urlString]];
+        
+        [request setHTTPMethod:@"POST"];
+        
+        NSString *boundary = @"---------------------------14737809831466499882746641449";
+        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
+        [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+        
+        NSMutableData *body = [NSMutableData data];
+        
+        
+        //User_id
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"user_id\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@",user_id]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        
+        NSError *er;
+        
+        
+        // close form
+        [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        // set request body
+        [request setHTTPBody:body];
+        
+        NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+        
+        if (returnData) {
+            
+            [Helper_activity stop_activity_animation:self];
+            NSLog(@"returnData :: %@",returnData);
+            // json_DATA = [[NSMutableDictionary alloc]init];
+            NSMutableDictionary   *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
+            
+            if (er) {
+                [Helper_activity stop_activity_animation:self];
+                NSLog(@"er:%@",[er localizedDescription]);
+            }
+
+            
+            otp_str = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"otp"]];
+            NSLog(@"%@", [NSString stringWithFormat:@"OneTimePWD %@", json_DATA]);
+            
+        }
+
+        
+        
+    } @catch (NSException *exception) {
+        [Helper_activity stop_activity_animation:self];
+    }
+}
+
 @end

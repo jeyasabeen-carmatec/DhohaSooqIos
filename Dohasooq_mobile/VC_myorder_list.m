@@ -9,6 +9,7 @@
 #import "VC_myorder_list.h"
 #import "orders_list_cell.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_myorder_list ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 {
@@ -65,7 +66,7 @@
 //    
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(Orders_list_API) withObject:nil afterDelay:0.01];
     
     
@@ -85,70 +86,6 @@
     
 }
 #pragma cart_count_api
--(void)cart_count{
-    
-    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
-    [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-        if (error) {
-            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
-             ];
-            
-            [HttpClient stop_activity_animation];
-
-        }
-        if (data) {
-            
-            [HttpClient stop_activity_animation];
-            NSLog(@"%@",data);
-            NSDictionary *dict = data;
-            @try {
-                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
-                NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
-                
-                
-                
-                if([wishlist intValue] > 0)
-                {
-                    
-                    @try
-                    {
-                        [_BTN_wish_list setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
-                        [_BTN_wish_list setBadgeString:[NSString stringWithFormat:@"%@",wishlist]];
-                    }
-                    @catch(NSException *Exception)
-                    {
-                        
-                    }
-                    
-                }
-                
-                if([badge_value intValue] > 0 )
-                {
-                    @try
-                    {
-                        
-                        [_BTN_cart setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
-                    }
-                    @catch(NSException *Exception)
-                    {
-                        
-                    }
-                    
-                    [_BTN_cart setBadgeString:[NSString stringWithFormat:@"%@",badge_value]];
-                    
-                    
-                }
-                
-            } @catch (NSException *exception) {
-                NSLog(@"%@",exception);
-                
-                [HttpClient stop_activity_animation];
-
-            }
-            
-        }
-    }];
-}
 
 -(void)search_ORDERS
 {
@@ -242,6 +179,13 @@
     NSString *str = [NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:indexPath.row] valueForKey:@"order_number"]];
     str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
     NSString *str_order = @"ORDER ID :";
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        str_order = @"تم إعداد الطلبية ";
+        str = [NSString stringWithFormat:@": %@",[[json_DATA objectAtIndex:indexPath.row] valueForKey:@"order_number"]];
+    }
+    
+    
     NSString *text = [NSString stringWithFormat:@"%@%@",str_order,str];
     
     
@@ -259,19 +203,19 @@
         
         if(result.height <= 480)
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
                                     range: [text rangeOfString:str_order]];
 
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
                                     range:ename];
             
         }
         else if(result.height <= 568)
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
                                     range: [text rangeOfString:str_order]];
 
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
                                     range:ename];
         }
         else
@@ -291,7 +235,12 @@
     }
     NSString *date = [NSString stringWithFormat:@"%@",[[json_DATA  objectAtIndex:indexPath.row] valueForKey:@"order_created"]];
     date = [date stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-    NSString *order_text = @"Ordered On ";
+    NSString *order_text = @"Ordered On :";
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        order_text = @"أنشأت الطلبية بتاريخ";
+        date = [NSString stringWithFormat:@": %@",[[json_DATA  objectAtIndex:indexPath.row] valueForKey:@"order_created"]];
+    }
     NSString *date_text = [NSString stringWithFormat:@"%@%@",order_text,date];
     
     
@@ -311,30 +260,47 @@
           NSRange ename = [date_text rangeOfString:date];
         if(result.height <= 480)
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
+            int sizeval = 10.0;
+            if(date.length > 19.0)
+            {
+                sizeval = 8.0;
+            }
+            else{
+                sizeval = 10.0;
+            }
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:sizeval],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
                                     range:[date_text rangeOfString:order_text]];
 
             
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:sizeval],NSForegroundColorAttributeName :[UIColor blackColor]}
                                     range:ename];
         }
 
             else if(result.height <= 568)
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
+                int sizeval = 12.0;
+                if(date.length > 19.0)
+                {
+                    sizeval = 9.0;
+                }
+                else{
+                    sizeval = 12.0;
+                }
+
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:sizeval],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
                                         range:[date_text rangeOfString:order_text]];
                 
 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:sizeval],NSForegroundColorAttributeName :[UIColor blackColor]}
                                         range:ename];
             }
            else
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
                                             range:[date_text rangeOfString:order_text]];
                     
 
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor blackColor]}
                                             range:ename];
                 }
 
@@ -346,7 +312,9 @@
     {
         order_cell.LBL_order_date.text = text;
     }
-    NSString *qr = [NSString stringWithFormat:@"%@",[[json_DATA  objectAtIndex:indexPath.row] valueForKey:@"order_total"]];
+    NSString *qr = [NSString stringWithFormat:@"%.2f",[[[json_DATA  objectAtIndex:indexPath.row] valueForKey:@"order_total"] floatValue]];
+    qr = [HttpClient currency_seperator:qr];
+    
     qr = [qr stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
     NSString *price = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],qr];
     
@@ -360,16 +328,9 @@
         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:price attributes:attribs];
         
         NSRange qrs = [price rangeOfString:qr];
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:25.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor redColor]}
                                     range:qrs];
-        }
-        else
-        {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor redColor]}
-                                    range:qrs];
-        }
+        
         order_cell.LBL_price.attributedText = attributedText;
     }
     else
@@ -469,7 +430,7 @@
             {
              
                 
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 
 
                 _VW_empty.hidden = YES;
@@ -485,7 +446,7 @@
                 
             }
             else{
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 _TBL_orders.hidden =  YES;
                 _VW_empty.hidden = NO;
                 _VW_search_VW.hidden = YES;
@@ -503,14 +464,14 @@
 
             }
             [self.TBL_orders reloadData];
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
 
             
             
         }
         else
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
@@ -521,7 +482,7 @@
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];

@@ -10,7 +10,7 @@
 
 @interface VC_ub_table_view ()<UITableViewDelegate,UITableViewDataSource>
 {
-    NSMutableArray *sub_arr;
+    NSArray *sub_arr;
 }
 
 @end
@@ -20,34 +20,67 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+#pragma Empty View Frame
+    CGRect frameset = _VW_empty.frame;
+    frameset.size.width = 200;
+    frameset.size.height = 200;
+    _VW_empty.frame = frameset;
+    _VW_empty.center = self.view.center;
+    [self.view addSubview:_VW_empty];
+    _VW_empty.hidden = YES;
+    
+    _BTN_empty.layer.cornerRadius = self.BTN_empty.frame.size.width / 2;
+    _BTN_empty.layer.masksToBounds = YES;
+
+    
     _TBL_sub_brnds.delegate = self;
     _TBL_sub_brnds.dataSource = self;
-    [_BTN_title setTitle:[[[NSUserDefaults standardUserDefaults] valueForKey:@"item_name"] uppercaseString] forState:UIControlStateNormal];
-    sub_arr = [[NSMutableArray alloc] init];
-    NSMutableArray *sortedArray = [[NSMutableArray alloc]init];
+  
+    [self load_DATA];
+  //  sub_arr = [[NSMutableArray alloc] init];
+   /* NSMutableArray *sortedArray = [[NSMutableArray alloc]init];
     sortedArray = [[[NSUserDefaults standardUserDefaults] valueForKey:@"product_sub_list"] mutableCopy];
-  //  sub_arr = [[[NSUserDefaults standardUserDefaults] valueForKey:@"product_sub_list"] mutableCopy];
     NSMutableArray *arr = [NSMutableArray array];
     
     
-    NSMutableSet *seenYears = [NSMutableSet set];
     for (NSDictionary *item in [sortedArray valueForKey:@"child_categories"]) {
-        //Extract the part of the dictionary that you want to be unique:
-        NSDictionary *yearDict = [item dictionaryWithValuesForKeys:@[@"name"]];
-        if ([seenYears containsObject:yearDict]) {
-            continue;
-        }
-        [seenYears addObject:yearDict];
-        [arr addObject:item];
-        //  [duplicatesRemoved addObject:item];
+         [arr addObject:item];
+        //[duplicatesRemoved addObject:item];
     }
     NSSortDescriptor *sortDescriptor;
     sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name"
                                                  ascending:YES];
-    NSArray *srt_arr = [arr sortedArrayUsingDescriptors:@[sortDescriptor]];
-    [sub_arr  addObjectsFromArray:[srt_arr mutableCopy]];
-    [_TBL_sub_brnds reloadData];
+    sub_arr = [arr sortedArrayUsingDescriptors:@[sortDescriptor]];*/
+   // [sub_arr  addObjectsFromArray:srt_arr];
     
+}
+-(void)load_DATA
+{
+    [_BTN_title setTitle:[[[NSUserDefaults standardUserDefaults] valueForKey:@"item_name"] uppercaseString] forState:UIControlStateNormal];
+    @try
+    {
+    sub_arr =[[[[NSUserDefaults standardUserDefaults] valueForKey:@"product_sub_list"] valueForKey:@"child_categories"] mutableCopy];
+    if(sub_arr.count  < 1)
+    {
+        _VW_empty.hidden = NO;
+        _TBL_sub_brnds.hidden = YES;
+    }
+    else
+    {
+        _VW_empty.hidden = YES;
+        _TBL_sub_brnds.hidden= NO;
+    }
+    
+    [_TBL_sub_brnds reloadData];
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
+    
+     
+
 }
 -(void)viewWillAppear:(BOOL)animated{
     self.navigationItem.hidesBackButton = YES;
@@ -93,16 +126,45 @@ UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellSty
     
     NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
     NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
-    if([user_id isEqualToString:@"(null)"])
-    {
+   
+        //        NSUserDefaults *user_dflts = [NSUserDefaults standardUserDefaults];
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *user_id;
+        @try
+        {
+            if(dict.count == 0)
+            {
+                user_id = @"(null)";
+            }
+            else
+            {
+                NSString *str_id = @"user_id";
+                // NSString *user_id;
+                for(int i = 0;i<[[dict allKeys] count];i++)
+                {
+                    if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                    {
+                        user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                        break;
+                    }
+                    else
+                    {
+                        
+                        user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                    }
+                    
+                }
+            }
+        }
+        @catch(NSException *exception)
+        {
+            user_id = @"(null)";
+            
+        }
         
-        user_id = 0;
-    }
     
     NSString *list_TYPE = @"productList";
-    NSString *url_key = [NSString stringWithFormat:@"%@/%@/0",list_TYPE,[[sub_arr objectAtIndex:indexPath.row] valueForKey:@"url_key"]];
+    NSString *url_key = [NSString stringWithFormat:@"%@/%@/0",list_TYPE,[[sub_arr objectAtIndex:indexPath.row] valueForKey:@"id"]];
     
     
     NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/Customer/1.json",SERVER_URL,url_key,country,languge,user_id];

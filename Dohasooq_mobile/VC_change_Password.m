@@ -9,6 +9,7 @@
 #import "VC_change_Password.h"
 #import "HttpClient.h"
 #import "ViewController.h"
+#import "Helper_activity.h"
 
 @interface VC_change_Password ()
 {
@@ -27,26 +28,10 @@
     //_vw_align.center = self.view.center;
     
 }
--(void)viewWillAppear:(BOOL)animated{
-    
-    
-//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-//    VW_overlay.clipsToBounds = YES;
-//    //    VW_overlay.layer.cornerRadius = 10.0;
-//    
-//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-//    activityIndicatorView.center = VW_overlay.center;
-//    [VW_overlay addSubview:activityIndicatorView];
-//    VW_overlay.center = self.view.center;
-//    [self.view addSubview:VW_overlay];
-//    VW_overlay.hidden = YES;
-    
-    
-    
+-(void)viewWillAppear:(BOOL)animated
+{
+    self.navigationItem.hidesBackButton = YES;
 }
-
 #pragma textfield delgates
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -118,14 +103,36 @@
             }
             else
             {
-                [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+                NSString *str =  @"he password must contain one number and 8 char minimum";//
+
+                NSString *str_ok = @"Ok";
+                
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    str = @"يجب أن تحتوي كلمة المرور على رقم واحد و 8 رموز على الأقل";
+                    str_ok = @"حسنا";
+                }
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
+                [alert show];
+                
+                //[HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
                 [textField becomeFirstResponder];
             }
             
         }
         else
         {
-            [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+            NSString *str =  @"he password must contain one number and 8 char minimum";//
+            
+            NSString *str_ok = @"Ok";
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                str = @"يجب أن تحتوي كلمة المرور على رقم واحد و 8 رموز على الأقل";
+                str_ok = @"حسنا";
+            }
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
+            [alert show];
             [textField becomeFirstResponder];
         }
         
@@ -165,14 +172,34 @@
             }
             else
             {
-                [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+                NSString *str =  @"he password must contain one number and 8 char minimum";//
+                
+                NSString *str_ok = @"Ok";
+                
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    str = @"يجب أن تحتوي كلمة المرور على رقم واحد و 8 رموز على الأقل";
+                    str_ok = @"حسنا";
+                }
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
+                [alert show];
                 [textField becomeFirstResponder];
             }
             
         }
         else
         {
-            [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+            NSString *str =  @"he password must contain one number and 8 char minimum";//
+            
+            NSString *str_ok = @"Ok";
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                str = @"يجب أن تحتوي كلمة المرور على رقم واحد و 8 رموز على الأقل";
+                str_ok = @"حسنا";
+            }
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
+            [alert show];
             [textField becomeFirstResponder];
         }
         
@@ -210,14 +237,34 @@
             }
             else
             {
-                [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+                NSString *str =  @"he password must contain one number and 8 char minimum";//
+                
+                NSString *str_ok = @"Ok";
+                
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    str = @"يجب أن تحتوي كلمة المرور على رقم واحد و 8 رموز على الأقل";
+                    str_ok = @"حسنا";
+                }
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
+                [alert show];
                 [textField becomeFirstResponder];
             }
             
         }
         else
         {
-            [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+            NSString *str =  @"he password must contain one number and 8 char minimum";//
+            
+            NSString *str_ok = @"Ok";
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                str = @"يجب أن تحتوي كلمة المرور على رقم واحد و 8 رموز على الأقل";
+                str_ok = @"حسنا";
+            }
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
+            [alert show];
             [textField becomeFirstResponder];
         }
         
@@ -307,6 +354,10 @@
     {
         [_TXT_old_pwd becomeFirstResponder];
         msg = @"Please enter Password";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى إدخال كلمة المرور";
+        }
         
         
     }
@@ -314,17 +365,32 @@
     {
         [_TXT_old_pwd becomeFirstResponder];
         msg = @"Short passwords are easy to guess. Try one with at least 8 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يسهل تخمين كلمات المرور القصيرة، يرجى محاولة إنشاء كلمة مرور لا تقلّ عن 8 رموز";
+        }
+        
+
         
     }
     else if(_TXT_old_pwd.text.length > 64)
     {
         [_TXT_old_pwd becomeFirstResponder];
         msg = @"Password field cannot be more than 64 charcaters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"لا يجوز أن يزيد حقل كلمة المرور عن 64 رمزاً";
+        }
     }
    else if([_TXT_new_pwd.text isEqualToString:@""])
     {
         [_TXT_new_pwd becomeFirstResponder];
-        msg = @"Please enter New Password";
+        msg = @"Please enter New Password";//يرجى إدخال كلمة مرور جديدة
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى إدخال كلمة مرور جديدة";
+        }
+
         
         
     }
@@ -332,17 +398,29 @@
     {
         [_TXT_new_pwd becomeFirstResponder];
         msg = @"Short Passwords are easy to guess. Try one with at least 8 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يسهل تخمين كلمات المرور القصيرة، يرجى محاولة إنشاء كلمة مرور لا تقلّ عن 8 رموز";
+        }
         
     }
     else if(_TXT_new_pwd.text.length > 64)
     {
         [_TXT_new_pwd becomeFirstResponder];
         msg = @"Password field cannot be more than 64 charcaters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"لا يجوز أن يزيد حقل كلمة المرور عن 64 رمزاً";
+        }
     }
     else if([_TXT_confirm_pwd.text isEqualToString:@""])
     {
         [_TXT_new_pwd becomeFirstResponder];
         msg = @"Please enter Confirm Password";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى تأكيد كلمة المرور";
+        }
         
         
     }
@@ -350,29 +428,52 @@
     {
         [_TXT_new_pwd becomeFirstResponder];
         msg = @"Short passwords are easy to guess. Try one with at least 8 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يسهل تخمين كلمات المرور القصيرة، يرجى محاولة إنشاء كلمة مرور لا تقلّ عن 8 رموز";
+        }
         
     }
     else if(_TXT_confirm_pwd.text.length > 64)
     {
         [_TXT_new_pwd becomeFirstResponder];
         msg = @"Password field cannot be more than 64 charcaters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"لا يجوز أن يزيد حقل كلمة المرور عن 64 رمزاً";
+        }
+
     }
     else if(![_TXT_new_pwd.text  isEqualToString:_TXT_confirm_pwd.text])
     {
         [_TXT_new_pwd becomeFirstResponder];
-        msg = @"These passwords don't match. Try again?";
+        msg = @"These passwords don't match. Try again";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"كلمات المرور غير متطابقة، يرجى المحاولة مرة أخرى.";
+        }
 
     }
     else
     {
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         
         [self performSelector:@selector(API_CALL) withObject:nil afterDelay:0.01];
         
     }
     if(msg)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+    
+        
+        NSString *str_ok = @"Ok";
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+                     str_ok = @"حسنا";
+        }
+       
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
         [alert show];
 
     }
@@ -460,8 +561,20 @@
             
             if([status isEqualToString:@"1"])
             {
-               [HttpClient stop_activity_animation];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"The new password has been saved" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+               [Helper_activity stop_activity_animation:self];
+                NSString *str_ok = @"Ok";
+                NSString *str_stat =  @"The new password has been saved";
+                
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    str_ok = @"حسنا";
+                    str_stat = @"تم حفظ كلمة المرور الجديدة";
+                }
+
+                
+                //تم حفظ كلمة المرور الجديدة
+
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_stat delegate:self cancelButtonTitle:str_ok otherButtonTitles:nil, nil];
                 [alert show];
 //                ViewController *login = [self.storyboard instantiateViewControllerWithIdentifier:@"login_VC"];
 //                [self presentViewController:login animated:NO completion:nil];
@@ -471,8 +584,15 @@
             }
             else
             {
-                 [HttpClient stop_activity_animation];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                 [Helper_activity stop_activity_animation:self];
+                NSString *str_ok = @"Ok";
+                
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    str_ok = @"حسنا";
+                }
+
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
                 [alert show];
              
             }
@@ -480,7 +600,7 @@
         }
         else
         {
-            [HttpClient stop_activity_animation];            
+            [Helper_activity stop_activity_animation:self];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
         }

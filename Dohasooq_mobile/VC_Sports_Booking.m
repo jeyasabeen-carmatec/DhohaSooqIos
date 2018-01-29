@@ -76,7 +76,8 @@
 #pragma Button Actions
 - (IBAction)back_action:(id)sender
 {
-    [self dismissViewControllerAnimated:NO completion:nil];
+    [self.navigationController popViewControllerAnimated:NO];
+    //[self dismissViewControllerAnimated:NO completion:nil];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

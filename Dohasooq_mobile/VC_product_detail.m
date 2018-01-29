@@ -16,6 +16,7 @@
 #import "review_cell.h"
 #import "ViewController.h"
 #import "product_cell.h"
+#import "Helper_activity.h"
 
 
 @interface VC_product_detail ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UITextFieldDelegate,UIWebViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,UITextViewDelegate,UIAlertViewDelegate>
@@ -74,7 +75,8 @@
     _BTN_right.layer.cornerRadius = _BTN_left.frame.size.width/2;
     _BTN_right.layer.masksToBounds = YES;
 
-
+    self.badge_view = [GIBadgeView new];
+    [_BTN_cart addSubview:self.badge_view];
     if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
     {
         [_collectionview_variants setTransform:CGAffineTransformMakeScale(-1, 1)];
@@ -93,6 +95,8 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     self.navigationItem.hidesBackButton = YES;
+    [self cart_count_intail];
+     [self cart_count];
     
 }
 -(void)set_appear
@@ -113,11 +117,10 @@
 //    [activityIndicatorView startAnimating];
     
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self performSelector:@selector(cart_count) withObject:nil afterDelay:0.01];
-    });
+   
     
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
+    [self cart_count];
     [self performSelector:@selector(product_detail_API) withObject:nil afterDelay:0.01];
 }
 
@@ -205,6 +208,7 @@
         
         
         NSString *mileValue = [NSString stringWithFormat:@"%@",[[json_Response_Dic valueForKey:@"products"] valueForKey:@"mileValue"]];
+        mileValue = [mileValue stringByReplacingOccurrencesOfString:@"," withString:@""];
         
         // Storing product id into User Defaults
         [[NSUserDefaults standardUserDefaults]setObject:[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_descriptions"] objectAtIndex:0] valueForKey:@"product_id"]] forKey:@"product_id"];
@@ -215,33 +219,51 @@
         NSString *special_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"special_price"]];
         
         
-        NSString *doha_miles = [NSString stringWithFormat:@"%@",mileValue];
-        NSString *mils  = @"Doha Miles";
+        NSString *doha_miles = [NSString stringWithFormat:@"%f",[mileValue floatValue]];
+        doha_miles = [HttpClient doha_currency_seperator:doha_miles];
+        NSString *mils;
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+        mils  = @"أميال الدوحة";
+        }
+        else{
+             mils  = @"Doha Miles";
+        }
         
         
         NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
         
         if ([special_price isEqualToString:@""]|| [special_price isEqualToString:@"<null>"]||[special_price isEqualToString:@"<null>"]||[special_price isEqualToString:@"0"]) {
             
-            actuel_price = [NSString stringWithFormat:@"%@ %@",currency,[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
+            actuel_price = [NSString stringWithFormat:@"%.2f",[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"] floatValue]];
+            actuel_price = [HttpClient currency_seperator:actuel_price];
+            
+            actuel_price = [NSString stringWithFormat:@"%@ %@",currency,actuel_price];
+      
+            NSString *doha_miles = [NSString stringWithFormat:@"%@",mileValue];
+            doha_miles = [HttpClient doha_currency_seperator:doha_miles];
 
             
             NSString *text = [NSString stringWithFormat:@"%@ / %@ %@",actuel_price,mils,doha_miles];
-            NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
-            
-            
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                paragraphStyle.alignment                = NSTextAlignmentRight;
-                
-            }else{
-                
-                paragraphStyle.alignment                = NSTextAlignmentLeft;
+                actuel_price = [NSString stringWithFormat:@"%@ %@",actuel_price,currency];
+                text = [NSString stringWithFormat:@"%@ %@ / %@",doha_miles,mils,actuel_price];
             }
+
+           // NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
+            
+            
+          
+           
+           //else{
+                
+            //    paragraphStyle.alignment                = NSTextAlignmentLeft;
+           // }
             
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:@{NSParagraphStyleAttributeName:paragraphStyle}];
             
-            attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
+           // attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
             
             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor grayColor]}
                                     range:[text rangeOfString:actuel_price]];
@@ -254,18 +276,32 @@
                                     range:[text rangeOfString:doha_miles]];
             
             _LBL_prices.attributedText = attributedText;
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                _LBL_prices.textAlignment = NSTextAlignmentRight;
+                
+            }
+            
             _LBL_discount.text = @"";
             
         }
         else if([actuel_price isEqualToString:special_price])
         {
-            actuel_price = [NSString stringWithFormat:@"%@ %@",currency,[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
-            NSString *text = [NSString stringWithFormat:@"%@",actuel_price];
+            actuel_price = [NSString stringWithFormat:@"%.2f",[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"] floatValue]];
+            actuel_price = [HttpClient currency_seperator:actuel_price];
+            actuel_price = [NSString stringWithFormat:@"%@ %@",currency,actuel_price];
+            NSString *text = [NSString stringWithFormat:@"%@ / %@ %@",actuel_price,mils,doha_miles];
+            NSString *doha_miles = [NSString stringWithFormat:@"%@",mileValue];
+            doha_miles = [HttpClient doha_currency_seperator:doha_miles];
             
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                actuel_price = [NSString stringWithFormat:@"%@ %@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"],currency];
-                text = [NSString stringWithFormat:@"%@",actuel_price];
+              
+                    actuel_price = [NSString stringWithFormat:@"%@ %@",actuel_price,currency];
+                    text = [NSString stringWithFormat:@"%@ %@ / %@",doha_miles,mils,actuel_price];
+               
+
             }
             
             
@@ -278,6 +314,14 @@
             
             
             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:actuel_price] ];
+            
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor darkGrayColor]}
+                                    range:[text rangeOfString:mils]];
+            
+            
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                                    range:[text rangeOfString:doha_miles]];
+
             
             
             
@@ -296,9 +340,24 @@
             // NSString *doha_miles = @"QR 6758";
             //actuel_price = [currency stringByAppendingString:actuel_price];
             // actuel_price = [NSString stringWithFormat:@"%@%@",currency,actuel_price];
-            actuel_price = [NSString stringWithFormat:@"%@ %@",currency,[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
+            actuel_price = [NSString stringWithFormat:@"%.2f",[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"] floatValue]];
+            actuel_price = [HttpClient currency_seperator:actuel_price];
+            actuel_price = [NSString stringWithFormat:@"%@ %@",currency,actuel_price];
 
             NSString *text = [NSString stringWithFormat:@"%@ %@ %@ / %@ %@",currency,special_price,actuel_price,mils,doha_miles];
+            NSString *doha_miles = [NSString stringWithFormat:@"%@",mileValue];
+            doha_miles = [HttpClient doha_currency_seperator:doha_miles];
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                
+                actuel_price = [NSString stringWithFormat:@"%@ %@",actuel_price,currency];
+                special_price = [NSString stringWithFormat:@"%@ %@",special_price,currency];
+
+                text = [NSString stringWithFormat:@"%@ %@ / %@ %@ ",mils,doha_miles,actuel_price,special_price];
+                
+            }
+            
             
             if ([_LBL_prices respondsToSelector:@selector(setAttributedText:)]) {
                 
@@ -434,7 +493,13 @@
                 
             }
             
-            _LBL_stock.text = [str_srock uppercaseString];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+            _LBL_stock.text = @"غير متوفّر";
+            }
+            else{
+                  _LBL_stock.text = [str_srock uppercaseString];
+            }
             
             NSString *str_cod =[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"cod"];
             if([str_cod isEqualToString:@"Yes"])
@@ -460,11 +525,14 @@
                     }
                     else
                     {
-                        cod_TEXT = [NSString stringWithFormat:@"> %@",str_dispatch_shipp];
+                      
                         
                         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                         {
-                            cod_TEXT = [NSString stringWithFormat:@"> %@",str_dispatch_shipp];
+                            cod_TEXT = [NSString stringWithFormat:@"%@ <",str_dispatch_shipp];
+                        }
+                        else{
+                              cod_TEXT = [NSString stringWithFormat:@"> %@",str_dispatch_shipp];
                         }
                         
                     }
@@ -474,8 +542,9 @@
                     
                     if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                     {
-                        cod_TEXT = [NSString stringWithFormat:@" Cash-On-Delivery is %@ \n> %@ ",str_cod,str_shipp];
+                        cod_TEXT = [NSString stringWithFormat:@" Cash-On-Delivery is %@ <\n%@ <",str_cod,str_shipp];
                     }
+                    
                     
                     
                 }
@@ -492,7 +561,7 @@
                         
                         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                         {
-                            cod_TEXT = [NSString stringWithFormat:@"> Cash-On-Delivery is %@ ",str_cod];
+                            cod_TEXT = [NSString stringWithFormat:@"Cash-On-Delivery is %@ <",str_cod];
                         }
                         
                         
@@ -503,7 +572,7 @@
                         
                         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                         {
-                            cod_TEXT = [NSString stringWithFormat:@"> Cash-On-Delivery is %@\n> %@ ",str_cod,str_dispatch_shipp];
+                            cod_TEXT = [NSString stringWithFormat:@"Cash-On-Delivery is %@ <\n%@ <",str_cod,str_dispatch_shipp];
                         }
                         
                         
@@ -518,7 +587,7 @@
                         
                         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                         {
-                            cod_TEXT = [NSString stringWithFormat:@"> Cash-On-Delivery is %@ \n> %@ ",str_cod,str_shipp];
+                            cod_TEXT = [NSString stringWithFormat:@"Cash-On-Delivery is %@ <\n%@ <",str_cod,str_shipp];
                         }
                         
                     }
@@ -530,7 +599,7 @@
                         
                         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                         {
-                            cod_TEXT = [NSString stringWithFormat:@"> Cash-On-Delivery is %@ \n> %@ \n> %@",str_cod,str_shipp,str_dispatch_shipp];
+                            cod_TEXT = [NSString stringWithFormat:@"Cash-On-Delivery is %@ <\n%@ <\n%@ <",str_cod,str_shipp,str_dispatch_shipp];
                         }
                         
                     }
@@ -921,7 +990,7 @@
                         }
                         else
                         {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:17.0],NSForegroundColorAttributeName:[UIColor whiteColor]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:17.0],NSForegroundColorAttributeName:[UIColor redColor]}
                                                     range:ename];
                         }
                         [_BTN_wish setAttributedTitle:attributedText forState:UIControlStateNormal];
@@ -952,7 +1021,7 @@
 {
     [super viewDidLayoutSubviews];
     [_Scroll_content layoutIfNeeded];
-    _Scroll_content.contentSize = CGSizeMake(_Scroll_content.frame.size.width,scroll_ht + _VW_filter.frame.size.height);
+    _Scroll_content.contentSize = CGSizeMake(_Scroll_content.frame.size.width,scroll_ht);// + _VW_filter.frame.size.height);
     
     
 }
@@ -963,8 +1032,8 @@
 {
     int s = [_TXT_count.text intValue];
     
-    if (s<= 0) {
-        _TXT_count.text = 0;
+    if (s <= 1) {
+        _TXT_count.text = [NSString stringWithFormat:@"%d",s];
     }
     else{
     s = s - 1;
@@ -1157,7 +1226,7 @@
                                                   options:SDWebImageRefreshCached];
                     @try
                     {
-                        NSString *str = [NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row]objectAtIndex:0]  valueForKey:@"stock_status"]];
+                      /*  NSString *str = [NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row]objectAtIndex:0]  valueForKey:@"stock_status"]];
                         str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
                         
                         
@@ -1167,7 +1236,7 @@
                         }
                         else{
                             pro_cell.LBL_stock.text =[str uppercaseString];
-                        }
+                        }*/
                         
                     }
                     @catch(NSException *exception)
@@ -1248,11 +1317,11 @@
                             
                             
                             
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
                             
                             
                             
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                             
                             
                             
@@ -1280,11 +1349,11 @@
                             
                             
                             
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:currency_code] ];
                             
                             
                             
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                             
                             
                             
@@ -1303,14 +1372,40 @@
                            
                             prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
                             text = [NSString stringWithFormat:@"%@ %@ %@",currency_code,current_price,prec_price];
-                            
-                            
                             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                             {
                                 //                    prec_price = [prec_price stringByAppendingString:currency_code];
-                                text = [NSString stringWithFormat:@"%@ %@ %@",prec_price,current_price,currency_code];
+                                prec_price = [NSString stringWithFormat:@"%@ %@",prec_price,currency_code];
+                                current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency_code];
+                                
+                                
+                                text = [NSString stringWithFormat:@"%@ %@",prec_price,current_price];
                             }
+
+                            int sizeval = 14;
                             
+                            if (prec_price.length >= 8)
+                            {
+                                sizeval = 14;
+                                text = [NSString stringWithFormat:@"%@ %@\n%@",currency_code,current_price,prec_price];
+                                
+                                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                                {
+                                    //                    prec_price = [prec_price stringByAppendingString:currency_code];
+                                    prec_price = [NSString stringWithFormat:@"%@ %@",prec_price,currency_code];
+                                    current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency_code];
+                                    
+                                    
+                                    text = [NSString stringWithFormat:@"%@\n %@",prec_price,current_price];
+                                }
+                                
+                                
+                                
+                            }
+                            else{
+                                sizeval = 14;
+                            }
+
                             
                             
                             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
@@ -1318,29 +1413,15 @@
                             
                             
                             NSRange ename = [text rangeOfString:current_price];
-                            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:25.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                         range:ename];
-                            }
-                            else
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
-                                                        range:ename];
-                            }
+                        
                             
                             
                             NSRange qrname = [text rangeOfString:currency_code];
-                            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:25.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                                         range:qrname];
-                            }
-                            else
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
-                                                        range:qrname];
-                            }
+                            
                             
                             
                             
@@ -1349,15 +1430,8 @@
                             //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
                             
                             
-                            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:21.0],NSForegroundColorAttributeName:[UIColor grayColor]}
-                                                        range:cmp];
-                            }
-                            else
-                            {
-                                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14.0],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
-                            }
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
+                            
                             [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
                             
                             
@@ -1435,9 +1509,8 @@
     if(collectionView == _collectionview_variants){
         return CGSizeMake(_collectionview_variants.frame.size.width/3, 64);
     }
-    else
-    {
-       return CGSizeMake(self.view.bounds.size.width/2.1, 336);
+    else    {
+       return CGSizeMake(self.view.bounds.size.width/2.1, 310);
     }
 
     
@@ -1478,7 +1551,7 @@
 //        VW_overlay.hidden = NO;
 //        [activityIndicatorView startAnimating];
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         [self performSelector:@selector(product_detail_API) withObject:nil afterDelay:0.01];
         
     
@@ -1574,17 +1647,38 @@
     count = [count stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
     if([count isEqualToString:@"0"])
     {
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            count = [NSString stringWithFormat:@"  الآراء   "];
+
+        }
+        else{
         count = [NSString stringWithFormat:@"  REVIEWS  "];
+        }
        //@"  REVIEWS(%@)  "
     }
     else
     {
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            count = [NSString stringWithFormat:@"  الآراء(%@)   ",[json_Response_Dic valueForKey:@"reviewCount"]];
+            
+        }
+        else{
         count = [NSString stringWithFormat:@"  REVIEWS(%@)  ",[json_Response_Dic valueForKey:@"reviewCount"]];
+        }
  
     }
-
+    NSString *str_desc ;
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        str_desc = @" الوصف  ";
+    }
+    else{
+         str_desc = @" DESCRIPTION  ";
+    }
     
-    self.segmentedControl4.sectionTitles = @[@" DESCRIPTION  ",count];
+    self.segmentedControl4.sectionTitles = @[str_desc,count];
     
     self.segmentedControl4.backgroundColor = [UIColor clearColor];
     self.segmentedControl4.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor grayColor],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15]};
@@ -1759,7 +1853,7 @@
                 //[self product_detail_API];
             }
             
-                 [HttpClient animating_images:self];
+                 [Helper_activity animating_images:self];
             
                 NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/addToWishList/%@/%@.json",SERVER_URL,product_id,user_id];
                 urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
@@ -1767,7 +1861,7 @@
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if (error) {
                             
-                            [HttpClient stop_activity_animation];
+                            [Helper_activity stop_activity_animation:self];
 //                            VW_overlay.hidden=YES;
 //                            [activityIndicatorView stopAnimating];
                             
@@ -1781,7 +1875,7 @@
                                 
 //                                VW_overlay.hidden=YES;
 //                                [activityIndicatorView stopAnimating];
-                                [HttpClient stop_activity_animation];
+                                [Helper_activity stop_activity_animation:self];
                                 
                                 
                                 NSLog(@"The Wishlist %@",json_Response_Dic);
@@ -1810,7 +1904,7 @@
                             }
                             else
                             {
-                                [HttpClient stop_activity_animation];
+                                [Helper_activity stop_activity_animation:self];
 //                                VW_overlay.hidden=YES;
 //                                [activityIndicatorView stopAnimating];
                                 
@@ -1832,7 +1926,7 @@
     {
 //        VW_overlay.hidden=YES;
 //        [activityIndicatorView stopAnimating];
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         
         
         
@@ -1860,7 +1954,7 @@
      */
     
     
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *user_ID = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
@@ -1881,7 +1975,7 @@
                     
                     @try {
                         
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         
 //                        VW_overlay.hidden = YES;
 //                        [activityIndicatorView stopAnimating];
@@ -1919,7 +2013,7 @@
                         
                     }
    
-                            [HttpClient stop_activity_animation];
+                            [Helper_activity stop_activity_animation:self];
                             
 //                            VW_overlay.hidden = YES;
 //                            [activityIndicatorView stopAnimating];
@@ -1931,7 +2025,7 @@
                     } @catch (NSException *exception) {
                         NSLog(@"%@",exception);
                         
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
 //                        VW_overlay.hidden = YES;
 //                        [activityIndicatorView stopAnimating];
 
@@ -1949,7 +2043,7 @@
 //        VW_overlay.hidden = YES;
 //        [activityIndicatorView stopAnimating];
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
         
     }
@@ -1991,7 +2085,7 @@
         else
         {
 
-            [HttpClient animating_images:self];
+            [Helper_activity animating_images:self];
             
         NSString *poduct_id = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"]valueForKey:@"0"] valueForKey:@"id"]];
         
@@ -2004,7 +2098,7 @@
                     
 //                    VW_overlay.hidden=YES;
 //                    [activityIndicatorView stopAnimating];
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
 
                 }
                 if (data) {
@@ -2013,7 +2107,7 @@
                     {
 //                        VW_overlay.hidden=YES;
 //                        [activityIndicatorView stopAnimating];
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
                         
                         
                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Added to your wishlist" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
@@ -2027,7 +2121,7 @@
                         
 //                        VW_overlay.hidden=YES;
 //                        [activityIndicatorView stopAnimating];
-                          [HttpClient stop_activity_animation];
+                          [Helper_activity stop_activity_animation:self];
                         
                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                         [alert show];
@@ -2048,7 +2142,7 @@
     {
 //        VW_overlay.hidden=YES;
 //        [activityIndicatorView stopAnimating];
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         
         
         
@@ -2077,33 +2171,61 @@
     NSString *items_count = _TXT_count.text;
     
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    NSString *str_id = @"user_id";
     NSString *user_id;
-    for(int i = 0;i<[[dict allKeys] count];i++)
+    @try
     {
-        if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+        if(dict.count == 0)
         {
-            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
-            break;
+            user_id = @"(null)";
         }
         else
         {
-            
-            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
         }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
         
     }
-    
-    
-    
+    NSString *str_status_text;
     if([user_id isEqualToString:@"(null)"])
     {
-//        VW_overlay.hidden=YES;
-//        [activityIndicatorView stopAnimating];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str_status_text = @"يرجى تسجيل الدخول للوصول إلى هذا";
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"تسجيل الدخول" otherButtonTitles:@"إلغاء", nil];
+            alert.tag = 1;
+            [alert show];
+            
+        }
+        else
+        {
+            str_status_text = @"Please login to access this";
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"Login" otherButtonTitles:@"Cancel", nil];
+            alert.tag = 1;
+            [alert show];
+            
+        }
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please login to Purchase" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
-        alert.tag = 1;
-        [alert show];
+        
         
     }
     
@@ -2121,8 +2243,17 @@
         {
 //            VW_overlay.hidden=YES;
 //            [activityIndicatorView stopAnimating];
+            NSString *str = @"Ok";
+            NSString *str_stat = @"Out of Stock";
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Out of Stock" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                str = @"حسنا";
+                str_stat = @"غير متوفّر";
+            }
+            
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_stat delegate:self cancelButtonTitle:str otherButtonTitles:nil, nil];
             
             [alert show];
             
@@ -2137,7 +2268,17 @@
             stock = [stock stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
             if([stock isEqualToString:@""] || [stock isEqualToString:@"Out of stock"])
             {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Out of Stock" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+                NSString *str = @"Ok";
+                NSString *str_stat = @"Out of Stock";
+                
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    str = @"حسنا";
+                    str_stat = @"غير متوفّر";
+                }
+                
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_stat delegate:self cancelButtonTitle:str otherButtonTitles:nil, nil];
                 
                 [alert show];
 //                VW_overlay.hidden=YES;
@@ -2243,7 +2384,7 @@
                 
                 @try
                 {
-                    [HttpClient animating_images:self];
+                    [Helper_activity animating_images:self];
                     NSString *urlString =[NSString stringWithFormat:@"%@apis/addcartapi.json",SERVER_URL];
                     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
                     [request setURL:[NSURL URLWithString:urlString]];
@@ -2307,7 +2448,7 @@
                     NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
 //                    [activityIndicatorView stopAnimating];
 //                     VW_overlay.hidden = YES;
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
                     
                     
                     
@@ -2318,7 +2459,13 @@
                         NSString *stat =[NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
                         if([stat isEqualToString:@"1"])
                         {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+                            NSString *str = @"Ok";
+                            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                            {
+                                str = @"حسنا";
+                            }
+
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:str otherButtonTitles:nil, nil];
                             
                             [alert show];
                             dispatch_async(dispatch_get_main_queue(), ^{
@@ -2331,7 +2478,15 @@
                             
                         }
                         else{
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+                            
+                            NSString *str = @"Ok";
+                            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                            {
+                                str = @"حسنا";
+                            }
+                            
+
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:str otherButtonTitles:nil, nil];
                             
                             [alert show];
                             
@@ -2347,7 +2502,7 @@
                 {
 //                    [activityIndicatorView stopAnimating];
 //                    VW_overlay.hidden = YES;
-                    [HttpClient stop_activity_animation];
+                    [Helper_activity stop_activity_animation:self];
                     NSLog(@"THE EXception:%@",exception);
                     
                 }
@@ -2366,53 +2521,65 @@
      
       noDuplicates = [[NSMutableArray alloc]init];
         NSString *items_count = _TXT_count.text;
-     NSString *user_id;
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id;
     @try
     {
-    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    if(dict.count == 0)
-    {
-         user_id = @"(null)";
-    }
-    else
-    {
-    NSString *str_id = @"user_id";
-   // NSString *user_id;
-    for(int i = 0;i<[[dict allKeys] count];i++)
-    {
-        if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+        if(dict.count == 0)
         {
-            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
-            break;
+            user_id = @"(null)";
         }
         else
         {
-            
-            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
         }
-        
-    }
-    }
     }
     @catch(NSException *exception)
     {
         user_id = @"(null)";
         
     }
+    NSString *str_status_text;
+    if([user_id isEqualToString:@"(null)"])
+    {
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str_status_text = @"يرجى تسجيل الدخول للوصول إلى هذا";
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"تسجيل الدخول" otherButtonTitles:@"إلغاء", nil];
+            alert.tag = 1;
+            [alert show];
+            
+        }
+        else
+        {
+            str_status_text = @"Please login to access this";
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"Login" otherButtonTitles:@"Cancel", nil];
+            alert.tag = 1;
+            [alert show];
+            
+        }
+        
+        
+        
+    }
     
-    
-    
-         if([user_id isEqualToString:@"(null)"])
-         {
-//             VW_overlay.hidden=YES;
-//             [activityIndicatorView stopAnimating];
-
-             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please login to add items to cart" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
-             alert.tag = 1;
-             [alert show];
-             
-         }
-       
          else
          {
              [noDuplicates addObject:temp_DICT];
@@ -2551,7 +2718,7 @@
         
      @try
     {
-                       [HttpClient animating_images:self];
+                       [Helper_activity animating_images:self];
         
                      NSString *urlString =[NSString stringWithFormat:@"%@apis/addcartapi.json",SERVER_URL];
                      NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
@@ -2617,20 +2784,36 @@
 //        
 //            [activityIndicatorView stopAnimating];
 //             VW_overlay.hidden = YES;
-                 [HttpClient stop_activity_animation];
+                 [Helper_activity stop_activity_animation:self];
         
                      if (returnData) {
-                        
+                        [self cart_count];
                          
                         NSMutableDictionary *json_DATA = [[NSMutableDictionary alloc]init];
                          json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
                          NSString *stat =[NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
                          if([stat isEqualToString:@"1"])
                          {
-                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+                             NSString *str = @"Ok";
+                             
+                             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                             {
+                                 str = @"حسنا";
+                           
+                             }
+                             
+                             
+                           
+
+                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:str otherButtonTitles:nil, nil];
                              dispatch_async(dispatch_get_main_queue(), ^{
+                                 [_badge_view increment];
+                            
+                                 NSString *cart_count = [NSString stringWithFormat:@"%ld",(long)_badge_view.badgeValue];
+                                 [[NSUserDefaults standardUserDefaults] setObject:cart_count forKey:@"cart_count"];
+                                 [[NSUserDefaults standardUserDefaults] synchronize];
                                  
-                                   [self cart_count];
+                            
                                  
                                                              });
 
@@ -2640,7 +2823,15 @@
 
                      }
                          else{
-                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+                             NSString *str = @"Ok";
+                             
+                             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                             {
+                                 str = @"حسنا";
+                                 
+                             }
+
+                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:str otherButtonTitles:nil, nil];
                              
                              [alert show];
 
@@ -2656,7 +2847,7 @@
                  {
 //                     [activityIndicatorView stopAnimating];
 //                     VW_overlay.hidden = YES;
-                     [HttpClient stop_activity_animation];
+                     [Helper_activity stop_activity_animation:self];
                      
     
                      NSLog(@"THE EXception:%@",exception);
@@ -2833,7 +3024,7 @@
                     json_Response_Dic = data;
                     if(json_Response_Dic)
                     {
-                         [HttpClient stop_activity_animation];
+                         [Helper_activity stop_activity_animation:self];
                         
 //                        VW_overlay.hidden=YES;
 //                       [activityIndicatorView stopAnimating];
@@ -2859,10 +3050,13 @@
                         [images_arr addObject:[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_image"]];
                         
                         for ( int i=0; i<[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_medias"] count]; i++) {
+                            NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Images_path"];
                             
-                            if ([[[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_medias"] objectAtIndex:i] valueForKey:@"media_type"] isEqualToString:@"Image"]) {
+                            
+                            if ([[[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_medias"] objectAtIndex:i] valueForKey:@"media_type"] isEqualToString:@"Image"])
+                            {
                                 
-                                NSString *imageUrl = [NSString stringWithFormat:@"https://codewebber.s3.amazonaws.com/Merchant%@/Medium/%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"merchant_id"],[[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_medias"] objectAtIndex:i] valueForKey:@"media"]];
+                                NSString *imageUrl = [NSString stringWithFormat:@"%@Merchant%@/Medium/%@",[dict valueForKey:@"awsPath"],[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"merchant_id"],[[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_medias"] objectAtIndex:i] valueForKey:@"media"]];
                                 
                                 [images_arr addObject:imageUrl];
                                 
@@ -2928,7 +3122,23 @@
                             }
                     
                         }
-                            
+                            if([[json_Response_Dic valueForKey:@"relatedProducts"] isKindOfClass:[NSArray class]])
+                            {
+
+                            for(int i = 0;i<[[json_Response_Dic valueForKey:@"relatedProducts"] count];i++)
+                            {
+                                NSString *time_diff = [NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:i]objectAtIndex:0]  valueForKey:@"timeDiff"]];
+                                if([time_diff isEqualToString:@"No"] ||[time_diff isEqualToString:@"(null)"] ||[time_diff isEqualToString:@"<null>"]||!time_diff)
+                                {
+                                    
+                                }
+                                else{
+                                    NSDictionary *dict =@{@"tag":[NSString stringWithFormat:@"%d",i]}; //                            [dict setObject:[[hot_deals_ARR objectAtIndex:i] valueForKey:@"end_date"] forKey:@"timer"];
+                                    TIMER_countdown = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:dict repeats:YES];
+                                }
+                            }
+                            }
+
                         [self set_Data_to_UIElements];
                         [self.collection_images reloadData];
                         [self.collectionview_variants reloadData];
@@ -2952,13 +3162,13 @@
                             [self segmentedControlChangedValue:self.segmentedControl4];
 
                         }
-                        [HttpClient stop_activity_animation];
+                        [Helper_activity stop_activity_animation:self];
 
                     } @catch (NSException *exception) {
                        
                         // VW_overlay.hidden = YES;
                         
-                         [HttpClient stop_activity_animation];
+                         [Helper_activity stop_activity_animation:self];
                         
 //                    [activityIndicatorView stopAnimating];
 //                         [self set_UP_VIEW];
@@ -3002,7 +3212,7 @@
         NSLog(@"The error is:%@",exception);
         [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
         
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
         
     }
    
@@ -3022,7 +3232,7 @@
 - (void)webView:(UIWebView *)wv didFailLoadWithError:(NSError *)error
 {
     //[activityIndicatorView stopAnimating];
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     
     
     NSLog(@"%@",[error localizedDescription]);
@@ -3085,61 +3295,60 @@
     // Dispose of any resources that can be recreated.
 }
 #pragma mark cart_count_api
--(void)cart_count{
-    
-    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
-    [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-        if (error) {
-            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
-             ];
+-(void)cart_count
+{
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+    NSString *user_id;
+    @try
+    {
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
         }
-        if (data) {
-            NSLog(@"%@",data);
-            NSDictionary *dict = data;
-            @try {
-                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
-                NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
-
-                                //NSString *badge_value = @"11";
-                
-                if([wishlist intValue] > 0)
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
                 {
                     
-                    @try
-                    {
-                        [_BTN_fav setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
-                        [_BTN_fav setBadgeString:[NSString stringWithFormat:@"%@",wishlist]];
-                    }
-                    @catch(NSException *Exception)
-                    {
-                        
-                    }
-                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
                 }
                 
-                if([badge_value intValue] > 0 )
-                {
-                    @try
-                    {
-                        
-                        [_BTN_cart setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
-                    }
-                    @catch(NSException *Exception)
-                    {
-                        
-                    }
-                    
-                    [_BTN_cart setBadgeString:[NSString stringWithFormat:@"%@",badge_value]];
-                    
-                    
-                }
-                
-            } @catch (NSException *exception) {
-                NSLog(@"%@",exception);
             }
-            
         }
-    }];
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
+    if([user_id isEqualToString:@"(null)"])
+    {
+        _badge_view.hidden = YES;
+    }
+    
+    else
+    {
+        NSString *str_count = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"cart_count"]];
+        if([str_count intValue ] > 0)
+        {
+           _badge_view.hidden = NO;
+            _badge_view.badgeValue = [str_count integerValue];
+        }
+        else{
+            _badge_view.hidden = YES;
+        }
+
+        
+    }
 }
 
 #pragma mark updating_cart_API
@@ -3214,7 +3423,7 @@
 //    [activityIndicatorView stopAnimating];
 //    VW_overlay.hidden = YES;
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
     
     if (returnData) {
         NSMutableDictionary *json_DATA = [[NSMutableDictionary alloc]init];
@@ -3222,13 +3431,29 @@
         NSString *stat =[NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
         if([stat isEqualToString:@"1"])
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            NSString *str = @"Ok";
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                str = @"حسنا";
+                
+            }
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:str otherButtonTitles:nil, nil];
             
             [alert show];
             
         }
         else{
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            NSString *str = @"Ok";
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                str = @"حسنا";
+                
+            }
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:str otherButtonTitles:nil, nil];
             
             [alert show];
             
@@ -3244,7 +3469,7 @@
 {
 //    [activityIndicatorView stopAnimating];
 //    VW_overlay.hidden = YES;
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
     
     
     NSLog(@"THE EXception:%@",exception);
@@ -3575,7 +3800,7 @@
     {
         //pdtId,custom,variant
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         
         NSString *urlString =[NSString stringWithFormat:@"%@apis/VariantcomCheckapi.json",SERVER_URL];
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
@@ -3623,7 +3848,7 @@
       
 //        VW_overlay.hidden = YES;
 //        [activityIndicatorView stopAnimating];
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         
         if (returnData) {
             NSMutableDictionary *json_DATA = [[NSMutableDictionary alloc]init];
@@ -3636,8 +3861,15 @@
             {
                 if([[[json_DATA valueForKey:@"variant"] valueForKey:@"message"] isEqualToString:@"Sorry, This Combination is not available"])
                 {
+                    NSString *str = @"Ok";
                     
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[[json_DATA valueForKey:@"variant"] valueForKey:@"message"] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                        str = @"حسنا";
+                        
+                    }
+
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[[json_DATA valueForKey:@"variant"] valueForKey:@"message"] delegate:self cancelButtonTitle:str otherButtonTitles:nil, nil];
                     
                     [alert show];
 
@@ -3663,7 +3895,7 @@
             [alert show];
 //            VW_overlay.hidden = YES;
 //            [activityIndicatorView stopAnimating];
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
 
         }
     }
@@ -3671,7 +3903,7 @@
     {
 //        [activityIndicatorView stopAnimating];
 //         VW_overlay.hidden = YES;
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         
         
         NSLog(@"THE EXception:%@",exception);
@@ -3685,29 +3917,61 @@
 {
     
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    NSString *str_id = @"user_id";
     NSString *user_id;
-    for(int i = 0;i<[[dict allKeys] count];i++)
+    @try
     {
-        if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+        if(dict.count == 0)
         {
-            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
-            break;
+            user_id = @"(null)";
         }
         else
         {
-            
-            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
         }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
         
     }
-
+    NSString *str_status_text;
     if([user_id isEqualToString:@"(null)"])
     {
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str_status_text = @"يرجى تسجيل الدخول للوصول إلى هذا";
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"تسجيل الدخول" otherButtonTitles:@"إلغاء", nil];
+            alert.tag = 1;
+            [alert show];
+            
+        }
+        else
+        {
+            str_status_text = @"Please login to access this";
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"Login" otherButtonTitles:@"Cancel", nil];
+            alert.tag = 1;
+            [alert show];
+            
+        }
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please login to add items to wishlist" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
-        alert.tag = 1;
-        [alert show];
+        
         
     }
     else
@@ -3869,13 +4133,15 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         
         
         NSString *mileValue = [NSString stringWithFormat:@"%@",[[json_Response_Dic valueForKey:@"products"] valueForKey:@"mileValue"]];
-        
+        mileValue = [mileValue stringByReplacingOccurrencesOfString:@"," withString:@""];
+
         NSString  *actuel_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
         
         NSString *special_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"special_price"]];
         
         
-        NSString *doha_miles = [NSString stringWithFormat:@"%@",mileValue];
+        NSString *doha_miles = [NSString stringWithFormat:@"%f",[mileValue floatValue]];
+      //  doha_miles = [HttpClient doha_currency_seperator:doha_miles];
         NSString *mils  = @"Doha Miles";
         
         
@@ -3905,6 +4171,11 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             NSLog(@"THE UPDATED PRICE%d",VAL);
             actuel_price = [NSString stringWithFormat:@"%d",VAL];
             doha_miles = [NSString stringWithFormat:@"%d",[actuel_price intValue]*[[[update_dic valueForKey:@"custom"] valueForKey:@"oneQARtoDM"]intValue]];
+            
+        
+            actuel_price = [NSString stringWithFormat:@"%.2f",[actuel_price floatValue]];
+            actuel_price = [HttpClient currency_seperator:actuel_price];
+            doha_miles = [HttpClient doha_currency_seperator:doha_miles];
             
             NSString *text = [NSString stringWithFormat:@"%@ %@ / %@ %@",currency,actuel_price,mils,doha_miles];
             
@@ -3943,10 +4214,75 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             
             
         }
+         else if([actuel_price isEqualToString:special_price])
+         {
+             NSString *str = [NSString stringWithFormat:@"%@",[[update_dic valueForKey:@"custom"] valueForKey:@"price"]];
+             NSString *str_custom;int VAL;
+             if([str containsString:@"+"])
+             {
+                 str_custom = [str stringByReplacingOccurrencesOfString:@"+" withString:@""];
+                 
+                 VAL = [actuel_price intValue] + [str_custom intValue];
+                 
+             }
+             else if([str containsString:@"-"])
+             {
+                 str_custom = [str stringByReplacingOccurrencesOfString:@"-" withString:@""];
+                 VAL = [actuel_price intValue] - [str_custom intValue];
+             }
+             else{
+                 
+                 VAL = [[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"] intValue];
+             }
+             
+             NSLog(@"THE UPDATED PRICE%d",VAL);
+             actuel_price = [NSString stringWithFormat:@"%d",VAL];
+             doha_miles = [NSString stringWithFormat:@"%d",[actuel_price intValue]*[[[update_dic valueForKey:@"custom"] valueForKey:@"oneQARtoDM"]intValue]];
+             
+             actuel_price = [NSString stringWithFormat:@"%.2f",[actuel_price floatValue]];
+             actuel_price = [HttpClient currency_seperator:actuel_price];
+             doha_miles = [HttpClient doha_currency_seperator:doha_miles];
+             
+             NSString *text = [NSString stringWithFormat:@"%@ %@ / %@ %@",currency,actuel_price,mils,doha_miles];
+             
+             NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
+             
+             
+             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+             {
+                 paragraphStyle.alignment                = NSTextAlignmentRight;
+                 
+             }else{
+                 
+                 paragraphStyle.alignment                = NSTextAlignmentLeft;
+             }
+             
+             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:@{NSParagraphStyleAttributeName:paragraphStyle}];
+             
+             //attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
+             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                                     range:[text rangeOfString:currency]];
+             
+             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                                     range:[text rangeOfString:actuel_price]];
+             
+             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor darkGrayColor]}
+                                     range:[text rangeOfString:mils]];
+             
+             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                                     range:[text rangeOfString:doha_miles]];
+             
+             
+             
+             
+             _LBL_prices.attributedText = attributedText;
+             _LBL_discount.text = @"";
+
+         }
+        
         else{
             
             
-            actuel_price = [currency stringByAppendingString:actuel_price];
             
             NSString *str = [[update_dic valueForKey:@"custom"] valueForKey:@"price"];
             NSString *str_custom;int VAL;
@@ -3971,7 +4307,11 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             NSLog(@"THE UPDATED PRICE%d",VAL);
             special_price = [NSString stringWithFormat:@"%d",VAL];
             doha_miles = [NSString stringWithFormat:@"%d",[special_price intValue]*[[[update_dic valueForKey:@"custom"] valueForKey:@"oneQARtoDM"]intValue]];
-            
+            actuel_price = [currency stringByAppendingString:actuel_price];
+
+            actuel_price = [NSString stringWithFormat:@"%.2f",[actuel_price floatValue]];
+            actuel_price = [HttpClient currency_seperator:actuel_price];
+            doha_miles = [HttpClient doha_currency_seperator:doha_miles];
             
             NSString *text = [NSString stringWithFormat:@"%@ %@ %@ / %@ %@",currency,special_price,actuel_price,mils,doha_miles];
             
@@ -4074,19 +4414,24 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         NSString *mileValue = [NSString stringWithFormat:@"%@",[[update_dic valueForKey:@"variant"] valueForKey:@"dohamiles"]];
         
         
-        NSString  *actuel_price = [NSString stringWithFormat:@"%@ %@",currency,[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
+        NSString  *actuel_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
         
         NSString *special_price = [NSString stringWithFormat:@"%@",[[update_dic valueForKey:@"variant"] valueForKey:@"newPrice"]];
         
         
-        NSString *doha_miles = [NSString stringWithFormat:@"%@",mileValue];
+        NSString *doha_miles = [NSString stringWithFormat:@"%f",[mileValue floatValue]];
+       // doha_miles = [HttpClient currency_seperator:doha_miles];
+
         NSString *mils  = @"Doha Miles";
         
         
         if ([special_price isEqualToString:@""]|| [special_price isEqualToString:@"<null>"]||[special_price isEqualToString:@"<null>"]) {
             
             
-            
+            actuel_price = [NSString stringWithFormat:@"%.2f",[actuel_price floatValue]];
+            actuel_price = [HttpClient currency_seperator:actuel_price];
+            doha_miles = [HttpClient doha_currency_seperator:doha_miles];
+
             NSString *text = [NSString stringWithFormat:@"%@ %@ / %@ %@",currency,actuel_price,mils,doha_miles];
             NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
             
@@ -4108,7 +4453,10 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor grayColor]}
                                     range:[text rangeOfString:currency]];
 
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor darkGrayColor]}
+                                    range:[text rangeOfString:mils]];
             
+
             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                     range:[text rangeOfString:doha_miles]];
             
@@ -4117,14 +4465,63 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             _LBL_discount.text = @"";
             
         }
+         else if([actuel_price isEqualToString:special_price])
+         {
+             actuel_price = [NSString stringWithFormat:@"%.2f",[actuel_price floatValue]];
+             actuel_price = [HttpClient currency_seperator:actuel_price];
+             doha_miles = [HttpClient doha_currency_seperator:doha_miles];
+
+             NSString *text = [NSString stringWithFormat:@"%@ %@ / %@ %@",currency,actuel_price,mils,doha_miles];
+             NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
+             
+             
+             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+             {
+                 paragraphStyle.alignment                = NSTextAlignmentRight;
+                 
+             }else{
+                 
+                 paragraphStyle.alignment                = NSTextAlignmentLeft;
+             }
+             
+             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:@{NSParagraphStyleAttributeName:paragraphStyle}];
+             
+             // attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
+             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                                     range:[text rangeOfString:actuel_price]];
+             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                                     range:[text rangeOfString:currency]];
+             
+             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor darkGrayColor]}
+                                     range:[text rangeOfString:mils]];
+             
+             
+             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:17.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                                     range:[text rangeOfString:doha_miles]];
+             
+             
+             _LBL_prices.attributedText = attributedText;
+             _LBL_discount.text = @"";
+             
+  
+         }
         else{
             
             
             // NSString *doha_miles = @"QR 6758";
-          //  actuel_price = [currency stringByAppendingString:actuel_price];
+            
+            actuel_price = [NSString stringWithFormat:@"%.2f",[actuel_price floatValue]];
+            actuel_price = [HttpClient currency_seperator:actuel_price];
+            doha_miles = [HttpClient doha_currency_seperator:doha_miles];
+
+           actuel_price = [currency stringByAppendingString:actuel_price];
+              if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+              {
+                  actuel_price = [actuel_price stringByAppendingString:currency];
+              }
             
             NSString *text = [NSString stringWithFormat:@"%@ %@ %@ / %@ %@",currency,special_price,actuel_price,mils,doha_miles];
-            
+        
             
             
             
@@ -4193,28 +4590,61 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
 - (void)product_detail_cart_page {
    
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    NSString *str_id = @"user_id";
     NSString *user_id;
-    for(int i = 0;i<[[dict allKeys] count];i++)
+    @try
     {
-        if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+        if(dict.count == 0)
         {
-            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
-            break;
+            user_id = @"(null)";
         }
         else
         {
-            
-            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
         }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
         
     }
+    NSString *str_status_text;
     if([user_id isEqualToString:@"(null)"])
     {
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str_status_text = @"يرجى تسجيل الدخول للوصول إلى هذا";
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"تسجيل الدخول" otherButtonTitles:@"إلغاء", nil];
+            alert.tag = 1;
+            [alert show];
+            
+        }
+        else
+        {
+            str_status_text = @"Please login to access this";
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"Login" otherButtonTitles:@"Cancel", nil];
+            alert.tag = 1;
+            [alert show];
+            
+        }
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login to proceed" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
-        alert.tag = 1;
-        [alert show];
+        
         
     }
     else
@@ -4228,4 +4658,169 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
      [self.Scroll_content setContentOffset:CGPointZero animated:YES];
     
 }
+-(NSString *)runUpdateDisplayLoop : (NSTimer *) timer //:(NSString *)str_date
+{
+    
+    NSDateFormatter *dateStringParser = [[NSDateFormatter alloc] init];
+    [dateStringParser setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+    [dateStringParser setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    
+    int tag1 =  [[timer.userInfo valueForKey:@"tag"] intValue];
+    
+    NSString *STR_bidDate = [[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:tag1]objectAtIndex:0]  valueForKey:@"timeDiff"];//[TIMER_new.userInfo valueForKey:@"timer"];
+    NSDate *date = [dateStringParser dateFromString:STR_bidDate];
+    
+    NSDateFormatter *labelFormatter = [[NSDateFormatter alloc] init];
+    [labelFormatter setDateFormat:@"HH-dd-MM"];
+    
+    
+    NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
+    
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    
+    NSDate* currentDate = [NSDate date];
+    
+    NSTimeInterval timeInterval = [date timeIntervalSinceDate:currentDate];
+    
+    NSCalendar *sysCalendar = [NSCalendar currentCalendar];
+    NSDate *date2 = [[NSDate alloc] initWithTimeInterval:timeInterval sinceDate:date];
+    NSCalendarUnit unitFlags = NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitDay | NSCalendarUnitSecond;
+    
+    NSDateComponents *breakdownInfo = [sysCalendar components:unitFlags fromDate:date  toDate:date2  options:0];
+    
+    NSString *STR_timeRe;
+    
+    if ([breakdownInfo day] <= 0 ) {
+        
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d: %02d left",(int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+        
+    }
+    else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0)
+    {
+        
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d left",(int)[breakdownInfo minute], (int)[breakdownInfo second]];
+        
+    }
+    else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0 && [breakdownInfo minute] <= 0)
+    {
+        
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02dleft", (int)[breakdownInfo second]];
+        
+        
+    }
+    else
+    {
+        
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d Days: %02d: %02d: %02d left", (int)[breakdownInfo day], (int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+    }
+    
+    
+    NSString *text = [NSString stringWithFormat:@"%@",STR_timeRe];
+    NSLog(@"The timer is:%@",text);
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[[timer.userInfo valueForKey:@"tag"] intValue] inSection:0];
+    product_cell *cell = (product_cell *)[_collection_related_products cellForItemAtIndexPath:indexPath];
+    
+    NSString *str = [NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row]objectAtIndex:0]  valueForKey:@"stock_status"]];
+    str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+    NSString *time_diff = [NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:indexPath.row]objectAtIndex:0]  valueForKey:@"timeDiff"]];//[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"timeDiff"]];
+    if([str isEqualToString:@"In stock"])
+    {
+        if([time_diff isEqualToString:@"No"] ||[time_diff isEqualToString:@"(null)"] ||[time_diff isEqualToString:@"<null>"]||!time_diff)
+        {
+            cell.LBL_stock.text = @"";
+        }
+        else
+        {
+            cell.LBL_stock.font = [UIFont fontWithName:@"Poppins-Regular" size:8.0];
+            cell.LBL_stock.textColor = [UIColor darkGrayColor];
+            cell.LBL_stock.text = text;
+        }
+    }
+    else
+    {
+        cell.LBL_stock.font = [UIFont fontWithName:@"Poppins-Regular" size:14.0];
+        cell.LBL_stock.textColor = [UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0];
+        
+        cell.LBL_stock.text = [str uppercaseString];
+    }
+    
+    //    product_cell *cell =
+    return text;
+}
+-(void)cart_count_intail{
+    
+    NSString *user_id;
+    @try
+    {
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
+    [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        if (error) {
+            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
+             ];
+            //            VW_overlay.hidden = YES;
+            //            [activityIndicatorView stopAnimating];
+            
+            
+        }
+        if (data) {
+            NSLog(@"cart count sadas %@",data);
+            NSDictionary *dict = data;
+            @try {
+                
+                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
+                //   NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
+                [[NSUserDefaults standardUserDefaults] setValue:badge_value forKey:@"cart_count"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+                
+                
+                
+            } @catch (NSException *exception) {
+                //                 VW_overlay.hidden = YES;
+                //                [activityIndicatorView stopAnimating];
+                
+                
+                NSLog(@"asjdas dasjbd asdas iccxv %@",exception);
+            }
+            
+        }
+    }];
+}
+
+-(void)viewDidDisappear:(BOOL)animated
+{
+    [TIMER_countdown invalidate];
+}
+
 @end

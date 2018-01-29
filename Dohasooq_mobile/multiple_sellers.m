@@ -87,12 +87,27 @@
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    sellers_cell *seller = (sellers_cell *) [tableView dequeueReusableCellWithIdentifier:@"cell"];
+    NSString *identifier;
+    NSInteger index;
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        
+        identifier = @"Qwish_list_cell";
+        index = 1;
+        
+    }
+    else{
+        identifier = @"wish_list_cell";
+        index = 0;
+        
+        
+    }
+    sellers_cell *seller = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (seller == nil)
     {
         NSArray *nib;
         nib = [[NSBundle mainBundle] loadNibNamed:@"sellers_cell" owner:self options:nil];
-        seller = [nib objectAtIndex:0];
+        seller = [nib objectAtIndex:index];
     }
 
     
@@ -224,14 +239,62 @@
         
         if([[[seller_arr objectAtIndex:sender.tag] valueForKey:@"product_variants"] count] == 0)
         {
+            NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+            NSString *user_id;
+            @try
+            {
+                if(dict.count == 0)
+                {
+                    user_id = @"(null)";
+                }
+                else
+                {
+                    NSString *str_id = @"user_id";
+                    // NSString *user_id;
+                    for(int i = 0;i<[[dict allKeys] count];i++)
+                    {
+                        if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                        {
+                            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                            break;
+                        }
+                        else
+                        {
+                            
+                            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                        }
+                        
+                    }
+                }
+            }
+            @catch(NSException *exception)
+            {
+                user_id = @"(null)";
+                
+            }
+            NSString *str_status_text;
             if([user_id isEqualToString:@"(null)"])
             {
-                VW_overlay.hidden=YES;
-                [activityIndicatorView stopAnimating];
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    str_status_text = @"يرجى تسجيل الدخول للوصول إلى هذا";
+                    
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"تسجيل الدخول" otherButtonTitles:@"إلغاء", nil];
+                    alert.tag = 1;
+                    [alert show];
+                    
+                }
+                else
+                {
+                    str_status_text = @"Please login to access this";
+                    
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"Login" otherButtonTitles:@"Cancel", nil];
+                    alert.tag = 1;
+                    [alert show];
+                    
+                }
                 
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login First" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
-                alert.tag = 1;
-                [alert show];
+                
                 
             }
             else
@@ -307,14 +370,62 @@
     }
     else
     {
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        NSString *user_id;
+        @try
+        {
+            if(dict.count == 0)
+            {
+                user_id = @"(null)";
+            }
+            else
+            {
+                NSString *str_id = @"user_id";
+                // NSString *user_id;
+                for(int i = 0;i<[[dict allKeys] count];i++)
+                {
+                    if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                    {
+                        user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                        break;
+                    }
+                    else
+                    {
+                        
+                        user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                    }
+                    
+                }
+            }
+        }
+        @catch(NSException *exception)
+        {
+            user_id = @"(null)";
+            
+        }
+        NSString *str_status_text;
         if([user_id isEqualToString:@"(null)"])
         {
-            VW_overlay.hidden=YES;
-            [activityIndicatorView stopAnimating];
-
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please Login First" delegate:self cancelButtonTitle:@"cancel" otherButtonTitles:@"Ok", nil];
-            alert.tag = 1;
-            [alert show];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                str_status_text = @"يرجى تسجيل الدخول للوصول إلى هذا";
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"تسجيل الدخول" otherButtonTitles:@"إلغاء", nil];
+                alert.tag = 1;
+                [alert show];
+                
+            }
+            else
+            {
+                str_status_text = @"Please login to access this";
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"Login" otherButtonTitles:@"Cancel", nil];
+                alert.tag = 1;
+                [alert show];
+                
+            }
+            
+            
             
         }
         else

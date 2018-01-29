@@ -11,6 +11,7 @@
 #import  <AssetsLibrary/AssetsLibrary.h>
 #import <Photos/Photos.h>
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_My_profile ()<UITextFieldDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
 {
@@ -58,7 +59,7 @@
 //    
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(View_user_data) withObject:nil afterDelay:0.01];
     [self phone_code_view];
     [self set_UP_VIEW];
@@ -391,7 +392,7 @@
             }
             else
             {
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
@@ -955,7 +956,7 @@
             
             [self set_DATA];
             [self CountryAPICall];
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
         }
     }
     
@@ -964,7 +965,7 @@
         NSLog(@"The error is:%@",exception);
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
     }
     
@@ -1003,7 +1004,7 @@
    
     
     if ([cntry_code containsString:@"<null>"]||[cntry_code containsString:@"<nil>"]||[cntry_code isEqualToString:@""]) {
-        cntry_code = @"+974";
+        cntry_code = @"974";
     }
     
     NSString *unfilteredString =STR_mobile;
@@ -1033,8 +1034,10 @@
     STR_state = [STR_state stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
     STR_zip_code = [STR_zip_code stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     STR_zip_code = [STR_zip_code stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Images_path"];
+
     
-    NSString *img_url = [NSString stringWithFormat:@"%@%@%@",SERVER_URL,[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_path"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_img"]];
+    NSString *img_url = [NSString stringWithFormat:@"%@%@%@",[dict valueForKey:@"awsPath"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_path"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_img"]];
     
     [_IMG_Profile_pic sd_setImageWithURL:[NSURL URLWithString:img_url]
                         placeholderImage:[UIImage imageNamed:@"upload-27.png"]
@@ -1055,7 +1058,7 @@
     _TXT_last_name.text = STR_lname;
     _TXT_land_phone.text = STR_land_phone;
     _TXT_mobile_phone.text = STR_mobile;
-    _TXT_country_fld.text =[NSString stringWithFormat:@"%@",cntry_code];
+    _TXT_country_fld.text =[NSString stringWithFormat:@"+%@",cntry_code];
     _TXT_Dob.text = STR_dob;
     _TXT_group.text = STR_customer_group;
     _TXT_name.text = [NSString stringWithFormat:@"%@ %@",STR_fname,STR_lname];
@@ -1115,7 +1118,7 @@
 
 
     
-   // [HttpClient stop_activity_animation];
+   // [HttpClient stop_activity_animation:self];
     
 }
 
@@ -1123,6 +1126,7 @@
 {
     if(_BTN_save.hidden == YES )
     {
+        _LBL_arrow .hidden = YES;
         _TXT_first_name.enabled = NO;
         _TXT_last_name.enabled = NO;
         _TXT_name.enabled = NO;
@@ -1147,6 +1151,7 @@
         
     }
     else{
+         _LBL_arrow .hidden = NO;
         _TXT_first_name.enabled = NO;
         _TXT_last_name.enabled = NO;
         _TXT_name.enabled = NO;
@@ -1272,15 +1277,23 @@
     {
         [_TXT_mobile_phone becomeFirstResponder];
         msg = @"Please enter Mobile Number";
-        
-        
-        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"الرجاء إدخال رقم الجوال";
+        }
     }
     
     else if (_TXT_mobile_phone.text.length < 5)
     {
         [_TXT_mobile_phone becomeFirstResponder];
+        
         msg = @"Mobile Number cannot be less than 5 digits";
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يقل رقم الجوال عن 5 أرقام";
+        }
+
         
         
         
@@ -1289,6 +1302,11 @@
     {
         [_TXT_mobile_phone becomeFirstResponder];
         msg = @"Mobile Number should not be more than 15 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يزيد رقم الجوال عن 15 رقماً";
+        }
+
         
         
     }
@@ -1296,6 +1314,11 @@
     {
         [_TXT_mobile_phone becomeFirstResponder];
         msg = @"Blank space are not allowed";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"لا يسمح بترك مسافات فارغة";
+        }
+
         
         
     }
@@ -1303,6 +1326,10 @@
     {
         [_TXT_Dob becomeFirstResponder];
         msg = @"Please enter Date of birth";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى إدخال تاريخ الميلاد";
+        }
         
         
     }
@@ -1311,6 +1338,10 @@
     {
         [_TXT_Dob becomeFirstResponder];
         msg = @"Blank space are not allowed";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى إدخال تاريخ الميلاد";
+        }
         
         
     }
@@ -1322,7 +1353,7 @@
 //   }
   else
   {
-      [HttpClient animating_images:self];
+      [Helper_activity animating_images:self];
       
       [self performSelector:@selector(Edit_user_data) withObject:nil afterDelay:0.01];
       
@@ -1330,7 +1361,13 @@
 
     if(msg)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        NSString *str = @"Ok";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"حسنا";
+        }
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:str, nil];
         [alert show];
         
     }
@@ -1410,18 +1447,27 @@
         [request setHTTPShouldHandleCookies:NO];
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         if (error) {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
         }
         
         if(aData)
         {
-           [HttpClient stop_activity_animation];
+           [Helper_activity stop_activity_animation:self];
             
             NSMutableDictionary *json_DATAs = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             NSString *status = [NSString stringWithFormat:@"%@",[json_DATAs valueForKey:@"success"]];
             if([status isEqualToString:@"1"])
             {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATAs valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                NSString *str = @"Ok";
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    str = @"حسنا";
+                }
+                
+              
+
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATAs valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:str, nil];
                 [alert show];
                 _BTN_save.hidden = YES;
                 [_BTN_edit setTitle:@"" forState:UIControlStateNormal];
@@ -1431,7 +1477,13 @@
                 
             }
             else{
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATAs valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                NSString *str = @"Ok";
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    str = @"حسنا";
+                }
+
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATAs valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:str, nil];
                 [alert show];
                 
             }
@@ -1439,31 +1491,41 @@
         }
         else
         {
-             [HttpClient stop_activity_animation];
+             [Helper_activity stop_activity_animation:self];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
         }
     }
     @catch(NSException *exception)
     {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
     }
     
 }
 -(void)Save_button_Billing_clicked
 {
     NSString *msg;
+    
+    
     if ([_TXT_state.text isEqualToString:@""])
     {
         [_TXT_state becomeFirstResponder];
         msg = @"Please select State";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى تحديد الدولة";
+        }
         
     }
     
     else if ([_TXT_country.text isEqualToString:@""])
     {
         [_TXT_country becomeFirstResponder];
-        msg = @"Please select State";
+        msg = @"Please select Country";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى تحديد البلد";
+        }
         
         
         
@@ -1471,56 +1533,98 @@
     else if(_TXT_city.text.length < 3)
     {
         [_TXT_city becomeFirstResponder];
-        msg = @"City name should be more than 3 characters";
+        msg = @"City should not be less than 3 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يقل حقل المدينة عن 3 أحرف";
+        }
         
         
     }
     else if(_TXT_city.text.length < 1)
     {
         [_TXT_city becomeFirstResponder];
-        msg = @"Please enter City";
+        msg = @"City Should Not be Empty";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب عدم ترك حقل المدينة فارغاً";
+        }
         
         
     }
     else if(_TXT_address1.text.length < 3)
     {
         [_TXT_address1 becomeFirstResponder];
-        msg = @"Address name should be more than 3 characters";
-        
+        msg = @"Address name should be more than 3 characters";//يجب أن يكون اسم العنوان أكثر من 3 أحرف
+
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب أن يكون اسم العنوان أكثر من 3 أحرف";
+        }
         
     }
+    else if (_TXT_address1.text.length > 200)
+    {
+        [_TXT_address1 becomeFirstResponder];
+        msg = @"Address should not be more than 200 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يزيد العنوان عن 200 رمز";
+        }
+        
+    }
+
     else if(_TXT_address1.text.length < 1)
     {
         [_TXT_address1 becomeFirstResponder];
-        msg = @"Please enter Address";
+        msg = @"Address1 Should Not be Empty";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب  1 عدم ترك حقل العنوان فارغا";
+        }
         
         
     }
 
-    else if(_TXT_zipcode.text.length < 3)
+   /* else if(_TXT_zipcode.text.length < 3)
     {
         [_TXT_zipcode becomeFirstResponder];
-        msg = @"Zipcode name should be more than 3 characters";
-        
+        msg = @"Zip code should not be less than 3 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يقل حقل الرمز البريدي عن 3 أرقام";
+        }
         
     }
     else if(_TXT_zipcode.text.length < 1)
     {
         [_TXT_zipcode becomeFirstResponder];
-        msg = @"Please enter Zipcode";
+        msg = @"Zipcode Should not be Empty";
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب عدم ترك حقل الرمز البريدي فارغاً";
+        }
         
         
-    }
+    }*/
     else
     {
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         [self performSelector:@selector(Edit_billing_addres) withObject:nil afterDelay:0.01];
     }
     if(msg)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        NSString *str = @"Ok";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"حسنا";
+        }
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:str, nil];
         [alert show];
+
         
     }
 
@@ -1648,13 +1752,13 @@
         if (returnData)
             
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             NSMutableDictionary *json_DATAs = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&error];
             NSLog(@"The response Api post sighn up API %@",json_DATAs);
             NSString *status = [NSString stringWithFormat:@"%@",[json_DATAs valueForKey:@"success"]];
             //NSString *status = [json_DATA valueForKey:@"message"];
             
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             if([status isEqualToString:@"1"])
             {
                
@@ -1678,13 +1782,13 @@
             }
             else
             {
-                 [HttpClient stop_activity_animation];
+                 [Helper_activity stop_activity_animation:self];
             }
             
         }
         else
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
         }
         
     }
@@ -1692,7 +1796,7 @@
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
     }
     
 
@@ -1732,7 +1836,7 @@
 //    NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
 //    if(aData)
 //    {
-//        [HttpClient stop_activity_animation];
+//        [HttpClient stop_activity_animation:self];
 //        NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
 //        NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
 //        if([status isEqualToString:@"1"])
@@ -1751,7 +1855,7 @@
 //    }
 //    else
 //    {
-//        [HttpClient stop_activity_animation];
+//        [HttpClient stop_activity_animation:self];
 //        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
 //        [alert show];
 //    }
@@ -1759,7 +1863,7 @@
 //
 //@catch(NSException *exception)
 //{
-//     [HttpClient stop_activity_animation];}
+//     [HttpClient stop_activity_animation:self];}
 //
 //}
 }
@@ -1840,7 +1944,7 @@
 {
     
     
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     NSLog(@"%@",yourImage);
     
    
@@ -1897,7 +2001,7 @@
     
     if (err) {
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",[err localizedDescription]);
     }
     
@@ -1907,14 +2011,15 @@
                                   options:NSJSONReadingMutableLeaves
                                   error:nil];
         NSLog(@"jsonObject  %@",jsonObject);
+        NSString *str_image_profile = [NSString stringWithFormat:@"%@",[jsonObject valueForKey:@"path_detail"]];
         
         if ([[NSString stringWithFormat:@"%@",[jsonObject valueForKey:@"success"]] isEqualToString:@"1"]) {
-            [[NSUserDefaults standardUserDefaults] setObject:[jsonObject valueForKey:@"path_detail"] forKey:@"profile_image"];
+            [[NSUserDefaults standardUserDefaults] setObject:str_image_profile forKey:@"profile_image"];
             [[NSUserDefaults standardUserDefaults]synchronize];
         }
     }
     
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
 }
 
 #pragma mark PhoneCodeView
