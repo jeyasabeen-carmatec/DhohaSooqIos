@@ -772,10 +772,13 @@ int j ,i;
             
             NSString *shipping = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"shipping_amount"]];
                 shipping = [HttpClient currency_seperator:shipping];
+            shipping = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],shipping];
             shipping = [shipping stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
+
             
             NSString *discount = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"discount"]];
             discount = [discount stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
+           
             NSString *str_disc =[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"discount"];
             
             if([str_disc isKindOfClass:[NSNull class]])

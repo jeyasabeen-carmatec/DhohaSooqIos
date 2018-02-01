@@ -3155,7 +3155,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" buttonType="roundedRect" lineBreakMode="middleTruncation" id="11T-Z3-FrN">
-                                            <rect key="frame" x="-10" y="5" width="98" height="25"/>
+                                            <rect key="frame" x="-7" y="6" width="98" height="25"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
                                             <state key="normal" backgroundImage="ds_logo.png">
@@ -3719,7 +3719,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>
                 <view contentMode="scaleToFill" misplaced="YES" id="6RJ-D9-sVJ">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="298"/>
@@ -3869,6 +3869,7 @@
                                     </connections>
                                 </collectionView>
                             </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </scrollView>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -4093,7 +4094,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" buttonType="roundedRect" lineBreakMode="middleTruncation" id="cpc-1P-laf">
-                                            <rect key="frame" x="-10" y="6" width="98" height="28"/>
+                                            <rect key="frame" x="-7" y="6" width="98" height="28"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
                                             <state key="normal" backgroundImage="ds_logo.png">
@@ -4413,7 +4414,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" alpha="0.90000000000000002" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aYR-Sx-1ur">
-                            <rect key="frame" x="11" y="84" width="298" height="29"/>
+                            <rect key="frame" x="14" y="84" width="298" height="29"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                             <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -4541,8 +4542,8 @@
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Sold by :" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="5aJ-FC-ReQ">
-                            <rect key="frame" x="10" y="75" width="76" height="21"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Sold by" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="5aJ-FC-ReQ">
+                            <rect key="frame" x="10" y="75" width="69" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -5076,6 +5077,8 @@
                         <outlet property="BTN_QT_view" destination="eln-cT-U7g" id="bu7-TV-KSB"/>
                         <outlet property="BTN_TOP" destination="eg7-a9-hDr" id="ZUw-EV-xrX"/>
                         <outlet property="BTN_address" destination="PiP-TE-37s" id="Hpk-Lv-Odz"/>
+                        <outlet property="BTN_brand_left" destination="ujn-Ie-GDa" id="Pc7-Nk-AQT"/>
+                        <outlet property="BTN_brand_right" destination="aa2-Sj-kHV" id="7gQ-0u-8iZ"/>
                         <outlet property="BTN_cart" destination="QHO-LG-ZFt" id="QeF-ZR-Cmo"/>
                         <outlet property="BTN_fashion" destination="77e-hW-gvz" id="VHr-JU-qnD"/>
                         <outlet property="BTN_left" destination="bpW-nf-kSx" id="pdX-DH-Bzr"/>
@@ -5341,18 +5344,27 @@
                                         <outlet property="delegate" destination="pxu-nZ-TmL" id="KAG-Oi-c05"/>
                                     </connections>
                                 </collectionView>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="iKl-l7-hv6">
-                                    <rect key="frame" x="269" y="68" width="17" height="21"/>
+                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="aa2-Sj-kHV">
+                                    <rect key="frame" x="270" y="68" width="20" height="21"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                    <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="20"/>
-                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
+                                    <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="25"/>
+                                    <state key="normal" title="">
+                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </state>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ujn-Ie-GDa">
+                                    <rect key="frame" x="-1" y="68" width="20" height="21"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="25"/>
+                                    <state key="normal" title="">
+                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </state>
+                                </button>
                             </subviews>
                             <color key="backgroundColor" red="1" green="0.71764705880000002" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </view>
                         <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="ATJ-ay-8KR">
-                            <rect key="frame" x="16" y="218" width="288" height="487"/>
+                            <rect key="frame" x="16" y="218" width="288" height="483"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <color key="backgroundColor" red="0.88627450980392153" green="0.88627450980392153" blue="0.88627450980392153" alpha="1" colorSpace="calibratedRGB"/>
                             <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="bCG-EG-Eqx">
@@ -5380,13 +5392,6 @@
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                             <state key="normal" backgroundImage="women_logo.png"/>
                         </button>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="8e6-xr-c6j">
-                            <rect key="frame" x="16" y="166" width="11" height="21"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="20"/>
-                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            <nil key="highlightedColor"/>
-                        </label>
                         <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="eg7-a9-hDr">
                             <rect key="frame" x="16" y="709" width="290" height="41"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -5827,6 +5832,9 @@
                                         <state key="normal" backgroundImage="logo_dq.png">
                                             <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="LOGO_ACTION:" destination="Tg2-xm-ktl" eventType="touchUpInside" id="ToT-W6-b9r"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -6688,13 +6696,13 @@
         <!--event user-->
         <scene sceneID="ytK-LZ-C3s">
             <objects>
-                <viewController id="sfl-fF-JJD" customClass="VC_event_user" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="sfl-fF-JJD" customClass="VC_event_user" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="7Mg-og-XEy">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" id="ye1-dr-TDF">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <rect key="frame" x="0.0" y="60" width="320" height="420"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </scrollView>
                         </subviews>
@@ -6866,7 +6874,7 @@
                             </connections>
                         </textField>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text=" + 974" textAlignment="center" minimumFontSize="17" id="nL3-x8-E0D">
-                            <rect key="frame" x="16" y="191" width="87" height="40"/>
+                            <rect key="frame" x="16" y="191" width="78" height="40"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -6877,14 +6885,14 @@
                             </connections>
                         </textField>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="2sH-Mu-hQD">
-                            <rect key="frame" x="16" y="202" width="83" height="20"/>
+                            <rect key="frame" x="19" y="202" width="73" height="20"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="14"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Your Phone Number" textAlignment="natural" minimumFontSize="17" id="KhQ-P2-Dok" customClass="TXT_Blck_field">
-                            <rect key="frame" x="105" y="191" width="203" height="40"/>
+                            <rect key="frame" x="93" y="191" width="211" height="40"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -8329,13 +8337,13 @@
         <!--movie user detail-->
         <scene sceneID="gpK-el-Otc">
             <objects>
-                <viewController id="n5q-BI-Jlr" customClass="VC_movie_user_detail" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="n5q-BI-Jlr" customClass="VC_movie_user_detail" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3oA-V8-1xu">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" id="qL8-HF-HNT">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <rect key="frame" x="0.0" y="60" width="320" height="420"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </scrollView>
                         </subviews>
@@ -8495,7 +8503,7 @@
                             </connections>
                         </textField>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Your Phone Number" textAlignment="natural" minimumFontSize="17" id="wb2-JI-RRG" customClass="TXT_Blck_field">
-                            <rect key="frame" x="102" y="191" width="206" height="40"/>
+                            <rect key="frame" x="108" y="191" width="194" height="40"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -8506,7 +8514,7 @@
                             </connections>
                         </textField>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text=" +974" textAlignment="center" minimumFontSize="17" id="5eL-Fe-Gde">
-                            <rect key="frame" x="12" y="190" width="90" height="40"/>
+                            <rect key="frame" x="16" y="190" width="90" height="40"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -8517,7 +8525,7 @@
                             </connections>
                         </textField>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="XBW-xo-AxD">
-                            <rect key="frame" x="14" y="201" width="81" height="20"/>
+                            <rect key="frame" x="19" y="201" width="81" height="20"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="15"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -8604,7 +8612,7 @@
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="-4072" y="4843"/>
+            <point key="canvasLocation" x="-4089" y="4843"/>
         </scene>
         <!--card action-->
         <scene sceneID="Tpt-uB-LZe">
@@ -9010,7 +9018,7 @@
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="-3397" y="3545"/>
+            <point key="canvasLocation" x="-3398" y="3509"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="u2w-UG-ZLG">
@@ -9041,11 +9049,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="sf5-Hc-XTB">
-                                <rect key="frame" x="0.0" y="70" width="320" height="410"/>
+                                <rect key="frame" x="16" y="70" width="288" height="410"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <view key="tableFooterView" contentMode="scaleToFill" id="SBL-ae-Lqb">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="288" height="44"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </view>
@@ -9350,26 +9358,26 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="vMu-Y7-4Nz"/>
-        <segue reference="zEA-rW-nQN"/>
-        <segue reference="JjR-Qr-AQ0"/>
-        <segue reference="LS8-aj-kn5"/>
-        <segue reference="PIq-gb-2yd"/>
-        <segue reference="CxN-By-eWp"/>
-        <segue reference="faj-2O-9a0"/>
-        <segue reference="u1i-KR-yL0"/>
-        <segue reference="ftO-4d-EKK"/>
-        <segue reference="x0e-hc-baO"/>
-        <segue reference="Gbu-bd-OSk"/>
+        <segue reference="VlJ-8X-e9R"/>
+        <segue reference="xx1-cA-Spd"/>
+        <segue reference="thM-tK-ujK"/>
+        <segue reference="TQh-po-CZq"/>
+        <segue reference="Cw8-vV-nPW"/>
         <segue reference="1fc-cP-jfH"/>
-        <segue reference="Ia6-yw-sEr"/>
-        <segue reference="pDU-cD-KDi"/>
-        <segue reference="z2t-AS-he8"/>
         <segue reference="1PO-jV-8IF"/>
+        <segue reference="Ia6-yw-sEr"/>
+        <segue reference="vMu-Y7-4Nz"/>
+        <segue reference="pDU-cD-KDi"/>
+        <segue reference="hYs-TP-0oE"/>
+        <segue reference="z2t-AS-he8"/>
+        <segue reference="yWr-Gw-exm"/>
         <segue reference="GAW-2H-hzI"/>
         <segue reference="WuY-ui-8aO"/>
-        <segue reference="2i6-zz-H96"/>
-        <segue reference="ydJ-dy-aD5"/>
-        <segue reference="Ikb-sa-4zg"/>
+        <segue reference="sF9-AK-GyS"/>
+        <segue reference="6gT-Rb-aGG"/>
+        <segue reference="PIq-gb-2yd"/>
+        <segue reference="faj-2O-9a0"/>
+        <segue reference="9v6-ul-yqt"/>
+        <segue reference="zHZ-8L-dXg"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -129,6 +129,9 @@
     _best_deals_more.layer.cornerRadius = 2.0f;
     _best_deals_more.layer.masksToBounds = YES;
     
+    [_BTN_brand_right addTarget:self action:@selector(brand_right_action) forControlEvents:UIControlEventTouchUpInside];
+    [_BTN_brand_left addTarget:self action:@selector(BTN_left_brand_action) forControlEvents:UIControlEventTouchUpInside];
+
     [_BTN_TOP addTarget:self action:@selector(TOP_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_search addTarget:self action:@selector(seacrh_ACTION) forControlEvents:UIControlEventTouchUpInside];
     [_logo addTarget:self action:@selector(logo_api_call) forControlEvents:UIControlEventTouchUpInside];
@@ -137,7 +140,6 @@
 
     
 }
-
 -(void)view_appear
 {
     CGRect frameset = _VW_nav.frame;
@@ -211,7 +213,7 @@
     _overlayView.hidden =  YES;
     [self set_up_VIEW];
     [self menu_set_UP];
-    [self cart_count_intail];
+   // [self cart_count_intail];
     [self cart_count];
     
     
@@ -486,6 +488,8 @@
         if([str_lang isEqualToString:ids])
         {
             language = [NSString stringWithFormat:@"%@",[[lan_arr objectAtIndex:i] valueForKey:@"language_name"]];
+            [[NSUserDefaults standardUserDefaults]setValue:language forKey:@"story_board_language"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
            
             
         }
@@ -1208,6 +1212,11 @@
                 }
                 else{
                     pro_cell.LBL_stock.text =[str uppercaseString];
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                        pro_cell.LBL_stock.text = @"غير متوفّر";
+                    }
+
                 }
             }
             @catch(NSException *exception)
@@ -1331,11 +1340,33 @@
                     NSString *str = @"% off";
                     pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",str_discount,str];
                     
+                    //NSString *str_discount = [NSString stringWithFormat:@"%@", [[hot_deals_ARR objectAtIndex:indexPath.row]valueForKey:@"discount"]];
+                    
+                   // NSString *str;
+                    
+                    
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                        
+                        str = @"% إيقاف";
+                        pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",str_discount,str];
+                    }
+                    else{
+                        
+                        str = @"% off";
+                        pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",str_discount,str];
+                        
+                    }
+                    
+
+                
                     
                     
                     // prec_price = [currency stringByAppendingString:prec_price];
                     prec_price = [NSString stringWithFormat:@"%@ %@",currency, [[deals_ARR objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
-                    text = [NSString stringWithFormat:@"%@ %@ %@",currency,current_price,prec_price];
+                    text = [NSString stringWithFormat:@"%@ %@%@",currency,current_price,prec_price];
+                    
+                    
                     if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                     {
                         prec_price = [NSString stringWithFormat:@"%@ %@",[[deals_ARR objectAtIndex:indexPath.row] valueForKey:@"product_price"],currency];
@@ -1353,13 +1384,13 @@
                     if (current_price.length >= 8)
                     {
                         sizeval = 14;
-                        text = [NSString stringWithFormat:@"%@ %@ %@",currency,current_price,prec_price];
+                        text = [NSString stringWithFormat:@"%@ %@\n%@",currency,current_price,prec_price];
                         
                         
                         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                         {
                             prec_price = [NSString stringWithFormat:@"%@ %@",[[deals_ARR objectAtIndex:indexPath.row] valueForKey:@"product_price"],currency];
-                            current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency];
+                            //current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency];
                             
                             text = [NSString stringWithFormat:@"%@\n%@",prec_price,current_price];
                         }
@@ -1387,9 +1418,23 @@
                         [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:sizeval],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
                     
                     [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
-                    [attributedText addAttribute:NSStrikethroughStyleAttributeName
-                                           value:@2
-                                           range:NSMakeRange([current_price length]+currency.length+2, [prec_price length])];
+                    
+                    
+                    
+                    
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                        [attributedText addAttribute:NSStrikethroughStyleAttributeName
+                                               value:@2
+                                               range:NSMakeRange(0 ,[prec_price length])];
+                    }
+                    
+                    else{
+                        [attributedText addAttribute:NSStrikethroughStyleAttributeName
+                                               value:@2
+                                               range:NSMakeRange([current_price length]+currency.length+2, [prec_price length])];
+                    }
+                   
                     pro_cell.LBL_current_price.attributedText = attributedText;
                     
                 }
@@ -1565,6 +1610,27 @@
                     NSString *str = @"% off";
                     pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",str_discount,str];
                     
+                     // NSString *str_discount = [NSString stringWithFormat:@"%@", [[hot_deals_ARR objectAtIndex:indexPath.row]valueForKey:@"discount"]];
+                    
+                   // NSString *str;
+                    
+                    
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                        
+                        str = @"% إيقاف";
+                        pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",str_discount,str];
+                    }
+                    else{
+                        
+                        str = @"% off";
+                        pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",str_discount,str];
+                        
+                    }
+                    
+
+                    
+                    
                     
                     // prec_price = [currency stringByAppendingString:prec_price];
                     prec_price = [NSString stringWithFormat:@"%@ %@",currency, [[hot_deals_ARR objectAtIndex:indexPath.row] valueForKey:@"product_price"]];
@@ -1615,9 +1681,22 @@
                     [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:sizeval],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
                     
                     [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
-                    [attributedText addAttribute:NSStrikethroughStyleAttributeName
-                                           value:@2
-                                           range:NSMakeRange([current_price length]+currency.length+2, [prec_price length])];
+                    
+                    
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                        [attributedText addAttribute:NSStrikethroughStyleAttributeName
+                                               value:@2
+                                               range:NSMakeRange(0 ,[prec_price length])];
+                    }
+                    
+                    else{
+                        [attributedText addAttribute:NSStrikethroughStyleAttributeName
+                                               value:@2
+                                               range:NSMakeRange([current_price length]+currency.length+2, [prec_price length])];
+                    }
+                    
+                   
                     pro_cell.LBL_current_price.attributedText = attributedText;
                     
                 }
@@ -2875,19 +2954,18 @@
         
         if(result.height <= 480)
         {
-             tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,0,230,30)];
+             tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,0,220,30)];
         }
         else if(result.height <= 568)
         {
-             tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,0,230,30)];
+             tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,0,220,30)];
         }
         else
         {
             tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,0,275,30)];
         }
         
-        
-       UILabel *tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,-7,305,30)];
+
         
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
@@ -2957,11 +3035,11 @@
         
         if(result.height <= 480)
         {
-            tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,-7,230,30)];
+            tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,-7,220,30)];
         }
         else if(result.height <= 568)
         {
-            tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,-7,230,30)];
+            tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,-7,220,30)];
         }
         else
         {
@@ -3053,6 +3131,7 @@
             
         }
         
+        [self menu_set_UP];
     }
 
 }
@@ -3706,33 +3785,78 @@
     }
     
     [image_Top_ARR addObject:@"banner_main.png"];
+        
+     if([[json_Response_Dic valueForKey:@"dealSection"] count] < 1)
+     {
+         NSString *currency = [json_Response_Dic valueForKey:@"currency"];
+         currency = [currency stringByReplacingOccurrencesOfString:@"(null)" withString:@"QAR"];
+         currency = [currency stringByReplacingOccurrencesOfString:@"<null>" withString:@"QAR"];
+         currency = [currency stringByReplacingOccurrencesOfString:@"" withString:@"QAR"];
+
+         brands_arr = [json_Response_Dic valueForKey:@"brands_female"];
+         [[NSUserDefaults standardUserDefaults] setValue:currency forKey:@"currency"];
+         [[NSUserDefaults standardUserDefaults] synchronize];
+         [_collection_images reloadData];
+         [self set_timer_to_collection_images];
+         [_collection_features reloadData];
+         [_collection_hot_deals reloadData];
+         [_collection_best_deals reloadData];
+         [_collection_fashion_categirie reloadData];
+         [_collection_brands reloadData];
+         [self menu_set_UP];
+         // [self cart_count]
+         self.Scroll_contents.hidden = NO;
+         
+         
+         [self set_up_VIEW];
+         [Helper_activity stop_activity_animation:self];
+
+     }
+    else
+    {
     for(int i=0 ; i < [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] count];i++)
     {
         if([[[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] objectAtIndex:i] isEqualToString:@"widgetTitle"])
         {
-            
+             [deals_ARR addObject:[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] valueForKey:[NSString stringWithFormat:@"%d",i]]];
         }
         else
         {
-            [deals_ARR addObject:[[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allObjects] objectAtIndex:i]];
+            if(i == [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] count]-1)
+            {
+                
+            }
+            else
+            {
+
+            [deals_ARR addObject:[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] valueForKey:[NSString stringWithFormat:@"%d",i]]];
+            }
             
         }
         
         
     }
+        NSLog(@"Hot deals all keys:%@",[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys]);
     for(int i=0 ; i < [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] count];i++)
     {
         if([[[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] objectAtIndex:i] isEqualToString:@"widgetTitle"])
         {
-            
+             [hot_deals_ARR addObject:[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] valueForKey:[NSString stringWithFormat:@"%d",i]]];
         }
         else
         {
-            [hot_deals_ARR addObject:[[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allObjects] objectAtIndex:i]];
+            if(i == [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] count]-1)
+            {
+                
+            }
+            else{
+                 [hot_deals_ARR addObject:[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] valueForKey:[NSString stringWithFormat:@"%d",i]]];
+            }
             
         }
         
         
+    }
     }
     brands_arr = [json_Response_Dic valueForKey:@"brands_female"];
     
@@ -3822,7 +3946,7 @@
             
         }
         
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/home/%ld/%ld/%@.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"],user_id];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/home/%ld/%ld/%@/Customer.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"],user_id];
         NSLog(@"country id %ld ,language id %ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
         
         
@@ -3843,6 +3967,7 @@
                     [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Home_data"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     [self view_appear];
+                    
                     
                     
                 }
@@ -3965,26 +4090,7 @@
 
 // #3
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
-    if (pickerView == _halls_picker) {
-        return 1;
-    }
-    else if(pickerView==_lang_picker)
-    {
-        return 1;
-    }
-    else if(pickerView==_venue_picker)
-    {
-        return 1;
-    }
-    else if(pickerView==_sports_venue_picker)
-    {
-        return 1;
-     }
-    else if(pickerView==_leisure_venues)
-    {
-        return 1;
-    }
-    else if(pickerView == _lang_pickers)
+    if(pickerView == _lang_pickers)
     {
         return 1;
     }
@@ -3994,26 +4100,10 @@
 }
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    if (pickerView == _halls_picker) {
-        return [halls_arr count];
-    }
-    if (pickerView == _lang_picker) {
-        return [langugage_arr count];
-    }
-    else if (pickerView == _venue_picker) {
-        return [venues_arr count];
-    }
-    else if (pickerView == _sports_venue_picker) {
-        return [sports_venues count];
-    }
-    else if (pickerView == _leisure_venues) {
-        return [leisure_venues count];
-    }
-    else if(pickerView == _lang_pickers)
-    {
+   
         NSLog(@"The language is:%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_arr"]);
         return [[[NSUserDefaults standardUserDefaults] valueForKey:@"language_arr"]count];
-    }
+    
 
     return 0;
 }
@@ -4022,24 +4112,9 @@
 
 
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    if (pickerView == _halls_picker) {
-        return halls_arr[row];
-    }
-    if (pickerView == _lang_picker) {
-        return langugage_arr[row];
-    }
-    if (pickerView == _venue_picker) {
-        return venues_arr[row];
-    }
-    else if (pickerView == _sports_venue_picker) {
-        return sports_venues[row];
-    }
-    else if (pickerView == _leisure_venues) {
-        return leisure_venues[row];
-    }
-    else if(pickerView == _lang_pickers)
+       if(pickerView == _lang_pickers)
     {
-        language = [[[[NSUserDefaults standardUserDefaults] valueForKey:@"language_arr"]objectAtIndex:row ] valueForKey:@"language_name"];
+      
 
         return [[[[NSUserDefaults standardUserDefaults] valueForKey:@"language_arr"]objectAtIndex:row ] valueForKey:@"language_name"];
     }
@@ -4051,13 +4126,20 @@
 
 // #6
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-    if (pickerView == _lang_pickers)
-    {
     
         language = [[[[NSUserDefaults standardUserDefaults] valueForKey:@"language_arr"]objectAtIndex:row] valueForKey:@"language_name"];
         
+   
+    
+        [[NSUserDefaults standardUserDefaults]setValue:[[[[NSUserDefaults standardUserDefaults] valueForKey:@"language_arr"]objectAtIndex:row] valueForKey:@"id"] forKey:@"language_id"];
         
-    }
+        
+        
+        [[NSUserDefaults standardUserDefaults]synchronize];
+        
+        
+        
+    
     
 }
 -(void)btn_address_action
@@ -4545,6 +4627,7 @@ NSString *str_status_text;
                     if ([[json_DATA valueForKey:@"msg"] isEqualToString:@"Added to your Wishlist"]) {
                         
                         //  [self startAnimation:sender];
+                         [Helper_activity stop_activity_animation:self];
                         [cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
                         
                         [cell.BTN_fav setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
@@ -4557,7 +4640,7 @@ NSString *str_status_text;
                         if ([[json_DATA valueForKey:@"msg"] isEqualToString:@"Customer wishlist already saved"])
                         {
                             NSString *str_id = [NSString stringWithFormat:@"%@",[[deals_ARR objectAtIndex:sender.tag] valueForKey:@"product_id"]];
-                            
+                             [Helper_activity stop_activity_animation:self];
                             [self hot_delete_from_wishLis:str_id];
                                [cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
                             [cell.BTN_fav setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -4719,7 +4802,7 @@ NSString *str_status_text;
         [Helper_activity animating_images:self];
         
         NSError *error;
-        
+        brands_arr = [[NSMutableArray alloc]init];
         NSHTTPURLResponse *response = nil;
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
@@ -4748,9 +4831,10 @@ NSString *str_status_text;
             // VW_overlay.hidden = YES;
             [Helper_activity stop_activity_animation:self];
             
-            brands_arr= (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
-            [[NSUserDefaults standardUserDefaults] setObject:brands_arr forKey:@"brands_LIST"];
+         NSDictionary   *brands_dict= (NSDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            [[NSUserDefaults standardUserDefaults] setObject:[brands_dict valueForKey:@"brand_result"] forKey:@"brands_LIST"];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            brands_arr = [brands_dict valueForKey:@"brand_result"];
 
             
             [self.collection_brands reloadData];
@@ -5054,7 +5138,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     
     text = [NSString stringWithFormat:@"%@",STR_timeRe];
-    NSLog(@"The timer is:%@",text);
+   // NSLog(@"The timer is:%@",text);
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[[timer.userInfo valueForKey:@"tag"] intValue] inSection:0];
     product_cell *cell = (product_cell *)[_collection_hot_deals cellForItemAtIndexPath:indexPath];
@@ -5088,6 +5172,12 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
 
         cell.LBL_stock.textColor = [UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0];
         cell.LBL_stock.text = [str uppercaseString];
+        cell.LBL_stock.text = [str uppercaseString];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            cell.LBL_stock.text = @"غير متوفّر";
+        }
+
     }
 
     
@@ -5168,7 +5258,85 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
 {
     TIMER_countdown = [[NSTimer alloc]init];
 }
+#pragma Brand_action
+-(void)brand_right_action
+{
+    NSIndexPath *newIndexPath;
+    if (!INDX_selected)
+    {
+        newIndexPath = [NSIndexPath indexPathForRow:3 inSection:0];
+        INDX_selected = newIndexPath;
+    }
+    
+    else if ([brands_arr count]  > INDX_selected.row)
+    {
+        if ([brands_arr count] == INDX_selected.row + 3) {
+            newIndexPath = [NSIndexPath indexPathForRow:[brands_arr count] - 3 inSection:0];
+            INDX_selected = newIndexPath;
+        }
+        else
+        {
+            newIndexPath = [NSIndexPath indexPathForRow:INDX_selected.row + 3 inSection:0];
+            INDX_selected = newIndexPath;
+        }
+    }
+    
+    
+    if (!newIndexPath) {
+        newIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        INDX_selected = newIndexPath;
+    }
+    
+    
+    [_collection_brands scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:INDX_selected.row inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+    
+    
+}
 
+
+-(void)BTN_left_brand_action
+{
+    NSIndexPath *newIndexPath;
+    if (INDX_selected)
+    {
+        newIndexPath = [NSIndexPath indexPathForRow:INDX_selected.row - 3 inSection:0];
+        INDX_selected = newIndexPath;
+    }
+    
+    else if ([brands_arr count]  > INDX_selected.row)
+    {
+        if ([brands_arr count] == INDX_selected.row - 3) {
+            newIndexPath = [NSIndexPath indexPathForRow:[brands_arr count] - 3 inSection:0];
+            INDX_selected = newIndexPath;
+        }
+        else
+        {
+            newIndexPath = [NSIndexPath indexPathForRow:INDX_selected.row - 3 inSection:0];
+            INDX_selected = newIndexPath;
+        }
+    }
+    
+    
+    if (!newIndexPath) {
+        newIndexPath = [NSIndexPath indexPathForRow:3 inSection:0];
+        INDX_selected = newIndexPath;
+    }
+    if (newIndexPath.row == 1)
+    {
+        newIndexPath = [NSIndexPath indexPathForRow:1 inSection:0];
+        INDX_selected = newIndexPath;
+    }
+    if(newIndexPath.row < 1)
+    {
+        newIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        INDX_selected = newIndexPath;
+    }
+
+    
+    [_collection_brands scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:INDX_selected.row inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+    
+
+}
 /*
 #pragma mark - Navigation
 

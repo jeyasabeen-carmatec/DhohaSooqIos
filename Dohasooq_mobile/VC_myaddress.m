@@ -653,18 +653,19 @@
     
      UIView *view = tapgstr.view;
     shpid = [NSString stringWithFormat:@"%ld",(long)[view tag]];
+    UIAlertView *alert;
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        alert = [[UIAlertView alloc] initWithTitle:@"" message:@"هل أنت متأكد أنك تريد حذف" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"إلغاء", nil];
+       
+    }
+    else{
+       alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Are you sure you want to Delete" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
+       
+    }
     
-    
-    
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Are you sure you want to Delete" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
     alert.tag = 1;
     [alert show];
-
-    
-    
-   
-    
-    
     NSLog(@"the cancel clicked");
 }
 
@@ -1439,8 +1440,14 @@ if (textField.tag == 8) {
                 [Helper_activity stop_activity_animation:self];
 
                 
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+                }
+                else{
+                    [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+                }
+
             }
             
         }
@@ -1494,11 +1501,6 @@ if (textField.tag == 8) {
                                 [_staes_country_pickr reloadAllComponents];
 //                                [self.staes_country_pickr selectRow:0 inComponent:0 animated:NO];
 //                                [self pickerView:self.staes_country_pickr didSelectRow:0 inComponent:0];
-                                
-                                
-                                
-                                
-                                
                                 
                             }
                             else{
@@ -1849,7 +1851,13 @@ if (textField.tag == 8) {
             if ([[json_DATA valueForKey:@"success"] isEqualToString:@"success"]) {
                
                 i= i-1;
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {  [HttpClient createaAlertWithMsg:@"تمت إضافة العنوان الجديد بنجاح." andTitle:nil];
+                }else{
+               
                 [HttpClient createaAlertWithMsg:@"New Address Added Successfully." andTitle:@""];
+                
+                }
 
                  [self Shipp_address_API];
             }

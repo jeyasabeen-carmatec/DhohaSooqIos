@@ -41,8 +41,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self dateVIEW];
+ 
     [_BTN_trailer_watch addTarget:self action:@selector(BTN_trailer_watch) forControlEvents:UIControlEventTouchUpInside];
+    
+    [Helper_activity animating_images:self];
+    [self dateVIEW];
+    [self performSelector:@selector(movie_detil_api) withObject:nil afterDelay:0.01];
     
 
     detail_dict  = [[NSMutableDictionary alloc]init];
@@ -77,8 +81,7 @@
 //    VW_overlay.hidden = YES;
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-     [Helper_activity animating_images:self];
-    [self performSelector:@selector(movie_detil_api) withObject:nil afterDelay:0.01];
+    
 }
 
 -(void)filtering_date{
@@ -148,7 +151,7 @@
             
             for (int j=0; j<[[date_Arr objectAtIndex:i] count]; j++) {
                 NSDate *tomorrow = [cal dateByAddingUnit:NSCalendarUnitDay
-                                                   value:0
+                                                   value:1
                                                   toDate:[dateFormat dateFromString:[[date_Arr objectAtIndex:i] objectAtIndex:j]]
                                                  options:0];
                 [arry_with_Dates addObject:tomorrow];
@@ -159,7 +162,7 @@
         }
         else{
             NSDate *tomorrow = [cal dateByAddingUnit:NSCalendarUnitDay
-                                               value:0
+                                               value:1
                                               toDate:[dateFormat dateFromString:[date_Arr objectAtIndex:i]]
                                              options:0];
             [arry_with_Dates addObject:tomorrow];
@@ -854,12 +857,8 @@
             {
             [[NSUserDefaults standardUserDefaults] setValue:[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] valueForKey:@"_id"] forKey:@"movie_id"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-//            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"movie_date"];
-//            [[NSUserDefaults standardUserDefaults] synchronize];
-
             [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            [self performSegueWithIdentifier:@"booking_seat" sender:self];
             [[NSUserDefaults standardUserDefaults] setValue:[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] valueForKey:@"_time"] forKey:@"movie_time"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             [[NSUserDefaults standardUserDefaults] setValue:[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"theatre"] forKey:@"theatre"];
@@ -872,7 +871,7 @@
                 NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie.\nEntrance is not allowed for person below %@ years old.\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
-                alert.tag = 0;
+                alert.tag = 1;
                 [alert show];
                
               //  [self performSegueWithIdentifier:@"booking_seat" sender:self];

@@ -95,7 +95,7 @@
     {
         
         
-        index = 1;
+        index = 0;
         
     }
     else{
@@ -121,11 +121,6 @@
              book_cell.LBL_event_name.text = str_event_name;
              NSString *str_code = [NSString stringWithFormat:@"%@",[[Total_QT_arr objectAtIndex:indexPath.row] valueForKey:@"_confirmationCode"]];
              NSString *str_confirm_code = [NSString stringWithFormat:@"Confirmation code %@",str_code];
-             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-             {
-                str_confirm_code = [NSString stringWithFormat:@"Confirmation code %@",str_code];
-
-             }
              
              if ([book_cell.LBL_confirmation_code respondsToSelector:@selector(setAttributedText:)]) {
                  
@@ -189,12 +184,8 @@
              
              
         book_cell.LBL_seats.text = str_seats;
-        NSString *str_amount = [NSString stringWithFormat:@"%@ %@",[[Total_QT_arr objectAtIndex:indexPath.row] valueForKey:@"_total_Cost"],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+        NSString *str_amount = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],[[Total_QT_arr objectAtIndex:indexPath.row] valueForKey:@"_total_Cost"]];
           NSString *str_AMT = @"Total Amount:";
-             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-             {
-                 str_AMT = @"المبلغ الإجمالي";
-             }
              
         
         NSString *total_amount = [NSString stringWithFormat:@"%@ %@",str_AMT,str_amount];
@@ -326,11 +317,7 @@
         book_cell.LBL_seats.text = str_seats;
         NSString *str_amount = [NSString stringWithFormat:@"%@ %@",[Total_QT_arr valueForKey:@"_total_Cost"],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
         NSString *str_AMT = @"Total Amount:";
-        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-        {
-            str_AMT = @"المبلغ الإجمالي";
-        }
-
+        
         
         NSString *total_amount = [NSString stringWithFormat:@"%@ %@",str_AMT,str_amount];
 
@@ -459,14 +446,9 @@
         }
 
         book_cell.LBL_seats.text = str_seats;
-        NSString *str_amount = [NSString stringWithFormat:@"%@ %@",[[Total_QT_arr objectAtIndex:indexPath.row] valueForKey:@"_total_Cost"],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+        NSString *str_amount = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],[[Total_QT_arr objectAtIndex:indexPath.row] valueForKey:@"_total_Cost"]];
         
         NSString *str_AMT = @"Total Amount:";
-        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-        {
-            str_AMT = @"المبلغ الإجمالي";
-        }
-
         
         NSString *total_amount = [NSString stringWithFormat:@"%@ %@",str_AMT,str_amount];
 
@@ -590,11 +572,7 @@
         NSString *str_amount = [NSString stringWithFormat:@"%@ %@",[Total_QT_arr valueForKey:@"_total_Cost"],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
         
         NSString *str_AMT = @"Total Amount:";
-        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-        {
-            str_AMT = @"المبلغ الإجمالي";
-        }
-
+        
         
         NSString *total_amount = [NSString stringWithFormat:@"%@ %@",str_AMT,str_amount];
         
@@ -668,7 +646,7 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 180;
+    return UITableViewAutomaticDimension;
 }
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -685,12 +663,7 @@
     
     
     self.segmentedControl4.sectionTitles = @[@" Movies  ",@" Events "];
-    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-    {
-        self.segmentedControl4.sectionTitles = @[@" الأفلام   ",@" المناسبات  "];
-
-    }
-
+  
     
     self.segmentedControl4.backgroundColor = [UIColor clearColor];
     self.segmentedControl4.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15]};

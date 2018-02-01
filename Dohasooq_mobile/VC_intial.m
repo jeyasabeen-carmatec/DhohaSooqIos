@@ -465,13 +465,13 @@
                             [[NSUserDefaults standardUserDefaults] setInteger:[[[lang_arr objectAtIndex:j]valueForKey:@"id"] integerValue] forKey:@"language_id"];
                             [[NSUserDefaults standardUserDefaults] setValue: [[lang_arr  objectAtIndex:j]valueForKey:@"language_name"] forKey:@"language"];
                             [[NSUserDefaults standardUserDefaults] synchronize];
+                            [self performSelector:@selector(API_call) withObject:activityIndicatorView afterDelay:0.01];
                         }
                     }
 
                     
                     [[NSUserDefaults standardUserDefaults] setObject:lang_arr forKey:@"language_arr"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
-                     [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
                 }
                 else{
                     VW_overlay.hidden = YES;
@@ -494,246 +494,6 @@
     
 }
 
--(void)go_to_login
-{
-    NSString *msg;
-    if([_TXT_country.text isEqualToString:@""])
-    {
-        [_TXT_country becomeFirstResponder];
-        msg = @"Please select country";
-        
-    }
-    else if([_TXT_language.text isEqualToString:@""])
-    {
-          [_TXT_language becomeFirstResponder];
-        msg = @"please select language";
-    }
-    else
-    {
-    
-         if ([self.TXT_language.text isEqualToString:@"Arabic"])
-         {
-             
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"story_board_language"];
-        [[NSUserDefaults  standardUserDefaults] setValue:_TXT_language.text forKey:@"story_board_language"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Arabic" bundle:nil];
-        
-        Home_page_Qtickets *controller = [storyboard instantiateViewControllerWithIdentifier:@"Home_page_Qtickets"];
-        UINavigationController *navigationController =
-        [[UINavigationController alloc] initWithRootViewController:controller];
-        [self  presentViewController:navigationController animated:NO completion:nil];
-        
-            }
-            else
-             {
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"story_board_language"];
-                [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
-             // [self  presentViewController:QT animated:NO completion:nil];
-             //[self performSegueWithIdentifier:@"intial_login" sender:self];
-               
-             }
-    
-//     [[NSUserDefaults standardUserDefaults] setObject:lang_arr forKey:@"languages"];
-    
-    [[NSUserDefaults  standardUserDefaults] setValue:_TXT_language.text forKey:@"languge"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-
-    if(msg)
-    {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
-
-    }
-}
-#pragma textfield delegates
-
--(BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    [_TXT_country resignFirstResponder];
-    [_TXT_language resignFirstResponder];
-    return YES;
-}
--(void)textFieldDidBeginEditing:(UITextField *)textField
-{
-//    if(textField == _TXT_country)
-//    {
-//        _TBL_list_coutry.hidden = NO;
-//        _TBL_list_lang.hidden  =YES;
-//        
-//    }
-//    else if(textField == _TXT_language)
-//    {
-//        _TBL_list_lang.hidden  =NO;
-//        _TBL_list_coutry.hidden = YES;
-//    }
-}
--(void)textFieldDidEndEditing:(UITextField *)textField
-{
-//    if(textField == _TXT_country)
-//    {
-//        _TBL_list_coutry.hidden = YES;
-//    }
-//    else if(textField == _TXT_language)
-//    {
-//        _TBL_list_coutry.hidden = YES;
-//    }
-    
-}
-#pragma tableview delgates
-//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-//{
-//    if(tableView == _TBL_list_coutry)
-//    {
-//        return country_arr.count;
-//    }
-//    else
-//        return lang_arr.count;
-//}
-//
-//
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    if(tableView == _TBL_list_coutry)
-//    {
-//        UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"cell"];
-//        temp_dict = [country_arr objectAtIndex:indexPath.row];
-//        
-//        
-//        if (cell == nil)
-//        {
-//            cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
-//        }
-//        cell.textLabel.text = [temp_dict valueForKey:@"name"];
-//        return cell;
-//    }
-//    else
-//    {
-//        UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"cell"];
-//        
-//        if (cell == nil)
-//        {
-//            cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
-//        }
-//        if(lang_arr.count == 0)
-//        {
-//            cell.textLabel.text = @"please select Country";
-//            
-//        }
-//        else
-//        {
-//            cell.textLabel.text = [[lang_arr objectAtIndex:indexPath.row]valueForKey:@"language_name"];
-//        }
-//        return cell;
-//        
-//    }
-//}
-//-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    NSUserDefaults *usd = [NSUserDefaults standardUserDefaults];
-//    if(tableView == _TBL_list_coutry)
-//    {
-//        _TBL_list_coutry.hidden = YES;
-//        //NSLog(@"%@",country_arr);
-//        _TXT_country.text = [[country_arr objectAtIndex:indexPath.row] valueForKey:@"name"];
-//        country_ID = [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:indexPath.row] valueForKey:@"id"]];
-//        _TXT_language.text = @"";
-//        
-//        [usd setInteger:[[[country_arr objectAtIndex:indexPath.row]valueForKey:@"id" ] integerValue] forKey:@"country_id"];
-//        //NSLog(@"Country id:::%@",[usd valueForKey:@"country_id"]);
-//        
-//       // [self language_api_call];
-//#pragma Language_api_integration Method Calling
-//        
-//        @try
-//        {
-//            
-//            NSString *urlGetuser =[NSString stringWithFormat:@"%@Languages/getLangByCountry/%@.json",SERVER_URL,country_ID];
-//            urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-//            [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    if (error) {
-//                        [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
-//                    }
-//                    if (data) {
-//                        NSMutableDictionary *json_DATA = data;
-//                        lang_arr = [NSMutableArray array];
-//                        lang_arr = [json_DATA valueForKey:@"languages"];
-//                           
-//                        [_TBL_list_lang reloadData];
-//                        
-//                        
-//                    }
-//                    
-//                });
-//            }];
-//        }
-//        @catch(NSException *exception)
-//        {
-//            NSLog(@"The error is:%@",exception);
-//            [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
-//           
-//        }
-//        
-//    }
-//    if(tableView == _TBL_list_lang)
-//    {
-//               _TBL_list_lang.hidden = YES;
-//        //_TXT_username.text = [];
-//        _TXT_language.text = [[lang_arr objectAtIndex:indexPath.row]valueForKey:@"language_name"];
-//        
-//        [usd setInteger:[[[lang_arr objectAtIndex:indexPath.row] valueForKey:@"id"] integerValue] forKey:@"language_id"];
-//        [usd setValue: [[lang_arr objectAtIndex:indexPath.row]valueForKey:@"language_name"] forKey:@"language"];
-//        [usd synchronize];
-//        
-//        //NSLog(@"Language id:::%@",[usd valueForKey:@"language_id"]);
-//        
-//        
-//    }
-//    
-//}
-#pragma API call
-//-(void)country_api_call
-//{
-//    @try
-//    {
-//        NSError *error;
-//        // NSError *err;
-//        NSHTTPURLResponse *response = nil;
-//
-//        //        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
-//        //        NSLog(@"the posted data is:%@",parameters);
-//        NSString *urlGetuser =[NSString stringWithFormat:@"%@countries/index.json",SERVER_URL];
-//        // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-//        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
-//        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-//        [request setURL:urlProducts];
-//        [request setHTTPMethod:@"POST"];
-//        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-//        // [request setHTTPBody:postData];
-//        //[request setAllHTTPHeaderFields:headers];
-//        [request setHTTPShouldHandleCookies:NO];
-//        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-//        if(aData)
-//        {
-//            NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
-//            //NSLog(@"The response Api post sighn up API %@",json_DATA);
-//
-////            country_arr = [json_DATA valueForKey:@"countries"];
-////            [_TBL_list_coutry reloadData];
-//
-//
-//
-//        }
-//    }
-//
-//    @catch(NSException *exception)
-//    {
-//        NSLog(@"The error is:%@",exception);
-//    }
-//
-//}
 
 -(void)language_api_call{
     @try
@@ -889,8 +649,7 @@
                 
             }
             
-            NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/home/%ld/%ld/%@.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"],user_id];
-            NSLog(@"country id %ld ,language id %ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
+            NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/home/%ld/%ld/%@/Customer.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"],user_id];            NSLog(@"country id %ld ,language id %ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
             
             
             
@@ -906,10 +665,11 @@
                         
                         [self MENU_api_call];
                         [self IMAGE_PATH_API];
-                        
+
                         [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Home_data"];
                         [[NSUserDefaults standardUserDefaults] synchronize];
-                        
+                        [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
+
                         
                     }
                     else

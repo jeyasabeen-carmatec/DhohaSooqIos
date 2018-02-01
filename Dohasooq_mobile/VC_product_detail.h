@@ -47,6 +47,8 @@
 
 @property(nonatomic,weak) IBOutlet UILabel *LBL_discount;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_item_name;
+@property (weak, nonatomic) IBOutlet UILabel *LBL_dohaMiles;
+
 
 //third view
 @property(nonatomic,weak) IBOutlet UIView *VW_third;

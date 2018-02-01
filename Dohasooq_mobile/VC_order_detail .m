@@ -196,10 +196,15 @@
     frame_set.size.width = _VW_shipping.frame.size.width;
     _scroll_shipping.frame = frame_set;
     
+   
+    
+    
+    
     frame_set = _VW_BILLING_ADDRESS.frame;
     frame_set.size.height = _VW_BILLING_ADDRESS.frame.size.height;
     frame_set.size.width =_VW_shipping.frame.size.width;
     _VW_BILLING_ADDRESS.frame = frame_set;
+    
     [self.scroll_shipping addSubview:_VW_BILLING_ADDRESS];
     
     // ADD Special Instructions
@@ -1018,8 +1023,7 @@
                 
                 if ([cell.LBL_seller respondsToSelector:@selector(setAttributedText:)])
                 {
-                   
-                    // Define general attributes for the entire text
+                                      // Define general attributes for the entire text
                     NSDictionary *attribs = @{
                                               NSForegroundColorAttributeName:[UIColor colorWithRed:84.0/255.0 green:84.0/255.0 blue:84.0/255.0 alpha:1],
                                               NSFontAttributeName:cell.LBL_date .font
@@ -1032,9 +1036,6 @@
                 else{
                     cell.LBL_seller.text = item_seller;
                   }
-                
-                
-                
                 
                 
    // Product Quantity
@@ -1123,63 +1124,18 @@
 
                 NSString *only_price;
                 
-             /*  if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-//                   only_price = [NSString stringWithFormat:@"%@ أميال الدوحة / %@ %@",doha_miles,prev_price,qr];
-                    //only_price = [NSString stringWithFormat:@"%@ %@ / %@ %@",qr,prev_price,doha_miles,mils];
-//                    only_price = [NSString stringWithFormat:@"أميال الدوحة %@ / %@ %@",doha_miles,prev_price,qr];
-//                    only_price = [NSString stringWithFormat:@"%@ %@ أميال الدوحة %@ / ",doha_miles,prev_price,qr];
-//                    only_price = [NSString stringWithFormat:@"%@ %@ / أميال الدوحة %@",doha_miles,prev_price,qr];
-//                    only_price = [NSString stringWithFormat:@"%@ %@ %@ / أميال الدوحة",doha_miles,prev_price,qr];
-//                    only_price = [NSString stringWithFormat:@"%@ %@ / %@ أميال الدوحة",doha_miles,prev_price,qr];
-//                    only_price = [NSString stringWithFormat:@"%@ %@ / أميال الدوحة %@",doha_miles,prev_price,qr];
-//                    only_price = [NSString stringWithFormat:@"%@ %@ / أميال الدوحة %@",qr,prev_price,doha_miles];
-//                    only_price = [NSString stringWithFormat:@"%@ %@ أميال الدوحة %@ /",qr,prev_price,doha_miles];
-//                    only_price = [NSString stringWithFormat:@"أميال الدوحة %@ / %@ %@",doha_miles,qr,prev_price];
-//                    only_price = [NSString stringWithFormat:@"/ أميال الدوحة %@ %@ %@",doha_miles,prev_price,qr];
-//                    only_price = [NSString stringWithFormat:@"%@ %@ أميال الدوحة %@",doha_miles,prev_price,];
-                    
-                    
-                    NSString *STR_rr = [NSString stringWithFormat:@"%@ %@",prev_price,qr];
-                    only_price = [NSString stringWithFormat:@"أميال الدوحة %@",doha_miles];
-                    NSString *STR_fina = [NSString stringWithFormat:@"%@ / %@",only_price,STR_rr];
-                    NSArray *temp_arr1 = [STR_fina componentsSeparatedByString:@"/"];
-                    NSLog(@"Final STR = %@ / %@",[temp_arr1 objectAtIndex:0],[temp_arr1 objectAtIndex:1]);
-                    
-                    NSString *STTST = [NSString stringWithFormat:@"A %@",[temp_arr1 objectAtIndex:0]];
-                    NSLog(@"Final STR sdf %@",STTST);
-                    NSString *STTST1 = [NSString stringWithFormat:@"%@ A",[temp_arr1 objectAtIndex:0]];
-                    NSLog(@"Final STR1 sdf %@",STTST1);
-                    
-                    NSString *STTST11 = [NSString stringWithFormat:@"%@ / %@ %@",[temp_arr1 objectAtIndex:0],qr,prev_price];
-                    NSLog(@"Final STR1 sdf %@",STTST11);
-                    
-                    NSString *STTST12 = [NSString stringWithFormat:@"%@",temp_arr1];
-                    
-                    char c = '"';
-                    NSString *SEP = [NSString stringWithFormat:@"%c,",c];
-                    NSString *RFF = [NSString stringWithFormat:@"%c",c];
-                    
-                    STTST12 = [STTST12 stringByReplacingOccurrencesOfString:@"(" withString:@""];
-                    STTST12 = [STTST12 stringByReplacingOccurrencesOfString:@")" withString:@""];
-                    STTST12 = [STTST12 stringByReplacingOccurrencesOfString:SEP withString:@""];
-                    STTST12 = [STTST12 stringByReplacingOccurrencesOfString:RFF withString:@""];
-                    STTST12 = [STTST12 stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-                    STTST12 = [STTST12 stringByReplacingOccurrencesOfString:@"      " withString:@" "];
-                    STTST12 = [STTST12 stringByReplacingOccurrencesOfString:@"    " withString:@""];
-                    
-                    NSLog(@"Final STR1 sdf %@",STTST12);
-                    
-                    only_price = STTST12;
-                
+
+                 only_price = [NSString stringWithFormat:@"/  %@ %@ ",qr,prev_price];
 
                 }
                 else
-                {*/
-                    only_price = [NSString stringWithFormat:@"%@ %@ / %@ %@",qr,prev_price,mils,doha_miles];
-               // }
+                {
+                    only_price = [NSString stringWithFormat:@"%@ %@ ",qr,prev_price];
+                }
         
-                NSString *india_currency = [NSString stringWithFormat:@"%@ %@ %@%@",qr,price,qr,prev_price];
+               // NSString *india_currency = [NSString stringWithFormat:@"%@ %@ %@%@",qr,price,qr,prev_price];
                 
             // Font size Based on Screen
                 
@@ -1190,17 +1146,17 @@
                 if(result.height <= 480)
                 {
                     // iPhone Classic
-                    font_size = 09.0;
+                    font_size = 13.0;
                     
                 }
                 else if(result.height <= 568)
                 {
                     // iPhone 5
-                    font_size = 09.0;
+                    font_size = 13.0;
                 }
                 else
                 {
-                    font_size = 13.0;
+                    font_size = 15.0;
                 }
 
                 
@@ -1217,107 +1173,53 @@
                         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:only_price attributes:nil];
                         
                         NSRange qrs = [only_price rangeOfString:qr];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:font_size],NSForegroundColorAttributeName:[UIColor blackColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:font_size],NSForegroundColorAttributeName:[UIColor grayColor]}
                                                 range:qrs];
                         
                         NSRange ename = [only_price rangeOfString:prev_price];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:font_size],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:font_size],NSForegroundColorAttributeName:[UIColor grayColor]}
                                                 range:ename];
-                        
-                        NSRange miles_price = [only_price rangeOfString:doha_miles];
-                        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                        {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:19.0]}
-                                                    range:miles_price];
-                        }
-                        else
-                        {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:font_size],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
-                                                    range:miles_price];
-                        }
-                        NSRange milsr = [only_price rangeOfString:mils];
-                        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                        {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:19.0]}
-                                                    range:milsr];
-                        }
-                        else
-                        {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:font_size]}
-                                                    range:milsr];
-                        }
                         
                         
                         cell.LBL_current_price.attributedText = attributedText;
-                        //cell.LBL_discount.text = @"";
+                        
+                        
+                        
+                    }
 
-//                        cell.LBL_discount.text = @"0 %off";
-                        
-                        
-                    }
-                    else if (![price isEqualToString:@""] && [doha_miles isEqualToString:@""]){
-                        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:india_currency attributes:nil];
-                        
-                        NSRange qrs = [india_currency rangeOfString:qr];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:font_size],NSForegroundColorAttributeName:[UIColor blackColor]}
-                                                range:qrs];
-                        
-                        NSRange ename = [india_currency rangeOfString:prev_price];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:font_size],NSForegroundColorAttributeName:[UIColor grayColor]}
-                                                range:ename];
-                        
-                        NSRange ePrice = [india_currency rangeOfString:price];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:font_size],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
-                                                range:ePrice];
-                        
-                        cell.LBL_current_price.attributedText = attributedText;
-                        //                        cell.LBL_discount.text = @"0 %off";
-                        
-                    }
                     
                     else{
                         
-                        
-//                         NSString *text = [NSString stringWithFormat:@"%@ %@ %@%@ / %@ %@",qr,price,qr,prev_price,doha_miles,mils];
-                        
-//                        int  k = [prev_price intValue]-[price intValue];
-//                        float discount = (k*100)/[prev_price intValue];
-//                        NSString *str_off = @"% off";
-                        //cell.LBL_discount.text = [NSString stringWithFormat:@"%.f%@",discount,str_off];
-                        
-             /*************************************/
-                        //prev_price= [qr stringByAppendingString:prev_price];
-                        
-                        
-                        
-    
-                        NSString *text;
+                    NSString *text;
                         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                         {
                             prev_price = [NSString stringWithFormat:@"%@ %@",prev_price,qr];
-                            text = [NSString stringWithFormat:@" %@ %@ / %@ %@ %@",mils,doha_miles,prev_price,price,qr];
-                            
+                            price = [NSString stringWithFormat:@"%@ %@",price,qr];
+//                            text = [NSString stringWithFormat:@" %@ %@ / %@ %@ %@",mils,doha_miles,prev_price,price,qr];
+                            text = [NSString stringWithFormat:@"/  %@ %@",prev_price,price];
 
                         }else{
                             prev_price = [NSString stringWithFormat:@"%@ %@",qr,prev_price];
-                            text = [NSString stringWithFormat:@"%@ %@ %@ / %@ %@",qr,price,prev_price,mils,doha_miles];
+                            price = [NSString stringWithFormat:@"%@ %@",qr,price];
+
+                            text = [NSString stringWithFormat:@"%@ %@ /",price,prev_price];
   
                         }
                         
                         
                         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                         
-                        NSRange qrs = [text rangeOfString:qr];
-                        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                        {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0]}
-                                                    range:qrs];
-                        }
-                        else
-                        {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:font_size],NSForegroundColorAttributeName:[UIColor redColor]}
-                                                    range:qrs];
-                        }
+//                        NSRange qrs = [text rangeOfString:qr];
+//                        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+//                        {
+//                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0],NSForegroundColorAttributeName:[UIColor redColor]}
+//                                                    range:qrs];
+//                        }
+//                        else
+//                        {
+//                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:font_size],NSForegroundColorAttributeName:[UIColor redColor]}
+//                                                    range:qrs];
+//                        }
                         
                         
                         
@@ -1352,10 +1254,10 @@
 
                             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                             {
-                                 [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(mils.length+doha_miles.length+5, [prev_price length])];
+                                 [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(3, [prev_price length])];
                             }
                             else{
-                                 [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(price.length+qr.length+2, [prev_price length])];
+                                 [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(price.length+1, [prev_price length])];
                             }
                             
                             
@@ -1363,30 +1265,7 @@
                             NSLog(@"%@",exception);
                         }
                         
-                        
-                        NSRange miles_price = [text rangeOfString:doha_miles];
-                        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                        {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0]}
-                                                    range:miles_price];
-                        }
-                        else
-                        {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:font_size],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
-                                                    range:miles_price];
-                        }
-                        NSRange miles = [text rangeOfString:mils];
-                        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                        {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0]}
-                                                    range:miles];
-                        }
-                        else
-                        {
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:font_size],NSForegroundColorAttributeName:[UIColor blackColor]}
-                                                    range:miles];
-                        }
-                        
+                    
                         
                         
                         cell.LBL_current_price .attributedText = attributedText;
@@ -1402,6 +1281,35 @@
                 
                 //pro_cell.LBL_prev_price.text =  [temp_dict valueForKey:@"key3"];
                 // cell.LBL_discount.text = @"35% off";
+       
+   // Custom text For DohaMiles Label
+                
+                
+                NSString *doha_text = [NSString stringWithFormat:@"%@ %@",mils,doha_miles];
+                if ([cell._LBL_Doha_Miles respondsToSelector:@selector(setAttributedText:)])
+                {
+                    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:doha_text attributes:nil];
+                    
+                    NSRange qrs = [doha_text rangeOfString:doha_miles];
+                    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+                    {
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:21.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                                                range:qrs];
+                    }
+                    else
+                    {
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:font_size],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                                                range:qrs];
+                    }
+                    cell._LBL_Doha_Miles.attributedText = attributedText;
+                
+                }
+                else{
+                    cell._LBL_Doha_Miles.text = doha_text;
+                }
+                
+                
+                
                 
                 
         // Add Target For Buttons in cell
@@ -2230,9 +2138,10 @@
     else  if([title_page_str isEqualToString:@"SHIPPING"])
     {
         
-        
+       
              VW_overlay.hidden = YES;
 //            [activityIndicatorView startAnimating];
+        
             [self performSelector:@selector(validatingTextField) withObject:nil afterDelay:0.01];
            
         
@@ -2255,7 +2164,9 @@
     
     title_page_str = @"SHIPPING";
     //_LBL_navigation.title = @"SHIPPING";
-    
+    //_scroll_shipping.hidden = NO;
+    _VW_shipping.hidden = NO;
+
     _TBL_address.estimatedRowHeight = 4.0;
     _TBL_address.rowHeight = UITableViewAutomaticDimension;
     
@@ -2284,7 +2195,6 @@
     
     
         NSLog(@"%@",payment_type_str);
-    
     
         if ([payment_type_str isEqualToString:@"1"]||[payment_type_str isEqualToString:@"2"] ||[payment_type_str isEqualToString:@"3"] ||[payment_type_str isEqualToString:@"4"] || [payment_type_str isEqualToString:@"5"]) {
             
@@ -2322,7 +2232,15 @@
             
         }
         else{
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+           
+            [HttpClient createaAlertWithMsg:@"الرجاء تحديد نوع الدفع" andTitle:@""];
+            }
+            else{
             [HttpClient createaAlertWithMsg:@"Please Select Payment Type" andTitle:@""];
+            }
         }
     }
 #pragma mark Timer Implementation
@@ -2449,7 +2367,14 @@
     if ([self.TXT_cupon.text isEqualToString:@""]) {
     
         [self.TXT_cupon becomeFirstResponder];
-        [HttpClient createaAlertWithMsg:@"Please enter cupon code" andTitle:@""];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            
+        [HttpClient createaAlertWithMsg:@"الرجاء إدخال رمز الكوبون" andTitle:@""];
+        }
+        else{
+             [HttpClient createaAlertWithMsg:@"Please enter cupon code" andTitle:@""];
+        }
     }
     else{
      
@@ -2660,7 +2585,15 @@
         
     }
     else{
-        [HttpClient createaAlertWithMsg:@"Plese select Time and  Day/Date" andTitle:@""];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            
+            [HttpClient createaAlertWithMsg:@"بليز حدد الوقت واليوم / التاريخ" andTitle:@""];;
+        }
+        else{
+            [HttpClient createaAlertWithMsg:@"Plese select Time and  Day/Date" andTitle:@""];
+        }
+       
     }
     
     
@@ -2875,15 +2808,24 @@
     
     order_cell *cell = (order_cell*)[self.TBL_orders cellForRowAtIndexPath:indexPath];
     
-
     if ([cell._TXT_count.text isEqualToString:@"1"]) {
         
-    }
-    else{
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            
+            [HttpClient createaAlertWithMsg:@"يجب أن يكون الحد الأدنى من الكمية 1." andTitle:@""];;
+        }
+        else{
+            [HttpClient createaAlertWithMsg:@"Minimum Quantity Should be 1." andTitle:@""];
+        }
+
+        
+        }else{
+        
         NSString *cnt = [NSString stringWithFormat:@"%ld",[cell._TXT_count.text integerValue]-1];
-    
+        
         item_count = cnt;
-    
+        
         
         product_id = [NSString stringWithFormat:@"%ld",(long)btn.tag];//Getting product Id
         
@@ -2891,29 +2833,29 @@
         merchent_id = [NSString stringWithFormat:@"%ld",cell.BTN_calendar.tag]; //Getting Mer Id
         
         NSLog(@"id_m %@  id_p %@",product_id,merchent_id);
-    
-    //[self updating_cart_List_api];
-    
-    
-    
-    NSArray *keys_arr = [[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] allKeys];
-    arr_product = [[[jsonresponse_dic valueForKey:@"data"] valueForKey:@"pdts"] valueForKey:[keys_arr objectAtIndex:indexPath.section]];
-    
-    NSString *prev_price = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"productprice"]];
-    
-    NSString *price = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"specialPrice"]];
-    NSInteger subTtl;
-    @try {
-          subTtl = total + [price integerValue];
-        [self  updating_cart_List_api:[NSString stringWithFormat:@"%@",item_count]];
-       
-    } @catch (NSException *exception) {
         
-          subTtl = total + [prev_price integerValue];
-         [self  updating_cart_List_api:[NSString stringWithFormat:@"%@",item_count]];
+        //[self updating_cart_List_api];
         
-    }
-    
+        
+        
+        //    NSArray *keys_arr = [[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] allKeys];
+        //    arr_product = [[[jsonresponse_dic valueForKey:@"data"] valueForKey:@"pdts"] valueForKey:[keys_arr objectAtIndex:indexPath.section]];
+        
+        //    NSString *prev_price = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"productprice"]];
+        //
+        //    NSString *price = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"specialPrice"]];
+        //    NSInteger subTtl;
+        @try {
+            //subTtl = total + [price integerValue];
+            [self  updating_cart_List_api:[NSString stringWithFormat:@"%@",item_count]];
+            
+        } @catch (NSException *exception) {
+            
+            //subTtl = total + [prev_price integerValue];
+            [self  updating_cart_List_api:[NSString stringWithFormat:@"%@",item_count]];
+            
+        }
+        
     }
 }
 -(void)plus_action:(UIButton*)btn
@@ -2923,7 +2865,7 @@
     NSIndexPath *indexPath = [self.TBL_orders indexPathForRowAtPoint:rootViewPoint];
     order_cell *cell = (order_cell*)[self.TBL_orders cellForRowAtIndexPath:indexPath];
     
-     NSString *cnt = [NSString stringWithFormat:@"%ld",[cell._TXT_count.text integerValue]+1];
+    NSString *cnt = [NSString stringWithFormat:@"%ld",[cell._TXT_count.text integerValue]+1];
     
     item_count = cnt;
     
@@ -2933,30 +2875,75 @@
     
     NSLog(@"id_m %@  id_p %@",product_id,merchent_id);
     
-    NSArray *keys_arr = [[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] allKeys];
-    arr_product = [[[jsonresponse_dic valueForKey:@"data"] valueForKey:@"pdts"] valueForKey:[keys_arr objectAtIndex:indexPath.section]];
-    
-    NSString *prev_price = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"productprice"]];
-    
-    NSString *price = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"specialPrice"]];
-    //[self updating_cart_List_api];
-    NSInteger subTtl;
+    //    NSArray *keys_arr = [[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] allKeys];
+    //    arr_product = [[[jsonresponse_dic valueForKey:@"data"] valueForKey:@"pdts"] valueForKey:[keys_arr objectAtIndex:indexPath.section]];
+    //
+    //    NSString *prev_price = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"productprice"]];
+    //
+    //    NSString *price = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"specialPrice"]];
+    //    //[self updating_cart_List_api];
+    //    NSInteger subTtl;
     @try {
-        subTtl = total + [price integerValue];
+        //subTtl = total + [price integerValue];
         [self  updating_cart_List_api:[NSString stringWithFormat:@"%@",item_count]];
         
     } @catch (NSException *exception) {
         
-        subTtl = total + [prev_price integerValue];
+        //subTtl = total + [prev_price integerValue];
         [self  updating_cart_List_api:[NSString stringWithFormat:@"%@",item_count]];
         
     }
-
-
+    
+    
 }
 
 - (IBAction)back_action_clicked:(id)sender {
-    [self.navigationController popViewControllerAnimated:NO];
+    
+    if([title_page_str isEqualToString:@"ORDER DETAIL"])
+    {
+        
+    /*    VW_overlay.hidden = YES;
+        //            [activityIndicatorView startAnimating];
+        
+        [self performSelector:@selector(move_to_shipping) withObject:nil afterDelay:0.01];*/
+        
+        
+        [self.navigationController popViewControllerAnimated:NO];
+        
+    }
+    else  if([title_page_str isEqualToString:@"SHIPPING"])
+    {
+        _TBL_orders.hidden = NO;
+        [self.view addSubview:_TBL_orders];
+        _VW_shipping.hidden = YES;
+         _Scroll_card.hidden = YES;
+        title_page_str =  @"ORDER DETAIL";
+        _TXT_first.backgroundColor = [UIColor clearColor];
+        _LBL_shipping.backgroundColor =[UIColor clearColor];
+
+      //  [self set_UP_VIEW];
+        
+        
+    }
+    
+    else if ([title_page_str isEqualToString:@"PAYMENT"] && _VW_payment.hidden == NO) {
+        
+        VW_overlay.hidden = YES;
+        _VW_pay_cards.hidden = YES;
+          title_page_str =  @"SHIPPING";
+        _TXT_second.backgroundColor = [UIColor clearColor];
+        _LBL_Payment.backgroundColor =[UIColor clearColor];
+
+        
+         //            [activityIndicatorView startAnimating];
+        [self performSelector:@selector(move_to_shipping) withObject:nil afterDelay:0.01];
+        
+        
+        
+    }
+
+    
+   // [self.navigationController popViewControllerAnimated:NO];
 }
 
 #pragma mark text field delgates
@@ -3025,102 +3012,7 @@
     }
     if (textField == _TXT_Time ) {
         
-        [picker_Arr removeAllObjects];
-        
-        is_Txt_date= NO;
-        if ([[delivary_slot_dic valueForKey:@"delivery"] isKindOfClass:[NSDictionary class]]) {
-            
-            slot_keys_arr = [[delivary_slot_dic valueForKey:@"delivery"]allKeys];
-            
-            for (int slot = 0; slot< slot_keys_arr.count; slot++) {
-                
-               // [picker_Arr addObject:[[delivary_slot_dic valueForKey:@"delivery"] valueForKey:[slot_keys_arr objectAtIndex:slot]]];
-                
-                 [picker_Arr addObject: @{@"time":[[delivary_slot_dic valueForKey:@"delivery"] valueForKey:[slot_keys_arr objectAtIndex:slot]],@"id":[slot_keys_arr objectAtIndex:slot]}];
-            }
-        }
-        
-      // Comparing Current time with below time(API Response)
-        if ([_TXT_Date.text containsString:@"Today"]) {
-            
-            NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-            [dateFormatter setTimeZone:timeZone];
-            NSDate *now = [NSDate date];
-           dateFormatter.dateFormat = @"hh:mm a";
-        
-    
-            
-            NSTimeInterval secondsInEightHours = 3 * 60 * 60;
-            NSDate *datethreeHoursAhead=[now dateByAddingTimeInterval:secondsInEightHours];
-            
-            [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
-            
-            NSLog(@"The Current Time is %@",[dateFormatter stringFromDate:now]);
-            
-            NSString *current_date = [dateFormatter stringFromDate:datethreeHoursAhead];
-            NSDate *current_time= [dateFormatter dateFromString:current_date];
-            
-            NSLog(@"current_time After Adding time %@",[dateFormatter stringFromDate:datethreeHoursAhead]);
-            
-            NSMutableArray *data_arr = [[NSMutableArray alloc]initWithArray:picker_Arr];
-            
-            for (int b=0; b<picker_Arr.count; b++) {
-                
-                NSString *str = [[picker_Arr objectAtIndex:b] valueForKey:@"time"];
-                NSRange equalRange = [str rangeOfString:@"-" options:NSBackwardsSearch];
-                
-                
-                if (equalRange.location != NSNotFound) {
-                    
-                    //NSString *result_after = [str substringFromIndex:equalRange.location + equalRange.length];
-                    NSString *result_before = [str substringWithRange:NSMakeRange(0, equalRange.location)];
-                   // NSLog(@"The result%@ = %@",result_before,result_after);
-                    
-                
-                    //Converting starting time into NSDate
-                    NSDate *time1 = [dateFormatter dateFromString:result_before];
-                    NSLog(@" %d::::b  %@  ------- %@",b,time1,current_time);
-                    
-                    @try {
-                    NSComparisonResult result = [current_time compare:time1];
-                    
-                    //Comparing Starting Time with Current time
-                    if(result == NSOrderedDescending)
-                    {
-                        NSLog(@"Current Time %@ is later than time1 %@",current_date,result_before);
-                    
-                        //[picker_Arr removeObjectAtIndex:b];
-                        [data_arr removeObject:[picker_Arr objectAtIndex:b]];
-                    }
-                    else if (result == NSOrderedAscending){
-                        
-                         NSLog(@"Current Time %@ is less than time1 %@",current_date,result_before);
-                    }
-                    else{
-                        NSLog(@"Current Time %@  time1 %@ are equal",current_date,result_before);
-                    }
-                    } @catch (NSException *exception) {
-                        NSLog(@"**********");
-                    }
-                        
-                    
-                } else {
-                    NSLog(@"There is no = in the string");
-                } //eof If
-                
-               
-            }
-            [picker_Arr removeAllObjects];
-            [picker_Arr addObjectsFromArray:data_arr];
-        }
-        if (!picker_Arr.count) {
-            [HttpClient createaAlertWithMsg:@"No Slots Available For This Day" andTitle:@""];
-            NSLog(@"Sorry! There is no options,Please Select Another Day" );
-            [textField resignFirstResponder];
-        }else{
-            [self.pickerView becomeFirstResponder];
-            [self.pickerView reloadAllComponents];
-        }
+       [self delivary_slot_time_related:textField];
     }
     if (textField == _TXT_country|| textField == _TXT_state) {
         select_blng_ctry_state = YES;
@@ -3153,7 +3045,7 @@
     if(textField == _TXT_phone ||textField == _TXT_Cntry_code || textField ==_TXT_ship_cntry_code || textField ==_TXT_country || textField ==_TXT_state||textField == _TXT_ship_phone||textField == _TXT_city||textField == _TXT_zip||textField == _TXT_ship_zip||textField == _TXT_ship_city||textField == _TXT_ship_country||textField == _TXT_ship_state||textField == _TXT_ship_addr2 || textField == _TXT_instructions)
     {
         [UIView beginAnimations:nil context:NULL];
-        self.view.frame = CGRectMake(0,-170,self.view.frame.size.width,self.view.frame.size.height);
+        self.view.frame = CGRectMake(0,-190,self.view.frame.size.width,self.view.frame.size.height);
         [UIView commitAnimations];
 
     }
@@ -3204,10 +3096,141 @@
         }
         
         if ([textField.text isEqualToString:@""]) {
-            [HttpClient createaAlertWithMsg:@"Please Select Country " andTitle:@""];
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+            [HttpClient createaAlertWithMsg:@"الرجاء تحديد البلد" andTitle:@""];
+            }
+            else{
+              [HttpClient createaAlertWithMsg:@"Please Select Country " andTitle:@""];
+            }
        }
 }
     
+}
+
+#pragma mark Delivary Slot Time Related
+-(void)delivary_slot_time_related:(UITextField*)textfield{
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    
+    [picker_Arr removeAllObjects];
+    
+    is_Txt_date= NO;
+    if ([[delivary_slot_dic valueForKey:@"delivery"] isKindOfClass:[NSDictionary class]]) {
+        
+        slot_keys_arr = [[delivary_slot_dic valueForKey:@"delivery"]allKeys];
+        
+        //            NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+        dateFormatter.dateFormat = @"hh:mm a";
+        
+        
+        for (int slot = 0; slot< slot_keys_arr.count; slot++) {
+            
+            // [picker_Arr addObject:[[delivary_slot_dic valueForKey:@"delivery"] valueForKey:[slot_keys_arr objectAtIndex:slot]]];
+            
+            NSString *str = [[delivary_slot_dic valueForKey:@"delivery"] valueForKey:[slot_keys_arr objectAtIndex:slot]];
+            NSRange equalRange = [str rangeOfString:@"-" options:NSBackwardsSearch];
+            
+            
+            if (equalRange.location != NSNotFound) {
+                
+                NSString *result_before = [str substringWithRange:NSMakeRange(0, equalRange.location)];
+                NSDate *time1 = [dateFormatter dateFromString:result_before];
+                [picker_Arr addObject: @{@"time":[[delivary_slot_dic valueForKey:@"delivery"] valueForKey:[slot_keys_arr objectAtIndex:slot]],@"id":[slot_keys_arr objectAtIndex:slot],@"strt_time_to_sort":time1}];
+            }//Close If
+            
+        }//close for
+        // Sorting By Using Date
+        NSSortDescriptor *descriptor=[[NSSortDescriptor alloc] initWithKey:@"strt_time_to_sort" ascending:YES];
+        NSArray *descriptors=[NSArray arrayWithObject: descriptor];
+        NSArray *reverseOrder=[picker_Arr sortedArrayUsingDescriptors:descriptors];
+        NSLog(@" After sorting%@",reverseOrder);
+        [picker_Arr removeAllObjects];
+        [picker_Arr addObjectsFromArray:reverseOrder];
+    }
+    
+    // Comparing Current time with below time(API Response)
+    if ([_TXT_Date.text containsString:@"Today"]) {
+        
+        
+        [dateFormatter setTimeZone:timeZone];
+        NSDate *now = [NSDate date];
+        dateFormatter.dateFormat = @"hh:mm a";
+        
+        
+        
+        NSTimeInterval secondsInEightHours = 3 * 60 * 60;
+        NSDate *datethreeHoursAhead=[now dateByAddingTimeInterval:secondsInEightHours];
+        
+        [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
+        
+        NSLog(@"The Current Time is %@",[dateFormatter stringFromDate:now]);
+        
+        NSString *current_date = [dateFormatter stringFromDate:datethreeHoursAhead];
+        NSDate *current_time= [dateFormatter dateFromString:current_date];
+        
+        NSLog(@"current_time After Adding time %@",[dateFormatter stringFromDate:datethreeHoursAhead]);
+        
+        NSMutableArray *data_arr = [[NSMutableArray alloc]initWithArray:picker_Arr];
+        
+        for (int b=0; b<picker_Arr.count; b++) {
+            
+            NSString *str = [[picker_Arr objectAtIndex:b] valueForKey:@"time"];
+            NSRange equalRange = [str rangeOfString:@"-" options:NSBackwardsSearch];
+            
+            
+            if (equalRange.location != NSNotFound) {
+                
+                //NSString *result_after = [str substringFromIndex:equalRange.location + equalRange.length];
+                NSString *result_before = [str substringWithRange:NSMakeRange(0, equalRange.location)];
+                // NSLog(@"The result%@ = %@",result_before,result_after);
+                
+                
+                //Converting starting time into NSDate
+                NSDate *time1 = [dateFormatter dateFromString:result_before];
+                NSLog(@" %d::::b  %@  ------- %@",b,time1,current_time);
+                
+                @try {
+                    NSComparisonResult result = [current_time compare:time1];
+                    
+                    //Comparing Starting Time with Current time
+                    if(result == NSOrderedDescending)
+                    {
+                        NSLog(@"Current Time %@ is later than time1 %@",current_date,result_before);
+                        
+                        //[picker_Arr removeObjectAtIndex:b];
+                        [data_arr removeObject:[picker_Arr objectAtIndex:b]];
+                    }
+                    else if (result == NSOrderedAscending){
+                        
+                        NSLog(@"Current Time %@ is less than time1 %@",current_date,result_before);
+                    }
+                    else{
+                        NSLog(@"Current Time %@  time1 %@ are equal",current_date,result_before);
+                    }
+                } @catch (NSException *exception) {
+                    NSLog(@"**********");
+                }
+                
+                
+            } else {
+                NSLog(@"There is no = in the string");
+            } //eof If
+            
+            
+        }
+        [picker_Arr removeAllObjects];
+        [picker_Arr addObjectsFromArray:data_arr];
+    }
+    if (!picker_Arr.count) {
+        [HttpClient createaAlertWithMsg:@"No Slots Available For This Day." andTitle:@""];
+        NSLog(@"Sorry! There is no options,Please Select Another Day" );
+        [textfield resignFirstResponder];
+    }else{
+        [self.pickerView becomeFirstResponder];
+        [self.pickerView reloadAllComponents];
+    }
 }
 
 
@@ -3308,7 +3331,7 @@
                                     [self filtering_MerchantId];
                                     [self Shipp_address_API];
                                     [self set_UP_VIEW];
-                                    
+                                   // [self next_page];
                                   
                                    
                                     
@@ -4218,13 +4241,13 @@
            
            
        }
-       else if(_TXT_phone.text.length>15)
+       else if(_TXT_phone.text.length>8)
        {
            [_TXT_phone becomeFirstResponder];
-           msg = @"Phone Number should not be more than 15 characters";
+           msg = @"Phone Number should not be more than 8 characters";
            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
            {
-               msg = @"يجب أن لا يتجاوز رقم الجوال 15 رقماً";
+               msg = @"يجب أن لا يتجاوز رقم الجوال 8 رقماً";
            }
            
        }
@@ -4459,13 +4482,13 @@
             
             
         }
-        else if(_TXT_ship_phone.text.length>15)
+        else if(_TXT_ship_phone.text.length>8)
         {
             [_TXT_ship_phone becomeFirstResponder];
-            msg = @"Phone Number cannot be more than 15 digits";
+            msg = @"Phone Number cannot be more than 8 digits";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                msg = @"يجب أن لا يتجاوز رقم الجوال 15 رقماً";
+                msg = @"يجب أن لا يتجاوز رقم الجوال 8 رقماً";
             }
            
         }
@@ -4556,7 +4579,8 @@
     
 
     else{
-        
+           _VW_pay_cards.hidden = NO;
+         _Scroll_card.hidden = NO;
           [self move_to_payment_types];
         
         
