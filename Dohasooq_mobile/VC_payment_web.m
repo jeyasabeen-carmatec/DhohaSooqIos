@@ -10,9 +10,9 @@
 #import "Helper_activity.h"
 
 @interface VC_payment_web ()<UIWebViewDelegate>
-//{
-//    UIView *loadingView;
-//}
+{
+    UIView *loadingView;
+}
 
 
 @end
@@ -24,30 +24,28 @@
     // Do any additional setup after loading the view.
     self.navigationController.navigationBar.hidden = NO;
 
-//    loadingView = [[UIView alloc]init];
-//    CGRect loadframe = loadingView.frame;
-//    loadframe.size.width = 100;
-//    loadframe.size.height = 100;
-//    loadingView.frame = loadframe;
-//    loadingView.center = self.view.center;
-//    
-//    loadingView.backgroundColor = [UIColor colorWithWhite:0. alpha:0.6];
-//    loadingView.layer.cornerRadius = 5;
+    loadingView = [[UIView alloc]init];
+    CGRect loadframe = loadingView.frame;
+    loadframe.size.width = 100;
+    loadframe.size.height = 100;
+    loadingView.frame = loadframe;
+    loadingView.center = self.view.center;
     
-//    UIActivityIndicatorView *activityView=[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-//    activityView.center = CGPointMake(loadingView.frame.size.width / 2.0, 35);
-//    [activityView startAnimating];
-//    activityView.tag = 100;
-//    [loadingView addSubview:activityView];
-//    
-//    UILabel* lblLoading = [[UILabel alloc]initWithFrame:CGRectMake(0, 48, 80, 30)];
-//    lblLoading.text = @"Loading...";
-//    lblLoading.textColor = [UIColor whiteColor];
-//    lblLoading.font = [UIFont fontWithName:lblLoading.font.fontName size:15];
-//    lblLoading.textAlignment = NSTextAlignmentCenter;
-//    [loadingView addSubview:lblLoading];
-//    
-//    [self.view addSubview:loadingView];
+    loadingView.backgroundColor = [UIColor colorWithWhite:0. alpha:0.6];
+    loadingView.layer.cornerRadius = 5;
+    
+    UIActivityIndicatorView *activityView=[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityView.center = CGPointMake(loadingView.frame.size.width / 2.0, 35);
+    [activityView startAnimating];
+    activityView.tag = 100;
+    [loadingView addSubview:activityView];
+    
+    UILabel* lblLoading = [[UILabel alloc]initWithFrame:CGRectMake(0, 48, 80, 30)];
+    lblLoading.text = @"Loading...";
+    lblLoading.textColor = [UIColor whiteColor];
+    lblLoading.font = [UIFont fontWithName:lblLoading.font.fontName size:15];
+    lblLoading.textAlignment = NSTextAlignmentCenter;
+    [loadingView addSubview:lblLoading];
    @try
     {
      
@@ -77,11 +75,11 @@
 }
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     
-    [Helper_activity animating_images:self];
+    [loadingView setHidden:NO];
     
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    [Helper_activity stop_activity_animation:self];
+    [loadingView setHidden:YES];
 }
 
 - (void)didReceiveMemoryWarning {

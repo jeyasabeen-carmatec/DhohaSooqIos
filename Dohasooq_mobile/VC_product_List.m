@@ -423,6 +423,10 @@
             }
             else{
                 pro_cell.LBL_stock.text =[str uppercaseString];
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                     pro_cell.LBL_stock.text = @"غير متوفّر";
+                }
             }
 
         }
@@ -486,16 +490,19 @@
                 
                 prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
                 prec_price = [HttpClient currency_seperator:prec_price];
-                prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
-                
-                text = [NSString stringWithFormat:@"%@",prec_price];
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
-                    prec_price = [HttpClient currency_seperator:prec_price];
-                    prec_price = [NSString stringWithFormat:@"%@ %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"],currency_code];
+//                    prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
+//                    prec_price = [HttpClient currency_seperator:prec_price];
+                    prec_price = [NSString stringWithFormat:@"%@ %@",prec_price,currency_code];
                     text = [NSString stringWithFormat:@"%@",prec_price];
+                }
+                else{
+                    prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
+                    
+                    text = [NSString stringWithFormat:@"%@",prec_price];
+
                 }
                 
                 
@@ -523,15 +530,17 @@
             {
                 prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
                 prec_price = [HttpClient currency_seperator:prec_price];
-                prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
-                
-                text = [NSString stringWithFormat:@"%@",prec_price];
+               
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
-                    prec_price = [HttpClient currency_seperator:prec_price];
-                    prec_price = [NSString stringWithFormat:@"%@ %@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"],currency_code];
+                   
+                    prec_price = [NSString stringWithFormat:@"%@ %@",prec_price,currency_code];
+                    text = [NSString stringWithFormat:@"%@",prec_price];
+                }
+                else{
+                    prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
+                    
                     text = [NSString stringWithFormat:@"%@",prec_price];
                 }
                 
@@ -562,32 +571,35 @@
                 //prec_price = [currency_code stringByAppendingString:prec_price];
                 prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
                 prec_price = [HttpClient currency_seperator:prec_price];
-                prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
 
                 current_price =  [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"] floatValue]];
                 current_price = [HttpClient currency_seperator:current_price];
 
 
-                text = [NSString stringWithFormat:@"%@ %@ %@",currency_code,current_price,prec_price];
+                
 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
-                    prec_price = [HttpClient currency_seperator:prec_price];
+                   
+                    
                     prec_price = [NSString stringWithFormat:@"%@ %@",prec_price,currency_code];
-                    current_price =  [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"special_price"] floatValue]];
-                    current_price = [HttpClient currency_seperator:current_price];
+                 
                     current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency_code];
 
 
                     text = [NSString stringWithFormat:@"%@ %@",prec_price,current_price];
                 }
+                else{
+                    
+                    current_price = [NSString stringWithFormat:@"%@ %@",currency_code,current_price];
+                    prec_price = [NSString stringWithFormat:@"%@ %@",currency_code,prec_price];
 
-               
+                    text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
+                    
+                }
                 
                 
 
-                NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                 
                 int sizeval = 14;
                 
@@ -597,20 +609,26 @@
                     pro_cell.LBL_current_price.textContainer.maximumNumberOfLines = 2;
                     [pro_cell.LBL_current_price.layoutManager textContainerChangedGeometry:pro_cell.LBL_current_price.textContainer];
                     
-                    text = [NSString stringWithFormat:@"%@ %@  \n%@",currency_code,current_price,prec_price];
-                    
                     if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                     {
-                        prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
-                        prec_price = [HttpClient currency_seperator:prec_price];
-                        prec_price = [NSString stringWithFormat:@"%@ %@",prec_price,currency_code];
-                        current_price =  [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
-                        current_price = [HttpClient currency_seperator:current_price];
+//                        prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
+//                        prec_price = [HttpClient currency_seperator:prec_price];
+                       // prec_price = [NSString stringWithFormat:@"%@ %@",prec_price,currency_code];
+                        //current_price =  [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
+                       // current_price = [HttpClient currency_seperator:current_price];
 
-                        current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency_code];
+                       // current_price = [NSString stringWithFormat:@"%@",current_price];
                         text = [NSString stringWithFormat:@"%@\n%@",prec_price,current_price];
                         
                     }
+                    else{
+                        
+                        //current_price = [NSString stringWithFormat:@"%@ %@",currency_code,current_price];
+                        
+                        text = [NSString stringWithFormat:@"%@\n%@",current_price,prec_price];
+                        
+                    }
+                    
 
 
                 }
@@ -618,22 +636,20 @@
                     sizeval = 14;
                 }
            
+                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                 
                 NSRange ename = [text rangeOfString:current_price];
                     [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                             range:ename];
                 
-                NSRange qrname = [text rangeOfString:currency_code];
+                //NSRange qrname = [text rangeOfString:currency_code];
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
-                                            range:qrname];
+             // [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                                            //range:qrname];
 
                 
                 
-                NSRange cmp = [text rangeOfString:prec_price];
-                //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
-                
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                 
                 [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
                 
@@ -648,7 +664,7 @@
                 else{
                     [attributedText addAttribute:NSStrikethroughStyleAttributeName
                                            value:@2
-                                           range:NSMakeRange([current_price length]+[currency_code length]+2 ,[prec_price length])];
+                                           range:NSMakeRange([current_price length]+1 ,[prec_price length])];
                 }
                 
                 
@@ -663,11 +679,12 @@
     }
     @catch(NSException *exception)
     {
-        
+        NSLog(@"THE Exception from Product Deatil:%@",exception);
     }
     @try
     {
-        NSString *str = @"% off";
+        NSString *str ;
+        
         NSString *str_discount = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"]];
         if([str_discount isEqualToString:@"0"])
         {
@@ -675,7 +692,19 @@
 
         }
         else{
-        pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"],str];
+            
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+               
+                 str = @"إيقاف %";
+        pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",str,[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"]];
+            }
+            else{
+                
+                 str = @"% off";
+                pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"],str];
+ 
+            }
         }
         
         [pro_cell.BTN_fav setTag:indexPath.row];//wishListStatus
@@ -744,16 +773,6 @@
 -(void)delete_from_wishLis:(NSString *)pd_id
 {
     
-    /* Del WishList
-     
-     http://192.168.0.171/dohasooq/apis/delFromWishList/1/24.json
-     
-     example
-     Product_id =1
-     User_Id = 24
-     
-     */
-    
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *user_ID = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
     
@@ -775,8 +794,8 @@
                     @try {
                         
                         [HttpClient createaAlertWithMsg:[dict valueForKey:@"msg"]andTitle:@""];
-                        [self product_list_API];
-                         [self cart_count];
+                       // [self product_list_API];
+                         //[self cart_count];
                         
                     } @catch (NSException *exception) {
                         NSLog(@"%@",exception);
@@ -872,6 +891,12 @@
             
             if ([sender.titleLabel.text isEqualToString:@""]) {
                 [self delete_from_wishLis:product_id];
+                NSIndexPath *index = [NSIndexPath indexPathForRow:sender.tag inSection:0];
+                product_cell *cell = (product_cell *)[self.collection_product cellForItemAtIndexPath:index];
+                
+                [cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
+                [cell.BTN_fav setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                
              //   [self product_list_API];
             }
             else{
@@ -920,11 +945,7 @@
                                         
                                         // [self product_list_API];
                                     }
-                                    else{
-                                        
-                                        [self product_list_API];
-                                    }
-                                    
+                                                                        
                                     
                                 } @catch (NSException *exception) {
                                     NSLog(@"%@",exception);
@@ -1142,9 +1163,13 @@
                     
                     [Helper_activity stop_activity_animation:self];
                     
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                    [alert show];
-                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                        [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+                    }
+                    else{
+                        [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+                    }
                 }
                 if (data) {
                     
@@ -1152,9 +1177,13 @@
                   json_DATA = data;
                     if(!json_DATA)
                     {
-                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                        [alert show];
-                        [Helper_activity stop_activity_animation:self];
+                        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                        {
+                            [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+                        }
+                        else{
+                            [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+                        }                        [Helper_activity stop_activity_animation:self];
 
                     }
                     else
@@ -1372,8 +1401,13 @@
 //        [activityIndicatorView stopAnimating];
          [Helper_activity stop_activity_animation:self];
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+        }
+        else{
+            [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+        }
       //  [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
        
     }
@@ -1500,12 +1534,29 @@
         
     }
     
+    NSString *str_status_text;
     if([user_id isEqualToString:@"(null)"])
     {
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str_status_text = @"يرجى تسجيل الدخول للوصول إلى هذا";
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"تسجيل الدخول" otherButtonTitles:@"إلغاء", nil];
+            alert.tag = 1;
+            [alert show];
+            
+        }
+        else
+        {
+            str_status_text = @"Please login to access this";
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status_text delegate:self cancelButtonTitle:@"Login" otherButtonTitles:@"Cancel", nil];
+            alert.tag = 1;
+            [alert show];
+            
+        }
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please login to access this" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
-        alert.tag = 1;
-        [alert show];
+        
         
     }
     else
@@ -1630,9 +1681,13 @@
             if (error) {
                 
                 [Helper_activity stop_activity_animation:self];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
-                [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+                }
+                else{
+                    [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+                }
             }
             if (data1) {
                 //NSDictionary *json_DAT;
@@ -1745,9 +1800,13 @@
                     
                     [Helper_activity stop_activity_animation:self];
 
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                    [alert show];
-                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                        [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+                    }
+                    else{
+                        [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+                    }
                 }
                 if (data1) {
                     //NSDictionary *json_DAT;
@@ -1940,9 +1999,13 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             if (error) {
                 
                 [Helper_activity stop_activity_animation:self];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
-                [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+                }
+                else{
+                    [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+                }
             }
             if (data) {
                 [Helper_activity stop_activity_animation:self];
@@ -2063,8 +2126,13 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     {
         [Helper_activity stop_activity_animation:self];
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+        }
+        else{
+            [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+        }
     }
     [self performSelector:@selector(finishLoadMore) withObject:nil afterDelay:0.01];
 }
@@ -2080,9 +2148,13 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                 if (error) {
                     
                     [Helper_activity stop_activity_animation:self];
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                    [alert show];
-                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                        [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+                    }
+                    else{
+                        [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+                    }
                 }
                 if (data) {
                     
@@ -2177,9 +2249,13 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     else
     {
         [Helper_activity stop_activity_animation:self];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
-    }
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+        }
+        else{
+            [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+        }    }
     [self performSelector:@selector(finishRefresh) withObject:nil afterDelay:0.01];
 }
 
@@ -2257,26 +2333,26 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     if ([breakdownInfo day] <= 0 ) {
         
-        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d: %02d left",(int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d: %02d",(int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
         
     }
     else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0)
     {
         
-        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d left",(int)[breakdownInfo minute], (int)[breakdownInfo second]];
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d",(int)[breakdownInfo minute], (int)[breakdownInfo second]];
         
     }
     else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0 && [breakdownInfo minute] <= 0)
     {
         
-        STR_timeRe = [NSString stringWithFormat:@"Ends in %02dleft", (int)[breakdownInfo second]];
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d", (int)[breakdownInfo second]];
         
         
     }
     else
     {
         
-        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d Days: %02d: %02d: %02d left", (int)[breakdownInfo day], (int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d Days: %02d: %02d: %02d", (int)[breakdownInfo day], (int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
     }
     
     
@@ -2308,6 +2384,11 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         cell.LBL_stock.textColor = [UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0];
 
         cell.LBL_stock.text = [str uppercaseString];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            cell.LBL_stock.text = @"غير متوفّر";
+        }
+
     }
     }
     //    product_cell *cell =

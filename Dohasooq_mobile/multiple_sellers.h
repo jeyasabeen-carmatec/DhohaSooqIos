@@ -7,12 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MIBadgeButton.h"
+#import "GIBadgeView.h"
 
 @interface multiple_sellers : UIViewController
 @property(nonatomic,weak) IBOutlet UITableView *TBL_sellers;
-@property(nonatomic,weak) IBOutlet MIBadgeButton *BTN_cart;
-@property(nonatomic,weak) IBOutlet MIBadgeButton *BTN_fav;
+@property(nonatomic,strong) IBOutlet GIBadgeView *badge_view;
 
 
 

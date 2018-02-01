@@ -103,7 +103,16 @@
 }
 
 +(UIAlertView *)createaAlertWithMsg:(NSString *)msg andTitle:(NSString *)title{
-    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+    NSString *ok_btn;
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        ok_btn = @"حسنا";
+    }
+    else{
+        ok_btn = @"Ok";
+
+    }
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title message:msg delegate:nil cancelButtonTitle:ok_btn otherButtonTitles:nil, nil];
     [alert show];
     return  alert;
 }

@@ -16,6 +16,7 @@
     UIActivityIndicatorView *activityIndicatorView;
     UIView *VW_overlay;
     NSString *booking_info;
+    int k;
 }
 
 
@@ -28,7 +29,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    
+    k = 0;
     NSMutableDictionary  *movie_dtl_dict = [[NSMutableDictionary alloc]init];
     
     
@@ -48,9 +49,9 @@
     
     
 //    
-//    CGRect framseset = _LBL_location.frame ;
-//    framseset.origin.y = _LBL_event_name.frame.origin.y+ _LBL_event_name.frame.size.height + 3;
-//    _LBL_location.frame = framseset;
+    CGRect framseset = _LBL_location.frame ;
+    framseset.origin.y = _LBL_event_name.frame.origin.y+ _LBL_event_name.frame.size.height + 3;
+    _LBL_location.frame = framseset;
     @try
     {
         _LBL_location.text = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"theatre"]];
@@ -68,9 +69,9 @@
     
     
     
-//    framseset = _LBL_time.frame ;
-//    framseset.origin.y = _LBL_location.frame.origin.y+ _LBL_location.frame.size.height + 3;
-//    _LBL_time.frame = framseset;
+    framseset = _LBL_time.frame ;
+    framseset.origin.y = _LBL_location.frame.origin.y+ _LBL_location.frame.size.height + 3;
+    _LBL_time.frame = framseset;
     @try
     {
         NSDateFormatter *df = [[NSDateFormatter alloc]init];
@@ -91,13 +92,13 @@
     // [_LBL_persons sizeToFit];
     
     
-//    framseset = _LBL_persons.frame ;
-//    framseset.origin.y = _LBL_time.frame.origin.y+ _LBL_time.frame.size.height ;
-//    _LBL_persons.frame = framseset;
+    framseset = _LBL_persons.frame ;
+    framseset.origin.y = _LBL_time.frame.origin.y+ _LBL_time.frame.size.height ;
+    _LBL_persons.frame = framseset;
 //    
-//    framseset = _LBL_seat.frame ;
-//    framseset.origin.y = _LBL_persons.frame.origin.y+ _LBL_persons.frame.size.height ;
-//    _LBL_seat.frame = framseset;
+    framseset = _LBL_seat.frame ;
+    framseset.origin.y = _LBL_persons.frame.origin.y+ _LBL_persons.frame.size.height ;
+   _LBL_seat.frame = framseset;
 //    
     
     @try
@@ -110,18 +111,19 @@
         NSLog(@"%@",exception);
     }
     
-//    framseset = _LBL_service_charges.frame ;
-//    framseset.origin.y = _LBL_persons.frame.origin.y + 3;
-//    _LBL_service_charges.frame = framseset;
+    framseset = _LBL_service_charges.frame ;
+    framseset.origin.x = _LBL_persons.frame.size.width  + 10;
+    framseset.origin.y = _LBL_persons.frame.origin.y + 3;
+    _LBL_service_charges.frame = framseset;
 //    
-//    framseset = _VW_contents.frame ;
-//    framseset.size.height = _LBL_seat.frame.origin.y + _LBL_seat.frame.size.height +20;
-//    _VW_contents.frame = framseset;
+    framseset = _VW_contents.frame ;
+    framseset.size.height = _LBL_seat.frame.origin.y + _LBL_seat.frame.size.height +20;
+   _VW_contents.frame = framseset;
 //    
 //    
-//    framseset = _BTN_pay.frame ;
-//    framseset.origin.y = _VW_contents.frame.origin.y + _VW_contents.frame.size.height +15;
-//    _BTN_pay.frame = framseset;
+   framseset = _BTN_pay.frame ;
+    framseset.origin.y = _VW_contents.frame.origin.y + _VW_contents.frame.size.height +15;
+    _BTN_pay.frame = framseset;
     @try
     {
         
@@ -190,46 +192,54 @@
     NSString *str_stat = [NSString stringWithFormat:@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_status"]];
     if([str_stat isEqualToString:@"True"])
     {
+       
         [Helper_activity stop_activity_animation:self];
-         [HttpClient createaAlertWithMsg:@"Some thing Went Wrong " andTitle:@""];
-        [self.navigationController popToRootViewControllerAnimated:NO];
+        
+        [[NSUserDefaults standardUserDefaults] setObject:xmlDoc forKey:@"order_details"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
+        
+        NSString *tr_id = [[NSUserDefaults standardUserDefaults] valueForKey:@"TID"];
+        
+        
+        if ([[[xmlDoc valueForKey:@"result"] valueForKey:@"_Transaction_Id"] isEqualToString:tr_id])
+        {
+            
+            
+            NSLog(@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_OrderInfo"]);
+            booking_info =[NSString stringWithFormat:@"%@", [[xmlDoc valueForKey:@"result"] valueForKey:@"_OrderInfo"]];
+            
+            [self performSelector:@selector(save_bookings) withObject:activityIndicatorView afterDelay:0.0001];
+            
+            
+            // Move to Next Page
+            // [self performSegueWithIdentifier:@"Movie_pay_selection" sender:self];
+            
+        }
+        else
+        {
+            [HttpClient createaAlertWithMsg:@"Please Conform Booking ID" andTitle:@""];
+        }
+        
+    
 
         
     }
-    else{
+    else
+    {
+        if([[[xmlDoc valueForKey:@"result"] valueForKey:@"_msg"] isEqualToString:@"send lockrequest again"])
+        {
         
-    
-    [Helper_activity stop_activity_animation:self];
-    
-    [[NSUserDefaults standardUserDefaults] setObject:xmlDoc forKey:@"order_details"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
-    
-    NSString *tr_id = [[NSUserDefaults standardUserDefaults] valueForKey:@"TID"];
-    
-    
-    if ([[[xmlDoc valueForKey:@"result"] valueForKey:@"_Transaction_Id"] isEqualToString:tr_id]) {
+        [self get_order_iD];
+        }
         
-        
-         NSLog(@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_OrderInfo"]);
-        booking_info =[NSString stringWithFormat:@"%@", [[xmlDoc valueForKey:@"result"] valueForKey:@"_OrderInfo"]];
-        
-        [self performSelector:@selector(save_bookings) withObject:activityIndicatorView afterDelay:0.0001];
-        
-        
-        // Move to Next Page
-       // [self performSegueWithIdentifier:@"Movie_pay_selection" sender:self];
+      
         
     }
-    else{
-        [HttpClient createaAlertWithMsg:@"Please Conform Booking ID" andTitle:@""];
-    }
-
-    }
-    }
+}
  
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

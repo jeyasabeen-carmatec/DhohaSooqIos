@@ -217,7 +217,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             self.navigationController.navigationBar.shadowImage = [UIImage new];
             self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
             self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-            [self.navigationController popViewControllerAnimated:NO];
+            [self.navigationController popToRootViewControllerAnimated:NO];
 
             
         }

@@ -112,8 +112,11 @@
     UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     _Tab_MENU.selectionIndicatorImage = img;
+    [self VIew_APPEAR];
 
-    
+}
+-(void)VIew_APPEAR
+{
    if([headre_name isEqualToString:@"MOVIES"])
    {
         [self Movies_view];
@@ -182,6 +185,9 @@
     }
 
     
+}
+- (IBAction)LOGO_ACTION:(id)sender {
+    [self VIew_APPEAR];
 }
 
 -(void)picker_view_set_UP

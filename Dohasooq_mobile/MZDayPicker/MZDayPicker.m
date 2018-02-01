@@ -286,6 +286,8 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
         self.tableView.delegate = self;
         self.tableView.dataSource = self;
         self.tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin);
+        self.tableView.separatorColor = [UIColor clearColor];
+        self.tableView.separatorInset = UIEdgeInsetsZero;
         
         // Rotate the tableview by 90 degrees so that it is side scrollable
         self.tableView.transform = CGAffineTransformMakeRotation(-M_PI_2);
@@ -294,7 +296,7 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
         self.tableView.backgroundColor = [UIColor clearColor];
         
         self.tableView.showsVerticalScrollIndicator = NO;
-       self.tableView.decelerationRate = UIScrollViewDecelerationRateFast;
+       //self.tableView.decelerationRate = UIScrollViewDecelerationRateFast;
         
        
         

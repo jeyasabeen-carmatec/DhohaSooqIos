@@ -168,6 +168,9 @@
 @property (nonatomic, strong) UIPickerView *leisure_venues;
 @property(nonatomic,weak) IBOutlet UIView *VW_leisure_filter;
 
+//Brands Arrows
+@property(nonatomic,weak) IBOutlet UIButton *BTN_brand_left;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_brand_right;
 
 
 @end

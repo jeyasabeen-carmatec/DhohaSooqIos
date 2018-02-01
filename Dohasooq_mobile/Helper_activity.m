@@ -21,7 +21,7 @@
     
     VW_overlay.hidden = NO;
     UIImageView *actiIndicatorView = [[UIImageView alloc] initWithImage:[UIImage new]];
-    actiIndicatorView.frame = CGRectMake(0, 0, 60, 60);
+    actiIndicatorView.frame = CGRectMake(0, 0, 50, 60);
     actiIndicatorView.center = my_controller.view.center;
     actiIndicatorView.tag = 1235;
     

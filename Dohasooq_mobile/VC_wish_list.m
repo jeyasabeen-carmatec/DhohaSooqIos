@@ -148,12 +148,14 @@
      #pragma Webimage URl Cachee
     @try
     {
+    
     NSString *img_url = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"image"]];
     [cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:img_url]
                          placeholderImage:[UIImage imageNamed:@"logo.png"]
                                   options:SDWebImageRefreshCached];
     cell.LBL_item_name.text = [[response_Arr objectAtIndex:indexPath.section] valueForKey:@"product_name"];
-    NSString *str = @"% off";
+        
+    NSString *str;
         NSString *str_discount = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"product_discount"]];
     
     if([str_discount isEqualToString:@"0"])
@@ -163,10 +165,25 @@
     }
     else
     {
-    cell.LBL_discount.text = [NSString stringWithFormat:@"%@ %@",[[response_Arr objectAtIndex:indexPath.section]valueForKey:@"product_discount"],str];
+    
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            
+            str = @"% إيقاف";
+            cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",[[response_Arr objectAtIndex:indexPath.section]valueForKey:@"product_discount"],str];
+        }
+        else{
+            
+            str = @"% off";
+          cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",[[response_Arr objectAtIndex:indexPath.section]valueForKey:@"product_discount"],str];
+            
+        }
+        
     }
     
-    //NSString *str1 = [NSString stringWithFormat:@"%ld",[[[response_Arr objectAtIndex:indexPath.row] valueForKey:@"special_price"] integerValue]];
+       
+
         
         if([[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"stock_status"] isEqualToString:@"Out of stock"] )
         {
@@ -175,7 +192,7 @@
             [cell.Btn_add_cart setBackgroundImage:[UIImage imageNamed:@"out-of-stock-2.png"] forState:UIControlStateNormal];
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                [cell.Btn_add_cart setBackgroundImage:[UIImage imageNamed:@"arbic_gray.png"] forState:UIControlStateNormal];
+                [cell.Btn_add_cart setBackgroundImage:[UIImage imageNamed:@"arbic_wish.png"] forState:UIControlStateNormal];
 
             }
         }
@@ -185,7 +202,7 @@
             [cell.Btn_add_cart setBackgroundImage:[UIImage imageNamed:@"Add-to-cart.png"] forState:UIControlStateNormal];
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                [cell.Btn_add_cart setBackgroundImage:[UIImage imageNamed:@"arbic_wish.png"] forState:UIControlStateNormal];
+                [cell.Btn_add_cart setBackgroundImage:[UIImage imageNamed:@"arbic_gray.png"] forState:UIControlStateNormal];
                 
             }
 
@@ -195,7 +212,16 @@
     
     NSString *currency_code = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
          NSString *current_price = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"special_price"] ];
-           NSString *prec_price = [NSString stringWithFormat:@"%@ %@", currency_code,[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"product_price"] ];
+        NSString *prec_price;
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+             prec_price = [NSString stringWithFormat:@"%@ %@", [[response_Arr objectAtIndex:indexPath.section] valueForKey:@"product_price"] ,currency_code];
+        }
+        else{
+            prec_price = [NSString stringWithFormat:@"%@ %@", currency_code,[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"product_price"] ];
+        }
+        
+        
     
 //    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
 //    [paragraphStyle setAlignment:NSTextAlignmentCenter];
@@ -229,11 +255,22 @@
             }
             else{
              
-                
-         //   prec_price = [currency_code stringByAppendingString:prec_price];
-            text = [NSString stringWithFormat:@"%@ %@ %@",currency_code,current_price,prec_price];
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency_code];
+
+                    text = [NSString stringWithFormat:@"%@ %@",prec_price,current_price];
+
+                }
+                else{
+                    
+                    current_price = [NSString stringWithFormat:@"%@ %@",currency_code,current_price];
+                    text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
+
+                }
+       
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
-              [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0],}range:[text rangeOfString:currency_code] ];
+//              [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0],}range:[text rangeOfString:currency_code] ];
             
             
             NSRange ename = [text rangeOfString:current_price];
@@ -264,7 +301,15 @@
                                         range:cmp ];
             }
             @try {
-                [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(current_price.length+currency_code.length+2, [prec_price length])];
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                     [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(0, [prec_price length])];
+                }
+                else{
+                     [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(current_price.length+1, [prec_price length])];
+                }
+                
+            
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
             }
@@ -302,21 +347,22 @@
     
  
         [cell.Btn_add_cart addTarget:self action:@selector(btn_add_cart_action:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.BTN_plus addTarget:self action:@selector(plus_action:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.BTN_minus addTarget:self action:@selector(minus_action:) forControlEvents:UIControlEventTouchUpInside];
+//        [cell.BTN_plus addTarget:self action:@selector(plus_action:) forControlEvents:UIControlEventTouchUpInside];
+//        [cell.BTN_minus addTarget:self action:@selector(minus_action:) forControlEvents:UIControlEventTouchUpInside];
     
     cell._TXT_count.tag = indexPath.row;
-    cell.BTN_plus.tag = indexPath.row;
-    cell.BTN_minus.tag = indexPath.row;
+//    cell.BTN_plus.tag = indexPath.row;
+//    cell.BTN_minus.tag = indexPath.row;
     cell.Btn_add_cart.tag = indexPath.row;
+    cell.Btn_add_cart.tag =  [[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"product_id"] integerValue];
     
-        cell._TXT_count.layer.borderWidth = 0.4f;
-        cell._TXT_count.layer.borderColor = [UIColor grayColor].CGColor;
-        
-        cell.BTN_plus.layer.borderWidth = 0.4f;
-        cell.BTN_plus.layer.borderColor = [UIColor grayColor].CGColor;
-        cell.BTN_minus.layer.borderWidth = 0.4f;
-        cell.BTN_minus.layer.borderColor = [UIColor grayColor].CGColor;
+//        cell._TXT_count.layer.borderWidth = 0.4f;
+//        cell._TXT_count.layer.borderColor = [UIColor grayColor].CGColor;
+//        
+//        cell.BTN_plus.layer.borderWidth = 0.4f;
+//        cell.BTN_plus.layer.borderColor = [UIColor grayColor].CGColor;
+//        cell.BTN_minus.layer.borderWidth = 0.4f;
+//        cell.BTN_minus.layer.borderColor = [UIColor grayColor].CGColor;
     
     
 //    CGSize result = [[UIScreen mainScreen] bounds].size;
@@ -389,50 +435,35 @@
     NSIndexPath *indexPath = [_TBL_wish_list_items indexPathForRowAtPoint:location];
     product_id = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.row] valueForKey:@"product_id"]];
     
-   // [[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];
-    [self performSelector:@selector(delete_from_wishLis) withObject:nil afterDelay:0.01];
+//      [self performSelector:@selector(delete_from_wishLis:@"") withObject:nil afterDelay:0.01];
+    [self delete_from_wishLis:@"delete"];
     
 }
--(void)minus_action:(UIButton*)btn
-{
-    NSIndexPath *index = [NSIndexPath indexPathForRow:btn.tag inSection:0];
-    wish_list_cell *cell = (wish_list_cell *)[self.TBL_wish_list_items cellForRowAtIndexPath:index];
-    product_count = [cell._TXT_count.text integerValue];
-    if (product_count<= 0) {
-       
-        product_count = 0;
-        
-    }
-    else{
-        product_count = product_count-1;
-        cell._TXT_count.text = [NSString stringWithFormat:@"%ld",product_count];
-    }
-//    NSString *product_id = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:index.row] valueForKey:@"id"] ];
-//    [[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];
-//    
-//    [[NSUserDefaults standardUserDefaults]setObject:cell._TXT_count.text forKey:@"item_count"];
-//    // Update cart Api method calling
-//    
-//    [self updating_cart_List_api];
-}
--(void)plus_action:(UIButton*)btn
-{
-    NSIndexPath *index = [NSIndexPath indexPathForRow:btn.tag inSection:0];
-    wish_list_cell *cell = (wish_list_cell *)[self.TBL_wish_list_items cellForRowAtIndexPath:index];
-    product_count = [cell._TXT_count.text integerValue];
-    product_count = product_count+1;
-    cell._TXT_count.text = [NSString stringWithFormat:@"%ld",product_count];
-    
-  // NSString *product_id = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:index.row] valueForKey:@"id"] ];
-//    [[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];
-//    
-//    [[NSUserDefaults standardUserDefaults]setObject:cell._TXT_count.text forKey:@"item_count"];
-//    // Update cart Api method calling
-//    
-//    [self updating_cart_List_api];
-
-    
-}
+//-(void)minus_action:(UIButton*)btn
+//{
+//    NSIndexPath *index = [NSIndexPath indexPathForRow:btn.tag inSection:0];
+//    wish_list_cell *cell = (wish_list_cell *)[self.TBL_wish_list_items cellForRowAtIndexPath:index];
+//    product_count = [cell._TXT_count.text integerValue];
+//    if (product_count<= 0) {
+//       
+//        product_count = 0;
+//        
+//    }
+//    else{
+//        product_count = product_count-1;
+//        cell._TXT_count.text = [NSString stringWithFormat:@"%ld",product_count];
+//    }
+//
+//}
+//-(void)plus_action:(UIButton*)btn
+//{
+//    NSIndexPath *index = [NSIndexPath indexPathForRow:btn.tag inSection:0];
+//    wish_list_cell *cell = (wish_list_cell *)[self.TBL_wish_list_items cellForRowAtIndexPath:index];
+//    product_count = [cell._TXT_count.text integerValue];
+//    product_count = product_count+1;
+//    cell._TXT_count.text = [NSString stringWithFormat:@"%ld",product_count];
+//
+//}
 - (IBAction)back_action_clicked:(id)sender {
     [self.navigationController popViewControllerAnimated:NO];
 }
@@ -470,9 +501,9 @@
                     NSLog(@"%@",[error localizedDescription]);
                 }
                   @try {
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [self performSelector:@selector(cart_count) withObject:nil afterDelay:0.01];
-                      });
+//                      dispatch_async(dispatch_get_main_queue(), ^{
+//                          [self performSelector:@selector(cart_count) withObject:nil afterDelay:0.01];
+//                      });
                 if (data) {
                   
                     
@@ -586,17 +617,19 @@
             
             if ([[dict valueForKey:@"success"] isEqualToString:@"1"]) {
                 
-                [self set_Data_to_badge_value:[NSString stringWithFormat:@"%@",[dict valueForKey:@"count"]]];
-                [self performSegueWithIdentifier:@"wish_to_cart" sender:self];
-
-              
+                //[self set_Data_to_badge_value:[NSString stringWithFormat:@"%@",[dict valueForKey:@"count"]]];
+                 [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
+                [self delete_from_wishLis:@"added"];
+               // [self performSegueWithIdentifier:@"wish_to_cart" sender:self];
                 
+            }
+            else{
+                 [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
             }
             
             
-            
             NSLog(@"  Error %@ Response %@",error,dict);
-            [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
+           
         }
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
@@ -681,18 +714,17 @@
 
 
 #pragma mark delete_from_wishList_API_calling
-
--(void)delete_from_wishLis{
+/* Del WishList
+ 
+ http://192.168.0.171/dohasooq/apis/delFromWishList/1/24.json
+ 
+ example
+ Product_id =1
+ User_Id = 24
+ 
+ */
+-(void)delete_from_wishLis :(NSString *)fromDelete{
     
-    /* Del WishList
-     
-     http://192.168.0.171/dohasooq/apis/delFromWishList/1/24.json
-     
-     example
-     Product_id =1
-     User_Id = 24
-     
-     */
     
     @try {
         
@@ -727,7 +759,18 @@
                         
                         @try {
                              [Helper_activity stop_activity_animation:self];
-                            [HttpClient createaAlertWithMsg:@"Item Deleted Successfully" andTitle:@""];
+                            
+                            if ([fromDelete isEqualToString:@"delete"]) { // for Direct calling of remove from wish list or from move to cart 
+                                
+                            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                            {
+                                
+                                [HttpClient createaAlertWithMsg:@"تمت إزالة العنصر من قائمة المفضلات" andTitle:@""];
+                            }else{
+                                [HttpClient createaAlertWithMsg:@"Item Removed From Your Wishlist." andTitle:@""];
+                                
+                            }
+                            }
                             
                             [self performSelector:@selector(wish_list_api_calling) withObject:nil afterDelay:0.01];
                         } @catch (NSException *exception) {
@@ -746,15 +789,26 @@
             NSLog(@"%@",exception);
             
             [Helper_activity stop_activity_animation:self];
-             [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+            }
+            else{
+                [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+            }
             
         }
         
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
         [Helper_activity stop_activity_animation:self];
-         [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
-    }
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+        }
+        else{
+            [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+        }    }
     
    
 }
@@ -774,8 +828,10 @@
     @try {
         
         
-        NSIndexPath *index = [NSIndexPath indexPathForRow:cart_btn.tag inSection:0];
-        product_id = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:index.row] valueForKey:@"product_id"] ];
+       // NSIndexPath *index = [NSIndexPath indexPathForRow:cart_btn.tag inSection:0];
+        product_id = [NSString stringWithFormat:@"%ld",(long)cart_btn.tag];
+        
+        
         [self performSelector:@selector(add_to_cart_API_calling) withObject:nil afterDelay:0.01];
         
         //        [[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];

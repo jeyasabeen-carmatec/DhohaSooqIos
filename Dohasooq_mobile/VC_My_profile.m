@@ -394,9 +394,14 @@
             {
                 [Helper_activity stop_activity_animation:self];
                 
-                
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+                }
+                else{
+                    [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+                }
+
             }
             
         }
@@ -866,9 +871,14 @@
     
     @catch(NSException *exception)
     {
-        NSLog(@"The error is:%@",exception);
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+        }
+        else{
+            [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+        }
+
     }
 
 }
@@ -906,8 +916,14 @@
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+        }
+        else{
+            [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+        }
+
     }
     
 }
@@ -963,8 +979,14 @@
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+        }
+        else{
+            [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+        }
+
         [Helper_activity stop_activity_animation:self];
 
     }
@@ -1361,14 +1383,7 @@
 
     if(msg)
     {
-        NSString *str = @"Ok";
-        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-        {
-            str = @"حسنا";
-        }
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:str, nil];
-        [alert show];
+        [HttpClient createaAlertWithMsg:msg andTitle:@""];
         
     }
 
@@ -1463,10 +1478,7 @@
                 {
                     str = @"حسنا";
                 }
-                
-              
-
-                
+    
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATAs valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:str, nil];
                 [alert show];
                 _BTN_save.hidden = YES;
@@ -1492,8 +1504,14 @@
         else
         {
              [Helper_activity stop_activity_animation:self];
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-            [alert show];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+            }
+            else{
+                [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+            }
+
         }
     }
     @catch(NSException *exception)
@@ -1767,8 +1785,7 @@
                  scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height;
            
                 [self viewDidLayoutSubviews];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATAs valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
+                [HttpClient createaAlertWithMsg:[json_DATAs valueForKey:@"message"] andTitle:@""];
                 [self View_user_data];
                 _BTN_save_billing.hidden = YES;
                 [_BTN_edit_billing setTitle:@"" forState:UIControlStateNormal];
@@ -1870,14 +1887,25 @@
 
 -(void)take_Picture
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Pick From"
-                                                             delegate:self
-                                                    cancelButtonTitle:@"cancel"
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"Camera", @"From Gallery", nil];
-    
-    [actionSheet showInView:self.view];
-    
+    UIActionSheet *actionSheet;
+
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:@"اختار من"
+                                                                 delegate:self
+                                                        cancelButtonTitle:@"إلغاء"
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:@"الة تصوير", @"صالة عرض", nil];
+    }
+    else{
+        actionSheet = [[UIActionSheet alloc] initWithTitle:@"Pick From"
+                                                  delegate:self
+                                         cancelButtonTitle:@"Cancel"
+                                    destructiveButtonTitle:nil
+                                         otherButtonTitles:@"Camera", @"Gallery", nil];
+ 
+    }
+     [actionSheet showInView:self.view];
 }
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];

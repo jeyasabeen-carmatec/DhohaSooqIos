@@ -15,7 +15,7 @@
 #import "ViewController.h"
 #import "Helper_activity.h"
 
-@interface VC_cart_list ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,UIAlertViewDelegate>
+@interface VC_cart_list ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,UIAlertViewDelegate,UITextFieldDelegate>
 {
     NSMutableArray *cart_array;
     NSDictionary *json_dict;
@@ -197,6 +197,7 @@
         @try
         {
         
+            cell._TXT_count.delegate = self;
         cell.LBL_item_name.text = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"pname"]];
         NSString *img_url = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"product_image_path"]];
         @try
@@ -311,15 +312,18 @@
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    text = [NSString stringWithFormat:@"%@ %@ %@",prec_price,current_price,currency_code];
+                    current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency_code];
+                    text = [NSString stringWithFormat:@"%@ %@",prec_price,current_price];
                 }
                 else{
-                text = [NSString stringWithFormat:@"%@ %@ %@",currency_code,current_price,prec_price];
+                    current_price = [NSString stringWithFormat:@"%@ %@",currency_code,current_price];
+                    
+                text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
                 }
                 
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
                 
-                  [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0],}range:[text rangeOfString:currency_code] ];
+//                  [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0],}range:[text rangeOfString:currency_code] ];
                 
                 
                 
@@ -349,13 +353,12 @@
                 @try {
                    
                     
-                    
                     if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                     {
                          [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(0, [prec_price length])];
                     }
                     else{
-                         [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(current_price.length+currency_code.length+2, [prec_price length]+2)];
+                         [attributedText addAttribute:NSStrikethroughStyleAttributeName value:@2 range:NSMakeRange(current_price.length+1, [prec_price length]+2)];
                     }
                     
                 } @catch (NSException *exception) {
@@ -629,6 +632,24 @@
     }
 
 }
+
+#pragma mark text field delgates
+
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
+    
+    return YES;
+}
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
+}
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    [textField becomeFirstResponder];
+}
+
 #pragma button_actions
 -(void)btnfav_action
 {
@@ -674,35 +695,24 @@
     
     product_count = [cell._TXT_count.text integerValue];
     if ([cell._TXT_count.text isEqualToString:@"1"]) {
-        
+ if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"]){
+     [HttpClient createaAlertWithMsg:@"يجب أن يكون الحد الأدنى من الكمية 1." andTitle:@""];
+ }
+ else{
+     [HttpClient createaAlertWithMsg:@"Minimum Quantity Should be 1." andTitle:@""];
+ }
+       
     }
 
     else{
     
     product_count = product_count-1;
-    
-//    
-//    if (product_count<= 0) {
-//        [btn removeTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
-//    }
-//    else{
-//        product_count = product_count-1;
-//        cell._TXT_count.text = [NSString stringWithFormat:@"%ld",(long)product_count];
-//        
-//    }
-  
-    
     product_id = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:index.row] valueForKey:@"productDetails"] valueForKey:@"productid"]];
     item_count = [NSString stringWithFormat:@"%ld",(long)product_count];
-    
-   
-    
-     //Update cart Api method calling
-    [Helper_activity animating_images:self];
-    
-    //[self updating_cart_List_api];
-    
-    [self performSelector:@selector(updating_cart_List_api) withObject:nil afterDelay:0.01];
+        [Helper_activity animating_images:self];
+        
+        //[self updating_cart_List_api];
+        [self performSelector:@selector(updating_cart_List_api) withObject:nil afterDelay:0.01];
     }
     
 }
@@ -776,7 +786,7 @@ params.put("customerId",customerid);
         
         NSError *error;
         NSHTTPURLResponse *response = nil;
-        // NSDictionary *parameters = @{@"pdtId":[[NSUserDefaults standardUserDefaults] valueForKey:@"product_id"],@"userId":user_id,@"quantity":items_count,@"custom":@"",@"variant":@""};
+      
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
             NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
             NSString *langId = [[NSUserDefaults standardUserDefaults]valueForKey:@"language_id"];
@@ -867,7 +877,13 @@ params.put("customerId",customerid);
 //                    VW_overlay.hidden=YES;
 //                    [activityIndicatorView stopAnimating];
 
-                    [HttpClient createaAlertWithMsg:@"The Data is in Unknown format" andTitle:@""];
+                  
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"]){
+                    [HttpClient createaAlertWithMsg:@"لا يمكن قراءة البيانات" andTitle:@""];
+                    }
+                    else{
+                          [HttpClient createaAlertWithMsg:@"The Data Could Not be Read" andTitle:@""];
+                    }
                 }
                 
                 
@@ -1119,8 +1135,6 @@ params.put("customerId",customerid);
      Method : GET
 
      */
-    
-    
     //[HttpClient animating_images:self];
     
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
@@ -1132,9 +1146,11 @@ params.put("customerId",customerid);
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
+                    [Helper_activity stop_activity_animation:self];
                     NSLog(@"%@",[error localizedDescription]);
                 }
                 if (data) {
+                    [Helper_activity stop_activity_animation:self];
                     NSLog(@"%@",data);
                     @try {
                         [HttpClient createaAlertWithMsg:[data valueForKey:@"message"] andTitle:@""];
