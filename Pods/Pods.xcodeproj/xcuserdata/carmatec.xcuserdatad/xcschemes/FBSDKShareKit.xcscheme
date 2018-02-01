@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "BE3065D31F74B0CC003F6C40"
-               BuildableName = "Dohasooq_mobile.app"
-               BlueprintName = "Dohasooq_mobile"
-               ReferencedContainer = "container:Dohasooq_mobile.xcodeproj">
+               BlueprintIdentifier = "4C6C0DEC127307838A58C68F289A3404"
+               BuildableName = "libFBSDKShareKit.a"
+               BlueprintName = "FBSDKShareKit"
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -29,15 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "BE3065D31F74B0CC003F6C40"
-            BuildableName = "Dohasooq_mobile.app"
-            BlueprintName = "Dohasooq_mobile"
-            ReferencedContainer = "container:Dohasooq_mobile.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -51,16 +42,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "BE3065D31F74B0CC003F6C40"
-            BuildableName = "Dohasooq_mobile.app"
-            BlueprintName = "Dohasooq_mobile"
-            ReferencedContainer = "container:Dohasooq_mobile.xcodeproj">
+            BlueprintIdentifier = "4C6C0DEC127307838A58C68F289A3404"
+            BuildableName = "libFBSDKShareKit.a"
+            BlueprintName = "FBSDKShareKit"
+            ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -70,16 +60,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "BE3065D31F74B0CC003F6C40"
-            BuildableName = "Dohasooq_mobile.app"
-            BlueprintName = "Dohasooq_mobile"
-            ReferencedContainer = "container:Dohasooq_mobile.xcodeproj">
+            BlueprintIdentifier = "4C6C0DEC127307838A58C68F289A3404"
+            BuildableName = "libFBSDKShareKit.a"
+            BlueprintName = "FBSDKShareKit"
+            ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
