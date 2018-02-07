@@ -47,6 +47,7 @@
                 <outlet property="LBL_arrow" destination="BAS-0Q-i10" id="5Rl-8N-BUT"/>
                 <outlet property="LBL_name" destination="SKo-EA-3cY" id="eHL-Ho-5qo"/>
             </connections>
+            <point key="canvasLocation" x="16" y="16"/>
         </tableViewCell>
         <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="11w-NQ-3aN" customClass="categorie_cell">
             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -76,7 +77,7 @@
                 <outlet property="LBL_arrow" destination="keo-Ah-313" id="LW5-tt-mPO"/>
                 <outlet property="LBL_name" destination="W62-pW-Mn8" id="LFN-7j-f4z"/>
             </connections>
-            <point key="canvasLocation" x="25" y="152"/>
+            <point key="canvasLocation" x="16" y="121"/>
         </tableViewCell>
         <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="ECs-Gk-26W" customClass="language_cellTableViewCell">
             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>

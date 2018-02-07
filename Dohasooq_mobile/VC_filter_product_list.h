@@ -36,6 +36,10 @@
 @property(nonatomic,weak) IBOutlet UIView *VW_radio;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_submit;
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_back_ground;
+@property(nonatomic,weak) IBOutlet UILabel *LBL_brands;
+@property(nonatomic,weak) IBOutlet UIView *vw_line;
+
+
 
 @property(nonatomic,assign) id<filter_protocol>delegate;
 

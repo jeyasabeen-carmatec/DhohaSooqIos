@@ -417,8 +417,7 @@
         str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
         
         
-            if([str isEqualToString:@"In stock"])
-            {
+             if([str isEqualToString:@"In stock"]|| [str isEqualToString:@""]|| [str isEqualToString:@"<null>"] )            {
                 pro_cell.LBL_stock.text =@"";
             }
             else{
@@ -597,37 +596,67 @@
                     text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
                     
                 }
-                
+                /* int sizeval = 14;
+                 int desired_VAL = 10;
+                 CGSize result = [[UIScreen mainScreen] bounds].size;
+                 if(result.height <= 480)
+                 {
+                 desired_VAL = 8;
+                 }
+                 else if(result.height <= 568)
+                 {
+                 desired_VAL = 8;
+                 }
+                 
+                 else
+                 {
+                 desired_VAL = 10;
+                 }
+                 
+                 
+                 if (current_price.length >= desired_VAL)
+                 {
+                 sizeval = 14;
+                 ////////////////////////////////////////////
+*/
                 
 
                 
                 int sizeval = 14;
-                
-                if (prec_price.length >= 10)
+                int desired_VAL = 10;
+                 CGSize result = [[UIScreen mainScreen] bounds].size;
+                if(result.height <= 480)
                 {
-                    sizeval = 12;
+                    desired_VAL = 8;
+                }
+                else if(result.height <= 568)
+                {
+                    desired_VAL = 8;
+                }
+                
+                else
+                {
+                     desired_VAL = 10;
+                }
+
+                if (prec_price.length >= desired_VAL)
+                {
+                    sizeval = 14;
                     pro_cell.LBL_current_price.textContainer.maximumNumberOfLines = 2;
                     [pro_cell.LBL_current_price.layoutManager textContainerChangedGeometry:pro_cell.LBL_current_price.textContainer];
                     
-                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-                    {
-//                        prec_price = [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
-//                        prec_price = [HttpClient currency_seperator:prec_price];
-                       // prec_price = [NSString stringWithFormat:@"%@ %@",prec_price,currency_code];
-                        //current_price =  [NSString stringWithFormat:@"%.2f",[[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
-                       // current_price = [HttpClient currency_seperator:current_price];
-
-                       // current_price = [NSString stringWithFormat:@"%@",current_price];
-                        text = [NSString stringWithFormat:@"%@\n%@",prec_price,current_price];
-                        
-                    }
-                    else{
-                        
-                        //current_price = [NSString stringWithFormat:@"%@ %@",currency_code,current_price];
+//                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+//                    {
+//
+//                        text = [NSString stringWithFormat:@"%@\n%@",prec_price,current_price];
+//                        
+//                    }
+//                    else{
+                    
                         
                         text = [NSString stringWithFormat:@"%@\n%@",current_price,prec_price];
                         
-                    }
+                   // }
                     
 
 
@@ -641,11 +670,7 @@
                 NSRange ename = [text rangeOfString:current_price];
                     [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                             range:ename];
-                
-                //NSRange qrname = [text rangeOfString:currency_code];
-                
-             // [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
-                                            //range:qrname];
+               
 
                 
                 
@@ -656,9 +681,23 @@
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
+                    
+                    if (prec_price.length >= desired_VAL)
+                    {
+                    
+                    
+                        [attributedText addAttribute:NSStrikethroughStyleAttributeName
+                                               value:@2
+                                               range:NSMakeRange([current_price length]+1 ,[prec_price length])];
+                    }else{
+                        
+                    
                     [attributedText addAttribute:NSStrikethroughStyleAttributeName
                                            value:@2
                                            range:NSMakeRange(0 ,[prec_price length])];
+                    }
+                    
+                    
                 }
                 
                 else{
@@ -696,15 +735,16 @@
            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                
-                 str = @"إيقاف %";
-        pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",str,[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"]];
+                str = @"% إيقاف";
+       // pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"]];
             }
             else{
                 
                  str = @"% off";
-                pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"],str];
+              
  
             }
+              pro_cell.LBL_discount.text = [NSString stringWithFormat:@"%@%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"discount"],str];
         }
         
         [pro_cell.BTN_fav setTag:indexPath.row];//wishListStatus
@@ -1326,6 +1366,11 @@
                                     _VW_empty.hidden = NO;
                                     //  _VW_filter.hidden = YES;
                                     _BTN_top.hidden = YES;
+                                    
+                                    NSLog(@"THE userdefaults%@",[[json_DATA valueForKey:@"brnads"]allValues]);
+                                    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"brands_LISTs"];
+                                    [[NSUserDefaults standardUserDefaults]synchronize];
+
 
 
                                     [Helper_activity stop_activity_animation:self];
@@ -2357,7 +2402,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     
     text = [NSString stringWithFormat:@"%@",STR_timeRe];
-    NSLog(@"The timer is:%@",text);
+   // NSLog(@"The timer is:%@",text);
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[[timer.userInfo valueForKey:@"tag"] intValue] inSection:0];
     product_cell *cell = (product_cell *)[_collection_product cellForItemAtIndexPath:indexPath];
@@ -2365,7 +2410,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     NSString *str =[NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row ]  valueForKey:@"stock_status"]];
     str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     NSString *time_diff = [NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"timeDiff"]];
-    if([str isEqualToString:@"In stock"])
+   if([str isEqualToString:@"In stock"]|| [str isEqualToString:@""]|| [str isEqualToString:@"<null>"] )    
     {
         if([time_diff isEqualToString:@"No"] ||[time_diff isEqualToString:@"(null)"] ||[time_diff isEqualToString:@"<null>"]||!time_diff)
         {

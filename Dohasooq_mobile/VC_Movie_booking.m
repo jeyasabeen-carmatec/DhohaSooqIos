@@ -405,7 +405,7 @@
       [_tbl_timings reloadData];
     
     frameset = self.tbl_timings.frame;
-    frameset.size.height =  _tbl_timings.contentSize.height;
+    frameset.size.height = _tbl_timings.frame.origin.y+  _tbl_timings.contentSize.height;
     self.tbl_timings.frame = frameset;
     
 //    CAGradientLayer *gradient = [CAGradientLayer layer];
@@ -668,18 +668,75 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    CGSize result = [[UIScreen mainScreen] bounds].size;
+    NSInteger ht = 0;
+
+    
     @try {
+        if([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"] isKindOfClass:[NSDictionary class]] || [[[ARR_temp objectAtIndex:indexPath.row]valueForKey:@"shows"] count]<=3)
+        {
+                      if(result.height <= 480)
+            {
+                ht = 100;
+            }
+            else if(result.height <= 568)
+            {
+                 ht = 100;
+            }
+            else
+            {
+                 ht = 80;
+            }
+
+            
+            return ht;
+        }
         if([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"] isKindOfClass:[NSDictionary class]] || [[[ARR_temp objectAtIndex:indexPath.row]valueForKey:@"shows"] count]<=4)
         {
-            return 80;
+            CGSize result = [[UIScreen mainScreen] bounds].size;
+            NSInteger ht = 0;
+            if(result.height <= 480)
+            {
+                ht = 140;
+            }
+            else if(result.height <= 568)
+            {
+                ht = 140;
+            }
+            else
+            {
+                ht = 80;
+            }
+            
+            
+            return ht;
         }
+
         
-        else if ([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count]>4 && [[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count]<=8 ){
-            return 180;
+        else if ([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count] >= 4 && [[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count]<=8 ){
+            
+            CGSize result = [[UIScreen mainScreen] bounds].size;
+            NSInteger ht = 0;
+            if(result.height <= 480)
+            {
+                ht = 160;
+            }
+            else if(result.height <= 568)
+            {
+                ht = 160;
+            }
+            else
+            {
+                ht = 160;
+            }
+
+            return ht;
         }
         
         else{
-            return 77*[[[ARR_temp objectAtIndex:indexPath.row]valueForKey:@"shows"] count]/4;
+        
+        
+            return 77*[[[ARR_temp objectAtIndex:indexPath.row]valueForKey:@"shows"] count]/4+65;
         }
         
         

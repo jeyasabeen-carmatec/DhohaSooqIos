@@ -28,10 +28,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    
-  
-    
+
     CGRect frame_nav = _VW_navMenu.frame;
     frame_nav.origin.x = 0.0f;
     frame_nav.size.width = self.navigationController.navigationBar.frame.size.width - _BTN_search.frame.size.width;

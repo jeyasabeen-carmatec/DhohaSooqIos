@@ -20,6 +20,7 @@
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_track_image;
 
 @property(nonatomic,weak) IBOutlet UIButton *BTN_rating;
+@property (weak, nonatomic) IBOutlet UILabel *LBL_shipping_type;
 
 
 

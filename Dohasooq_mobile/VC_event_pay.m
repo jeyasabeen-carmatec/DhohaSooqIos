@@ -101,7 +101,7 @@
     _LBL_persons.frame = framseset;
     @try
     {
-    _LBL_persons.text = [NSString stringWithFormat:@"Number of persons:%@",[dtl objectAtIndex:0]];
+    _LBL_persons.text = [NSString stringWithFormat:@"Number of persons : %@",[dtl objectAtIndex:0]];
     }
     @catch(NSException *exception)
     {
@@ -109,11 +109,14 @@
     }
     
     framseset = _LBL_service_charges.frame ;
-    framseset.origin.y = _LBL_persons.frame.origin.y + 3;
+    framseset.origin.x = _LBL_persons.frame.origin.x ;
+    framseset.origin.y = _LBL_persons.frame.origin.y + _LBL_persons.frame.size
+    .height +3;
+
     _LBL_service_charges.frame = framseset;
     
     framseset = _VW_contents.frame ;
-    framseset.size.height = _LBL_persons.frame.origin.y + _LBL_persons.frame.size.height +20;
+    framseset.size.height = _LBL_service_charges.frame.origin.y + _LBL_service_charges.frame.size.height +20;
     _VW_contents.frame = framseset;
     
     
@@ -127,7 +130,7 @@
 
     
     NSString *str = [NSString stringWithFormat:@"%@",[dtl objectAtIndex:1]];
-    NSString *text = [NSString stringWithFormat:@"TOTAL price \n%@ QAR",str];
+    NSString *text = [NSString stringWithFormat:@"TOTAL price : %@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],str];
     _LBL_service_charges.text = text;
     }
     @catch(NSException *exception)

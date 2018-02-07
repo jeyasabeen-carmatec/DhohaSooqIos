@@ -147,7 +147,7 @@
          
         @try
         {
-            NSString *img_url = [[Total_QT_arr objectAtIndex:indexPath.row]valueForKey:@"_movieImageURL"];
+            NSString *img_url = @"https://www.q-tickets.com/movie_images/OLDBOY_thumb.jpg";//[[Total_QT_arr objectAtIndex:indexPath.row]valueForKey:@"_movieImageURL"];
             //img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
             [book_cell.IMG_item_name sd_setImageWithURL:[NSURL URLWithString:img_url]
                                        placeholderImage:[UIImage imageNamed:@"upload-8.png"]
@@ -574,7 +574,7 @@
         NSString *str_AMT = @"Total Amount:";
         
         
-        NSString *total_amount = [NSString stringWithFormat:@"%@ %@",str_AMT,str_amount];
+        NSString *total_amount = [NSString stringWithFormat:@"%@ %@",str_amount,str_AMT];
         
         if ([book_cell.LBL_total_amount respondsToSelector:@selector(setAttributedText:)]) {
             
@@ -688,8 +688,7 @@
         [Helper_activity animating_images:self];
         [self performSelector:@selector(movies_VIEW) withObject:nil afterDelay:0.01];
         
-        _TBL_bookings.delegate = self;
-        _TBL_bookings.dataSource = self;
+        _TBL_bookings.hidden = YES;
         [_TBL_bookings reloadData];
         not_found_image.hidden= YES;
     }
@@ -698,11 +697,8 @@
         not_found_image.hidden= YES;
         [Helper_activity animating_images:self];
 
-//        VW_overlay.hidden = NO;
-//        [activityIndicatorView startAnimating];
         [self performSelector:@selector(event_VIEW) withObject:nil afterDelay:0.01];
-        _TBL_bookings.delegate = self;
-        _TBL_bookings.dataSource = self;
+        _TBL_bookings.hidden = YES;
         [_TBL_bookings reloadData];
         
     }
@@ -775,7 +771,7 @@
                 [self movies_VIEW];
                 _VW_empty.hidden = YES;
                 _VW_segment.hidden = NO;
-                _TBL_bookings.hidden = NO;
+               // _TBL_bookings.hidden = NO;
                 self.segmentedControl4.selectedSegmentIndex = 0;
                 [self segmentedControlChangedValue:self.segmentedControl4];
                 [Helper_activity stop_activity_animation:self];

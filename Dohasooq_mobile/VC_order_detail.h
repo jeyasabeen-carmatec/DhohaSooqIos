@@ -98,6 +98,8 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_shipping_charge;
 @property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_cupon;
 @property (weak, nonatomic) IBOutlet UILabel *LBL_summry_miles;
+@property (weak, nonatomic) IBOutlet UILabel *title_Discount;
+@property (weak, nonatomic) IBOutlet UILabel *LBL_Promo_discount;
 
 
 

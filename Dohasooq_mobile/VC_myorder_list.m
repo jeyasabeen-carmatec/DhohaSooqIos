@@ -223,7 +223,7 @@
             [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
                                     range: [text rangeOfString:str_order]];
 
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
                                     range:ename];
         }
 
@@ -284,7 +284,7 @@
                     sizeval = 9.0;
                 }
                 else{
-                    sizeval = 12.0;
+                    sizeval = 10.0;
                 }
 
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:sizeval],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
@@ -296,11 +296,11 @@
             }
            else
                 {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:11.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
                                             range:[date_text rangeOfString:order_text]];
                     
 
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:11.0],NSForegroundColorAttributeName :[UIColor blackColor]}
                                             range:ename];
                 }
 

@@ -575,7 +575,7 @@
     headerView.backgroundColor = [UIColor clearColor];
     
     UILabel *label = [[UILabel alloc] initWithFrame: CGRectMake(10,0, _TBL_address.frame.size.width, 30)];
-    label.backgroundColor = [UIColor whiteColor];
+    label.backgroundColor = [UIColor clearColor];
     label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
     
     [headerView addSubview:label];
@@ -616,8 +616,7 @@
         return 0;
     }
 }
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     
@@ -635,9 +634,21 @@
     
     
 }
--(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+
 {
-    return 10;
+    if(indexPath.section == 2)
+    {
+        return 530.0;
+        
+        
+    }
+    //    return UITableViewAutomaticDimension;
+    else{
+        return UITableViewAutomaticDimension;
+
+    }
+
 }
 
 
@@ -789,7 +800,7 @@
     str_phone =  cell.TXT_phone.text ;
     code_cntry = cell.TXT_cntry_code.text;
     if ([str_zip_code isEqualToString:@""]) {
-        str_zip_code = @"null";
+        str_zip_code = @" ";
     }
     
     NSString *msg;
@@ -958,6 +969,17 @@
 //        }
 //
 //    }
+    else if ([str_country isEqualToString:@""])
+    {
+        [cell.TXT_country becomeFirstResponder];
+        msg = @"Please Select Country";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى تحديد البلد";
+        }
+    }
+    
+
     else if ([str_state isEqualToString:@""])
     {
         [cell.TXT_state becomeFirstResponder];
@@ -968,17 +990,7 @@
         }
         
     }
-    else if ([str_country isEqualToString:@""])
-    {
-        [cell.TXT_country becomeFirstResponder];
-        msg = @"Please Select Country";
-        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-        {
-            msg = @"يرجى تحديد البلد";
-        }
-    }
-
-    else if (edit_tag != 999){
+       else if (edit_tag != 999){
         
         if ([str_phone isEqualToString:@""])
         {
@@ -1000,13 +1012,13 @@
                 msg = @"لا يجب ألا يقلّ رقم الجوال عن 5 أرقام ";
             }
         }
-        else if (str_phone.length > 15)
+        else if (str_phone.length > 8)
         {
             [cell.TXT_phone becomeFirstResponder];
-            msg = @"Phone Number cannot be more than 15 digits";
+            msg = @"Phone Number cannot be more than 8 digits";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                msg = @"يجب أن لا يتجاوز رقم الجوال 15 رقماً";
+                msg = @"يجب أن لا يتجاوز رقم الجوال 8 رقماً";
             }
         }
         else if (![str_country isEqualToString:@"Qatar"])

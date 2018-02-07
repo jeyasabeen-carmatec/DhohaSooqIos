@@ -57,6 +57,8 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     
+    self.navigationItem.hidesBackButton = YES;
+    
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     VW_overlay.clipsToBounds = YES;
@@ -233,54 +235,24 @@
                 
                 
                 
-                
+                 
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
-                
-                int sizeval = 14;
-                
-                if (prec_price.length >= 10)
-                {
-                    sizeval = 12;
-                    seller.LBL_cost.textContainer.maximumNumberOfLines = 2;
-                    [seller.LBL_cost.layoutManager textContainerChangedGeometry:seller.LBL_cost.textContainer];
-                    
-                    text = [NSString stringWithFormat:@"%@ %@\n%@",currency_code,current_price,prec_price];
-                    
-                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-                    {
-                        prec_price = [NSString stringWithFormat:@"%.2f",[[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
-                        prec_price = [HttpClient currency_seperator:prec_price];
-                        prec_price = [NSString stringWithFormat:@"%@ %@",prec_price,currency_code];
-                        current_price =  [NSString stringWithFormat:@"%.2f",[[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"special_price"] floatValue]];
-                        current_price = [HttpClient currency_seperator:current_price];
-                        current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency_code];
-                        
-                        
-                        text = [NSString stringWithFormat:@"%@ %@",prec_price,current_price];
-                        
-                    }
-                    
-                    
-                }
-                else{
-                    sizeval = 14;
-                }
                 
                 
                 NSRange ename = [text rangeOfString:current_price];
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                         range:ename];
                 
                 NSRange qrname = [text rangeOfString:currency_code];
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                         range:qrname];
                 
                 
                 
                 //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                 
                 [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
                 
@@ -307,6 +279,12 @@
         {
             seller.LBL_cost.text = text;
         }
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+            seller.LBL_cost.textAlignment = NSTextAlignmentRight;
+            }else{
+              seller.LBL_cost.textAlignment = NSTextAlignmentLeft;
+            }
     }
     @catch(NSException *exception)
     {
@@ -323,7 +301,7 @@
     seller.LBL_status.text =  delivary_stat;
     
     
-    NSString *item_str = [NSString stringWithFormat:@"%@",[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"title"]];
+    NSString *item_str = [NSString stringWithFormat:@"%@",[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"merchant_name"]];
     item_str = [item_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
     item_str = [item_str stringByReplacingOccurrencesOfString:@"(null)" withString:@"Not mentioned"];
     item_str = [item_str stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
@@ -393,7 +371,10 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 168;
+    return  UITableViewAutomaticDimension;
+}
+-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath{
+     return 168;
 }
 - (IBAction)Wish_list_action:(id)sender {
     

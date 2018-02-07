@@ -45,6 +45,17 @@
             _TXT_mail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"user_email"];
             _TXT_name.text = [dict valueForKey:@"firstname"];
             
+            if([[dict  valueForKey:@"phone"] isEqualToString:@"<null>"]||[[dict  valueForKey:@"phone"] isEqualToString:@""]||[[dict  valueForKey:@"phone"] isEqualToString:@"null"]||![dict  valueForKey:@"phone"])
+            {
+                _TXT_phone.text = @"";
+            }
+            else
+            {
+                NSArray  *arr = [[dict valueForKey:@"phone"] componentsSeparatedByString:@"-"];
+                _TXT_phone.text = [arr objectAtIndex:1];
+            }
+
+            
         }
     }@catch(NSException *exception)
     {

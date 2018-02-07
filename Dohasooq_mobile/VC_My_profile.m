@@ -1056,6 +1056,9 @@
     STR_state = [STR_state stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
     STR_zip_code = [STR_zip_code stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     STR_zip_code = [STR_zip_code stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    if ([STR_zip_code containsString:@"null"] ||[STR_zip_code isEqualToString:@"<nill>"] || [STR_zip_code isKindOfClass:[NSNull class]] || [STR_zip_code isEqualToString:@"(null)"]) {
+        STR_zip_code = @"";
+         }
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Images_path"];
 
     
@@ -1483,6 +1486,7 @@
                 [alert show];
                 _BTN_save.hidden = YES;
                 [_BTN_edit setTitle:@"" forState:UIControlStateNormal];
+                [self TEXT_hidden];
                // [self Edit_user_data];
                 [self scroll_HANDLER];
                 
@@ -1790,7 +1794,7 @@
                 _BTN_save_billing.hidden = YES;
                 [_BTN_edit_billing setTitle:@"" forState:UIControlStateNormal];
                 //[self Edit_billing_addres];
-
+                [self TEXT_billing_hidden];
                 [self scroll_HANDLER];
 
                // [self Button_edit_billing_action];
