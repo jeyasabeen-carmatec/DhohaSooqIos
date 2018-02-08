@@ -84,6 +84,7 @@
             
             self.LBL_slider.minValue =0;
             self.LBL_slider.maxValue = [upper floatValue];
+            
             _LBL_slider.hideLabels = YES;
             _LBL_slider.lineHeight = 7.0f;
             _LBL_slider.handleImage = [UIImage imageNamed:@"UISliderHandleDefault.png"];
@@ -110,6 +111,13 @@
             
             self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"], (int)self.LBL_slider.selectedMaximum];
             self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d", [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],(int)self.LBL_slider.selectedMinimum];
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                self.LBL_max.text = [NSString stringWithFormat:@"%d %@ Max",(int)self.LBL_slider.selectedMaximum,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+                self.LBL_min.text = [NSString stringWithFormat:@"%d %@ Min",(int)self.LBL_slider.selectedMinimum, [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+            }
+            
             NSLog(@"%@ /n %@",lower,upper);
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);

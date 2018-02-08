@@ -83,7 +83,7 @@
       _Scroll_contents.delegate =self;
     
    // TIMER_new = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:nil repeats:YES];
-    
+  //  [self popUpZoomIn:_BTN_fashion];
     [self.collection_images registerNib:[UINib nibWithNibName:@"cell_image" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
     [self.collection_features registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"features_cell"];
     [self.collection_showing_movies registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"showing_movies_cell"];
@@ -3090,7 +3090,7 @@
         {
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-            str = @"اللغة";
+            str = @"روابط سريعة";
             }
             else{
                 str = @"QUICK LINKS";
@@ -3099,7 +3099,7 @@
         tempLabel.text =str;
         tempLabel.backgroundColor = [UIColor whiteColor];
         [tempView addSubview:tempLabel];
-        return tempView;
+        return tempView; 
     }
     else
     {
@@ -3205,6 +3205,7 @@
             navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
             navigationController.navigationBar.barTintColor = [UIColor whiteColor];
             [self  presentViewController:navigationController animated:NO completion:nil];
+            [self API_call_total];
              [_TBL_menu reloadData];
             
         }
@@ -3221,7 +3222,8 @@
             navigationController.navigationBar.barTintColor = [UIColor whiteColor];
             [self  presentViewController:navigationController animated:NO completion:nil];
              [_TBL_menu reloadData];
-            
+            [self API_call_total];
+
             
             
             
@@ -4081,11 +4083,16 @@
                     
                    
                     [Helper_activity stop_activity_animation:self];
-                    
+                    @try
+                    {
                     [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Home_data"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     [self view_appear];
-                    
+                    }
+                    @catch(NSException *exception)
+                    {
+                        
+                    }
                     
                     
                 }
@@ -4121,7 +4128,6 @@
     
     
 }
-
 -(void)BTN_log_outs
 {
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"userdata"];
@@ -5257,18 +5263,33 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     if ([breakdownInfo day] <= 0 ) {
         
         STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d: %02d",(int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+             STR_timeRe = [NSString stringWithFormat:@"%02d: %02d: %02d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute], (int)[breakdownInfo hour]];
+        }
+        
         
     }
     else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0)
     {
         
         STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d",(int)[breakdownInfo minute], (int)[breakdownInfo second]];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            STR_timeRe = [NSString stringWithFormat:@"%02d: %02d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute]];
+        }
+
         
     }
     else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0 && [breakdownInfo minute] <= 0)
     {
         
         STR_timeRe = [NSString stringWithFormat:@"Ends in %02d", (int)[breakdownInfo second]];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            STR_timeRe = [NSString stringWithFormat:@"%02d ينتهي بـ",(int)[breakdownInfo second]];
+        }
+
         
         
     }
@@ -5276,6 +5297,12 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     {
         
         STR_timeRe = [NSString stringWithFormat:@"Ends in %02d Days: %02d: %02d: %02d", (int)[breakdownInfo day], (int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+           STR_timeRe = [NSString stringWithFormat:@"%02d: %02d: %02d:الأيام %2d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute], (int)[breakdownInfo hour], (int)[breakdownInfo day]];
+        }
+
     }
     
     
@@ -5478,6 +5505,44 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     [_collection_brands scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:INDX_selected.row inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
     
 
+}
+#pragma Button Flash methods
+- (void)flashOff:(UIView *)v
+{
+    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^ {
+        v.alpha = .01;  //don't animate alpha to 0, otherwise you won't be able to interact with it
+    } completion:^(BOOL finished) {
+        [self flashOn:v];
+    }];
+}
+
+- (void)flashOn:(UIView *)v
+{
+    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^ {
+        v.alpha = 1;
+    } completion:^(BOOL finished) {
+        [self flashOff:v];
+    }];
+}
+- (void)popUpZoomIn:(UIView *)popUpView{
+    popUpView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1,0.1);
+    [UIView animateWithDuration:0.5
+                     animations:^{
+                         popUpView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1, 1);
+                     } completion:^(BOOL finished) {
+                         [self popZoomOut:popUpView];
+                     }];
+}
+
+
+- (void)popZoomOut:(UIView *)popUpView{
+    [UIView animateWithDuration:0.5
+                     animations:^{
+                         popUpView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1, 1);
+                     } completion:^(BOOL finished) {
+                       //  popUpView.hidden = TRUE;
+                         [self popUpZoomIn:popUpView];
+                     }];
 }
 /*
 #pragma mark - Navigation

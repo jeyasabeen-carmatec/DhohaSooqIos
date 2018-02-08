@@ -3767,13 +3767,6 @@
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="right" lineBreakMode="characterWrap" baselineAdjustment="alignBaselines" minimumFontSize="8" id="QlS-2z-zRn">
-                            <rect key="frame" x="132" y="202" width="181" height="29"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
                         <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="jVC-sF-zkC">
                             <rect key="frame" x="245" y="131" width="68" height="35"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
@@ -3807,7 +3800,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="8" id="XJR-a3-U1K">
-                            <rect key="frame" x="132" y="225" width="181" height="85"/>
+                            <rect key="frame" x="132" y="258" width="181" height="52"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
                             <nil key="textColor"/>
@@ -3825,6 +3818,13 @@
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
                             <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="8" id="QlS-2z-zRn">
+                            <rect key="frame" x="132" y="202" width="181" height="48"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
+                            <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
@@ -4309,7 +4309,7 @@
                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.84999999999999998" contentMode="scaleToFill" misplaced="YES" scrollEnabled="NO" editable="NO" textAlignment="natural" adjustsFontForContentSizeCategory="YES" selectable="NO" id="hZN-wP-9Kv">
                             <rect key="frame" x="7" y="45" width="294" height="37"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="16"/>
                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences" secureTextEntry="YES"/>
@@ -7032,19 +7032,24 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleAspectFit" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="j8p-XJ-DnU">
-                                <rect key="frame" x="10" y="73" width="90" height="60"/>
+                                <rect key="frame" x="10" y="73" width="70" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" backgroundImage="upload-11.png"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Aid-1a-6Ia">
-                                <rect key="frame" x="112" y="73" width="90" height="60"/>
+                                <rect key="frame" x="89" y="73" width="70" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" backgroundImage="upload-12.png"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="3kY-ij-dfT">
-                                <rect key="frame" x="214" y="73" width="90" height="60"/>
+                                <rect key="frame" x="170" y="73" width="70" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" backgroundImage="upload-10.png"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="mUq-Jl-U1A">
+                                <rect key="frame" x="245" y="73" width="70" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" backgroundImage="naps.png"/>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -7053,6 +7058,7 @@
                     <connections>
                         <outlet property="BTN_american_express" destination="j8p-XJ-DnU" id="cpe-FZ-Lwf"/>
                         <outlet property="BTN_cancel" destination="f7u-Y7-hs9" id="idh-Qm-LaK"/>
+                        <outlet property="BTN_debit_card" destination="mUq-Jl-U1A" id="BCp-Qe-AXz"/>
                         <outlet property="BTN_dohabank" destination="Aid-1a-6Ia" id="J0O-hK-QNe"/>
                         <outlet property="BTN_pay" destination="HJf-oJ-fqw" id="PXr-AA-Pgi"/>
                         <outlet property="BTN_visa" destination="3kY-ij-dfT" id="utr-0V-DyO"/>
@@ -7067,13 +7073,13 @@
         <!--payment web-->
         <scene sceneID="U4G-gb-DsF">
             <objects>
-                <viewController id="YBU-nD-B2e" customClass="VC_payment_web" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="YBU-nD-B2e" customClass="VC_payment_web" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="vi2-LZ-ahp">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <webView contentMode="scaleToFill" misplaced="YES" id="SSv-AA-tzD">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="485"/>
+                                <rect key="frame" x="0.0" y="66" width="320" height="420"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <connections>
@@ -7105,7 +7111,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nnH-no-Ly6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1738" y="4339"/>
+            <point key="canvasLocation" x="-1757" y="4315"/>
         </scene>
         <!--Event detail web-->
         <scene sceneID="hGB-t7-UbS">
@@ -7572,7 +7578,7 @@
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="115" sectionHeaderHeight="28" sectionFooterHeight="28" id="TeI-o5-xJ0">
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="115" sectionHeaderHeight="28" sectionFooterHeight="28" id="TeI-o5-xJ0">
                             <rect key="frame" x="0.0" y="107" width="320" height="241"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -8396,7 +8402,7 @@
                             </connections>
                         </textField>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Your Phone Number" textAlignment="natural" minimumFontSize="17" id="wb2-JI-RRG" customClass="TXT_Blck_field">
-                            <rect key="frame" x="108" y="191" width="200" height="40"/>
+                            <rect key="frame" x="108" y="191" width="196" height="40"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -8579,19 +8585,24 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="iRz-go-i2X">
-                                <rect key="frame" x="10" y="106" width="90" height="60"/>
+                                <rect key="frame" x="7" y="106" width="70" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" backgroundImage="upload-11.png"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="pDd-l2-1kw">
-                                <rect key="frame" x="112" y="106" width="90" height="60"/>
+                                <rect key="frame" x="85" y="106" width="70" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" backgroundImage="upload-12.png"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="BX5-Di-olb">
-                                <rect key="frame" x="214" y="106" width="90" height="60"/>
+                                <rect key="frame" x="170" y="106" width="70" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" backgroundImage="upload-10.png"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="EXt-aa-7i2">
+                                <rect key="frame" x="245" y="106" width="70" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" backgroundImage="naps.png"/>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -8601,6 +8612,7 @@
                     <connections>
                         <outlet property="BTN_american_express" destination="iRz-go-i2X" id="epO-dP-AXK"/>
                         <outlet property="BTN_cancel" destination="XrM-Nd-cxP" id="YUQ-iF-0Nl"/>
+                        <outlet property="BTN_debit_card" destination="EXt-aa-7i2" id="82N-QH-HXS"/>
                         <outlet property="BTN_dohabank" destination="pDd-l2-1kw" id="8v6-t2-MTW"/>
                         <outlet property="BTN_pay" destination="sdU-RL-hCB" id="EjQ-Qp-SK8"/>
                         <outlet property="BTN_visa" destination="BX5-Di-olb" id="Tyi-jX-5Wh"/>
@@ -9216,6 +9228,7 @@
         <image name="map.png" width="84" height="84"/>
         <image name="menu.png" width="64" height="46"/>
         <image name="movies-2_30x30" width="25" height="25"/>
+        <image name="naps.png" width="100" height="30"/>
         <image name="offer_bg.png" width="1080" height="354"/>
         <image name="online_shopping_cart.png" width="54" height="50"/>
         <image name="orders_not.png" width="250" height="250"/>
@@ -9251,26 +9264,26 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="tch-wh-JRR"/>
-        <segue reference="vMu-Y7-4Nz"/>
+        <segue reference="2rh-CG-Nuy"/>
+        <segue reference="GAW-2H-hzI"/>
         <segue reference="P2G-Ld-knH"/>
         <segue reference="hYs-TP-0oE"/>
         <segue reference="JjR-Qr-AQ0"/>
-        <segue reference="3Xj-K6-9qD"/>
-        <segue reference="pRw-18-HAL"/>
+        <segue reference="U1I-tg-KmK"/>
+        <segue reference="1fc-cP-jfH"/>
         <segue reference="yWr-Gw-exm"/>
         <segue reference="1PO-jV-8IF"/>
         <segue reference="z2t-AS-he8"/>
         <segue reference="WuY-ui-8aO"/>
-        <segue reference="GAW-2H-hzI"/>
-        <segue reference="2i6-zz-H96"/>
+        <segue reference="Cw8-vV-nPW"/>
+        <segue reference="VlJ-8X-e9R"/>
+        <segue reference="pDU-cD-KDi"/>
+        <segue reference="thM-tK-ujK"/>
+        <segue reference="vMu-Y7-4Nz"/>
         <segue reference="PIq-gb-2yd"/>
         <segue reference="faj-2O-9a0"/>
         <segue reference="9v6-ul-yqt"/>
         <segue reference="zHZ-8L-dXg"/>
-        <segue reference="1DN-3V-nls"/>
-        <segue reference="TnH-WZ-Baw"/>
         <segue reference="6gT-Rb-aGG"/>
-        <segue reference="sF9-AK-GyS"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -17,6 +17,7 @@
 #import "ViewController.h"
 #import "product_cell.h"
 #import "Helper_activity.h"
+#import <Social/Social.h>
 
 
 @interface VC_product_detail ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UITextFieldDelegate,UIWebViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,UITextViewDelegate,UIAlertViewDelegate>
@@ -28,6 +29,7 @@
     NSString *special_price;
     HCSStarRatingView *starRatingView;
     NSMutableDictionary *json_Response_Dic,*temp_DICT;
+   
     
 //    UIView *VW_overlay;
 //   UIActivityIndicatorView *activityIndicatorView;
@@ -416,7 +418,7 @@
                 
                 NSRange cmp = [text rangeOfString:actuel_price];
                 //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor]}
                                         range:cmp];
                 
                 
@@ -765,7 +767,7 @@
         frame_set.origin.y = _LBL_delivery_cod.frame.origin.y + _LBL_delivery_cod.frame.size.height + 5;
         _LBL_merchant_sellers.frame = frame_set;
         
-       // [_LBL_merchant_sellers sizeToFit];
+        [_LBL_merchant_sellers sizeToFit];
         _LBL_merchant_sellers.numberOfLines = 0;
         
         
@@ -783,7 +785,7 @@
         }
         
         frame_set = _IMG_merchant.frame;
-        frame_set.origin.y = _LBL_sold_by.frame.origin.y + _LBL_sold_by.frame.size.height +5;
+        frame_set.origin.y = _LBL_merchant_sellers.frame.origin.y + _LBL_merchant_sellers.frame.size.height +3;
         _IMG_merchant.frame = frame_set;
         
         if ([[json_Response_Dic valueForKey:@"products"] isKindOfClass:[NSDictionary class]]) {
@@ -1356,8 +1358,17 @@
                         {
                             pro_cell.LBL_stock.font = [UIFont fontWithName:@"Poppins-Regular" size:14.0];
                             pro_cell.LBL_stock.textColor = [UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0];
+                            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                            {
+                                  pro_cell.LBL_stock.text = @"غير متوفّر";
+                            }
+                            else
+                            {
+                                  pro_cell.LBL_stock.text = [str uppercaseString];
+                            }
                             
-                            pro_cell.LBL_stock.text = [str uppercaseString];
+
+                         
                         }                    }
                     @catch(NSException *exception)
                     {
@@ -1583,7 +1594,7 @@
                             
                             
                             
-                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
+                            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:sizeval],NSForegroundColorAttributeName:[UIColor grayColor],}range:cmp ];
                             
                             [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
                            
@@ -3258,13 +3269,12 @@
             if([user_id isEqualToString:@"(null)"])
             {
                  urlGetuser =[NSString stringWithFormat:@"%@Pages/detailsApi/%@/%@/%@/%@/Customer.json",SERVER_URL,[user_dflts valueForKey:@"product_list_key_sub"],mercahnt_ID,country,languge];
-                url_share =[NSString stringWithFormat:@"%@Pages/details/%@/%@/%@/%@",SERVER_URL,[user_dflts valueForKey:@"product_list_key_sub"],mercahnt_ID,country,languge];
+             
                 
             }
             else
             {
                urlGetuser =[NSString stringWithFormat:@"%@Pages/detailsApi/%@/%@/%@/%@/%@/Customer.json",SERVER_URL,[user_dflts valueForKey:@"product_list_key_sub"],mercahnt_ID,country,languge,user_id];
-                url_share =[NSString stringWithFormat:@"%@Pages/details/%@/%@/%@/%@/%@",SERVER_URL,[user_dflts valueForKey:@"product_list_key_sub"],mercahnt_ID,country,languge,user_id];
                 
                 
             }
@@ -3274,7 +3284,7 @@
              urlGetuser =[NSString stringWithFormat:@"%@Pages/detailsApi/%@/%@/%@/%@/Customer.json",SERVER_URL,[user_dflts valueForKey:@"product_list_key_sub"],mercahnt_ID,country,languge];
         }
 
-        
+          url_share =[NSString stringWithFormat:@"%@Pages/details/%@/%@",SERVER_URL,[user_dflts valueForKey:@"product_list_key_sub"],mercahnt_ID];
      
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
@@ -4389,9 +4399,16 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
  //   NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
  //   NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
     NSString *trailer_URL= url_share;
-        NSArray* sharedObjects=[NSArray arrayWithObjects:trailer_URL,  nil];
-        UIActivityViewController *activityViewController = [[UIActivityViewController alloc]                                                                initWithActivityItems:sharedObjects applicationActivities:nil];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+    product_detail_cell *cell = (product_detail_cell *)[_collection_images cellForItemAtIndexPath:indexPath];
+    
+    UIImage *image = cell.img.image;
+   // [_BTN_wish setBackgroundImage:image forState:UIControlStateNormal];
+    
+        NSArray* sharedObjects=[NSArray arrayWithObjects:trailer_URL,image, nil];
+ UIActivityViewController *activityViewController = [[UIActivityViewController alloc]                                                                initWithActivityItems:sharedObjects applicationActivities:nil];
         activityViewController.popoverPresentationController.sourceView = self.view;
+    
         [self presentViewController:activityViewController animated:YES completion:nil];
    // }
 }
@@ -4653,7 +4670,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                 
                 NSRange cmp = [text rangeOfString:actuel_price];
                 //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15.0],NSForegroundColorAttributeName:[UIColor lightGrayColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:15.0],NSForegroundColorAttributeName:[UIColor lightGrayColor]}
                                         range:cmp];
                 
                 

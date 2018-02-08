@@ -325,7 +325,7 @@
         }
         
         
-        NSString *address_str = [NSString stringWithFormat:@"%@,\n%@, \n%@ %@ %@\nMobile:%@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"address1"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"city"],state,country1,str_zip_code,[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"phone"]];
+        NSString *address_str = [NSString stringWithFormat:@"%@,\n%@, \n%@ %@ %@\n%@",[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"address1"],[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"city"],state,country1,str_zip_code,[[[dict valueForKey:[keys_arr objectAtIndex:indexPath.row]] valueForKey:@"shippingaddress"] valueForKey:@"phone"]];
         
         address_str = [address_str stringByReplacingOccurrencesOfString:@"<null>" withString:@","];
         

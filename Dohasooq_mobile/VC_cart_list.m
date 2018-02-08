@@ -252,7 +252,7 @@
                      custom = NO;
                      
                  }
-                 else
+                                else
                  {
                      custom = YES;
                      cell.LBL_combo.text =str_custom_data;
@@ -278,6 +278,10 @@
                      
                  }
                  
+             }
+               if ([[NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"StockStatus"]] isEqualToString:@"Out of stock"])
+             {
+                 status = YES;
              }
 
             

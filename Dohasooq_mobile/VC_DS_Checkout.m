@@ -123,7 +123,7 @@
     //VC_cart_list *list = [self.storyboard instantiateViewControllerWithIdentifier:@"cart_identifir"];
     //direct_checkout_home
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Do you want to cancel the Transaction" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Are you sure you want to go back" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
     alert.tag = 1;
     [alert show];
   /*  [self.navigationController.navigationBar setBackgroundImage:[UIImage new]

@@ -420,12 +420,12 @@ int j ,i;
           
             if([status isEqualToString:@""])
             {
-                order_cell.IMG_track_image.image = [UIImage imageNamed:@"5"];
+                order_cell.IMG_track_image.image = [UIImage imageNamed:@"finalzero"];
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"5"].CGImage
-                                                                scale:[UIImage imageNamed:@"5"].scale
+                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"finalzero"].CGImage
+                                                                scale:[UIImage imageNamed:@"finalzero"].scale
                                                           orientation:UIImageOrientationUpMirrored];
                     order_cell.IMG_track_image.image = flippedImage;
                 }
@@ -434,12 +434,12 @@ int j ,i;
             }
             else  if([status isEqualToString:@"Pending"])
             {
-                order_cell.IMG_track_image.image = [UIImage imageNamed:@"4"];
+                order_cell.IMG_track_image.image = [UIImage imageNamed:@"final"];
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"4"].CGImage
-                                                                scale:[UIImage imageNamed:@"4"].scale
+                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"final"].CGImage
+                                                                scale:[UIImage imageNamed:@"final"].scale
                                                           orientation:UIImageOrientationUpMirrored];
                     order_cell.IMG_track_image.image = flippedImage;
                 }
@@ -448,24 +448,24 @@ int j ,i;
             }
             else  if([status isEqualToString:@"Packed"])
             {
-                order_cell.IMG_track_image.image = [UIImage imageNamed:@"3"];
+                order_cell.IMG_track_image.image = [UIImage imageNamed:@"finalone"];
                 
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"3"].CGImage
-                                                                scale:[UIImage imageNamed:@"3"].scale
+                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"finalone"].CGImage
+                                                                scale:[UIImage imageNamed:@"finalone"].scale
                                                           orientation:UIImageOrientationUpMirrored];
                     order_cell.IMG_track_image.image = flippedImage;
                 }
             }
             else  if([status isEqualToString:@"Dispatched"])
             {
-                order_cell.IMG_track_image.image = [UIImage imageNamed:@"2"];
+                order_cell.IMG_track_image.image = [UIImage imageNamed:@"finaltwo"];
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"2"].CGImage
-                                                                scale:[UIImage imageNamed:@"2"].scale
+                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"finaltwo"].CGImage
+                                                                scale:[UIImage imageNamed:@"finaltwo"].scale
                                                           orientation:UIImageOrientationUpMirrored];
                     order_cell.IMG_track_image.image = flippedImage;
                 }
@@ -476,11 +476,11 @@ int j ,i;
                 order_cell.LBL_Deliver_on.text = @"Delivered";
                 order_cell.BTN_rating.hidden = NO;
                 
-                order_cell.IMG_track_image.image = [UIImage imageNamed:@"1"];
+                order_cell.IMG_track_image.image = [UIImage imageNamed:@"finalthree"];
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"1"].CGImage
-                                                                scale:[UIImage imageNamed:@"1"].scale
+                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"finalthree"].CGImage
+                                                                scale:[UIImage imageNamed:@"finalthree"].scale
                                                           orientation:UIImageOrientationUpMirrored];
                     order_cell.IMG_track_image.image = flippedImage;
                 }
@@ -1142,7 +1142,11 @@ int j ,i;
     }
     if(section == 6)
     {
-         NSString *str =  @"SPECIAL INSTRUCTiONS";
+        NSString *str =  @"SPECIAL INSTRUCTIONS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str =  @"SPECIAL INSTRUCTIONS";
+        }
         return str;
 
         
@@ -1214,9 +1218,15 @@ int j ,i;
     }
     if(section == 6)
     {
-         label.text= @"SPECIAL INSTRUCTiONS";
+         label.text= @"SPECIAL INSTRUCTIONS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            label.textAlignment = NSTextAlignmentRight;
+        }
         
     }
+    
+    
     
     return headerView;
 }

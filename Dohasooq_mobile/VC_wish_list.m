@@ -212,12 +212,16 @@
     
     NSString *currency_code = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
          NSString *current_price = [NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"special_price"] ];
+        
         NSString *prec_price;
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
+            current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency_code];
+
              prec_price = [NSString stringWithFormat:@"%@ %@", [[response_Arr objectAtIndex:indexPath.section] valueForKey:@"product_price"] ,currency_code];
         }
         else{
+            current_price =[NSString stringWithFormat:@"%@ %@",[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"special_price"] ,currency_code];
             prec_price = [NSString stringWithFormat:@"%@ %@", currency_code,[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"product_price"] ];
         }
         
@@ -238,7 +242,7 @@
            
 
             
-            if ([current_price isEqualToString:@""] || [current_price isEqualToString:@"<null>"]||[current_price isEqualToString:@"0"]) {
+            if ([current_price isEqualToString:@""] || [current_price isEqualToString:@"<null>"]||[current_price isEqualToString:@"0"]||[current_price isEqualToString:prec_price]||[[NSString stringWithFormat:@"%@",[[response_Arr objectAtIndex:indexPath.section] valueForKey:@"special_price"]]  isEqualToString:@"0"]) {
                 
                 
                 NSString *text = [NSString stringWithFormat:@"%@",prec_price];
@@ -257,14 +261,14 @@
              
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency_code];
+                  //  current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency_code];
 
                     text = [NSString stringWithFormat:@"%@ %@",prec_price,current_price];
 
                 }
                 else{
                     
-                    current_price = [NSString stringWithFormat:@"%@ %@",currency_code,current_price];
+                  //  current_price = [NSString stringWithFormat:@"%@ %@",currency_code,current_price];
                     text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
 
                 }
@@ -297,7 +301,7 @@
             }
             else
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:12.0],NSForegroundColorAttributeName:[UIColor grayColor],}
                                         range:cmp ];
             }
             @try {

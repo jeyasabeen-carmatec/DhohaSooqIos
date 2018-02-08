@@ -40,7 +40,9 @@
     [_BTN_cancel addTarget:self action:@selector(cancel_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_american_express addTarget:self action:@selector(BTN_american_express_action) forControlEvents:UIControlEventTouchUpInside];
 
+    [_BTN_debit_card addTarget:self action:@selector(BTN_debit_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_visa addTarget:self action:@selector(BTN_visa_action) forControlEvents:UIControlEventTouchUpInside];
+
 
     [_BTN_dohabank addTarget:self action:@selector(BTN_dohabank_action) forControlEvents:UIControlEventTouchUpInside];
     // Country API Calling
@@ -137,6 +139,8 @@
     
     _BTN_visa.layer.borderColor = [UIColor whiteColor].CGColor;
     _BTN_dohabank.layer.borderColor = [UIColor whiteColor].CGColor;
+    _BTN_debit_card.layer.borderColor = [UIColor whiteColor].CGColor;
+
     str_URL = @"6";
 
 
@@ -149,7 +153,22 @@
     
     _BTN_american_express.layer.borderColor = [UIColor whiteColor].CGColor;
     _BTN_dohabank.layer.borderColor = [UIColor whiteColor].CGColor;
+    _BTN_debit_card.layer.borderColor = [UIColor whiteColor].CGColor;
+
     str_URL = @"4";
+}
+-(void)BTN_debit_action
+{
+    self.BTN_debit_card.layer.cornerRadius = 2.0f;
+    _BTN_debit_card.layer.borderWidth = 2.0f;
+    _BTN_debit_card.layer.borderColor = self.BTN_pay.backgroundColor.CGColor;
+    
+    _BTN_american_express.layer.borderColor = [UIColor whiteColor].CGColor;
+    _BTN_dohabank.layer.borderColor = [UIColor whiteColor].CGColor;
+    _BTN_visa.layer.borderColor = [UIColor whiteColor].CGColor;
+
+    str_URL = @"3";
+
 }
 -(void)BTN_dohabank_action
 {
@@ -159,6 +178,8 @@
     
     _BTN_visa.layer.borderColor = [UIColor whiteColor].CGColor;
     _BTN_american_express.layer.borderColor = [UIColor whiteColor].CGColor;
+    _BTN_debit_card.layer.borderColor = [UIColor whiteColor].CGColor;
+
      str_URL = @"1";
 
 }
@@ -173,11 +194,16 @@
     }
     else
     {
-    
     NSDictionary *order_dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"order_details"];
+    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/Qpayment-registration.aspx?Currency=QAR&Amount=%@&OrderName=online&OrderID=%@&nationality=%@&paymenttype=%@",[[order_dict valueForKey:@"result"] valueForKey:@"_balance"],[[order_dict valueForKey:@"result"] valueForKey:@"_OrderInfo"],_TXT_countries.text,str_URL];
+
+    if([str_URL isEqualToString:@"3"])
+    {
+        str_url = [NSString stringWithFormat:@"https://q-tickets.com/Qpayment-registration1.aspx?Currency=QAR&Amount=%@&OrderName=online&OrderID=%@&nationality=%@&paymenttype=%@",[[order_dict valueForKey:@"result"] valueForKey:@"_balance"],[[order_dict valueForKey:@"result"] valueForKey:@"_OrderInfo"],_TXT_countries.text,str_URL];
+
+    }
     
-      NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/Qpayment-registration.aspx?Currency=QAR&Amount=%@&OrderName=online&OrderID=%@&nationality=%@&paymenttype=%@",[[order_dict valueForKey:@"result"] valueForKey:@"_balance"],[[order_dict valueForKey:@"result"] valueForKey:@"_OrderInfo"],_TXT_countries.text,str_URL];
-    [[NSUserDefaults standardUserDefaults] setValue:str_url forKey:@"payment_url"];
+        [[NSUserDefaults standardUserDefaults] setValue:str_url forKey:@"payment_url"];
     [[NSUserDefaults standardUserDefaults]  synchronize];
     
     [self performSegueWithIdentifier:@"Movie_pay_web" sender:self];

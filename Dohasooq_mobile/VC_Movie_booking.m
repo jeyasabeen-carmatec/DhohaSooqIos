@@ -188,7 +188,7 @@
 //    [self dayPicker:self.dayPicker didSelectDay:[reverseOrder lastObject]];
     
     NSDate *yesterDay = [cal dateByAddingUnit:NSCalendarUnitDay
-                                        value:-1
+                                        value:1
                                        toDate:[reverseOrder lastObject]
                                       options:0];
     dateString = [dateFormat stringFromDate:yesterDay];
@@ -719,11 +719,11 @@
             NSInteger ht = 0;
             if(result.height <= 480)
             {
-                ht = 160;
+                ht = 180;
             }
             else if(result.height <= 568)
             {
-                ht = 160;
+                ht = 180;
             }
             else
             {
