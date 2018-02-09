@@ -80,6 +80,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    
+    
+    
       _Scroll_contents.delegate =self;
     
    // TIMER_new = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:nil repeats:YES];
@@ -2482,7 +2485,12 @@
             [close addTarget:self action:@selector(close_action) forControlEvents:UIControlEventTouchUpInside];
             [conutry_close addSubview:close];
             
-            
+            UITapGestureRecognizer *tapToSelect = [[UITapGestureRecognizer alloc]initWithTarget:self
+                                                  action:@selector(tappedToSelectRow:)];
+                tapToSelect.delegate = self;
+            tapToSelect.numberOfTapsRequired = 1;
+            [_lang_pickers addGestureRecognizer:tapToSelect];
+
             
             UIButton *done=[[UIButton alloc]init];
             done.frame=CGRectMake(conutry_close.frame.size.width - 100, 0, 100, conutry_close.frame.size.height);
@@ -3176,6 +3184,26 @@
     
     
 }
+- (IBAction)tappedToSelectRow:(UITapGestureRecognizer *)tapRecognizer
+{
+if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
+ CGFloat rowHeight = [_lang_pickers rowSizeForComponent:0].height;
+ CGRect selectedRowFrame = CGRectInset(_lang_pickers.bounds, 0.0, (CGRectGetHeight(_lang_pickers.frame) - rowHeight) / 2.0 );
+  BOOL userTappedOnSelectedRow = (CGRectContainsPoint(selectedRowFrame, [tapRecognizer locationInView:_lang_pickers]));
+  if (userTappedOnSelectedRow) {
+  NSInteger selectedRow = [_lang_pickers selectedRowInComponent:0];
+  [self pickerView:_lang_pickers didSelectRow:selectedRow inComponent:0];
+
+   }
+    
+ }
+     [self done_action];
+}
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+     return true;
+}
+
 -(void)done_action
 {
     [_TBL_menu reloadData];
@@ -4234,7 +4262,6 @@
 
 #pragma mark - UIPickerViewDelegate
 
-
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
        if(pickerView == _lang_pickers)
     {
@@ -4261,10 +4288,7 @@
         
         [[NSUserDefaults standardUserDefaults]synchronize];
         
-        
-        
-    
-    
+
 }
 -(void)btn_address_action
 {
@@ -4402,12 +4426,7 @@
     [self performSegueWithIdentifier:@"my_orders" sender:self];
     }
 }
-#pragma mark - UIGestureRecognizerDelegate
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{
-    return true;
-}
 #pragma mark Add_to_wishList_API Calling
 -(void)hot_dels_wishlist:(UIButton *)sender
 {

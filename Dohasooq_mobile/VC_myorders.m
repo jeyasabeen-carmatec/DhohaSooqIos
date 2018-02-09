@@ -954,8 +954,13 @@ int j ,i;
             }
             else{
                
-                 cell.LBL_discount.text = discount;
-                cell.LBL_discount_TXT.text = @"DISCOUNT";
+                cell.LBL_discount.text = discount;//
+               cell.LBL_discount_TXT.text = @"DISCOUNT";
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    cell.LBL_discount_TXT.text = @"خصم";
+                }
+                
             }
             }
                 @catch(NSException *exception)
@@ -1221,6 +1226,7 @@ int j ,i;
          label.text= @"SPECIAL INSTRUCTIONS";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
+            label.text = @"تعليمات خاصة";
             label.textAlignment = NSTextAlignmentRight;
         }
         

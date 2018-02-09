@@ -729,16 +729,16 @@
         [_LBL_delivery_cod sizeToFit];
     if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
     {
-         frame_set = _LBL_delivery_cod.frame;
-       frame_set.size.width= _VW_filter.frame.size.width - 30;
-       _LBL_delivery_cod.frame = frame_set;
+       //  frame_set = _LBL_delivery_cod.frame;
+     //  frame_set.size.width= _VW_filter.frame.size.width - 30;
+      // _LBL_delivery_cod.frame = frame_set;
     }
     
     
         frame_set = _LBL_sold_by.frame;
     if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
     {
-         frame_set.origin.x = _IMG_merchant.frame.origin.x;
+        // frame_set.origin.x = _IMG_merchant.frame.origin.x-_LBL_sold_by.frame.size.width;
     }
         frame_set.origin.y = _LBL_delivery_cod.frame.origin.y + _LBL_delivery_cod.frame.size.height + 5;
      
@@ -766,8 +766,13 @@
         // frame_set.origin.x = _LBL_sold_by.frame.origin.x + _LBL_sold_by.frame.size.width + 5;
         frame_set.origin.y = _LBL_delivery_cod.frame.origin.y + _LBL_delivery_cod.frame.size.height + 5;
         _LBL_merchant_sellers.frame = frame_set;
+    
+    if(_LBL_merchant_sellers.text.length == _LBL_merchant_sellers.frame.size.width)
+    {
+           [_LBL_merchant_sellers sizeToFit];
+    }
         
-        [_LBL_merchant_sellers sizeToFit];
+    
         _LBL_merchant_sellers.numberOfLines = 0;
         
         
@@ -1861,6 +1866,11 @@
     }
     
     self.segmentedControl4.sectionTitles = @[str_desc,count];
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        self.segmentedControl4.sectionTitles = @[count,str_desc];
+    }
+
     
     self.segmentedControl4.backgroundColor = [UIColor clearColor];
     self.segmentedControl4.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor grayColor],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:15]};
@@ -1882,34 +1892,68 @@
   
     if(segmentedControl4.selectedSegmentIndex == 0)
     {
-        NSString *description;
         
-        @try
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-   
+           [self Reviews_ACtion];
+        }
+        else{
+            [self Description_ACTION];
+
+        }
+        
+    }
+    else
+    {
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+         
+             [self Description_ACTION];
+        }
+        else
+        {
+            
+              [self Reviews_ACtion];
+            
+        }
+
+       
+    }
+
+}
+#pragma Segment Actions
+
+
+-(void)Description_ACTION
+{
+    NSString *description;
+    
+    @try
+    {
+        
         description =[NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"products"]valueForKey:@"0"]valueForKey:@"product_descriptions"] objectAtIndex:0]valueForKey:@"description"]];
-        }
-        @catch(NSException *exception)
-        {
-           description =[NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"]valueForKey:@"0"]valueForKey:@"product_descriptions"]];
-        }
-        description = [description stringByAppendingString:[NSString stringWithFormat:@"<style>body{font-family: 'Poppins-Regular'; font-size:%dpx;}</style>",17]];
-
-        
-        [_TXTVW_description loadHTMLString:description baseURL:nil];
-
-        _TXTVW_description.hidden = NO;
-        [_TXTVW_description sizeToFit];
-        
-
-         CGRect  frame_set = _VW_fourth.frame;
-        frame_set.size.height =_TXTVW_description.frame.origin.y + _TXTVW_description.scrollView.contentSize.height;
-        frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
-        _VW_fourth.frame = frame_set;
-        
-        [_collection_related_products reloadData];
-         if([[json_Response_Dic valueForKey:@"relatedProducts"] isKindOfClass:[NSArray class]])
-         {
+    }
+    @catch(NSException *exception)
+    {
+        description =[NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"]valueForKey:@"0"]valueForKey:@"product_descriptions"]];
+    }
+    description = [description stringByAppendingString:[NSString stringWithFormat:@"<style>body{font-family: 'Poppins-Regular'; font-size:%dpx;}</style>",17]];
+    
+    
+    [_TXTVW_description loadHTMLString:description baseURL:nil];
+    
+    _TXTVW_description.hidden = NO;
+    [_TXTVW_description sizeToFit];
+    
+    
+    CGRect  frame_set = _VW_fourth.frame;
+    frame_set.size.height =_TXTVW_description.frame.origin.y + _TXTVW_description.scrollView.contentSize.height;
+    frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
+    _VW_fourth.frame = frame_set;
+    
+    [_collection_related_products reloadData];
+    if([[json_Response_Dic valueForKey:@"relatedProducts"] isKindOfClass:[NSArray class]])
+    {
         
         frame_set = _VW_fifth.frame;
         frame_set.origin.y = _VW_fourth.frame.origin.y + _VW_fourth.frame.size.height;
@@ -1917,83 +1961,81 @@
         {
             frame_set.size.height = 0;
         }
-//        else{
-//             frame_set.size.height = 281;
-//            
-//        }
-
+        //        else{
+        //             frame_set.size.height = 281;
+        //
+        //        }
+        
         frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
         _VW_fifth.frame = frame_set;
         
         
         scroll_ht = _VW_fifth.frame.origin.y+ _VW_fifth.frame.size.height;
-         }
-         else{
-             scroll_ht = _VW_fourth.frame.origin.y+ _VW_fourth.frame.size.height;
-
-             
-         }
-        frame_set = _BTN_top.frame;
-        frame_set.origin.y = scroll_ht - _BTN_top.frame.size.height;
-        _BTN_top.frame = frame_set;
-
-         [self viewDidLayoutSubviews];
-        _TBL_reviews.hidden = YES;
-       
+    }
+    else{
+        scroll_ht = _VW_fourth.frame.origin.y+ _VW_fourth.frame.size.height;
+        
         
     }
-    else
+    frame_set = _BTN_top.frame;
+    frame_set.origin.y = scroll_ht - _BTN_top.frame.size.height;
+    _BTN_top.frame = frame_set;
+    
+    [self viewDidLayoutSubviews];
+    _TBL_reviews.hidden = YES;
+    
+  
+}
+-(void)Reviews_ACtion
+{
+    [_TBL_reviews reloadData];
+    [_TBL_reviews reloadData];
+    
+    _TBL_reviews.hidden = NO;
+    _TXTVW_description.hidden = YES;
+    
+    CGRect frame_set = _TBL_reviews.frame;
+    frame_set.origin.y = _TXTVW_description.frame.origin.y;
+    frame_set.size.height =  _TBL_reviews.contentSize.height;
+    frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
+    _TBL_reviews.frame = frame_set;
+    [self.VW_fourth addSubview:_TBL_reviews];
+    
+    frame_set = _VW_fourth.frame;
+    frame_set.size.height = _TBL_reviews.frame.origin.y + _TBL_reviews.contentSize.height;
+    frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
+    _VW_fourth.frame = frame_set;
+    
+    [_collection_related_products reloadData];
+    if([[json_Response_Dic valueForKey:@"relatedProducts"] isKindOfClass:[NSArray class]])
     {
-        [_TBL_reviews reloadData];
-        [_TBL_reviews reloadData];
-
-        _TBL_reviews.hidden = NO;
-        _TXTVW_description.hidden = YES;
         
-        CGRect frame_set = _TBL_reviews.frame;
-        frame_set.origin.y = _TXTVW_description.frame.origin.y;
-        frame_set.size.height =  _TBL_reviews.contentSize.height;
-        frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
-        _TBL_reviews.frame = frame_set;
-        [self.VW_fourth addSubview:_TBL_reviews];
-        
-        frame_set = _VW_fourth.frame;
-        frame_set.size.height = _TBL_reviews.frame.origin.y + _TBL_reviews.contentSize.height;
-        frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
-        _VW_fourth.frame = frame_set;
-        
-        [_collection_related_products reloadData];
-        if([[json_Response_Dic valueForKey:@"relatedProducts"] isKindOfClass:[NSArray class]])
-        {
-
         frame_set = _VW_fifth.frame;
         frame_set.origin.y = _VW_fourth.frame.origin.y + _VW_fourth.frame.size.height +3;
         if([[json_Response_Dic valueForKey:@"relatedProducts"] count]<1)
         {
             frame_set.size.height = 0;
         }
-//        else{
-//             frame_set.size.height = 281;
-//            
-//        }
+        //        else{
+        //             frame_set.size.height = 281;
+        //
+        //        }
         frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
         _VW_fifth.frame = frame_set;
         
         scroll_ht = _VW_fifth.frame.origin.y+ _VW_fifth.frame.size.height ;
-        }
-        else{
-            scroll_ht = _VW_fourth.frame.origin.y+ _VW_fourth.frame.size.height;
-
-        }
-        frame_set = _BTN_top.frame;
-        frame_set.origin.y = scroll_ht - _BTN_top.frame.size.height;
-        _BTN_top.frame = frame_set;
-
-       
-         [self viewDidLayoutSubviews];
-
     }
-
+    else{
+        scroll_ht = _VW_fourth.frame.origin.y+ _VW_fourth.frame.size.height;
+        
+    }
+    frame_set = _BTN_top.frame;
+    frame_set.origin.y = scroll_ht - _BTN_top.frame.size.height;
+    _BTN_top.frame = frame_set;
+    
+    
+    [self viewDidLayoutSubviews];
+ 
 }
 -(void)picker_selection:(UITextField *)sender
 {
@@ -3421,7 +3463,16 @@
                         [self addSEgmentedControl];
                         [self set_UP_VIEW];
                        [self update_price];
-                        self.segmentedControl4.selectedSegmentIndex = 0;
+                            
+                            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                            {
+                                 self.segmentedControl4.selectedSegmentIndex = 1;
+                            }
+                            else
+                            {
+                                 self.segmentedControl4.selectedSegmentIndex = 0;
+                            }
+                     
                         [self segmentedControlChangedValue:self.segmentedControl4];
                             
                         }
@@ -3433,7 +3484,15 @@
                              [_collection_related_products reloadData];
                              [self addSEgmentedControl];
                             [self set_UP_VIEW];
-                            self.segmentedControl4.selectedSegmentIndex = 0;
+                            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                            {
+                                self.segmentedControl4.selectedSegmentIndex = 1;
+                            }
+                            else
+                            {
+                                self.segmentedControl4.selectedSegmentIndex = 0;
+                            }
+
                             [self segmentedControlChangedValue:self.segmentedControl4];
                              [Helper_activity stop_activity_animation:self];
 

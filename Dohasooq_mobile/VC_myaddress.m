@@ -12,7 +12,7 @@
 #import "billing_address.h"
 #import "Helper_activity.h"
 
-@interface VC_myaddress ()<UITableViewDataSource,UITableViewDataSource,UITextFieldDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
+@interface VC_myaddress ()<UITableViewDataSource,UITableViewDataSource,UITextFieldDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIGestureRecognizerDelegate>
 {
     
     NSMutableDictionary *jsonresponse_dic_address;
@@ -60,6 +60,12 @@
 //    
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
+    
+    tapGesture1 = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tappedToSelectRow:)];
+    tapGesture1.delegate= self;
+    tapGesture1.numberOfTapsRequired = 1;
+    [_staes_country_pickr addGestureRecognizer:tapGesture1];
+    
     [Helper_activity animating_images:self];
     [self performSelector:@selector(Shipp_address_API) withObject:nil afterDelay:0.01];
     
@@ -99,7 +105,7 @@
     UIButton *done=[[UIButton alloc]init];
     done.frame=CGRectMake(accessoryView.frame.size.width - 100, 0, 100, accessoryView.frame.size.height);
     [done setTitle:@"Done" forState:UIControlStateNormal];
-    [done addTarget:self action:@selector(picker_done_btn_action:) forControlEvents:UIControlEventTouchUpInside];
+    [done addTarget:self action:@selector(picker_done_btn_action) forControlEvents:UIControlEventTouchUpInside];
     [accessoryView addSubview:done];
     
     
@@ -200,6 +206,8 @@
         //cell.layer.shadowRadius = 2.0;
         cell.VW_layer.layer.borderColor = [UIColor lightGrayColor].CGColor;
         cell.VW_layer.layer.borderWidth = 0.5f;
+        
+        cell.Btn_close_width.constant = 0;
        
         cell.Btn_close.hidden = YES;
         
@@ -377,7 +385,18 @@
         
         cell.TXT_cntry_code.hidden = NO;
         cell.TXT_phone.hidden = NO;
-        cell.LBL_Blng_title.text = @"EDIT SHIPPING ADDRESS";
+        
+    
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            
+        cell.LBL_Blng_title.text = @"تعديل عنوان الشحن";
+        }
+        else{
+             cell.LBL_Blng_title.text = @"EDIT SHIPPING ADDRESS";
+        }
+        
         
         cell.BTN_check.tag = 0;
         cell.TXT_first_name.delegate = self;
@@ -399,7 +418,16 @@
                 
                 if (edit_tag == 999) {
                     
-                     cell.LBL_Blng_title.text = @"EDIT BILLING ADDRESS";
+                   
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                     cell.LBL_Blng_title.text = @"تعديل عنوان الفاتورة ";
+                    }
+                    else{
+                          cell.LBL_Blng_title.text = @"EDIT BILLING ADDRESS";
+                    }
+                    
+                    
                 country = [NSString stringWithFormat:@"%@", [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"country"]];
             str_fname = [NSString stringWithFormat:@"%@", [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"firstname"]];
             str_city = [NSString stringWithFormat:@"%@", [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"city"]];
@@ -574,7 +602,7 @@
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,_TBL_address.frame.size.width, 60)];
     headerView.backgroundColor = [UIColor clearColor];
     
-    UILabel *label = [[UILabel alloc] initWithFrame: CGRectMake(10,0, _TBL_address.frame.size.width, 30)];
+    UILabel *label = [[UILabel alloc] initWithFrame: CGRectMake(10,0, _TBL_address.frame.size.width-20, 30)];
     label.backgroundColor = [UIColor clearColor];
     label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
     
@@ -653,6 +681,7 @@
 
 
 #pragma mark delete shipping address action
+
 -(void)tapGesture_close:(UITapGestureRecognizer *)tapgstr{
     
 //    CGPoint location = [tapGesture1 locationInView:_TBL_address];
@@ -679,6 +708,29 @@
     [alert show];
     NSLog(@"the cancel clicked");
 }
+
+- (IBAction)tappedToSelectRow:(UITapGestureRecognizer *)tapRecognizer
+{
+    if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
+        CGFloat rowHeight = [_staes_country_pickr rowSizeForComponent:0].height;
+        CGRect selectedRowFrame = CGRectInset(_staes_country_pickr.bounds, 0.0, (CGRectGetHeight(_staes_country_pickr.frame) - rowHeight) / 2.0 );
+        BOOL userTappedOnSelectedRow = (CGRectContainsPoint(selectedRowFrame, [tapRecognizer locationInView:_staes_country_pickr]));
+        if (userTappedOnSelectedRow) {
+            NSInteger selectedRow = [_staes_country_pickr selectedRowInComponent:0];
+            [self pickerView:_staes_country_pickr didSelectRow:selectedRow inComponent:0];
+            
+        }
+        
+    }
+   
+}
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return true;
+}
+
+
+
 
 #pragma mark Shipp_address_API
 -(void)Shipp_address_API
@@ -757,19 +809,6 @@
     [self.TBL_address beginUpdates];
     [self.TBL_address reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
     [self.TBL_address endUpdates];
-    
-
-    
-//    if(j == 1)
-//    {
-//        j =0;
-//       // [self.TBL_address reloadData];
-//    }
-//    else if(j == 0)
-//    {
-//        j = 1;
-//       // [self.TBL_address reloadData];
-//    }
 }
 
 -(void)BTN_edit_clickd:(UIButton *)sender
@@ -850,7 +889,7 @@
 
         
     }
-    else if(str_lname.length < 3)
+    else if(str_lname.length < 1)
     {
         [cell.TXT_last_name becomeFirstResponder];
         msg = @"Last name should not be less than 3 characters";
@@ -1280,7 +1319,14 @@
         
         textField.inputAccessoryView = accessoryView;
         
-        [self CountryAPICall];
+        
+        if (edit_tag!=999) {
+            [self ShippingCountryAPICall];
+        }
+        else{
+             [self CountryAPICall];
+        }
+    
     }
     if (textField.tag == 6) {
         
@@ -1478,6 +1524,115 @@ if (textField.tag == 8) {
     
     
 }
+
+
+#pragma mark Shipping Country API Call (For Shipping Address)
+
+
+-(void)ShippingCountryAPICall{
+    //http://localhost/dohasooq/apis/countiresShipapi.json
+    
+    
+    @try {
+        
+        
+        [Helper_activity animating_images:self];
+        response_countries_dic = [NSMutableDictionary dictionary];
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"http://localhost/dohasooq/apis/countiresShipapi.json"];
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    [Helper_activity stop_activity_animation:self];
+                    NSLog(@"%@",[error localizedDescription]);
+                }
+                if (data) {
+                    
+                    @try {
+                        NSLog(@"%@",data);
+                        
+                        if ([data isKindOfClass:[NSDictionary class]]) {
+                            
+                            [response_countries_dic addEntriesFromDictionary:data];
+                            [response_picker_arr removeAllObjects];
+                            
+                            for (int x=0; x<[[response_countries_dic allKeys] count]; x++) {
+                                NSDictionary *dic = @{@"cntry_id":[[response_countries_dic allKeys] objectAtIndex:x],@"cntry_name":[response_countries_dic valueForKey:[[response_countries_dic allKeys] objectAtIndex:x]]};
+                                
+                                [response_picker_arr addObject:dic];
+                            }
+                            
+                            NSSortDescriptor *sortDescriptor;
+                            sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"cntry_name"
+                                                                         ascending:YES];
+                            NSArray *sortedArr = [response_picker_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
+                            
+                            
+                            NSMutableArray  *required_format = [NSMutableArray array];
+                            for (int l =0; l<sortedArr.count; l++) {
+                                
+                                if ([[[sortedArr objectAtIndex:l] valueForKey:@"cntry_name"] isEqualToString:@"Qatar"] ) {
+                                    
+                                    [required_format addObject:[sortedArr objectAtIndex:l]];
+                                    
+                                }
+                                
+                            }
+                            for (int l =0; l<sortedArr.count; l++) {
+                                
+                                if ([[[sortedArr objectAtIndex:l] valueForKey:@"cntry_name"] isEqualToString:@"India"]) {
+                                    
+                                    [required_format addObject:[sortedArr objectAtIndex:l]];
+                                    
+                                }
+                                
+                            }
+                            
+                            for (int m =0; m<sortedArr.count; m++) {
+                                
+                                if (![[[sortedArr objectAtIndex:m] valueForKey:@"cntry_name"] isEqualToString:@"Qatar"] && ![[[sortedArr objectAtIndex:m] valueForKey:@"cntry_name"] isEqualToString:@"India"]) {
+                                    
+                                    [required_format addObject:[sortedArr objectAtIndex:m]];
+                                    
+                                }
+                                
+                            }
+                            [response_picker_arr removeAllObjects];
+                            [response_picker_arr addObjectsFromArray:required_format];
+                            [_staes_country_pickr reloadAllComponents];
+                            
+                        }
+                        
+                    } @catch (NSException *exception) {
+                        
+                        
+                    }
+                    
+                    [Helper_activity stop_activity_animation:self];
+                }
+                
+            });
+        }];
+        
+        
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+        [Helper_activity stop_activity_animation:self];
+    }
+    
+    
+}
+
+
+
+
+
+
+
+
+
 #pragma mark StateAPI Call
 
 //http://192.168.0.171/dohasooq/'apis/getstatebyconapi/countryid.json
@@ -1629,7 +1784,7 @@ if (textField.tag == 8) {
 }
 
 #pragma mark picker_done_btn_action
--(void)picker_done_btn_action:(id)sender{
+-(void)picker_done_btn_action{
     
     [self.view endEditing:YES];
     //[textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];

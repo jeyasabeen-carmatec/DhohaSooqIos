@@ -877,7 +877,7 @@ error:(NSError *)error{
 }
 -(void)guest_action
 {
-    [self performSegueWithIdentifier:@"logint_to_home" sender:self];
+      [self dismissViewControllerAnimated:NO completion:nil];
 
     
 }

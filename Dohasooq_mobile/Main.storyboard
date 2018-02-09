@@ -4435,7 +4435,7 @@
                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" id="pdz-qb-Gjd">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" id="pdz-qb-Gjd">
                             <rect key="frame" x="10" y="102" width="59" height="35"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         </imageView>
@@ -4444,7 +4444,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                         </button>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="vU7-vj-E8r">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="vU7-vj-E8r">
                             <rect key="frame" x="83" y="71" width="221" height="21"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
@@ -4961,7 +4961,7 @@
                         <outlet property="BTN_Movie_left" destination="yyi-9I-F0x" id="vND-Hf-1BT"/>
                         <outlet property="BTN_Movie_right" destination="bjK-5j-yfT" id="hNM-Xa-dfV"/>
                         <outlet property="BTN_QT_view" destination="eln-cT-U7g" id="bu7-TV-KSB"/>
-                        <outlet property="BTN_TOP" destination="eg7-a9-hDr" id="ZUw-EV-xrX"/>
+                        <outlet property="BTN_TOP" destination="eg7-a9-hDr" id="ost-eT-5v7"/>
                         <outlet property="BTN_address" destination="PiP-TE-37s" id="Hpk-Lv-Odz"/>
                         <outlet property="BTN_brand_left" destination="ujn-Ie-GDa" id="Pc7-Nk-AQT"/>
                         <outlet property="BTN_brand_right" destination="aa2-Sj-kHV" id="7gQ-0u-8iZ"/>
@@ -5280,34 +5280,27 @@
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="eg7-a9-hDr">
                             <rect key="frame" x="16" y="709" width="290" height="41"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                             <color key="backgroundColor" red="0.98823529409999999" green="0.68235294120000001" blue="0.15686274510000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="15"/>
                             <state key="normal">
                                 <color key="titleColor" red="0.91764705879999997" green="0.91764705879999997" blue="0.91764705879999997" alpha="1" colorSpace="calibratedRGB"/>
                             </state>
                         </button>
-                        <view contentMode="scaleToFill" misplaced="YES" id="AdS-rk-j3I">
-                            <rect key="frame" x="44" y="715" width="222" height="30"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="0zk-L6-EsB">
+                            <rect key="frame" x="144" y="712" width="20" height="15"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                            <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="0zk-L6-EsB">
-                                    <rect key="frame" x="90" y="-2" width="42" height="15"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                    <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="20"/>
-                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="TOP OF PAGE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="o3e-Ai-1Uv">
-                                    <rect key="frame" x="20" y="14" width="182" height="15"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                    <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="17"/>
-                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                            </subviews>
-                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        </view>
+                            <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="20"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="TOP OF PAGE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="o3e-Ai-1Uv">
+                            <rect key="frame" x="95" y="728" width="119" height="15"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                            <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
@@ -5367,7 +5360,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         </imageView>
                         <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" id="M8X-AQ-NnH">
-                            <rect key="frame" x="14" y="145" width="290" height="439"/>
+                            <rect key="frame" x="14" y="136" width="290" height="445"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <color key="backgroundColor" red="0.88627450980392153" green="0.88627450980392153" blue="0.88627450980392153" alpha="1" colorSpace="calibratedRGB"/>
                             <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="V60-NC-60e">
@@ -9264,24 +9257,24 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="2rh-CG-Nuy"/>
-        <segue reference="GAW-2H-hzI"/>
-        <segue reference="P2G-Ld-knH"/>
-        <segue reference="hYs-TP-0oE"/>
-        <segue reference="JjR-Qr-AQ0"/>
-        <segue reference="U1I-tg-KmK"/>
+        <segue reference="Ia6-yw-sEr"/>
+        <segue reference="xx1-cA-Spd"/>
+        <segue reference="u1i-KR-yL0"/>
+        <segue reference="PIq-gb-2yd"/>
+        <segue reference="5H5-cs-IyK"/>
+        <segue reference="ftO-4d-EKK"/>
+        <segue reference="faj-2O-9a0"/>
+        <segue reference="x0e-hc-baO"/>
+        <segue reference="scE-Vh-P52"/>
+        <segue reference="TQh-po-CZq"/>
         <segue reference="1fc-cP-jfH"/>
-        <segue reference="yWr-Gw-exm"/>
         <segue reference="1PO-jV-8IF"/>
         <segue reference="z2t-AS-he8"/>
         <segue reference="WuY-ui-8aO"/>
         <segue reference="Cw8-vV-nPW"/>
-        <segue reference="VlJ-8X-e9R"/>
         <segue reference="pDU-cD-KDi"/>
-        <segue reference="thM-tK-ujK"/>
         <segue reference="vMu-Y7-4Nz"/>
-        <segue reference="PIq-gb-2yd"/>
-        <segue reference="faj-2O-9a0"/>
+        <segue reference="GAW-2H-hzI"/>
         <segue reference="9v6-ul-yqt"/>
         <segue reference="zHZ-8L-dXg"/>
         <segue reference="6gT-Rb-aGG"/>
