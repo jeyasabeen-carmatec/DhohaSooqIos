@@ -117,7 +117,8 @@
     {
         NSLog(@"%@",exception);
     }
-    
+    [_LBL_seat sizeToFit];
+
    
 //    
     framseset = _VW_contents.frame ;

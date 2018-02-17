@@ -977,7 +977,7 @@ int j ,i;
            // cell.LBL_total.text =sub_total;
             NSString *current_price = [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"];
              //NSString *current_price = [NSString stringWithFormat:@"QR"];
-            NSString *prec_price = [NSString stringWithFormat:@"%.2f",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"order_total"] floatValue]];
+            NSString *prec_price = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"order_total"]];
             NSString *text = [NSString stringWithFormat:@"%@ %@",current_price,prec_price];
             
             if ([cell.LBL_total respondsToSelector:@selector(setAttributedText:)]) {

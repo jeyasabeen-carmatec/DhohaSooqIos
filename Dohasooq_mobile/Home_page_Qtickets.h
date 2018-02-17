@@ -12,6 +12,7 @@
 @interface Home_page_Qtickets : UIViewController
 {
     NSTimer *TIMER_countdown;
+    NSTimer *best_deals_Timer;
 }
 
 @property(nonatomic,strong) NSArray *items;

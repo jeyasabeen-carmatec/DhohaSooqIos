@@ -403,7 +403,7 @@
 }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(self.collection_produtcs.bounds.size.width/2.2, 50);
+    return CGSizeMake(self.collection_produtcs.frame.size.width/2.2, 50);
 }
 -(void)check_action:(UIButton *)sender
 {

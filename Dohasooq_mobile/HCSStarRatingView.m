@@ -235,6 +235,8 @@
         UIImage *halfImage = [UIImage imageWithCGImage:imageRef scale:image.scale orientation:image.imageOrientation];
         image = [halfImage imageWithRenderingMode:image.renderingMode];
         CGImageRelease(imageRef);
+        
+       
     }
     [self _drawImage:image frame:frame tintColor:tintColor];
 }

@@ -315,6 +315,11 @@
     starRatingView.value = 0;
     starRatingView.tintColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
     starRatingView.allowsHalfStars = YES;
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            starRatingView.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+            
+        }
     [seller addSubview:starRatingView];
     
     starRatingView.value = [[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"totalRatings"] intValue];

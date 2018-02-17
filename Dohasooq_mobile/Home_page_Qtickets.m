@@ -42,7 +42,7 @@
     NSInteger j,lang_count;
     int tag,collection_tag,temp_test;
     
-    
+    BOOL isPickerViewScrolled;
     
 //    UIView *VW_overlay;
 //
@@ -2030,6 +2030,7 @@
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
      TIMER_countdown = [[NSTimer alloc]init];
+    best_deals_Timer = [[NSTimer alloc]init];
     if(collectionView == _collection_best_deals)
     {
         [[NSUserDefaults standardUserDefaults] setObject:[[deals_ARR objectAtIndex:indexPath.row]valueForKey:@"url_key"] forKey:@"product_list_key_sub"];
@@ -2594,6 +2595,7 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     TIMER_countdown = [[NSTimer alloc]init];
+    best_deals_Timer = [[NSTimer alloc]init];
     
     if(tableView == _TBL_menu)
     {
@@ -3204,8 +3206,29 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
      return true;
 }
 
+#pragma mark PickerViewAccessory Done Button ACtion
 -(void)done_action
 {
+    
+    if (!isPickerViewScrolled) {
+        
+        
+        @try {
+            
+            language = [[[[NSUserDefaults standardUserDefaults] valueForKey:@"language_arr"]objectAtIndex:0] valueForKey:@"language_name"];
+            [[NSUserDefaults standardUserDefaults]setValue:[[[[NSUserDefaults standardUserDefaults] valueForKey:@"language_arr"]objectAtIndex:0] valueForKey:@"id"] forKey:@"language_id"];
+            [[NSUserDefaults standardUserDefaults]synchronize];
+            
+
+        } @catch (NSException *exception) {
+            NSLog(@"Language Selection Exception ::%@",exception);
+        }
+        
+    }
+    
+    
+    
+    
     [_TBL_menu reloadData];
     
     
@@ -3528,7 +3551,8 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
 
 -(void)BTN_movies_right_action
 {
-    
+    @try
+    {
     NSIndexPath *newIndexPath;
     if (!INDX_selected)
     {
@@ -3557,6 +3581,12 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
     
     [_collection_showing_movies scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:INDX_selected.row inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
     _page_controller_movies.currentPage = INDX_selected.row;
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
+
 }
 -(void)BTN_movies_left_action
 {
@@ -3609,7 +3639,8 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
 
 -(void)BTN_right_action
 {
-    
+  @try
+    {
     NSIndexPath *newIndexPath;
     if (!INDX_selected)
     {
@@ -3638,6 +3669,11 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
     
     
     [_collection_features scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:INDX_selected.row inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
 }
 -(void)BTN_left_action
 {
@@ -3885,6 +3921,7 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
 {
     
     TIMER_countdown = [[NSTimer alloc]init];
+     best_deals_Timer = [[NSTimer alloc]init];
 
     @try
     {
@@ -3905,10 +3942,11 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
     {
     }
     
-    _Hot_deals.text = [NSString stringWithFormat:@"Women'S %@",[json_Response_Dic valueForKey:@"fashion_name"]];
+    _Hot_deals.text = [NSString stringWithFormat:@"Women's %@",[json_Response_Dic valueForKey:@"fashion_name"]];
 
     NSLog(@"the api_collection_product%@",json_Response_Dic);
-    
+        [[NSUserDefaults standardUserDefaults] setValue:[json_Response_Dic valueForKey:@"default_time_zone"] forKey:@"time_zone"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     for(int  i= 0; i<[[json_Response_Dic valueForKey:@"banners"]count];i++)
     {
         [image_Top_ARR addObject:[[json_Response_Dic valueForKey:@"banners"]objectAtIndex:i]];
@@ -4009,13 +4047,83 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
     
     //  TIMER_new = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:nil repeats:YES];
     
-    
+    @try
+        {
     for(int i = 0;i<hot_deals_ARR.count;i++)
     {
-        NSDictionary *dict =@{@"tag":[NSString stringWithFormat:@"%d",i]}; //                            [dict setObject:[[hot_deals_ARR objectAtIndex:i] valueForKey:@"end_date"] forKey:@"timer"];
-        TIMER_countdown = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:dict repeats:YES];
-    }
+        
+        NSString *time_diff = [NSString stringWithFormat:@"%@",[[hot_deals_ARR objectAtIndex:i] valueForKey:@"timeDiff"]];
+        if([time_diff isEqualToString:@"No"] ||[time_diff isEqualToString:@"(null)"] ||[time_diff isEqualToString:@"<null>"]||!time_diff)
+        {
+          //  NSDictionary *dict =@{@"tag":[NSString stringWithFormat:@"%d",i]};
+           // [self setdata:dict];
+            
+            /*  NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+             product_cell *cell = (product_cell *)[_collection_product cellForItemAtIndexPath:indexPath];
+             NSString *str =[NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row ]  valueForKey:@"stock_status"]];
+             str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+             
+             if([str isEqualToString:@"In stock"])
+             {
+             cell.LBL_stock.text =@"";
+             }
+             else{
+             cell.LBL_stock.text =[str uppercaseString];
+             }*/
+            
+        }
+        else{
+            NSDictionary *dict =@{@"tag":[NSString stringWithFormat:@"%d",i]}; //                            [dict setObject:[[hot_deals_ARR objectAtIndex:i] valueForKey:@"end_date"] forKey:@"timer"];
+            TIMER_countdown = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:dict repeats:YES];
+        }
     
+        
+
+        }
+        }
+        @catch(NSException *exception)
+        {
+            
+        }
+        @try
+        {
+        for(int i = 0;i<deals_ARR.count;i++)
+        {
+            
+            NSString *time_diff = [NSString stringWithFormat:@"%@",[[deals_ARR objectAtIndex:i] valueForKey:@"timeDiff"]];
+            if([time_diff isEqualToString:@"No"] ||[time_diff isEqualToString:@"(null)"] ||[time_diff isEqualToString:@"<null>"]||!time_diff)
+            {
+                //  NSDictionary *dict =@{@"tag":[NSString stringWithFormat:@"%d",i]};
+                // [self setdata:dict];
+                
+                /*  NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+                 product_cell *cell = (product_cell *)[_collection_product cellForItemAtIndexPath:indexPath];
+                 NSString *str =[NSString stringWithFormat:@"%@",[[productDataArray objectAtIndex:indexPath.row ]  valueForKey:@"stock_status"]];
+                 str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+                 
+                 if([str isEqualToString:@"In stock"])
+                 {
+                 cell.LBL_stock.text =@"";
+                 }
+                 else{
+                 cell.LBL_stock.text =[str uppercaseString];
+                 }*/
+                
+            }
+            else{
+                NSDictionary *dict =@{@"tag":[NSString stringWithFormat:@"%d",i]}; //                            [dict setObject:[[hot_deals_ARR objectAtIndex:i] valueForKey:@"end_date"] forKey:@"timer"];
+                TIMER_countdown = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(runUpdateDisplayLoop_best:)userInfo:dict repeats:YES];
+            }
+            
+            
+            
+        }
+        }
+        @catch(NSException *exception)
+        {
+            
+        }
+
     NSString *currency = [json_Response_Dic valueForKey:@"currency"];
     currency = [currency stringByReplacingOccurrencesOfString:@"(null)" withString:@"QAR"];
     currency = [currency stringByReplacingOccurrencesOfString:@"<null>" withString:@"QAR"];
@@ -4277,6 +4385,9 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
 
 // #6
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    
+    
+          isPickerViewScrolled = YES;
     
         language = [[[[NSUserDefaults standardUserDefaults] valueForKey:@"language_arr"]objectAtIndex:row] valueForKey:@"language_name"];
         
@@ -4952,11 +5063,11 @@ NSString *str_status_text;
         NSString *urlGetuser;
         if(_BTN_fashion.tag == 0)
         {
-           urlGetuser =[NSString stringWithFormat:@"%@brands/getFashionBrands/male/%@/%@.json",SERVER_URL,country,languge];
+           urlGetuser =[NSString stringWithFormat:@"%@apis/getFashionBrands/male/%@/%@.json",SERVER_URL,country,languge];
         }
         else
         {
-            urlGetuser =[NSString stringWithFormat:@"%@brands/getFashionBrands/female/%@/%@.json",SERVER_URL,country,languge];
+            urlGetuser =[NSString stringWithFormat:@"%@apis/getFashionBrands/female/%@/%@.json",SERVER_URL,country,languge];
 
             
         }
@@ -5012,14 +5123,16 @@ NSString *str_status_text;
 {
     //men_icon.png
     NSData *imgData1 = UIImagePNGRepresentation(_BTN_fashion.currentBackgroundImage);
-    NSData *imgData2 = UIImagePNGRepresentation([UIImage imageNamed:@"men_icon"]);
+    NSData *imgData2 = UIImagePNGRepresentation([UIImage imageNamed:@"women_logo"]);
     BOOL isCompare =  [imgData1 isEqualToData:imgData2];
     if (isCompare)
     {
         
         _IMG_Person_banner.image = [UIImage imageNamed:@"upload-4"];
         _IMG_Things_banner.image = [UIImage imageNamed:@"bag"];
-        [_BTN_fashion setBackgroundImage:[UIImage imageNamed:@"women_logo"] forState:UIControlStateNormal];
+        [_BTN_fashion setBackgroundImage:[UIImage imageNamed:@"men_icon"] forState:UIControlStateNormal];
+
+
         [_BTN_fashion setTag:1];
         [Helper_activity animating_images:self];
         [self performSelector:@selector(brands_API_call) withObject:nil afterDelay:0.1];
@@ -5034,7 +5147,10 @@ NSString *str_status_text;
       
       _IMG_Person_banner.image = [UIImage imageNamed:@"men"];
       _IMG_Things_banner.image = [UIImage imageNamed:@"shoes_prod"];
-      [_BTN_fashion setBackgroundImage:[UIImage imageNamed:@"men_icon"] forState:UIControlStateNormal];
+      
+      [_BTN_fashion setBackgroundImage:[UIImage imageNamed:@"women_logo"] forState:UIControlStateNormal];
+
+
       [_BTN_fashion setTag:0];
       [Helper_activity animating_images:self];
       [self performSelector:@selector(brands_API_call) withObject:nil afterDelay:0.1];
@@ -5110,12 +5226,16 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
 
     
 }
+#pragma mark TextField Delegate
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
     if(textField == _TXT_search)
     {
      [self performSegueWithIdentifier:@"home_dohasooq_search" sender:self];
+    }
+    if (textField.tag == 5) {
+        isPickerViewScrolled  = NO;
     }
 }
 
@@ -5235,7 +5355,14 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
    
     NSDate *date;NSString *text;
     NSDateFormatter *dateStringParser = [[NSDateFormatter alloc] init];
-    [dateStringParser setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+    
+    NSString *str_time_zone = [NSString stringWithFormat:@"%@",[json_Response_Dic valueForKey:@"default_time_zone"]];
+    if([str_time_zone isEqualToString:@""]||[str_time_zone isEqualToString:@"<null>"])
+    {
+        str_time_zone = [[NSTimeZone localTimeZone] abbreviation];
+    }
+    
+    [dateStringParser setTimeZone:[NSTimeZone timeZoneWithName:str_time_zone]];
     [dateStringParser setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     
     
@@ -5255,11 +5382,12 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         
     }
    
-    else{
+    else
+    {
    date = [dateStringParser dateFromString:STR_bidDate];
     
-    NSDateFormatter *labelFormatter = [[NSDateFormatter alloc] init];
-    [labelFormatter setDateFormat:@"HH-dd-MM"];
+  //  NSDateFormatter *labelFormatter = [[NSDateFormatter alloc] init];
+   // [labelFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     
     
     NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
@@ -5374,6 +5502,160 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     //    product_cell *cell =
     return text;
 }
+-(NSString *)runUpdateDisplayLoop_best : (NSTimer *) timer //:(NSString *)str_date
+{
+    
+    NSDate *date;NSString *text;
+    NSDateFormatter *dateStringParser = [[NSDateFormatter alloc] init];
+    
+    NSString *str_time_zone = [NSString stringWithFormat:@"%@",[json_Response_Dic valueForKey:@"default_time_zone"]];
+    if([str_time_zone isEqualToString:@""]||[str_time_zone isEqualToString:@"<null>"])
+    {
+        str_time_zone = [[NSTimeZone localTimeZone] abbreviation];
+    }
+    
+    [dateStringParser setTimeZone:[NSTimeZone timeZoneWithName:str_time_zone]];
+    [dateStringParser setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    
+    int tag1 =  [[timer.userInfo valueForKey:@"tag"] intValue];
+    NSString *STR_bidDate;
+    @try
+    {
+        
+        STR_bidDate =  [[deals_ARR objectAtIndex:tag1]valueForKey:@"end_date"];
+    }
+    @catch(NSException *exception)
+    {
+        
+    }//[TIMER_new.userInfo valueForKey:@"timer"];
+    if([STR_bidDate isKindOfClass:[NSNull class]]||[STR_bidDate isEqualToString:@"<null>"]||[STR_bidDate isEqualToString:@"(null)"]||!STR_bidDate)
+    {
+        
+    }
+    
+    else
+    {
+        date = [dateStringParser dateFromString:STR_bidDate];
+        
+        //  NSDateFormatter *labelFormatter = [[NSDateFormatter alloc] init];
+        // [labelFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        
+        
+        NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
+        
+        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        
+        
+        NSDate* currentDate = [NSDate date];
+        
+        NSTimeInterval timeInterval = [date timeIntervalSinceDate:currentDate];
+        
+        NSCalendar *sysCalendar = [NSCalendar currentCalendar];
+        NSDate *date2 = [[NSDate alloc] initWithTimeInterval:timeInterval sinceDate:date];
+        NSCalendarUnit unitFlags = NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitDay | NSCalendarUnitSecond;
+        
+        NSDateComponents *breakdownInfo = [sysCalendar components:unitFlags fromDate:date  toDate:date2  options:0];
+        
+        NSString *STR_timeRe;
+        
+        if ([breakdownInfo day] <= 0 ) {
+            
+            STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d: %02d",(int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                STR_timeRe = [NSString stringWithFormat:@"%02d: %02d: %02d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute], (int)[breakdownInfo hour]];
+            }
+            
+            
+        }
+        else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0)
+        {
+            
+            STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d",(int)[breakdownInfo minute], (int)[breakdownInfo second]];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                STR_timeRe = [NSString stringWithFormat:@"%02d: %02d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute]];
+            }
+            
+            
+        }
+        else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0 && [breakdownInfo minute] <= 0)
+        {
+            
+            STR_timeRe = [NSString stringWithFormat:@"Ends in %02d", (int)[breakdownInfo second]];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                STR_timeRe = [NSString stringWithFormat:@"%02d ينتهي بـ",(int)[breakdownInfo second]];
+            }
+            
+            
+            
+        }
+        else
+        {
+            
+            STR_timeRe = [NSString stringWithFormat:@"Ends in %02d Days: %02d: %02d: %02d", (int)[breakdownInfo day], (int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                STR_timeRe = [NSString stringWithFormat:@"%02d: %02d: %02d:الأيام %2d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute], (int)[breakdownInfo hour], (int)[breakdownInfo day]];
+            }
+            
+        }
+        
+        
+        text = [NSString stringWithFormat:@"%@",STR_timeRe];
+        // NSLog(@"The timer is:%@",text);
+        
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[[timer.userInfo valueForKey:@"tag"] intValue] inSection:0];
+        product_cell *cell = (product_cell *)[_collection_best_deals cellForItemAtIndexPath:indexPath];
+        
+        NSString *str =[NSString stringWithFormat:@"%@",[[deals_ARR objectAtIndex:indexPath.row ]  valueForKey:@"stock_status"]];
+        str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+        CGSize result = [[UIScreen mainScreen] bounds].size;
+        int sizeval = 12.0;
+        if(result.height <= 480)
+        {
+            sizeval = 8.0;
+        }
+        else if(result.height <= 568)
+        {
+            sizeval = 9.0;
+        }
+        else
+        {
+            sizeval = 9.0;
+        }
+        if([str isEqualToString:@"In stock"]|| [str isEqualToString:@""]|| [str isEqualToString:@"<null>"] )
+        {
+            
+            cell.LBL_stock.font = [UIFont fontWithName:@"Poppins-Regular" size:sizeval];
+            cell.LBL_stock.textColor = [UIColor darkGrayColor];
+            cell.LBL_stock.text = text;
+        }
+        else
+        {
+            cell.LBL_stock.font = [UIFont fontWithName:@"Poppins-Regular" size:14.0];
+            
+            cell.LBL_stock.textColor = [UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0];
+            cell.LBL_stock.text = [str uppercaseString];
+            cell.LBL_stock.text = [str uppercaseString];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                cell.LBL_stock.text = @"غير متوفّر";
+            }
+            
+        }
+        
+        
+    }
+    
+    //    product_cell *cell =
+    return text;
+}
+
+
 -(void)cart_count_intail{
     
     NSString *user_id;
@@ -5449,6 +5731,9 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
 #pragma Brand_action
 -(void)brand_right_action
 {
+    
+    @try
+    {
     NSIndexPath *newIndexPath;
     if (!INDX_selected)
     {
@@ -5477,13 +5762,19 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     
     [_collection_brands scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:INDX_selected.row inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
-    
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
     
 }
 
 
 -(void)BTN_left_brand_action
 {
+    @try
+    {
     NSIndexPath *newIndexPath;
     if (INDX_selected)
     {
@@ -5522,46 +5813,12 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
 
     
     [_collection_brands scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:INDX_selected.row inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
-    
+    }
+    @catch(NSException *exception)
+    {
+        
+    }
 
-}
-#pragma Button Flash methods
-- (void)flashOff:(UIView *)v
-{
-    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^ {
-        v.alpha = .01;  //don't animate alpha to 0, otherwise you won't be able to interact with it
-    } completion:^(BOOL finished) {
-        [self flashOn:v];
-    }];
-}
-
-- (void)flashOn:(UIView *)v
-{
-    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^ {
-        v.alpha = 1;
-    } completion:^(BOOL finished) {
-        [self flashOff:v];
-    }];
-}
-- (void)popUpZoomIn:(UIView *)popUpView{
-    popUpView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1,0.1);
-    [UIView animateWithDuration:0.5
-                     animations:^{
-                         popUpView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1, 1);
-                     } completion:^(BOOL finished) {
-                         [self popZoomOut:popUpView];
-                     }];
-}
-
-
-- (void)popZoomOut:(UIView *)popUpView{
-    [UIView animateWithDuration:0.5
-                     animations:^{
-                         popUpView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1, 1);
-                     } completion:^(BOOL finished) {
-                       //  popUpView.hidden = TRUE;
-                         [self popUpZoomIn:popUpView];
-                     }];
 }
 /*
 #pragma mark - Navigation

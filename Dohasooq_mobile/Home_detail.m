@@ -17,16 +17,19 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 
 
-@interface Home_detail ()<UITabBarDelegate,UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource>
+@interface Home_detail ()<UITabBarDelegate,UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource,UITextFieldDelegate>
 {
-    NSMutableArray *Movies_arr,*Events_arr,*Sports_arr,*Leisure_arr;
-//    UIView *VW_overlay;
-//    UIActivityIndicatorView *activityIndicatorView;
+    NSMutableArray *Movies_arr,*Events_arr,*Sports_arr,*Leisure_arr,*movie,*lang,*venues;
+
     NSArray *langugage_arr,*halls_arr,*venues_arr,*sports_venues,*leisure_venues;
     NSString *halls_text,*leng_text;
     NSDictionary *temp_dicts;
     NSString *headre_name;
     UIButton *all;
+    
+    NSString *selectedPicker;
+    // NSInteger rowValue;
+    BOOL isScrolled;
 }
 @property (nonatomic, strong) HMSegmentedControl *segmentedControl4;
 
@@ -55,6 +58,13 @@
     Leisure_arr = [[NSMutableArray alloc] init];
     Sports_arr = [[NSMutableArray alloc] init];
     Events_arr = [[NSMutableArray alloc] init];
+    
+    
+    //  For Filtering
+    
+    movie = [[NSMutableArray alloc]init];
+     lang = [[NSMutableArray alloc]init];
+     venues = [[NSMutableArray alloc]init];
     
     CGRect frameset = _VW_empty.frame;
     frameset.size.width = 200;
@@ -134,9 +144,6 @@
        [self performSelector:@selector(Events_API_CALL) withObject:nil afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:1]];
 
-       
-       
-       
        
     }
     else if([headre_name isEqualToString:@"SPORTS"])
@@ -233,20 +240,33 @@
     _BTN_leisure_venues.inputAccessoryView = conutry_close;
     _BTN_sports_venues.inputAccessoryView = conutry_close;
     _BTN_venues.inputAccessoryView=conutry_close;
+    
+    
     self.BTN_all_lang.inputView = _lang_picker;
     self.BTN_all_halls.inputView=_halls_picker;
     _BTN_venues.inputView = _venue_picker;
     _BTN_leisure_venues.inputView = _leisure_venues;
     _BTN_sports_venues.inputView = _sports_venue_picker;
+    
     _BTN_all_lang.tintColor=[UIColor clearColor];
     _BTN_all_halls.tintColor=[UIColor clearColor];
     _BTN_venues.tintColor=[UIColor clearColor];
     _BTN_sports_venues.tintColor=[UIColor clearColor];
     _BTN_leisure_venues.tintColor=[UIColor clearColor];
     
+    _BTN_all_lang.delegate=self;
+    _BTN_all_halls.delegate=self;
+    _BTN_leisure_venues.delegate=self;
+    _BTN_sports_venues.delegate=self;
+    _BTN_venues.delegate=self;
+    
 }
 -(void)countrybuttonClick
 {
+    if (!isScrolled) {
+         [self pickerCustomAction:0];
+    }
+    
     [self.BTN_all_lang resignFirstResponder];
     [self.BTN_all_halls resignFirstResponder];
     [_BTN_sports_venues resignFirstResponder];
@@ -1845,6 +1865,9 @@
     [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
     
 }
+
+#pragma mark - UIPickerView Delegate DataSourse
+
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
     if (pickerView == _halls_picker) {
         return 1;
@@ -1901,8 +1924,6 @@
     return 0;
 }
 
-#pragma mark - UIPickerViewDelegate
-
 
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
     if (pickerView == _halls_picker) {
@@ -1933,16 +1954,19 @@
     {
         return [[NSUserDefaults standardUserDefaults] valueForKey:@"languages"][row];
     }
-    
-    
-    
     return nil;
 }
 
 // #6
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     
-    NSMutableArray *movie = [[NSMutableArray alloc]init];
+    isScrolled = YES;
+   // rowValue = row;
+    
+    
+    [self pickerCustomAction:row];
+    
+   /* NSMutableArray *movie = [[NSMutableArray alloc]init];
     NSMutableArray *lang = [[NSMutableArray alloc]init];
     NSMutableArray *venues = [[NSMutableArray alloc]init];
     
@@ -2122,8 +2146,205 @@
             [_TBL_sports_list reloadData];
         }
         
-    }
+    }*/
 }
+-(void)pickerCustomAction:(NSInteger)row{
+    /*        selectedPicker = @"languages";
+     selectedPicker = @"halls";
+     selectedPicker = @"sportsVenue";
+     selectedPicker = @"leisureVenue";
+     selectedPicker = @"venues";
+*/
+    [movie removeAllObjects];
+    [lang removeAllObjects];
+   [venues removeAllObjects];
+    
+    
+    if ([selectedPicker isEqualToString:@"languages"]) {
+        
+        if([langugage_arr[row] isEqualToString:@"ALL LANGUAGES"])
+        {
+            [self movie_API_CALL];
+        }
+        else
+        {
+            
+            [self movie_API_CALL];
+            // [lang addObject:@"ALL"];
+            for(int l = 0;l<Movies_arr.count;l++)
+            {
+                if([[[Movies_arr objectAtIndex:l]valueForKey:@"_Languageid"] isEqualToString:langugage_arr[row]])
+                {
+                    [lang addObject:[Movies_arr objectAtIndex:l]];
+                }
+            }
+            
+            
+            NSLog(@"The langauge arr:%@",langugage_arr[row]);
+            
+            if(lang.count < 1)
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No movies found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                
+            }
+            else
+            {
+                [Movies_arr removeAllObjects];
+                [Movies_arr addObjectsFromArray:lang];
+                [_Collection_movies reloadData];
+                leng_text = langugage_arr[row];
+            }
+            
+            [self ATTRIBUTE_TEXT];
+            // _BTN_all_lang.text = halls_text;
+        }
+ 
+    }
+    else if ([selectedPicker isEqualToString:@"halls"]){
+        
+        if([halls_arr[row] isEqualToString:@"ALL CINEMA HALLS"])
+        {
+            [self movie_API_CALL];
+        }
+        else
+        {
+            [self movie_API_CALL];
+            
+            for(int i=0;i<Movies_arr.count;i++)
+            {
+                @try
+                {
+                    //   [movie addObject:@"ALL"];
+                    for(int k=0;k< [[[Movies_arr objectAtIndex:i]valueForKey:@"Theatre"] count];k++)
+                    {
+                        
+                        if([[[[[Movies_arr objectAtIndex:i]valueForKey:@"Theatre"] objectAtIndex:k]valueForKey:@"_name"] isEqualToString:halls_arr[row]])
+                        {
+                            [movie addObject:[Movies_arr objectAtIndex:i]];
+                        }
+                    }
+                    
+                }
+                @catch(NSException *exception)
+                {
+                    // [movie addObject:@"ALL"];
+                    
+                    if([[[[Movies_arr objectAtIndex:i]valueForKey:@"Theatre"]valueForKey:@"_name"] isEqualToString:halls_arr[row]])
+                    {
+                        
+                        [movie addObject:[Movies_arr objectAtIndex:i]];
+                        
+                        
+                        
+                    }
+                    
+                    
+                }
+                
+                
+                
+            }
+            [Movies_arr removeAllObjects];
+            [Movies_arr addObjectsFromArray:movie];
+            [_Collection_movies reloadData];
+            halls_text = halls_arr[row];
+            [self ATTRIBUTE_TEXT];
+        }
+    }
+// ***************** SportsVenue**************
+    else if ([selectedPicker isEqualToString:@"sportsVenue"]){
+        
+        if([venues_arr[row] isEqualToString:@"ALL VENUES"])
+        {
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+        }
+        else
+        {
+            
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+            // [venues addObject:@"ALL"];
+            
+            for(int l = 0;l<Sports_arr.count;l++)
+            {
+                if([[[Sports_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:sports_venues[row]])
+                {
+                    [venues addObject:[Sports_arr objectAtIndex:l]];
+                }
+            }
+            
+            NSLog(@"Venue arr:%@",venues_arr[row]);
+            [Sports_arr removeAllObjects];
+            [Sports_arr addObjectsFromArray:venues];
+            [_TBL_sports_list reloadData];
+        }
+ 
+    }
+ //****************** leisureVenue ************
+    else if ([selectedPicker isEqualToString:@"leisureVenue"]){
+        
+        if([venues_arr[row] isEqualToString:@"ALL VENUES"])
+        {
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+        }
+        else
+        {
+            
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+            //  [venues addObject:@"ALL"];
+            
+            for(int l = 0;l<Leisure_arr.count;l++)
+            {
+                if([[[Leisure_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:leisure_venues[row]])
+                {
+                    [venues addObject:[Leisure_arr objectAtIndex:l]];
+                }
+            }
+            NSLog(@"Venue arr:%@",venues_arr[row]);
+            [Leisure_arr removeAllObjects];
+            [Leisure_arr addObjectsFromArray:venues];
+            [_TBL_lisure_list reloadData];
+        }
+        
+    }
+ // ****************** venues **************
+    else if ([selectedPicker isEqualToString:@"venues"]){
+        if([venues_arr[row] isEqualToString:@"ALL VENUES"])
+        {
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+        }
+        else
+        {
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+            //  [venues addObject:@"ALL"];
+            for(int l = 0;l<Events_arr.count;l++)
+            {
+                if([[[Events_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:venues_arr[row]])
+                {
+                    [venues addObject:[Events_arr objectAtIndex:l]];
+                }
+            }
+            
+            NSLog(@"The venue arr:%@",venues_arr[row]);
+            [Events_arr removeAllObjects];
+            [Events_arr addObjectsFromArray:venues];
+            [_TBL_event_list reloadData];
+        }
+ 
+    }
+    
+    
+}
+
+
+
+
 - (void)filter_action
 {
     [self performSegueWithIdentifier:@"events_filter" sender:self];
@@ -2139,6 +2360,40 @@
 }
 - (IBAction)shop_action:(id)sender {
     
+}
+
+
+#pragma mark UItextField Delegate
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
+    
+    isScrolled = NO;
+    
+       return YES;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField{
+    
+    if (textField == _BTN_all_lang) {
+        selectedPicker = @"languages";
+       // [self.lang_picker selectRow:0 inComponent:0 animated:YES];
+
+    }
+    else if (textField == _BTN_all_halls){
+        
+        selectedPicker = @"halls";
+        //[self.halls_picker selectRow:2 inComponent:0 animated:YES];
+    }
+    else if (textField == _BTN_sports_venues)
+    {
+        selectedPicker = @"sportsVenue";
+        
+    }
+    else if (textField == _BTN_leisure_venues){
+        selectedPicker = @"leisureVenue";
+    }
+    else if (textField == _BTN_venues){
+        selectedPicker = @"venues";
+    }
 }
 
 /*

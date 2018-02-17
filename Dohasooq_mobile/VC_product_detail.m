@@ -57,7 +57,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self set_appear];
+    
     json_Response_Dic = [[NSMutableDictionary alloc]init];
     temp_DICT = [[NSMutableDictionary alloc]init];
     starRatingView = [[HCSStarRatingView alloc] init];
@@ -100,6 +100,7 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     self.navigationItem.hidesBackButton = YES;
+    [self set_appear];
     [self cart_count_intail];
     [self cart_count];
     
@@ -688,6 +689,11 @@
                     if([str_dispatch_shipp isEqualToString:@"<null>"]||[str_dispatch_shipp isEqualToString:@""""])
                     {
                        cod_TEXT = [NSString stringWithFormat:@"> Cash-On-Delivery is %@\n> %@",str_cod,str_shipp];
+                        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                        {
+                            cod_TEXT = [NSString stringWithFormat:@"Cash-On-Delivery is %@ <\n%@ <",str_cod,str_shipp];
+                        }
+
                     }
                     else
                     {
@@ -727,18 +733,29 @@
          _LBL_delivery_cod.textAlignment = NSTextAlignmentLeft;
     }
         [_LBL_delivery_cod sizeToFit];
-    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-    {
-       //  frame_set = _LBL_delivery_cod.frame;
-     //  frame_set.size.width= _VW_filter.frame.size.width - 30;
-      // _LBL_delivery_cod.frame = frame_set;
-    }
     
+    
+    //***************_LBL_delivery_cod*********************
+
+    frame_set = _LBL_delivery_cod.frame;
+    frame_set.origin.y = _LBL_stock.frame.origin.y + _LBL_stock.frame.size.height + 5;
+     frame_set.size.width = self.LBL_stock.frame.size.width;
+    //frame_set.size.width = self.VW_third.frame.size.width  - 20; //Width_lbl;
+    NSLog(@"%f",frame_set.origin.x);
+   // frame_set.origin.y = _LBL_delivery_cod.frame.origin.y + _LBL_delivery_cod.frame.size.height + 5;
+    _LBL_delivery_cod.frame = frame_set;
+    
+    
+    
+    //***************_LBL_sold_by*********************
     
         frame_set = _LBL_sold_by.frame;
     if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
     {
-        // frame_set.origin.x = _IMG_merchant.frame.origin.x-_LBL_sold_by.frame.size.width;
+       
+        
+        frame_set.origin.x = self.VW_third.frame.size.width-_LBL_sold_by.frame.size.width-20;
+        
     }
         frame_set.origin.y = _LBL_delivery_cod.frame.origin.y + _LBL_delivery_cod.frame.size.height + 5;
      
@@ -747,14 +764,17 @@
         @try
         {
             
-            NSString *str_merchant = [NSString stringWithFormat:@": %@",[[json_Response_Dic valueForKey:@"products"] valueForKey:@"merchant_name"]];
+            NSString *str_merchant = [NSString stringWithFormat:@" %@",[[json_Response_Dic valueForKey:@"products"] valueForKey:@"merchant_name"]];
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 str_merchant = [NSString stringWithFormat:@"%@",[[json_Response_Dic valueForKey:@"products"] valueForKey:@"merchant_name"]];
             }
             str_merchant = [str_merchant stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not Mentioned"];
             str_merchant = [str_merchant stringByReplacingOccurrencesOfString:@"" withString:@"Not Mentioned"];
-            _LBL_merchant_sellers.text  = str_merchant;
+            str_merchant = [str_merchant stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+            str_merchant = [str_merchant stringByReplacingOccurrencesOfString:@"\t" withString:@""];
+            _LBL_merchant_sellers.text  = str_merchant;//@"Jassim Ahmed Al-Lingawi Trading EST";//
+          
         }
         @catch(NSException *exception)
         {
@@ -762,20 +782,54 @@
         }
         
         
-        frame_set = _LBL_merchant_sellers.frame;
-        // frame_set.origin.x = _LBL_sold_by.frame.origin.x + _LBL_sold_by.frame.size.width + 5;
-        frame_set.origin.y = _LBL_delivery_cod.frame.origin.y + _LBL_delivery_cod.frame.size.height + 5;
-        _LBL_merchant_sellers.frame = frame_set;
+//        frame_set = _LBL_merchant_sellers.frame;
+//    
+//    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+//    {
+//        frame_set.origin.x = self.VW_third.frame.size.width-(_LBL_sold_by.frame.size.width+_LBL_merchant_sellers.frame.size.width-20);
+//        NSLog(@"%f",frame_set.origin.x);
+//    }
+//        frame_set.origin.y = _LBL_delivery_cod.frame.origin.y + _LBL_delivery_cod.frame.size.height + 5;
+//        _LBL_merchant_sellers.frame = frame_set;
     
-    if(_LBL_merchant_sellers.text.length == _LBL_merchant_sellers.frame.size.width)
+    
+ /*   if(_LBL_merchant_sellers.text.length >= _LBL_merchant_sellers.frame.size.width)
+    { [_LBL_merchant_sellers sizeToFit];
+       
+    }*/
+    
+   // _LBL_merchant_sellers.numberOfLines = 0;
+   // [_LBL_merchant_sellers sizeToFit];
+    
+    
+    
+//***************_LBL_merchant_sellers*********************
+    frame_set = _LBL_merchant_sellers.frame;
+   
+    NSLog(@"%f",frame_set.size.width);
+    
+  /*  if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
     {
-           [_LBL_merchant_sellers sizeToFit];
-    }
+        //frame_set.origin.x = 0;//_LBL_merchant_sellers.frame.origin.x;
+        frame_set.size.width = self.VW_third.frame.size.width - _LBL_sold_by.frame.size.width - 35; //Width_lbl;
+          NSLog(@"%f",frame_set.origin.x);
         
+    }*/
+   
+    frame_set.origin.y = _LBL_delivery_cod.frame.origin.y + _LBL_delivery_cod.frame.size.height -3;
+  
+    _LBL_merchant_sellers.frame = frame_set;
     
-        _LBL_merchant_sellers.numberOfLines = 0;
-        
-        
+   if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        _LBL_merchant_sellers.textAlignment =NSTextAlignmentRight;
+    }
+    else{
+          _LBL_merchant_sellers.textAlignment =NSTextAlignmentLeft;
+    }
+
+   // _LBL_merchant_sellers.backgroundColor = [UIColor yellowColor];
+    
         @try
         {
             
@@ -788,11 +842,21 @@
         {
             
         }
-        
+//***************_IMG_merchant*********************
+    
         frame_set = _IMG_merchant.frame;
-        frame_set.origin.y = _LBL_merchant_sellers.frame.origin.y + _LBL_merchant_sellers.frame.size.height +3;
+    if([[[json_Response_Dic valueForKey:@"products"] valueForKey:@"merchant_name"] length] == 0)
+    {
+         frame_set.origin.y = _LBL_sold_by.frame.origin.y + _LBL_sold_by.frame.size.height +3;
+    }
+    else{
+        frame_set.origin.y = _LBL_merchant_sellers.frame.origin.y + _LBL_merchant_sellers.contentSize.height +3;
+    }
+    
         _IMG_merchant.frame = frame_set;
-        
+    
+  
+    
         if ([[json_Response_Dic valueForKey:@"products"] isKindOfClass:[NSDictionary class]]) {
             
             @try
@@ -2002,7 +2066,7 @@
     [self.VW_fourth addSubview:_TBL_reviews];
     
     frame_set = _VW_fourth.frame;
-    frame_set.size.height = _TBL_reviews.frame.origin.y + _TBL_reviews.contentSize.height;
+    frame_set.size.height = _TBL_reviews.frame.origin.y + _TBL_reviews.frame.size.height;
     frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
     _VW_fourth.frame = frame_set;
     
@@ -2042,8 +2106,6 @@
   picker_arr = [[[[json_Response_Dic valueForKey:@"getVariantNames"] objectAtIndex:sender.tag] valueForKey:@"0"] allObjects];
     NSLog(@"variant_count%lu",(unsigned long)picker_arr.count);
     tag = [sender tag];
-    
-    
    
 }
 -(void)Wishlist_add:(UIButton *)sender
@@ -2075,9 +2137,6 @@
         }
         else
         {
-            
-            
-            
          product_id =[NSString stringWithFormat:@"%@", [[[json_Response_Dic valueForKey:@"relatedProducts"] objectAtIndex:sender.tag]  valueForKey:@"id"]];
             //[[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];
             

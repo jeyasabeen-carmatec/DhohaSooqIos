@@ -21,7 +21,7 @@
 @interface VC_order_detail ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UITextFieldDelegate,UIGestureRecognizerDelegate>
 
 {
-       NSMutableArray *arr_product,*stat_arr,*reload_section,*arr_states,*picker_Arr,*response_picker_arr;
+       NSMutableArray *arr_product,*stat_arr,*reload_section,*arr_states,*picker_Arr,*response_picker_arr,*shipping_Countries_array;
     NSString *TXT_count, *product_id,*item_count,*qr_code,*qar_miles_value;
     int i,j;
     NSInteger edit_tag,cntry_ID;
@@ -29,7 +29,6 @@
     BOOL isfirstTimeTransform,isAddClicked,is_Txt_date,isCountrySelected,isCash_on_delivary;
     float scroll_height,shiiping_ht;
     UIView *VW_overlay;
-    //UIActivityIndicatorView *activityIndicatorView;
     NSMutableDictionary *jsonresponse_dic,*jsonresponse_dic_address,*delivary_slot_dic,*response_countries_dic;
     NSString *merchent_id,*date_str,*time_str;  //for payment parameters
     NSArray *slot_keys_arr; // time_slot keys for  PickerView
@@ -61,7 +60,9 @@
     int currSeconds;
     NSString *otp_str;
   
-    
+    //For Picker Default Selection
+    NSString *pickerSelection;
+    BOOL isPickerViewScrolled;
     
 }
 
@@ -123,6 +124,14 @@
     
     _LBL_arrow.hidden = YES;
     isCash_on_delivary = YES;
+    
+    [self ShippingCountryAPICall];
+    
+    
+    
+    
+    
+    
     
 }
 -(void)viewWillAppear:(BOOL)animated
@@ -444,6 +453,12 @@
     _pickerView.delegate = self;
     _pickerView.dataSource = self;
     
+    
+    
+    _shipping_PickerView = [[UIPickerView alloc]init];
+    _shipping_PickerView.delegate = self;
+    _shipping_PickerView.dataSource = self;
+    
     _TXT_Date.delegate = self;
     _TXT_Time.delegate = self;
     
@@ -459,10 +474,9 @@
     
     _TXT_country.inputView = _staes_country_pickr;
     _TXT_state.inputView = _staes_country_pickr;
-    
-    
-    _TXT_ship_country.inputView =_staes_country_pickr;
     _TXT_ship_state.inputView =_staes_country_pickr;
+
+    _TXT_ship_country.inputView =_shipping_PickerView;
 
    //  Done Button  For Tool Bar
     UIButton *done=[[UIButton alloc]init];
@@ -557,6 +571,12 @@
         
         if ([str_cntry_code isEqualToString:@"<null>"] ||[str_cntry_code isEqualToString:@"<nil>"]||[str_cntry_code isEqualToString:@""] ) {
             str_cntry_code = @"974";
+            _TXT_Cntry_code.userInteractionEnabled = YES;
+           // _TXT_Cntry_code.backgroundColor = [UIColor clearColor];
+        }
+        else{
+            _TXT_Cntry_code.userInteractionEnabled = NO;
+            _TXT_Cntry_code.backgroundColor = [UIColor lightGrayColor];
         }
         
         _TXT_Cntry_code.text = [NSString stringWithFormat:@"+%@",str_cntry_code];
@@ -599,10 +619,6 @@
         blng_state_ID = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"state_id"]];
         
         
-        // Shipping Country  ID Must Be  Qatar Country ID
-        ship_cntry_ID = @"173";
-        cntry_ID = 173;
-        
         
         str_fname = [str_fname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
         
@@ -625,16 +641,23 @@
         _TXT_email.text =  str_email;
         
         
-        //_TXT_phone.backgroundColor = [UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1];;
-        
-        
         
         str_state = [str_state stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
         
         _TXT_country.text =  str_country;
         _TXT_state.text =  str_state;
         
-        _TXT_ship_country.text = @"Qatar";
+       
+// Shipping Country  ID Must Be  Related Country        
+        
+        _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"cntry_name"];
+        cntry_ID = [[[shipping_Countries_array objectAtIndex:0] valueForKey:@"cntry_id"] integerValue];
+        ship_cntry_ID = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"cntry_id"];
+        
+        //
+        //         ship_cntry_ID = @"173";
+        //         cntry_ID = 173;
+        //        _TXT_ship_country.text = @"Qatar";
         
         
     }
@@ -800,8 +823,8 @@
         
     }
     else{
-        summary_text = [NSString stringWithFormat:@"%@ %@\n%@",currency,prec_price,str_or];
         str_or = @"(OR)";
+        summary_text = [NSString stringWithFormat:@"%@ %@\n%@",currency,prec_price,str_or];
         str_miles= [NSString stringWithFormat:@"Doha Miles %@",doha_value];
     }
     
@@ -2153,13 +2176,14 @@
 
 
            
-             CGRect frame_set = _TBL_address.frame;
-            frame_set.size.height =_TBL_address.contentSize.height+ _VW_special.frame.size.height-50;
-           // frame_set.size.height =_TBL_address.contentSize.height ;//+ _VW_special.frame.size.height+50;
+            
+            CGRect frame_set = _TBL_address.frame;
+            frame_set.size.height =_TBL_address.contentSize.height+ _VW_special.frame.size.height-30;
+            // frame_set.size.height =_TBL_address.contentSize.height ;//+ _VW_special.frame.size.height+50;
             _TBL_address.frame= frame_set;
             
-           frame_set = _VW_special.frame;
-             frame_set.origin.y = _TBL_address.frame.origin.y+_TBL_address.frame.size.height ;
+            frame_set = _VW_special.frame;
+            frame_set.origin.y = _TBL_address.frame.origin.y+_TBL_address.frame.size.height ;
             _VW_special.frame = frame_set;
             
             shiiping_ht = _VW_special.frame.origin.y + _VW_special.frame.size.height;
@@ -2168,8 +2192,21 @@
             
      // Loading Shipping address   For Validation
             
+            // Loading Shipping address   For Validation
+            
+            NSArray *keys_arr = [[jsonresponse_dic_address valueForKey:@"shipaddress"] allKeys];
+            
+            for (int keys=0; keys<[keys_arr count]; keys++) {
+                
+                if ( [[[[[jsonresponse_dic_address valueForKey:@"shipaddress"] valueForKey:[keys_arr objectAtIndex:keys]] valueForKey:@"shippingaddress"] valueForKey:@"default"] isEqualToString:@"Yes"]) {
+                   
+                    [self loadShippingAddress:keys];//Passing Parameter as 0 Bczby Default 0 th Index(address) has to load
+                }
+                
+                
+            }
+            
         
-            [self loadShippingAddress:0];//Passing Parameter as 0 Bczby Default 0 th Index(address) has to load
             
         }
         else{ //shipping address is nil load Empty Shipping address
@@ -2200,6 +2237,7 @@
 -(void)calendar_action:(UIButton *)sender
 {
     merchent_id = [NSString stringWithFormat:@"%ld",(long)sender.tag];
+    
     [self delivary_slot_API];
     //[self performSelector:@selector(delivary_slot_API) withObject:activityIndicatorView afterDelay:0.001];
 
@@ -2215,11 +2253,7 @@
     //_VW_delivery_slot.hidden = NO;
     
 }
-//-(void)deliveryslot_action
-//{
-//    VW_overlay.hidden = YES;
-//    _VW_delivery_slot.hidden = YES;
-//}
+
 -(void)next_page
 {
     
@@ -2270,7 +2304,7 @@
     _TBL_address.estimatedRowHeight = 4.0;
     _TBL_address.rowHeight = UITableViewAutomaticDimension;
      [self.TBL_address reloadData];
-    
+    [self begin_responder];
   
     if ([billcheck_clicked isEqualToString:@"1"]) {
         
@@ -2372,6 +2406,8 @@
             [_BTN_resend_otp setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
 
             if ([payment_type_str isEqualToString:@"5"]) {
+                
+                [timer invalidate];
                 [self gettingOtpForCashOnDelivary];
                 
                 self.VW_otp_vw.hidden = NO;
@@ -2431,11 +2467,16 @@
    }
 // Validate_OTP Action
 -(void)validate_OTP{
+    
+    [Helper_activity animating_images:self];
+    
     if ([_TXT_message_field.text isEqualToString:otp_str]) {
        NSLog(@"VAlidate");
         [self place_oredr_API];
     }
     else{
+        
+        [Helper_activity stop_activity_animation:self];
         _TXT_message_field.text = @"";
         [HttpClient createaAlertWithMsg:@"Please Enter Valid OTP" andTitle:@""];
         NSLog(@"Please Enter Valid OTP");
@@ -2582,20 +2623,10 @@
         
         
         
-//        for (int keys=0; keys<[keys_arr count]; keys++) {
-//            
-//            if (keys == edit_tag) {
-//                
-//                [reload_section replaceObjectAtIndex:keys withObject:@"Yes"];
-//            }
-//            else{
-//                [reload_section replaceObjectAtIndex:keys withObject:@"No"];
-//            }
-//            
-//            
-//        }
             
-        
+           NSLog(@"===========%@==========", [[[jsonresponse_dic_address valueForKey:@"shipaddress"]valueForKey:[keys_arr objectAtIndex:edit_tag]]valueForKey:@"shippingaddress"]);
+            
+            
         NSString *state = [[[[jsonresponse_dic_address valueForKey:@"shipaddress"]valueForKey:[keys_arr objectAtIndex:edit_tag]] valueForKey:@"shippingaddress"]  valueForKey:@"state"];
         NSString *country = [[[[jsonresponse_dic_address valueForKey:@"shipaddress"]valueForKey:[keys_arr objectAtIndex:edit_tag]] valueForKey:@"shippingaddress"]  valueForKey:@"country"];
         //  state = [state stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
@@ -2623,8 +2654,16 @@
         str_phone_code=[[[[jsonresponse_dic_address valueForKey:@"shipaddress"]valueForKey:[keys_arr objectAtIndex:edit_tag]] valueForKey:@"shippingaddress"] valueForKey:@"phonecode"];
         
         if ([str_phone_code isEqualToString:@"<null>"] ||[str_phone_code isEqualToString:@"<nil>"]||[str_phone_code isEqualToString:@""] ) {
-            str_phone_code = @"+974";
+            str_phone_code = @"974";
+            _TXT_ship_cntry_code.userInteractionEnabled = YES;
+           // _TXT_ship_cntry_code.backgroundColor = [UIColor clearColor];
         }
+        else{
+            _TXT_ship_cntry_code.userInteractionEnabled = NO;
+            _TXT_ship_cntry_code.backgroundColor = [UIColor lightGrayColor];
+        }
+            str_phone_code = [NSString stringWithFormat:@"+%@",str_phone_code];
+            
         
         str_fname = [str_fname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
         
@@ -2645,7 +2684,19 @@
             str_zip_code = @"";
         }
         
-        
+            
+            if ([str_phone isEqualToString:@"<null>"] ||[str_phone isEqualToString:@"<nil>"]||[str_phone isEqualToString:@""] ) {
+                str_phone = @"";
+                _TXT_ship_phone.userInteractionEnabled = YES;
+                _TXT_ship_phone.backgroundColor = [UIColor clearColor];
+            }
+            else{
+                _TXT_ship_phone.userInteractionEnabled = NO;
+                _TXT_ship_phone.backgroundColor = [UIColor lightGrayColor];
+            }
+            
+            
+            
         _TXT_ship_fname.text =  str_fname;
         _TXT_ship_lname.text =  str_lname;
         _TXT_ship_addr1.text =  str_addr1;
@@ -2684,7 +2735,7 @@
     frameset.size.width = _VW_shipping.frame.size.width;
     _VW_SHIIPING_ADDRESS.frame = frameset;
     [self.scroll_shipping addSubview:_VW_SHIIPING_ADDRESS];
-    
+    [self begin_ship_responder];
     frameset = _VW_special.frame;
     frameset.origin.y = _VW_SHIIPING_ADDRESS.frame.origin.y + _VW_SHIIPING_ADDRESS.frame.size.height;
     _VW_special.frame = frameset;
@@ -2705,6 +2756,7 @@
         for (int keys=0; keys<[keys_arr count]; keys++) {
             
             if (keys == sender.tag) {
+                
                 
                 [reload_section replaceObjectAtIndex:keys withObject:@"Yes"];
             }
@@ -2800,7 +2852,7 @@
     
     _VW_SHIIPING_ADDRESS.hidden = NO;
     CGRect frameset = _VW_SHIIPING_ADDRESS.frame;
-    frameset.origin.y = _TBL_address.frame.origin.y + _TBL_address.contentSize.height + 20;
+    frameset.origin.y = _TBL_address.frame.origin.y + _TBL_address.contentSize.height + 40;
     frameset.size.width = _VW_shipping.frame.size.width;
     _VW_SHIIPING_ADDRESS.frame = frameset;
     [self.scroll_shipping addSubview:_VW_SHIIPING_ADDRESS];
@@ -2819,11 +2871,22 @@
     _TXT_ship_city.text =  nil;
     _TXT_ship_state.text =  nil;
     _TXT_ship_zip.text =  nil;
-    _TXT_ship_country.text =  @"Qatar";
     _TXT_ship_email.text =  nil;
     _TXT_ship_phone.text =  nil;
     
     _TXT_ship_cntry_code.text = @"+974";
+    
+    _TXT_ship_cntry_code.backgroundColor = [UIColor blackColor];
+    _TXT_ship_phone.backgroundColor = [UIColor clearColor];
+    
+    _TXT_ship_cntry_code.userInteractionEnabled = YES;
+    _TXT_ship_phone.userInteractionEnabled = YES;
+    
+    
+// Shipping Country  ID Must Be  Related Country Country ID
+    _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"cntry_name"];
+    cntry_ID = [[[shipping_Countries_array objectAtIndex:0] valueForKey:@"cntry_id"] integerValue];
+    ship_cntry_ID = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"cntry_id"];
     
 }
 
@@ -2904,8 +2967,9 @@
             for (int keys=0; keys<[keys_arr count]; keys++) {
                 
                 if (keys == sender.tag) {
-                    
+
                     [reload_section replaceObjectAtIndex:keys withObject:@"Yes"];
+        
                 }
                 else{
                     [reload_section replaceObjectAtIndex:keys withObject:@"No"];
@@ -2914,6 +2978,7 @@
                 
             }
         }
+        
         CGPoint buttonPosition = [sender convertPoint:CGPointZero toView:self.TBL_address];
         NSIndexPath *indexPath = [self.TBL_address indexPathForRowAtPoint:buttonPosition];
         
@@ -2923,17 +2988,17 @@
         [self.TBL_address endUpdates];
         if (edit_tag != sender.tag) {
             CGRect frameset =_TBL_address.frame;
-            frameset.size.height = _TBL_address.contentSize.height-_VW_special.frame.size.height;
+            frameset.size.height =_TBL_address.contentSize.height+ _VW_special.frame.size.height - 40;
             _TBL_address.frame = frameset;
             
             frameset = _VW_special.frame;
-            frameset.origin.y = _TBL_address.frame.origin.y + _TBL_address.frame.size.height + 20;
+            frameset.origin.y = _TBL_address.frame.origin.y + _TBL_address.frame.size.height;
             _VW_special.frame = frameset;
             
             shiiping_ht = _VW_special.frame.origin.y + _VW_special.frame.size.height;
             [self viewDidLayoutSubviews];
             [self.VW_SHIIPING_ADDRESS removeFromSuperview];
-            
+             [self loadShippingAddress:sender.tag];
         }
         
         
@@ -3235,94 +3300,152 @@
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-//    [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
-//    [UIView beginAnimations:nil context:NULL];
-//    self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
-//    [UIView commitAnimations];
     [self stope_animating_view_for_textField];
     
     [textField resignFirstResponder];
     return YES;
 }
--(void)textFieldDidBeginEditing:(UITextField *)textField
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    
-  
-    [textField becomeFirstResponder];
-    if (textField == _TXT_Date ) {
-        
-        @try {
-            
-            is_Txt_date = YES;
-            [picker_Arr removeAllObjects];
-            
-            NSDate *day_date;
-            if ([[delivary_slot_dic valueForKey:@"days"] isKindOfClass:[NSDictionary class]]) {
-                
-                slot_keys_arr = [[delivary_slot_dic valueForKey:@"days"]allKeys];
-                for (int slot = 0; slot< slot_keys_arr.count; slot++) {
-                    
-                    NSString *str = [[delivary_slot_dic valueForKey:@"days"] valueForKey:[slot_keys_arr objectAtIndex:slot]];
-                    NSRange startRange = [str rangeOfString:@"(" options:NSBackwardsSearch];
-                    str= [str substringFromIndex:startRange.location+startRange.length];
-                    str = [str stringByReplacingOccurrencesOfString:@")" withString:@""];
-                    
-                    dateFormatter.dateFormat = @"MMM d,yyyy";
-                    
-                    // Converting String(Eg.. Jan 29,2018) To Date
-                    day_date = [dateFormatter dateFromString:str];
-                    [picker_Arr addObject: @{@"key1":day_date,@"key2":[[delivary_slot_dic valueForKey:@"days"] valueForKey:[slot_keys_arr objectAtIndex:slot]],@"key3":[slot_keys_arr objectAtIndex:slot]}];
-                    
-                }
-                // Sorting By Using Date
-                NSSortDescriptor *descriptor=[[NSSortDescriptor alloc] initWithKey:@"key1" ascending:YES];
-                NSArray *descriptors=[NSArray arrayWithObject: descriptor];
-                NSArray *reverseOrder=[picker_Arr sortedArrayUsingDescriptors:descriptors];
-                NSLog(@" After sorting%@",reverseOrder);
-                 [picker_Arr removeAllObjects];
-                [picker_Arr addObjectsFromArray:reverseOrder];
-                
-           }
-        
-            if (!picker_Arr.count) {
-                NSLog(@"Sorry! There is no options." );
-            }else{
-                [self.pickerView becomeFirstResponder];
-                [self.pickerView reloadAllComponents];
+    NSInteger inte = _TXT_phone.text.length;
+    if(textField == _TXT_phone)
+    {
+    if([_TXT_Cntry_code.text isEqualToString:@"+974"])
+    {
+        if(inte == 8)
+        {
+            if ([string isEqualToString:@""])
+            {
+                return YES;
             }
-            
-            
-        } @catch (NSException *exception) {
-            NSLog(@"%@",exception);
+            else
+            {
+                return NO;
+            }
+        }
+        
+    }
+    else
+    {
+        if(inte >= 15)
+        {
+            if ([string isEqualToString:@""]) {
+                return YES;
+            }
+            else
+            {
+                return NO;
+            }
         }
     }
-    if (textField == _TXT_Time ) {
+    }
+    NSCharacterSet *notAllowedChars = [[NSCharacterSet characterSetWithCharactersInString:@"1234567890"] invertedSet];
+    NSString *resultString = [[_TXT_phone.text componentsSeparatedByCharactersInSet:notAllowedChars] componentsJoinedByString:@""];
+    
+    _TXT_phone.text = resultString;
+
+    NSInteger intes = _TXT_ship_phone.text.length;
+    if(textField == _TXT_ship_phone)
+    {
+    if([_TXT_ship_cntry_code.text isEqualToString:@"+974"])
+    {
+        if(intes == 8)
+        {
+            if ([string isEqualToString:@""])
+            {
+                return YES;
+            }
+            else
+            {
+                return NO;
+            }
+        }
         
+    }
+    else
+    {
+        if(intes >= 15)
+        {
+            if ([string isEqualToString:@""]) {
+                return YES;
+            }
+            else
+            {
+                return NO;
+            }
+        }
+    }
+    }
+
+    NSCharacterSet *notAllowedChar = [[NSCharacterSet characterSetWithCharactersInString:@"1234567890"] invertedSet];
+    NSString *resultStrin = [[_TXT_phone.text componentsSeparatedByCharactersInSet:notAllowedChar] componentsJoinedByString:@""];
+    
+    _TXT_ship_phone.text = resultStrin;
+
+    
+    
+    return YES;
+}
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    /*
+     TimeSlot
+     StatesAndCountry
+     Shipping
+     */
+    isPickerViewScrolled = NO;
+  
+    [textField becomeFirstResponder];
+    
+    if (textField == _TXT_ship_country) {
+        pickerSelection = @"Shipping";
+        [self.shipping_PickerView selectRow:0 inComponent:0 animated:YES];
+
+    }
+    
+    if (textField == _TXT_Date ) {
+        [self.pickerView selectRow:0 inComponent:0 animated:YES];
+
+        pickerSelection = @"TimeSlot";
+        [self delivarySlotDateRelated:textField];
+       
+    }
+    if (textField == _TXT_Time ) {
+        pickerSelection = @"TimeSlot";
+        [self.pickerView selectRow:0 inComponent:0 animated:YES];
        [self delivary_slot_time_related:textField];
     }
     if (textField == _TXT_country|| textField == _TXT_state) {
+        
         select_blng_ctry_state = YES;
     }
     if (textField == _TXT_ship_country || textField == _TXT_ship_state ) {
+        
         select_blng_ctry_state = NO;
 
     }
     
-    if (textField.tag == 8) {
+    if (textField == _TXT_country) {
         isCountrySelected = YES;
+        pickerSelection = @"StatesAndCountry";
+        [self.staes_country_pickr selectRow:0 inComponent:0 animated:YES];
+
         
-        textField.inputView = _staes_country_pickr;
-        textField.inputAccessoryView = accessoryView;
-        [self.pickerView becomeFirstResponder];
+//        textField.inputView = _staes_country_pickr;
+//        textField.inputAccessoryView = accessoryView;
+//        [self.pickerView becomeFirstResponder];
         [self performSelector:@selector(CountryAPICall) withObject:nil afterDelay:0];
-       
-        
+      
     }
+
     if (textField.tag == 6) {
         
-        isCountrySelected = NO;
-        textField.inputView = _staes_country_pickr;
-        textField.inputAccessoryView = accessoryView;
+        pickerSelection = @"StatesAndCountry";
+                isCountrySelected = NO;
+
+        //textField.inputView = _staes_country_pickr;
+        //textField.inputAccessoryView = accessoryView;
+        [self.staes_country_pickr selectRow:0 inComponent:0 animated:YES];
         [self.pickerView becomeFirstResponder];
         [self performSelector:@selector(stateApiCall) withObject:nil afterDelay:0];
         
@@ -3346,6 +3469,12 @@
 
           [self view_animation:-40];
     }
+    if (textField == _TXT_ship_cntry_code || textField == _TXT_Cntry_code) {
+      pickerSelection = @"Phone";
+        [self.country_code_Pickerview selectRow:0 inComponent:0 animated:YES];
+    }
+    
+
  
 }
 
@@ -3367,7 +3496,7 @@
         textField.text = state_selection;
         
     }
-    if (textField.tag == 8) {
+    if (textField == _TXT_country) {
         
         
         textField.text = cntry_selection;
@@ -3394,6 +3523,8 @@
 }
     
 }
+
+#pragma mark View Animations While TextField Editing Time
 -(void)view_animation:(CGFloat)yaxis{
     [UIView beginAnimations:nil context:NULL];
     self.view.frame = CGRectMake(0,yaxis,self.view.frame.size.width,self.view.frame.size.height);
@@ -3405,10 +3536,64 @@
     [UIView commitAnimations];
 }
 
-#pragma mark Delivary Slot Time Related
+#pragma mark Delivary Slot DATE Related
+-(void)delivarySlotDateRelated:(UITextField*)textfield{
+    
+    @try {
+        
+        is_Txt_date = YES;
+        [picker_Arr removeAllObjects];
+        
+        NSDate *day_date;
+        if ([[delivary_slot_dic valueForKey:@"days"] isKindOfClass:[NSDictionary class]]) {
+            
+            slot_keys_arr = [[delivary_slot_dic valueForKey:@"days"]allKeys];
+            for (int slot = 0; slot< slot_keys_arr.count; slot++) {
+                
+                NSString *str = [[delivary_slot_dic valueForKey:@"days"] valueForKey:[slot_keys_arr objectAtIndex:slot]];
+                NSRange startRange = [str rangeOfString:@"(" options:NSBackwardsSearch];
+                str= [str substringFromIndex:startRange.location+startRange.length];
+                str = [str stringByReplacingOccurrencesOfString:@")" withString:@""];
+                
+                dateFormatter.dateFormat = @"MMM d,yyyy";
+                
+                // Converting String(Eg.. Jan 29,2018) To Date
+                day_date = [dateFormatter dateFromString:str];
+                [picker_Arr addObject: @{@"key1":day_date,@"key2":[[delivary_slot_dic valueForKey:@"days"] valueForKey:[slot_keys_arr objectAtIndex:slot]],@"key3":[slot_keys_arr objectAtIndex:slot]}];
+                
+            }
+            // Sorting By Using Date
+            NSSortDescriptor *descriptor=[[NSSortDescriptor alloc] initWithKey:@"key1" ascending:YES];
+            NSArray *descriptors=[NSArray arrayWithObject: descriptor];
+            NSArray *reverseOrder=[picker_Arr sortedArrayUsingDescriptors:descriptors];
+            NSLog(@" After sorting%@",reverseOrder);
+            [picker_Arr removeAllObjects];
+            [picker_Arr addObjectsFromArray:reverseOrder];
+            
+        }
+        
+        if (!picker_Arr.count) {
+            NSLog(@"Sorry! There is no options." );
+        }else{
+            [self.pickerView becomeFirstResponder];
+            [self.pickerView reloadAllComponents];
+        }
+        
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
+}
+#pragma mark Delivary Slot TIME Related
 -(void)delivary_slot_time_related:(UITextField*)textfield{
-    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-    [dateFormatter setTimeZone:timeZone];
+    
+   NSString *str_zone =   [[NSUserDefaults standardUserDefaults]  valueForKey:@"time_zone"];
+    if([str_zone isEqualToString:@"(null)"]||[str_zone isEqualToString:@"<null>"]||[str_zone isEqualToString:@""])
+    {
+        str_zone = [[NSTimeZone localTimeZone] abbreviation];
+    }
+   // NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:str_zone];
+      [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:str_zone]];
     
     [picker_Arr removeAllObjects];
     
@@ -3450,23 +3635,30 @@
     if ([_TXT_Date.text containsString:@"Today"]) {
         
         
-        [dateFormatter setTimeZone:timeZone];
+        
+
         NSDate *now = [NSDate date];
         dateFormatter.dateFormat = @"hh:mm a";
         
+       //ADDING EXTRA TIME
+//        NSTimeInterval secondsInEightHours = 3 * 60 * 60;
+//        NSDate *datethreeHoursAhead=[now dateByAddingTimeInterval:secondsInEightHours];
+//        
+//        [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
+//        
+//        NSLog(@"The Current Time is %@",[dateFormatter stringFromDate:now]);
+//        
+//        NSString *current_date = [dateFormatter stringFromDate:datethreeHoursAhead];
+//        NSDate *current_time= [dateFormatter dateFromString:current_date];
+         //NSLog(@"current_time After Adding time %@",[dateFormatter stringFromDate:datethreeHoursAhead]);
         
         
-        NSTimeInterval secondsInEightHours = 3 * 60 * 60;
-        NSDate *datethreeHoursAhead=[now dateByAddingTimeInterval:secondsInEightHours];
-        
-        [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
-        
-        NSLog(@"The Current Time is %@",[dateFormatter stringFromDate:now]);
-        
-        NSString *current_date = [dateFormatter stringFromDate:datethreeHoursAhead];
+        // WITH OUT ADDING EXTRA TIME
+ [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:str_zone]];        NSString *current_date = [dateFormatter stringFromDate:now];
         NSDate *current_time= [dateFormatter dateFromString:current_date];
+
         
-        NSLog(@"current_time After Adding time %@",[dateFormatter stringFromDate:datethreeHoursAhead]);
+       
         
         NSMutableArray *data_arr = [[NSMutableArray alloc]initWithArray:picker_Arr];
         
@@ -3991,7 +4183,7 @@
                                 
                                                                
                                 NSLog(@"sortedArr %@",sortedArr);
-                                [response_picker_arr removeAllObjects];
+                               [response_picker_arr removeAllObjects];
                                 if (!select_blng_ctry_state) {
                                     
                                     @try {
@@ -4012,7 +4204,7 @@
                                 }
                                 [_staes_country_pickr reloadAllComponents];
                                 
-                                [self.staes_country_pickr reloadAllComponents];
+                               
                                 NSLog(@"%@",response_picker_arr);
                             }
                             else{
@@ -4041,6 +4233,70 @@
     
 }
 
+#pragma mark Shipping Country API Call (For Shipping Address)
+
+
+-(void)ShippingCountryAPICall{
+    //http://localhost/dohasooq/apis/countiresShipapi.json
+    
+    
+    @try {
+        
+        shipping_Countries_array = [NSMutableArray array];
+        [Helper_activity animating_images:self];
+        
+         response_countries_dic = [NSMutableDictionary dictionary];
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/countiresShipapi.json",SERVER_URL];
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    [Helper_activity stop_activity_animation:self];
+                    NSLog(@"%@",[error localizedDescription]);
+                }
+                if (data) {
+                    
+                    @try {
+                        NSLog(@"%@",data);
+                        
+                        if ([data isKindOfClass:[NSDictionary class]]) {
+                           
+                            [response_countries_dic addEntriesFromDictionary:data];
+                            [shipping_Countries_array removeAllObjects];
+                            
+                            for (int x=0; x<[[response_countries_dic allKeys] count]; x++) {
+                                NSDictionary *dic = @{@"cntry_id":[[response_countries_dic allKeys] objectAtIndex:x],@"cntry_name":[response_countries_dic valueForKey:[[response_countries_dic allKeys] objectAtIndex:x]]};
+                                
+                                [shipping_Countries_array addObject:dic];
+                            }
+                        [_shipping_PickerView reloadAllComponents];
+
+                        }
+                        
+                    } @catch (NSException *exception) {
+                        
+                        
+                    }
+                    
+                    [Helper_activity stop_activity_animation:self];
+                }
+                
+            });
+        }];
+        
+        
+        
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+        [Helper_activity stop_activity_animation:self];
+    }
+
+    
+}
+
+
+
 
 
 #pragma mark StateAPI Call
@@ -4052,6 +4308,7 @@
         
         
         arr_states = [NSMutableArray array];
+        NSLog(@"%ld",(long)cntry_ID);
         
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/getstatebyconapi/%ld.json",SERVER_URL,(long)cntry_ID];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
@@ -4118,9 +4375,15 @@
     else if (pickerView == _country_code_Pickerview){
         return phone_code_arr.count;
     }
+    else if (pickerView == _shipping_PickerView){
+        return  shipping_Countries_array.count;
+    }
+    
+    
     else{
         return picker_Arr.count;
     }
+    
     
 }
 - (nullable NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
@@ -4135,6 +4398,12 @@
             return [[response_picker_arr objectAtIndex:row] valueForKey:@"value"];
         }
     }
+    else if (pickerView == _shipping_PickerView){ // Shipping Address Country
+        
+        
+        return [[shipping_Countries_array objectAtIndex:row] valueForKey:@"cntry_name"];
+    }
+
     else if (pickerView ==_country_code_Pickerview){
        
         @try {
@@ -4157,11 +4426,27 @@
 }
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
     
-    if (pickerView == _country_code_Pickerview) {
+    isPickerViewScrolled = YES;
+    
+    [self PickerCustomSelection:row];
+    
+  /*  if (pickerView == _country_code_Pickerview) {
         
         flag = [NSString stringWithFormat:@"%@ ",[phone_code_arr[row] valueForKey:@"code"]];
     }
     
+    else if (pickerView == _shipping_PickerView){    // For Shipping Address
+      
+        @try {
+            _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:row] valueForKey:@"cntry_name"];
+            cntry_ID = [[[shipping_Countries_array objectAtIndex:row] valueForKey:@"cntry_id"] integerValue];
+            ship_cntry_ID = [[shipping_Countries_array objectAtIndex:row] valueForKey:@"cntry_id"];
+            _TXT_ship_state.text = nil;
+        } @catch (NSException *exception) {
+            NSLog(@"Selection of Shipping Country");
+        }
+        
+    }
     if (pickerView == _pickerView) {
         
         @try {
@@ -4179,7 +4464,8 @@
             }
         } @catch (NSException *exception) {
             NSLog(@"%@",exception);
-        }     }
+        }
+    }
     if (pickerView == _staes_country_pickr) {
         
         if (isCountrySelected) {
@@ -4193,10 +4479,7 @@
                     _TXT_state.text = nil;
                     blng_cntry_ID = [[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_id"];
                 }
-                else{
-                    ship_cntry_ID = [[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_id"];
-                    _TXT_ship_state.text = nil;
-                }
+
                 
                 
             } @catch (NSException *exception) {
@@ -4220,10 +4503,112 @@
             
         }
     }
+*/
+}
+-(void)PickerCustomSelection:(NSInteger )row{
+ //*********************************  Delivary Slot Picker Related *********************************
+    if ([pickerSelection isEqualToString:@"TimeSlot"]) {
+        @try {
+            if (is_Txt_date) {
+                _TXT_Date.text = [[picker_Arr objectAtIndex:row] valueForKey:@"key2"];
+                date_str = [NSString stringWithFormat:@"%@",[[picker_Arr objectAtIndex:row] valueForKey:@"key3"]];
+                _TXT_Time.text = nil;
+                _TXT_Time.placeholder = @"Select Time";
+                
+            }
+            else{
+                _TXT_Time.text = [[picker_Arr objectAtIndex:row] valueForKey:@"time"];
+                time_str = [NSString stringWithFormat:@"%@",[[picker_Arr objectAtIndex:row] valueForKey:@"id"]];
+                
+            }
+        } @catch (NSException *exception) {
+            NSLog(@"%@",exception);
+        }
+        
+    }
+//*********************************  States And Country Picker Related *********************************
+
+    else if ([pickerSelection isEqualToString:@"StatesAndCountry"]){
+        
+        if (isCountrySelected) {
+            @try {
+                
+                cntry_selection = [[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_name"];
+                cntry_ID = [[[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_id"] integerValue];
+                state_selection = @"";
+                
+                if (select_blng_ctry_state) {
+                    _TXT_state.text = nil;
+                    blng_cntry_ID = [[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_id"];
+                }
+                
+                
+                
+            } @catch (NSException *exception) {
+                NSLog(@"%@",exception);
+            }
+        }
+        else{
+            @try {
+                state_selection = [[response_picker_arr objectAtIndex:row] valueForKey:@"value"];
+                
+                if (select_blng_ctry_state) {
+                    blng_state_ID = [[response_picker_arr objectAtIndex:row] valueForKey:@"key"];
+                }
+                else{
+                    ship_state_ID = [[response_picker_arr objectAtIndex:row] valueForKey:@"key"];
+                }
+                
+            } @catch (NSException *exception) {
+                state_selection = @"";
+            }
+            
+        }
+
+        
+    }
+    //*********************************  For Shipping Country Picker Related *********************************
+    
+    else if ([pickerSelection isEqualToString:@"Shipping"]){     //For Shipping Country
+       
+        @try {
+            
+            _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:row] valueForKey:@"cntry_name"];
+            cntry_ID = [[[shipping_Countries_array objectAtIndex:row] valueForKey:@"cntry_id"] integerValue];
+            ship_cntry_ID = [[shipping_Countries_array objectAtIndex:row] valueForKey:@"cntry_id"];
+            state_selection = @"";
+            _TXT_ship_state.text = nil;
+            
+        } @catch (NSException *exception) {
+            
+            NSLog(@"Selection of Shipping Country %@",exception);
+        }
+        
+    }
+//*********************************  For Phone Code Picker Related *********************************
+    
+    else if ([pickerSelection isEqualToString:@"Phone"]){
+        
+        @try {
+            flag = [NSString stringWithFormat:@"%@ ",[phone_code_arr[row] valueForKey:@"code"]];
+        } @catch (NSException *exception) {
+            NSLog(@"Phone Code ::%@",exception);
+        }
+        
+  
+    }
     
 }
+
+
+
 #pragma mark picker_done_btn_action
 -(void)picker_done_btn_action:(id)sender{
+    
+    if (!isPickerViewScrolled) {
+        [self PickerCustomSelection:0];
+    }
+    
     
     [self.view endEditing:YES];
     
@@ -4263,30 +4648,6 @@
                                 NSLog(@"Payment Methods %@",data);
                                 
                          // Checking Cash on Delivary is Available or Not
-//                                _BTN_cod.hidden = YES;
-//                                _LBL_cash_on_Delivary.hidden = YES;
-                                
-                                //                                        isCash_on_delivary = YES;
-                                
-//                                NSArray *keys = [data allKeys];
-//                                for (int kl = 0; kl < [keys count]; kl ++) {
-//                                    NSString *KY = [NSString stringWithFormat:@"%d",kl];
-//                                    NSString *STR_check = [data valueForKey:KY];
-//                                    if ([STR_check isEqualToString:@"Cash On Delivery"]) {
-//
-//                                        _BTN_cod.hidden = NO;
-//                                        _LBL_cash_on_Delivary.hidden = NO;
-//                                        kl = (int)[keys count];
-//                                    }
-//                                }
-//                                for (NSString *key in data) {
-//                                    id value = data[key];
-//                                    NSLog(@"Value: %@ for key: %@", value, key);
-//                                    if ([value isEqualToString:@"Cash On Delivery"]) {
-//                                        _BTN_cod.hidden = NO;
-//                                        _LBL_cash_on_Delivary.hidden = NO;
-//                                    }
-//                                }
                               //////////////
                                if (isCash_on_delivary) {
                                     _BTN_cod.hidden = NO;
@@ -4442,7 +4803,8 @@
  
     
      NSString *msg;
-  
+    _TXT_Cntry_code.text = [_TXT_Cntry_code.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+
        if ([_TXT_fname.text isEqualToString:@""])
        {
            [_TXT_fname becomeFirstResponder];
@@ -4485,13 +4847,13 @@
 
            
        }
-       else if(_TXT_lname.text.length < 3)
+       else if(_TXT_lname.text.length < 1)
        {
            [_TXT_lname becomeFirstResponder];
-           msg = @"Last Name should not be less than 3 character";
+           msg = @"Last Name should not be less than 1 character";
            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
            {
-               msg = @"الكنية ألا يقل الاسم الأول عن 3 حروف";
+               msg = @"الكنية ألا يقل الاسم الأول عن 1 حروف";
            }
            
            
@@ -4539,8 +4901,35 @@
            
            
        }
-       
-       else if (_TXT_phone.text.length < 5)
+       if([_TXT_Cntry_code.text  isEqualToString:@"+974"])
+       {
+           if (_TXT_phone.text.length < 8)
+           {
+               [_TXT_phone becomeFirstResponder];
+               msg = @"Phone Number cannot be less than 8 digits";
+               if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+               {
+                   msg = @"لا يجب ألا يقلّ رقم الجوال عن 8 أرقام ";
+               }
+               
+               
+           }
+           else if(_TXT_phone.text.length > 8)
+           {
+               [self.TXT_phone becomeFirstResponder];
+               
+               msg = @"Phone Number cannot be more than 8 digits";
+               if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+               {
+                   msg = @"لا يجب ألا يقلّ رقم الجوال عن 8 أرقام ";
+               }
+           }
+
+
+       }
+       else
+       {
+        if (_TXT_phone.text.length < 5)
        {
            [_TXT_phone becomeFirstResponder];
            msg = @"Phone Number cannot be less than 5 digits";
@@ -4554,14 +4943,15 @@
        else if(_TXT_phone.text.length>15)
        {
            [_TXT_phone becomeFirstResponder];
-           msg = @"Phone Number should not be more than 8 characters";
+           msg = @"Phone Number should not be more than 15 characters";
            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
            {
-               msg = @"يجب أن لا يتجاوز رقم الجوال 8 رقماً";
+               msg = @"يجب أن لا يتجاوز رقم الجوال 15 رقماً";
            }
            
        }
-       else if([_TXT_phone.text isEqualToString:@""])
+       
+        if([_TXT_phone.text isEqualToString:@" "])
        {
            [_TXT_phone becomeFirstResponder];
            msg = @"Phone Number  Should Not be Empty";
@@ -4572,7 +4962,8 @@
            
            
        }
-       else if ([_TXT_Cntry_code.text isEqualToString:@""])
+       }
+        if ([_TXT_Cntry_code.text isEqualToString:@""])
        {
            [_TXT_Cntry_code becomeFirstResponder];
            msg = @"Country Code and Phone Number is required";
@@ -4635,6 +5026,7 @@
                msg = @"يرجى تحديد البلد";
            }
            
+       
        }
 //       else if(![blng_cntry_ID isEqualToString:@"173"])
 //       {
@@ -4649,8 +5041,11 @@
 //       }
 // Validating Shipping Address
 
-    if (   _VW_SHIIPING_ADDRESS.hidden == NO )
+    if (_VW_SHIIPING_ADDRESS.hidden == NO )
     {
+        
+        _TXT_ship_cntry_code.text = [_TXT_ship_cntry_code.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+        
         if ([_TXT_ship_fname.text isEqualToString:@""])
         {
             [_TXT_ship_fname becomeFirstResponder];
@@ -4691,13 +5086,13 @@
                 msg = @"يرجى تعبئة حقل الاسم الأخير ";
             }
         }
-        else if(_TXT_ship_lname.text.length < 3)
+        else if(_TXT_ship_lname.text.length < 1)
         {
             [_TXT_ship_lname becomeFirstResponder];
-            msg = @"Last name should not be less than 3 characters";
+            msg = @"Last name should not be less than 1 characters";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                msg = @"الكنية ألا يقل الاسم الأول عن 3 حروف";
+                msg = @"الكنية ألا يقل الاسم الأول عن 1 حروف";
             }
         }
         else if(_TXT_ship_lname.text.length>30)
@@ -4752,9 +5147,40 @@
                 msg = @"رقم الهاتف ترك حقل المدينة فارغاً";
             }
         }
-        
-        else if (_TXT_ship_phone.text.length < 5)
+        if([_TXT_ship_cntry_code.text  isEqualToString:@"+974"])
         {
+          if  (_TXT_ship_phone.text.length < 8)
+            {
+                [_TXT_ship_phone becomeFirstResponder];
+                msg = @"Phone Number cannot be less than 8 digits";
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    msg = @"لا يجب ألا يقلّ رقم الجوال عن 8 أرقام ";
+                }
+                
+                
+                
+            }
+          else if(_TXT_ship_phone.text.length > 8)
+          {
+              [self.TXT_phone becomeFirstResponder];
+              
+              msg = @"Phone Number cannot be more than 8 digits";
+              if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+              {
+                  msg = @"لا يجب ألا يقلّ رقم الجوال عن 8 أرقام ";
+              }
+          }
+            
+
+
+        }
+        else
+        {
+            
+        if (_TXT_ship_phone.text.length < 5)
+            {
+
             [_TXT_ship_phone becomeFirstResponder];
             msg = @"Phone Number cannot be less than 5 digits";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
@@ -4765,18 +5191,19 @@
             
             
         }
-        else if(_TXT_ship_phone.text.length>8)
+        else if(_TXT_ship_phone.text.length > 15)
         {
             [_TXT_ship_phone becomeFirstResponder];
-            msg = @"Phone Number cannot be more than 8 digits";
+            msg = @"Phone Number cannot be more than 15 digits";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"يجب أن لا يتجاوز رقم الجوال 8 رقماً";
             }
            
         }
-      
-        else if ([_TXT_ship_cntry_code.text isEqualToString:@""])
+        
+        }
+         if ([_TXT_ship_cntry_code.text isEqualToString:@""])
         {
             [_TXT_ship_cntry_code becomeFirstResponder];
             msg = @"Country Code and Phone Number is required";
@@ -4856,7 +5283,7 @@
           
         }
         
-
+        
             }
    
     if(msg)
@@ -5047,6 +5474,9 @@
         //        }
         //Special Instruction
         
+        [Helper_activity animating_images:self];
+        
+        
         NSString *SpecialInstruction = _TXT_instructions.text;
         if ([SpecialInstruction isEqualToString:@""]) {
             SpecialInstruction = @"";
@@ -5109,7 +5539,7 @@
         phone = _TXT_phone.text;
         str_code = _TXT_Cntry_code.text;
         
-        
+        str_code = [str_code stringByReplacingOccurrencesOfString:@"+" withString:@""];
         
         
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
@@ -5157,6 +5587,9 @@
         scountry = ship_cntry_ID;
         sphone = _TXT_ship_phone.text;
         str_ph_code = _TXT_ship_cntry_code.text;
+        
+        
+          str_ph_code = [str_ph_code stringByReplacingOccurrencesOfString:@"+" withString:@""];
         
         NSDictionary *Formshipping;
         if ([billcheck_clicked isEqualToString:@"0"] && [blng_cntry_ID isEqualToString:@"173"]) {
@@ -5515,7 +5948,7 @@
                                                  ascending:YES];
     [phone_code_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
     
-    NSLog(@"%@",phone_code_arr);
+   // NSLog(@"%@",phone_code_arr);
     
 }
 
@@ -5633,7 +6066,78 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     
 }
+-(void)begin_responder
+{
+    //Did Begin Editing
+    
+    [self textFieldDidBeginEditing:_TXT_fname];
+    [self textFieldDidBeginEditing:_TXT_lname];
+    [self textFieldDidBeginEditing:_TXT_addr1];
+    [self textFieldDidBeginEditing:_TXT_addr2];
+    [self textFieldDidBeginEditing:_TXT_city];
+    [self textFieldDidBeginEditing:_TXT_zip];
+   // [self textFieldDidBeginEditing:_TXT_country];
+    //[self textFieldDidBeginEditing:_TXT_state];
+    
+    //Did End Editing
+    [self textFieldDidEndEditing:_TXT_fname];
+    [self textFieldDidEndEditing:_TXT_lname];
+    [self textFieldDidEndEditing:_TXT_addr1];
+    [self textFieldDidEndEditing:_TXT_addr2];
+    [self textFieldDidEndEditing:_TXT_city];
+    [self textFieldDidEndEditing:_TXT_zip];
+    //[self textFieldDidEndEditing:_TXT_country];
+    //[self textFieldDidEndEditing:_TXT_state];
 
+
+
+ /*   [_TXT_fname becomeFirstResponder];
+    [_TXT_lname becomeFirstResponder];
+    [_TXT_addr1 becomeFirstResponder];
+    [_TXT_addr2 becomeFirstResponder];
+    [_TXT_city becomeFirstResponder];
+    [_TXT_zip becomeFirstResponder];
+    [_TXT_country becomeFirstResponder];
+    [_TXT_state becomeFirstResponder];
+    
+    
+    [_TXT_fname resignFirstResponder];
+    [_TXT_lname resignFirstResponder];
+    [_TXT_addr1 resignFirstResponder];
+    [_TXT_addr2 resignFirstResponder];
+    [_TXT_city resignFirstResponder];
+    [_TXT_zip resignFirstResponder];
+    [_TXT_country resignFirstResponder];
+    [_TXT_state resignFirstResponder];*/
+    
+}
+-(void)begin_ship_responder
+{
+    // Did begin Editing.
+    
+    [self textFieldDidBeginEditing:_TXT_ship_fname];
+    [self textFieldDidBeginEditing:_TXT_ship_lname];
+    [self textFieldDidBeginEditing:_TXT_ship_addr1];
+    [self textFieldDidBeginEditing:_TXT_ship_addr2];
+    [self textFieldDidBeginEditing:_TXT_ship_city];
+    [self textFieldDidBeginEditing:_TXT_ship_zip];
+    //[self textFieldDidBeginEditing:_TXT_ship_country];
+    //[self textFieldDidBeginEditing:_TXT_ship_state];
+    
+    
+    //Did End Editing
+    
+    [self textFieldDidEndEditing:_TXT_ship_fname];
+    [self textFieldDidEndEditing:_TXT_ship_lname];
+    [self textFieldDidEndEditing:_TXT_ship_addr1];
+    [self textFieldDidEndEditing:_TXT_ship_addr2];
+    [self textFieldDidEndEditing:_TXT_ship_city];
+    [self textFieldDidEndEditing:_TXT_ship_zip];
+   // [self textFieldDidEndEditing:_TXT_ship_country];
+   // [self textFieldDidEndEditing:_TXT_ship_state];
+
+  
+}
 
 
 @end

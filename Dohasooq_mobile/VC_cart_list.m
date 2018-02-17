@@ -263,20 +263,42 @@
              {
                  status =  YES;
                  NSString *str_custom_data = [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"customoption"];
+                 @try
+                 {
                  str_custom_data = [str_custom_data stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
                  str_custom_data = [str_custom_data stringByReplacingOccurrencesOfString:@"" withString:@""];
                  str_custom_data = [str_custom_data stringByReplacingOccurrencesOfString:@"Null" withString:@""];
-                 if([str_custom_data isKindOfClass:[NSNull class]]|| [str_custom_data isEqualToString:@""])
-                 {
-                     custom = NO;
+                     if([str_custom_data isKindOfClass:[NSNull class]]|| [str_custom_data isEqualToString:@""])
+                     {
+                         custom = YES;
+                         
+                     }
+                     else
+                     {
+                         custom = YES;
+                         cell.LBL_combo.text =str_custom_data;
+                         
+                     }
                      
+
                  }
-                 else
+                 @catch(NSException *exception)
                  {
-                     custom = YES;
-                     cell.LBL_combo.text =str_custom_data;
-                     
+                     if([str_custom_data isKindOfClass:[NSNull class]]|| [str_custom_data isEqualToString:@""])
+                     {
+                         custom = YES;
+                         
+                     }
+                     else
+                     {
+                         custom = YES;
+                         cell.LBL_combo.text =str_custom_data;
+                         
+                     }
+
                  }
+                
+               
                  
              }
                if ([[NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"StockStatus"]] isEqualToString:@"Out of stock"])

@@ -120,12 +120,21 @@
     // Dispose of any resources that can be recreated.
 }
 - (IBAction)back_action:(id)sender {
+    
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    [self.navigationController popToRootViewControllerAnimated:NO];
+    
+
     //VC_cart_list *list = [self.storyboard instantiateViewControllerWithIdentifier:@"cart_identifir"];
     //direct_checkout_home
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Are you sure you want to go back" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
+  /*  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Payment Alert" message:@"Going back might cancel the order.Are you sure you want to go back?" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
     alert.tag = 1;
-    [alert show];
+    [alert show];*/
   /*  [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];

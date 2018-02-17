@@ -144,4 +144,7 @@
 @property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_instructions;
 
 
+
+@property(strong,nonatomic)UIPickerView *shipping_PickerView;
+
 @end

@@ -76,8 +76,7 @@
     if (textField == _TXT_old_pwd)
     {
         BOOL lowerCaseLetter = false,upperCaseLetter = false,digit = false,specialCharacter = 0;
-        if([textField.text length] >= 8)
-        {
+       
             for (int i = 0; i < [textField.text length]; i++)
             {
                 unichar c = [textField.text characterAtIndex:i];
@@ -99,13 +98,13 @@
                 }
             }
             
-            if( digit && lowerCaseLetter )
+            if( digit && lowerCaseLetter && upperCaseLetter)
             {
                 NSLog(@"Valid Password");
             }
             else
             {
-                NSString *str =  @"he password must contain one number and 8 char minimum";//
+                NSString *str =  @"The password must contain one number, one capital letter and 8 char minimum";//
 
                 NSString *str_ok = @"Ok";
                 
@@ -121,7 +120,7 @@
                 [textField becomeFirstResponder];
             }
             
-        }
+        
       /*  else
         {
             NSString *str =  @"he password must contain one number and 8 char minimum";//
@@ -145,8 +144,7 @@
     {
         
         BOOL lowerCaseLetter = false,upperCaseLetter = false,digit = false,specialCharacter = 0;
-        if([textField.text length] >= 8)
-        {
+       
             for (int i = 0; i < [textField.text length]; i++)
             {
                 unichar c = [textField.text characterAtIndex:i];
@@ -168,13 +166,13 @@
                 }
             }
             
-            if( digit && lowerCaseLetter )
+            if( digit && lowerCaseLetter && upperCaseLetter )
             {
                 NSLog(@"Valid Password");
             }
             else
             {
-                NSString *str =  @"he password must contain one number and 8 char minimum";//
+                NSString *str =  @"The password must contain one number, one capital letter and 8 char minimum";//
                 
                 NSString *str_ok = @"Ok";
                 
@@ -188,7 +186,7 @@
                 [textField becomeFirstResponder];
             }
             
-        }
+        
        /* else
         {
             NSString *str =  @"he password must contain one number and 8 char minimum";//
@@ -210,8 +208,7 @@
     if (textField == _TXT_confirm_pwd)
     {
         BOOL lowerCaseLetter = false,upperCaseLetter = false,digit = false,specialCharacter = 0;
-        if([textField.text length] >= 8)
-        {
+       
             for (int i = 0; i < [textField.text length]; i++)
             {
                 unichar c = [textField.text characterAtIndex:i];
@@ -233,13 +230,13 @@
                 }
             }
             
-            if( digit && lowerCaseLetter )
+            if( digit && lowerCaseLetter && upperCaseLetter)
             {
                 NSLog(@"Valid Password");
             }
             else
             {
-                NSString *str =  @"he password must contain one number and 8 char minimum";//
+                NSString *str =  @"The password must contain one number, one capital letter and 8 char minimum";//
                 
                 NSString *str_ok = @"Ok";
                 
@@ -253,7 +250,7 @@
                 [textField becomeFirstResponder];
             }
             
-        }
+        
       /*  else
         {
             NSString *str =  @"he password must contain one number and 8 char minimum";//

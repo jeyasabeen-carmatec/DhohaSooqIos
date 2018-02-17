@@ -13,6 +13,7 @@
 
 
 
+
 @interface VC_product_detail : UIViewController
 {
     NSTimer *TIMER_countdown;
@@ -65,7 +66,7 @@
 @property(nonatomic,weak) IBOutlet UIButton *LBL_more_sellers;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sold_by;
 
-@property(nonatomic,weak) IBOutlet UILabel *LBL_merchant_sellers;
+@property(nonatomic,weak) IBOutlet UITextView *LBL_merchant_sellers;
 @property(nonatomic,weak) IBOutlet UILabel *BTN_left;
 @property(nonatomic,weak) IBOutlet UILabel *BTN_right;
 

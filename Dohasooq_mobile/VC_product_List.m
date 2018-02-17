@@ -1354,13 +1354,29 @@
                                     
                                   /*  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No products Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                                     [alert show];*/
-                                    _LBL_oops.text = @"Oops!";
-                                    
-                                    _LBL_no_products.text = @"No matching products available.";
-                                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                                    if([list_TYPE containsString:@"txt_"])
                                     {
-                                        _LBL_oops.text = @"عذراً";
-                                        _LBL_no_products.text = @"لا يتوفر أي منتج مطابق";
+                                        _LBL_oops.text = @"Sorry, no results found";
+                                        _LBL_no_products.text = @"Please check the spelling or try a different search";
+                                        
+                                        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                                        {
+                                            _LBL_oops.text = @"عذراً، لم يتم العثور على أي نتائج ";
+                                            _LBL_no_products.text = @"يرجى التحقق من التهجئة أو أبحث بشكل مختلف ";
+                                        }
+                                        
+                                    }
+                                    else{
+                                        _LBL_oops.text = @"Oops!";
+                                        
+                                        _LBL_no_products.text = @"No matching products available.";
+                                        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                                        {
+                                            _LBL_oops.text = @"عذراً";
+                                            _LBL_no_products.text = @"لا يتوفر أي منتج مطابق";
+                                        }
+                                        //عذراً! لا تتوفر منتجات مطابقة
+                                        
                                     }
                                     self.collection_product.hidden = YES;
                                     _VW_empty.hidden = NO;
@@ -2331,7 +2347,14 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
 {
     NSString *text;
     NSDateFormatter *dateStringParser = [[NSDateFormatter alloc] init];
-    [dateStringParser setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+    
+    NSString *str_time_zone = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"default_time_zone"]];
+    if([str_time_zone isEqualToString:@""]||[str_time_zone isEqualToString:@"<null>"])
+    {
+        str_time_zone = [[NSTimeZone localTimeZone] abbreviation];
+    }
+    
+    [dateStringParser setTimeZone:[NSTimeZone timeZoneWithName:str_time_zone]];
     [dateStringParser setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     
     
