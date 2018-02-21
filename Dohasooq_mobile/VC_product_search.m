@@ -138,9 +138,9 @@
             NSArray *arr = [search_total_PRODUCT_ARR mutableCopy];
     
     
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF['name'] BEGINSWITH[c] %@",substring];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF['name'] CONTAINS[c] %@",substring];
             
-           search_ARR = [arr filteredArrayUsingPredicate:predicate];
+           search_ARR = [arr filteredArrayUsingPredicate:predicate];//BEGINSWITH
            if(search_ARR.count < 1)
            {
                _TBL_search_results.hidden = YES;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="17B48" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -189,7 +189,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dV6-Tp-yKR">
-                        <rect key="frame" x="132" y="49.5" width="23" height="23"/>
+                        <rect key="frame" x="132" y="49" width="23" height="23"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="23" id="1tK-za-yfb"/>
                             <constraint firstAttribute="height" constant="23" id="mNE-N7-wCB"/>
@@ -201,7 +201,7 @@
                         </state>
                     </button>
                     <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aHd-BI-YIw">
-                        <rect key="frame" x="66" y="49.5" width="60" height="23"/>
+                        <rect key="frame" x="66" y="49" width="60" height="23"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="23" id="4vI-wS-7wp"/>
                             <constraint firstAttribute="width" constant="60" id="msA-Tb-Hqu"/>
@@ -223,7 +223,7 @@
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textView>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qsa-aw-Bxs">
-                        <rect key="frame" x="37" y="49.5" width="23" height="23"/>
+                        <rect key="frame" x="37" y="49" width="23" height="23"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="23" id="YdL-YL-Cdp"/>
                             <constraint firstAttribute="height" constant="23" id="yAp-VZ-S4L"/>
@@ -235,13 +235,13 @@
                         </state>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="751" text="" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="11" translatesAutoresizingMaskIntoConstraints="NO" id="gTx-zS-PhY">
-                        <rect key="frame" x="30" y="13" width="171" height="0.0"/>
+                        <rect key="frame" x="38" y="13" width="163" height="0.0"/>
                         <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="12"/>
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cross.png" translatesAutoresizingMaskIntoConstraints="NO" id="GfN-t8-gRe">
-                        <rect key="frame" x="2" y="13" width="20" height="20"/>
+                        <rect key="frame" x="10" y="13" width="20" height="20"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="20" id="SGI-aO-VS3"/>
                             <constraint firstAttribute="width" constant="20" id="hHg-4U-3Mp"/>
@@ -286,7 +286,7 @@
                     <constraint firstItem="BGs-6x-efs" firstAttribute="leading" secondItem="slV-Q6-dpQ" secondAttribute="trailing" constant="7" id="ZnH-s6-fSh"/>
                     <constraint firstItem="ROR-Ym-w75" firstAttribute="leading" secondItem="l5W-Dc-z0q" secondAttribute="leadingMargin" constant="6" id="c0d-U6-ztt"/>
                     <constraint firstItem="9kv-S2-cf7" firstAttribute="top" secondItem="5ka-Vk-JU8" secondAttribute="bottom" constant="8" id="c2Z-bD-2QU"/>
-                    <constraint firstItem="GfN-t8-gRe" firstAttribute="leading" secondItem="l5W-Dc-z0q" secondAttribute="leading" constant="2" id="dZD-Hn-VzX"/>
+                    <constraint firstItem="GfN-t8-gRe" firstAttribute="leading" secondItem="l5W-Dc-z0q" secondAttribute="leading" constant="10" id="dZD-Hn-VzX"/>
                     <constraint firstItem="BGs-6x-efs" firstAttribute="leading" secondItem="5ka-Vk-JU8" secondAttribute="trailing" constant="7" id="eLy-v2-zGg"/>
                     <constraint firstItem="BGs-6x-efs" firstAttribute="leading" secondItem="6t1-MA-WiA" secondAttribute="trailing" constant="1" id="eix-mH-0vj"/>
                     <constraint firstItem="aHd-BI-YIw" firstAttribute="leading" secondItem="Qsa-aw-Bxs" secondAttribute="trailing" constant="6" id="hBq-it-97k"/>

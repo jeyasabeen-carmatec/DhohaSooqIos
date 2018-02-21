@@ -57,38 +57,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    
-    json_Response_Dic = [[NSMutableDictionary alloc]init];
-    temp_DICT = [[NSMutableDictionary alloc]init];
-    starRatingView = [[HCSStarRatingView alloc] init];
-    starRatingView.frame = CGRectMake(_LBL_item_name.frame.origin.x-2, _LBL_item_name.frame.origin.y+_LBL_item_name.frame.size.height + 3, 100.0f,20);
-    starRatingView.maximumValue = 5;
-    starRatingView.minimumValue = 0;
-    starRatingView.tintColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
-    starRatingView.allowsHalfStars = YES;
-    starRatingView.userInteractionEnabled = NO;
-    //  starRatingView.value = 2.5f;
-    [self.VW_second addSubview:starRatingView];
+    [self set_appear];
 
-    [self.collection_images registerNib:[UINib nibWithNibName:@"product_detail_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
-    [self.collection_related_products registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
-    _TXTVW_description.delegate = self;
-    
-    _BTN_left.layer.cornerRadius = _BTN_left.frame.size.width/2;
-    _BTN_left.layer.masksToBounds = YES;
-    
-    _BTN_right.layer.cornerRadius = _BTN_left.frame.size.width/2;
-    _BTN_right.layer.masksToBounds = YES;
-
-    self.badge_view = [GIBadgeView new];
-    [_BTN_cart addSubview:self.badge_view];
-    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-    {
-        [_collectionview_variants setTransform:CGAffineTransformMakeScale(-1, 1)];
-        
-        //[_collection_related_products setTransform:CGAffineTransformMakeScale(-1, 1)];
-    }
-
+  
     [_BTN_cart addTarget:self action:@selector(product_detail_cart_page) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_wish addTarget:self action:@selector(add_to_wish_list) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_buy_now addTarget:self action:@selector(buy_action) forControlEvents:UIControlEventTouchUpInside];
@@ -100,8 +71,7 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     self.navigationItem.hidesBackButton = YES;
-    [self set_appear];
-    [self cart_count_intail];
+       [self cart_count_intail];
     [self cart_count];
     
 }
@@ -121,7 +91,37 @@
 //    
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
+    json_Response_Dic = [[NSMutableDictionary alloc]init];
+    temp_DICT = [[NSMutableDictionary alloc]init];
+    starRatingView = [[HCSStarRatingView alloc] init];
+    starRatingView.frame = CGRectMake(_LBL_item_name.frame.origin.x-2, _LBL_item_name.frame.origin.y+_LBL_item_name.frame.size.height + 3, 100.0f,20);
+    starRatingView.maximumValue = 5;
+    starRatingView.minimumValue = 0;
+    starRatingView.tintColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
+    starRatingView.allowsHalfStars = YES;
+    starRatingView.userInteractionEnabled = NO;
+    //  starRatingView.value = 2.5f;
+    [self.VW_second addSubview:starRatingView];
     
+    [self.collection_images registerNib:[UINib nibWithNibName:@"product_detail_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
+    [self.collection_related_products registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
+    _TXTVW_description.delegate = self;
+    
+    _BTN_left.layer.cornerRadius = _BTN_left.frame.size.width/2;
+    _BTN_left.layer.masksToBounds = YES;
+    
+    _BTN_right.layer.cornerRadius = _BTN_left.frame.size.width/2;
+    _BTN_right.layer.masksToBounds = YES;
+    
+    self.badge_view = [GIBadgeView new];
+    [_BTN_cart addSubview:self.badge_view];
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        [_collectionview_variants setTransform:CGAffineTransformMakeScale(-1, 1)];
+        
+        //[_collection_related_products setTransform:CGAffineTransformMakeScale(-1, 1)];
+    }
+
     
    
     
@@ -823,6 +823,7 @@
    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
     {
         _LBL_merchant_sellers.textAlignment =NSTextAlignmentRight;
+         frame_set.size.width = self.VW_third.frame.size.width - _LBL_sold_by.frame.size.width ;
     }
     else{
           _LBL_merchant_sellers.textAlignment =NSTextAlignmentLeft;
@@ -2087,10 +2088,10 @@
         frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
         _VW_fifth.frame = frame_set;
         
-        scroll_ht = _VW_fifth.frame.origin.y+ _VW_fifth.frame.size.height ;
+        scroll_ht = _VW_fifth.frame.origin.y+ _VW_fifth.frame.size.height+30 ;
     }
     else{
-        scroll_ht = _VW_fourth.frame.origin.y+ _VW_fourth.frame.size.height;
+        scroll_ht = _VW_fourth.frame.origin.y+ _VW_fourth.frame.size.height+30;
         
     }
     frame_set = _BTN_top.frame;
@@ -2831,7 +2832,7 @@
                             [alert show];
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 
-                                [self cart_count];
+                                [self cart_count_intail];
                                 
                             });
                             [self performSegueWithIdentifier:@"detail_checkout" sender:self];
@@ -3176,7 +3177,7 @@
                              }
                              
                              
-                           
+                              [self cart_count_intail];
 
                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATA valueForKey:@"message"] delegate:self cancelButtonTitle:str otherButtonTitles:nil, nil];
                              dispatch_async(dispatch_get_main_queue(), ^{
@@ -4066,7 +4067,7 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 100;
+    return 1000;
 }
 
 #pragma Button ACIONS
@@ -4497,11 +4498,24 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     {
     [[NSUserDefaults standardUserDefaults] setObject:[json_Response_Dic valueForKey:@"multipleSellers"] forKey:@"multiple_seller_detail"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+   
     
     [self performSegueWithIdentifier:@"details_sellers" sender:self];
+
     }
     
 }
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@"details_sellers"])
+    {
+        multiple_sellers *seller = [segue destinationViewController];
+        seller.delegate = self;
+        
+    }
+    
+}
+
 - (void)share_action
 {
 //    if([[detail_dict valueForKey:@"_TrailerURL"] isEqualToString:@""])
@@ -5372,7 +5386,10 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         }
     }];
 }
-
+-(void)call_detail_api:(NSString *)str_url
+{
+    [self set_appear];
+}
 -(void)viewDidDisappear:(BOOL)animated
 {
     [TIMER_countdown invalidate];

@@ -7,16 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HCSStarRatingView.h"
 
 @interface sellers_cell : UITableViewCell
 @property(nonatomic,weak) IBOutlet UITextView *LBL_cost;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_status;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_name;
-@property(nonatomic,weak) IBOutlet UILabel *LBL_rating;
+//@property(nonatomic,weak) IBOutlet UILabel *LBL_rating;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_riview;;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_add_cart;;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_details;;
 
+@property (weak, nonatomic) IBOutlet HCSStarRatingView *starView;
 
 
 

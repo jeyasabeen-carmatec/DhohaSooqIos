@@ -11,10 +11,10 @@
 #import "MIBadgeButton.h"
 #import "GIBadgeView.h"
 
+#import "multiple_sellers.h"
 
 
-
-@interface VC_product_detail : UIViewController
+@interface VC_product_detail : UIViewController<sellersprotocol>
 {
     NSTimer *TIMER_countdown;
 }

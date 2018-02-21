@@ -18,10 +18,10 @@
     BOOL filter_val;
     
 }
-
 @end
 
 @implementation VC_filter_product_list
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -40,6 +40,12 @@
     [self.scroll_contents addSubview:_VW_contents];
     Brands_arr_post  = [[NSMutableArray alloc]init];
     
+    
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        [_collection_produtcs setTransform:CGAffineTransformMakeScale(-1, 1)];
+
+    }
     
     
     
@@ -80,7 +86,7 @@
             
             
             lower = [lower stringByReplacingOccurrencesOfString:@"<nil>" withString:@"0"];
-            lower = [lower stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
+            upper = [upper stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
             
             self.LBL_slider.minValue =0;
             self.LBL_slider.maxValue = [upper floatValue];
@@ -92,10 +98,23 @@
             
             self.LBL_slider.selectedMinimum = [lower floatValue];
             self.LBL_slider.selectedMaximum = [upper floatValue];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                self.LBL_slider.selectedMinimum = [lower floatValue];
+                self.LBL_slider.selectedMaximum = [upper floatValue];
+                
+            }
             
             
             lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMinimum];
             upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMinimum];
+                lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
+
+            }
+
         }
         @catch(NSException *exceprtion)
         {
@@ -114,12 +133,12 @@
             
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                self.LBL_max.text = [NSString stringWithFormat:@"%d %@ Max",(int)self.LBL_slider.selectedMaximum,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
-                self.LBL_min.text = [NSString stringWithFormat:@"%d %@ Min",(int)self.LBL_slider.selectedMinimum, [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+                self.LBL_max.text = [NSString stringWithFormat:@"%d %@ دقيقة",(int)self.LBL_slider.selectedMaximum,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+                self.LBL_min.text = [NSString stringWithFormat:@"%d %@ ماكس",(int)self.LBL_slider.selectedMinimum, [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
             }
             
             NSLog(@"%@ /n %@",lower,upper);
-        } @catch (NSException *exception) {
+        } @catch (NSException *exception) {//دقيقة
             NSLog(@"%@",exception);
         }
         
@@ -163,11 +182,16 @@
 
     
     framset = _collection_produtcs.frame;
+    if( product_arr.count < 5)
+    {
+    framset.size.height =  _collection_produtcs.collectionViewLayout.collectionViewContentSize.height + 30;
+    }
+    else
     framset.size.height =  _collection_produtcs.collectionViewLayout.collectionViewContentSize.height;
     
     framset.size.width = _Vw_line1.frame.size.width;
     _collection_produtcs.frame = framset;
-    
+   
     framset = _Vw_line1.frame;
     framset.origin.y = _collection_produtcs.frame.origin.y + _collection_produtcs.frame.size.height + 5;
     _Vw_line1.frame = framset;
@@ -210,6 +234,12 @@
     upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
     self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"] ,(int)self.LBL_slider.selectedMaximum];
     self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"] ,(int)self.LBL_slider.selectedMinimum];
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        self.LBL_max.text = [NSString stringWithFormat:@"%d %@ دقيقة",(int)self.LBL_slider.selectedMaximum,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+        self.LBL_min.text = [NSString stringWithFormat:@"%d %@ ماكس",(int)self.LBL_slider.selectedMinimum, [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+    }
+
     
     
 }
@@ -392,6 +422,14 @@
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     filter_cell *cell = (filter_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
+    
+    
+    
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        [cell.contentView setTransform:CGAffineTransformMakeScale(-1, 1)];
+    }
+
     
     cell.LBL_name.text = [product_arr objectAtIndex:indexPath.row];
     cell.BTN_check.tag = indexPath.row;

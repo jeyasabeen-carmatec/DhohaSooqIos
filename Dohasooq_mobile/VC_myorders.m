@@ -1150,7 +1150,7 @@ int j ,i;
         NSString *str =  @"SPECIAL INSTRUCTIONS";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-            str =  @"SPECIAL INSTRUCTIONS";
+            str =  @"تعليمات خاصة";
         }
         return str;
 

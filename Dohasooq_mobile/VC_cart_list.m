@@ -876,8 +876,13 @@
 - (IBAction)BTN_next_action:(id)sender {
     @try {
         if(status ==  YES)
-        {
+        {if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"]){
+            [HttpClient createaAlertWithMsg:@"يرجى حذف المنتجات التي لا تتوفر" andTitle:@""];
+        }
+        else{
+            
             [HttpClient createaAlertWithMsg:@"Please delete the products which are not available." andTitle:@""];
+        }
         }
         else{
             [self performSegueWithIdentifier:@"order_detail_segue" sender:self];

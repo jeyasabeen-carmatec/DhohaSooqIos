@@ -899,10 +899,10 @@
     else if(str_lname.length < 1)
     {
         [cell.TXT_last_name becomeFirstResponder];
-        msg = @"Last name should not be less than 3 characters";
+        msg = @"Last name should not be less than 1 characters";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-            msg = @"الكنية ألا يقل الاسم الأول عن 3 حروف";
+            msg = @"الكنية ألا يقل الاسم الأول عن 1 حروف";
         }
 
         
@@ -1059,7 +1059,8 @@
                 msg = @"Phone Number cannot be less than 8 digits";
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    msg = @"لا يجب ألا يقلّ رقم الجوال عن 8 أرقام ";
+                    msg =@"رقم الهاتف لا يمكن أن يكون أقل من 8 أرقام ";
+                    
                 }
             }
             
@@ -1070,7 +1071,8 @@
                 msg = @"Phone Number cannot be more than 8 digits";
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    msg = @"لا يجب ألا يقلّ رقم الجوال عن 8 أرقام ";
+                    msg = @"رقم الهاتف لا يمكن أن يكون أكثر من 8 أرقام";
+                    ;
                 }
             }
 
@@ -1079,20 +1081,20 @@
                 if (str_phone.length<5)
                 {
                 [cell.TXT_phone becomeFirstResponder];
-                msg = @"Phone Number cannot be less than 5 digits";
-                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-                {
-                    msg = @"لا يجب ألا يقلّ رقم الجوال عن 5 أرقام ";
-                }
+                    msg = @"Phone Number cannot be less than 5 digits";
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                        msg =@"رقم الهاتف لا يمكن أن يكون أقل من 5 أرقام ";
+                    }
                 }
                 else if (str_phone.length > 15)
                 {
                 [cell.TXT_phone becomeFirstResponder];
-                msg = @"Phone Number cannot be more than 8 digits";
-                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-                {
-                msg = @"يجب أن لا يتجاوز رقم الجوال 8 رقماً";
-                }
+                    msg = @"Phone Number cannot be more than 15 digits";
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                        msg = @"لا يجب أن يتجاوز رقم الهاتف 15 أرقام";
+                    }
                 }
                 
 

@@ -233,12 +233,22 @@
     @catch(NSException *exception)
     {
         str = @"Guest User";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+             str = @"مستخدم ضيف";
+        }
+       
         
     }
     
     if([str isEqualToString:@"(null)"])
     {
         _LBL_profile.text = @"Guest User";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+             _LBL_profile.text = @"مستخدم ضيف";
+        }
+
     }
     else
     {
@@ -580,9 +590,7 @@
 
         
 
-      NSString *str_deals =[NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"]  valueForKey:@"widgetTitle"]];
-        _LBL_best_selling.text = str_deals;
-    }
+        }
     @catch(NSException *exception)
     {
         
@@ -607,7 +615,7 @@
     }
     @try
     {
-    _Hot_deals_banner.text = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"]  valueForKey:@"widgetTitle"]];
+  
     }
     @catch(NSException *exception)
     {
@@ -1213,7 +1221,7 @@
             
         
             
-            pro_cell.LBL_item_name.titleLabel.lineBreakMode = NSLineBreakByCharWrapping;
+           // pro_cell.LBL_item_name.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
            // [pro_cell.LBL_item_name addSubview:titlelabel];
         
             pro_cell.LBL_item_name.titleLabel.numberOfLines = 2;
@@ -1510,7 +1518,7 @@
                                  placeholderImage:[UIImage imageNamed:@"logo.png"]
                                           options:SDWebImageRefreshCached];
             
-            pro_cell.LBL_item_name.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+          //  pro_cell.LBL_item_name.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
             
             pro_cell.LBL_item_name.titleLabel.numberOfLines = 2;
             [pro_cell.LBL_item_name setTitle:[[hot_deals_ARR objectAtIndex:indexPath.row] valueForKey:@"product_title"] forState:UIControlStateNormal];
@@ -2063,11 +2071,39 @@
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
         
-        NSString *user_id = [NSString stringWithFormat:@"%@", [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"]];
-        if([user_id isEqualToString:@"(null)"])
-        {
-            user_id = @"0";
-        }
+            NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+            NSString *user_id;
+            @try
+            {
+                if(dict.count == 0)
+                {
+                    user_id = @"(null)";
+                }
+                else
+                {
+                    NSString *str_id = @"user_id";
+                    // NSString *user_id;
+                    for(int i = 0;i<[[dict allKeys] count];i++)
+                    {
+                        if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                        {
+                            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                            break;
+                        }
+                        else
+                        {
+                            
+                            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                        }
+                        
+                    }
+                }
+            }
+            @catch(NSException *exception)
+            {
+                user_id = @"(null)";
+                
+            }
         
         NSString *url_key = [NSString stringWithFormat:@"%@",[[brands_arr objectAtIndex:indexPath.row] valueForKey:@"url_key"]];
          NSString *list_TYPE = @"brandsList";
@@ -3942,8 +3978,16 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
     {
     }
     
-    _Hot_deals.text = [NSString stringWithFormat:@"Women's %@",[json_Response_Dic valueForKey:@"fashion_name"]];
-
+        NSString *str = @"Women's";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"للنساء";
+            
+        }
+        NSString *str_deals =[NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"]  valueForKey:@"widgetTitle"]];
+        _LBL_best_selling.text = str_deals;
+        _Hot_deals_banner.text = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"]  valueForKey:@"widgetTitle"]];
+        _Hot_deals.text = [NSString stringWithFormat:@"%@ %@",str,[json_Response_Dic valueForKey:@"fashion_name"]];
     NSLog(@"the api_collection_product%@",json_Response_Dic);
         [[NSUserDefaults standardUserDefaults] setValue:[json_Response_Dic valueForKey:@"default_time_zone"] forKey:@"time_zone"];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -3986,9 +4030,18 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
     {
     for(int i=0 ; i < [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] count];i++)
     {
-        if([[[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] objectAtIndex:i] isEqualToString:@"widgetTitle"])
+        NSLog(@"The keys are %@",[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys]);
+            NSString *str_key = [NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] objectAtIndex:i]];
+        if([[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] valueForKey:str_key]  isKindOfClass:[NSDictionary class]])
         {
-            if(i == [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] count]-1)
+            
+                  [deals_ARR addObject:[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] valueForKey:str_key]];
+        }
+        
+        
+       /* if([[[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] objectAtIndex:i] isEqualToString:@"widgetTitle"]||[[[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] objectAtIndex:i] isEqualToString:@"widgetImage"])
+        {
+            if(i == [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] count]-1||i == [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] count]-2)
             {
                 
             }
@@ -3999,8 +4052,7 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
         }
         else
         {
-            if(i == [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] count]-1)
-            {
+ if(i == [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] count]-1||i == [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] count]-2)            {
                 
             }
             else
@@ -4010,15 +4062,26 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
             }
             
         }
-        
+        */
         
     }
         NSLog(@"Hot deals all keys:%@",[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys]);
     for(int i=0 ; i < [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] count];i++)
     {
-        if([[[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] objectAtIndex:i] isEqualToString:@"widgetTitle"])
+          NSString *str_key = [NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] objectAtIndex:i]];
+        
+        if([[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"]valueForKey:str_key]  isKindOfClass:[NSDictionary class]])
         {
-            if(i == [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] count]-1)
+          
+
+            [hot_deals_ARR addObject:[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] valueForKey:str_key]];
+        }
+
+        
+        
+       /* if([[[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] objectAtIndex:i] isEqualToString:@"widgetTitle"]||[[[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] objectAtIndex:i] isEqualToString:@"widgetImage"])
+        {
+            if(i == [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] count]-1||i == [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] count]-2)
             {
                 
             }
@@ -4030,8 +4093,7 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
         }
         else
         {
-            if(i == [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] count]-1)
-            {
+ if(i == [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] count]-1||i == [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] count]-2)            {
                 
             }
             else{
@@ -4040,7 +4102,7 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
             
         }
         
-        
+        */
     }
     
     brands_arr = [json_Response_Dic valueForKey:@"brands_female"];
@@ -5136,7 +5198,14 @@ NSString *str_status_text;
         [_BTN_fashion setTag:1];
         [Helper_activity animating_images:self];
         [self performSelector:@selector(brands_API_call) withObject:nil afterDelay:0.1];
-        _Hot_deals.text = [NSString stringWithFormat:@"Women's %@",[json_Response_Dic valueForKey:@"fashion_name"]];
+        NSString *str = @"Women's";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"للنساء";
+            
+        }
+
+        _Hot_deals.text = [NSString stringWithFormat:@"%@ %@",str,[json_Response_Dic valueForKey:@"fashion_name"]];
         [_collection_brands reloadData];
 
 
@@ -5154,7 +5223,13 @@ NSString *str_status_text;
       [_BTN_fashion setTag:0];
       [Helper_activity animating_images:self];
       [self performSelector:@selector(brands_API_call) withObject:nil afterDelay:0.1];
-      _Hot_deals.text = [NSString stringWithFormat:@"Men's %@",[json_Response_Dic valueForKey:@"fashion_name"]];//@"MEN'S FASHION ACCESORIES";
+      NSString *str = @"Men's";
+      if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+      {
+          str = @"مِلك الرجال";
+          
+      }
+      _Hot_deals.text = [NSString stringWithFormat:@"%@ %@",str,[json_Response_Dic valueForKey:@"fashion_name"]];//@"MEN'S FASHION ACCESORIES";
       [_collection_brands reloadData];
       
 
@@ -5412,7 +5487,9 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d: %02d",(int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-             STR_timeRe = [NSString stringWithFormat:@"%02d: %02d: %02d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute], (int)[breakdownInfo hour]];
+            // STR_timeRe = [NSString stringWithFormat:@"%02d: %02d: %02d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute], (int)[breakdownInfo hour]];
+            
+             STR_timeRe = [NSString stringWithFormat:@"ينتهي بـ%02d: %02d: %02d",(int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
         }
         
         
@@ -5423,7 +5500,9 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d",(int)[breakdownInfo minute], (int)[breakdownInfo second]];
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-            STR_timeRe = [NSString stringWithFormat:@"%02d: %02d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute]];
+          //  STR_timeRe = [NSString stringWithFormat:@"%02d: %02d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute]];
+            
+               STR_timeRe = [NSString stringWithFormat:@"ينتهي بـ %02d: %02d",(int)[breakdownInfo minute], (int)[breakdownInfo second]];
         }
 
         
@@ -5434,7 +5513,9 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         STR_timeRe = [NSString stringWithFormat:@"Ends in %02d", (int)[breakdownInfo second]];
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-            STR_timeRe = [NSString stringWithFormat:@"%02d ينتهي بـ",(int)[breakdownInfo second]];
+            //STR_timeRe = [NSString stringWithFormat:@"%02d ينتهي بـ",(int)[breakdownInfo second]];
+            STR_timeRe = [NSString stringWithFormat:@"ينتهي بـ %02d", (int)[breakdownInfo second]];
+
         }
 
         
@@ -5447,7 +5528,9 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-           STR_timeRe = [NSString stringWithFormat:@"%02d: %02d: %02d:الأيام %2d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute], (int)[breakdownInfo hour], (int)[breakdownInfo day]];
+         //  STR_timeRe = [NSString stringWithFormat:@"%02d: %02d: %02d:الأيام %2d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute], (int)[breakdownInfo hour], (int)[breakdownInfo day]];
+            
+              STR_timeRe = [NSString stringWithFormat:@" ينتهي بـ: %2d الأيام: %02d: %02d: %02d", (int)[breakdownInfo day], (int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
         }
 
     }
@@ -5586,7 +5669,9 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             STR_timeRe = [NSString stringWithFormat:@"Ends in %02d", (int)[breakdownInfo second]];
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                STR_timeRe = [NSString stringWithFormat:@"%02d ينتهي بـ",(int)[breakdownInfo second]];
+              //  STR_timeRe = [NSString stringWithFormat:@"%02d ينتهي بـ",(int)[breakdownInfo second]];
+                STR_timeRe = [NSString stringWithFormat:@"ينتهي بـ %02d", (int)[breakdownInfo second]];
+
             }
             
             
@@ -5599,7 +5684,8 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                STR_timeRe = [NSString stringWithFormat:@"%02d: %02d: %02d:الأيام %2d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute], (int)[breakdownInfo hour], (int)[breakdownInfo day]];
+               // STR_timeRe = [NSString stringWithFormat:@"%02d: %02d: %02d:الأيام %2d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute], (int)[breakdownInfo hour], (int)[breakdownInfo day]];
+                  STR_timeRe = [NSString stringWithFormat:@" ينتهي بـ: %2d الأيام: %02d: %02d: %02d", (int)[breakdownInfo day], (int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
             }
             
         }

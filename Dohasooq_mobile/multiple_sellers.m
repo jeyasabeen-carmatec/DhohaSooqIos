@@ -309,12 +309,15 @@
     
     
 
-    starRatingView = [[HCSStarRatingView alloc] initWithFrame:seller.LBL_rating.frame];
+   /* starRatingView = [[HCSStarRatingView alloc] initWithFrame:seller.LBL_rating.frame];
       starRatingView.maximumValue = 5;
     starRatingView.minimumValue = 0;
     starRatingView.value = 0;
     starRatingView.tintColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
-    starRatingView.allowsHalfStars = YES;
+    starRatingView.allowsHalfStars = YES;*/
+        seller.starView.value =starRatingView.value = [[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"totalRatings"] intValue];
+        seller.starView.tintColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
+
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             starRatingView.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
@@ -322,7 +325,7 @@
         }
     [seller addSubview:starRatingView];
     
-    starRatingView.value = [[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"totalRatings"] intValue];
+  //  starRatingView.value = [[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"totalRatings"] intValue];
     NSString *str_ratings = [NSString stringWithFormat:@"%@",[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"totalRatings"]];
     str_ratings = [str_ratings stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
     str_ratings = [str_ratings stringByReplacingOccurrencesOfString:@"(null)" withString:@"0"];
@@ -332,9 +335,17 @@
     str_reviews = [str_reviews stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
     str_reviews = [str_reviews stringByReplacingOccurrencesOfString:@"(null)" withString:@"0"];
     str_reviews = [str_reviews stringByReplacingOccurrencesOfString:@"" withString:@"0"];
-        
-    
-    NSString *str_review_rating = [NSString stringWithFormat:@"%@ Ratings & %@ Reviews",str_ratings,str_reviews];
+       
+        NSString *str_review_rating;
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+           str_review_rating = [NSString stringWithFormat:@"%@ التقييم  & %@ الآراء  ",str_ratings,str_reviews];
+
+        }
+        else{
+         str_review_rating = [NSString stringWithFormat:@"%@ Ratings & %@ Reviews",str_ratings,str_reviews];
+
+        }
     
         if ([seller.LBL_riview respondsToSelector:@selector(setAttributedText:)])
         {
@@ -342,11 +353,11 @@
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:str_review_rating attributes:nil];
             
             NSRange ename = [str_review_rating rangeOfString:str_ratings];
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:14.0],NSForegroundColorAttributeName:seller.BTN_details.backgroundColor}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:16.0],NSForegroundColorAttributeName:seller.BTN_details.backgroundColor}
                                         range:ename];
             
             NSRange ranges = [str_review_rating rangeOfString:str_reviews];
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:14.0],NSForegroundColorAttributeName:seller.BTN_details.backgroundColor}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:16.0],NSForegroundColorAttributeName:seller.BTN_details.backgroundColor}
                                     range:ranges];
             seller.LBL_riview.attributedText = attributedText;
   
@@ -581,7 +592,7 @@
                         
                         
                         NSLog(@"  Error %@ Response %@",error,dict);
-                        [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
+                        //[HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
                     }
                 } @catch (NSException *exception) {
                     NSLog(@"%@",exception);
@@ -599,10 +610,14 @@
         }
         else
         {
+            
+            NSString *str_mercahant = [NSString stringWithFormat:@"%@",[[seller_arr objectAtIndex:sender.tag] valueForKey:@"merchant_id"]];
+            [self.delegate call_detail_api:str_mercahant];
             [[NSUserDefaults standardUserDefaults] setValue:[[seller_arr objectAtIndex:sender.tag] valueForKey:@"merchant_id"] forKey:@"Mercahnt_ID"];
             
             [[NSUserDefaults standardUserDefaults] setValue:[[seller_arr objectAtIndex:sender.tag] valueForKey:@"url_key"] forKey:@"product_list_key_sub"];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            
 
             [self.navigationController popViewControllerAnimated:NO];
         }
@@ -712,7 +727,7 @@
                     
                     
                     NSLog(@"  Error %@ Response %@",error,dict);
-                    [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
+                   // [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
                 }
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
@@ -797,7 +812,8 @@
 
 -(void)Details_action:(UIButton *)sender
 {
-    
+    NSString *str_mercahant = [NSString stringWithFormat:@"%@",[[seller_arr objectAtIndex:sender.tag] valueForKey:@"merchant_id"]];
+    [self.delegate call_detail_api:str_mercahant];
     [[NSUserDefaults standardUserDefaults] setValue:[[seller_arr objectAtIndex:sender.tag] valueForKey:@"merchant_id"] forKey:@"Mercahnt_ID"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [[NSUserDefaults standardUserDefaults] setValue:[[seller_arr objectAtIndex:sender.tag] valueForKey:@"url_key"] forKey:@"product_list_key_sub"];

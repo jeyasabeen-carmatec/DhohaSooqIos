@@ -435,7 +435,7 @@
         }
     @try
     {
-        pro_cell.LBL_item_name.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+       // pro_cell.LBL_item_name.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         
         pro_cell.LBL_item_name.titleLabel.numberOfLines = 2;
         [pro_cell.LBL_item_name setTitle:[[productDataArray objectAtIndex:indexPath.row] valueForKey:@"title"] forState:UIControlStateNormal];
@@ -1171,10 +1171,12 @@
         
         json_DATA = [[NSMutableDictionary alloc]init];
         NSString *list_TYPE = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_list_url"];
+        //list_TYPE = [list_TYPE stringByReplacingOccurrencesOfString:@"|" withString:@"%20"];
         NSString *urlGetuser;
         urlGetuser =[NSString stringWithFormat:@"%@",list_TYPE];
-         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-        
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        urlGetuser = [urlGetuser stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
         if([urlGetuser containsString:@"dealsList"])
         {
            _VW_only_filter.hidden = YES;
@@ -2018,6 +2020,31 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     @try
     {
+        NSString *int_VAL = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"totalCount"]];
+        NSLog(@"The products Count:%lu",(unsigned long)[productDataArray count]);
+        
+        if([int_VAL intValue] == [productDataArray count])
+        {
+            [Helper_activity stop_activity_animation:self];
+
+            NSString *str_status = @"Sorry no more products found";
+            NSString *str_ok = @"Ok";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                str_status = @"عذرا لم يتم العثور على المزيد من المنتجات";
+                str_ok = @"حسنا";
+            }
+            
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_status delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
+            [alert show];
+            
+
+            [self performSelector:@selector(finishLoadMore) withObject:nil afterDelay:0.01];
+
+        }
+        else
+        {
         
         page_count =  page_count  + 1;
             NSString *url_STR = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_list_url"];
@@ -2031,6 +2058,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                 [[NSUserDefaults standardUserDefaults] setObject:url_STR forKey:@"URL_SAVED"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 [self performSelector:@selector(NEXTpage_API) withObject:nil afterDelay:0.01];
+        }
         
         
     }
@@ -2397,32 +2425,61 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     NSDateComponents *breakdownInfo = [sysCalendar components:unitFlags fromDate:date  toDate:date2  options:0];
     
-    NSString *STR_timeRe;
-    
-    if ([breakdownInfo day] <= 0 ) {
+        NSString *STR_timeRe;
         
-        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d: %02d",(int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+        if ([breakdownInfo day] <= 0 ) {
+            
+            STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d: %02d",(int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                // STR_timeRe = [NSString stringWithFormat:@"%02d: %02d: %02d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute], (int)[breakdownInfo hour]];
+                
+                STR_timeRe = [NSString stringWithFormat:@"ينتهي بـ%02d: %02d: %02d",(int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+            }
+            
+            
+        }
+        else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0)
+        {
+            
+            STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d",(int)[breakdownInfo minute], (int)[breakdownInfo second]];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                //  STR_timeRe = [NSString stringWithFormat:@"%02d: %02d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute]];
+                
+                STR_timeRe = [NSString stringWithFormat:@"ينتهي بـ %02d: %02d",(int)[breakdownInfo minute], (int)[breakdownInfo second]];
+            }
+            
+            
+        }
+        else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0 && [breakdownInfo minute] <= 0)
+        {
+            
+            STR_timeRe = [NSString stringWithFormat:@"Ends in %02d", (int)[breakdownInfo second]];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                //STR_timeRe = [NSString stringWithFormat:@"%02d ينتهي بـ",(int)[breakdownInfo second]];
+                STR_timeRe = [NSString stringWithFormat:@"ينتهي بـ %02d", (int)[breakdownInfo second]];
+                
+            }
+            
+            
+            
+        }
+        else
+        {
+            
+            STR_timeRe = [NSString stringWithFormat:@"Ends in %02d Days: %02d: %02d: %02d", (int)[breakdownInfo day], (int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                //  STR_timeRe = [NSString stringWithFormat:@"%02d: %02d: %02d:الأيام %2d ينتهي بـ",(int)[breakdownInfo second], (int)[breakdownInfo minute], (int)[breakdownInfo hour], (int)[breakdownInfo day]];
+                
+                STR_timeRe = [NSString stringWithFormat:@" ينتهي بـ: %2d الأيام: %02d: %02d: %02d", (int)[breakdownInfo day], (int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
+            }
+            
+        }
         
-    }
-    else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0)
-    {
-        
-        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d: %02d",(int)[breakdownInfo minute], (int)[breakdownInfo second]];
-        
-    }
-    else if ([breakdownInfo day] <= 0 && [breakdownInfo hour] <= 0 && [breakdownInfo minute] <= 0)
-    {
-        
-        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d", (int)[breakdownInfo second]];
-        
-        
-    }
-    else
-    {
-        
-        STR_timeRe = [NSString stringWithFormat:@"Ends in %02d Days: %02d: %02d: %02d", (int)[breakdownInfo day], (int)[breakdownInfo hour], (int)[breakdownInfo minute], (int)[breakdownInfo second]];
-    }
-    
     
     text = [NSString stringWithFormat:@"%@",STR_timeRe];
    // NSLog(@"The timer is:%@",text);

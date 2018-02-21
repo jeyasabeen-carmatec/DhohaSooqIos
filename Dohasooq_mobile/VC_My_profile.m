@@ -1414,7 +1414,7 @@
             
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                msg = @"يجب ألا يقل رقم الجوال عن 8 أرقام";
+                msg =@"لا يمكن أن يكون رقم الجوال أقل من 8 أرقام";
             }
         }
         else
@@ -1427,7 +1427,7 @@
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    msg = @"يجب ألا يقل رقم الجوال عن 8 أرقام";
+                    msg =@"رقم الجوال لا يمكن أن يكون أكثر من 8 أرقام";
                 }
             }
 
@@ -1445,7 +1445,7 @@
         
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-            msg = @"يجب ألا يقل رقم الجوال عن 5 أرقام";
+            msg =@" لا يمكن أن يكون رقم الجوال أقل من 5 أرقام";
         }
 
         
@@ -1458,7 +1458,8 @@
         msg = @"Mobile Number should not be more than 15 characters";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-            msg = @"يجب ألا يزيد رقم الجوال عن 15 رقماً";
+            msg =@"يجب ألا يزيد رقم الجوال عن 15 حرفا";
+
         }
 
         
@@ -1503,11 +1504,16 @@
     }
    
    
-//  else if( _BTN_male.tag == 1 && _BTN_feamle.tag == 1)
-//   {
-//    msg = @"Please select Gender";
-//   }
-     
+  else if( _BTN_male.tag == 1 && _BTN_feamle.tag == 1)
+  {
+       msg = @"Please select Gender";
+      if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+      {
+          msg = @"يرجى تحديد الجنس";
+      }
+
+  }
+    
     if(msg)
     {
         [HttpClient createaAlertWithMsg:msg andTitle:@""];
