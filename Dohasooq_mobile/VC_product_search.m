@@ -28,10 +28,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    
-  
-    
+
     CGRect frame_nav = _VW_navMenu.frame;
     frame_nav.origin.x = 0.0f;
     frame_nav.size.width = self.navigationController.navigationBar.frame.size.width - _BTN_search.frame.size.width;
@@ -143,7 +140,7 @@
     
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF['name'] BEGINSWITH[c] %@",substring];
             
-           search_ARR = [arr filteredArrayUsingPredicate:predicate];
+           search_ARR = [arr filteredArrayUsingPredicate:predicate];//BEGINSWITH//CONTAINS
            if(search_ARR.count < 1)
            {
                _TBL_search_results.hidden = YES;

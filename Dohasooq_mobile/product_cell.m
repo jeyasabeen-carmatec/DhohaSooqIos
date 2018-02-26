@@ -13,6 +13,7 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
+    self.LBL_item_name.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
 }
 
 @end

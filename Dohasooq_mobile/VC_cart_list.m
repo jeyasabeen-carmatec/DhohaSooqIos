@@ -25,6 +25,7 @@
     UITapGestureRecognizer *tapGesture1;
     NSString *currency_code,*product_id,*item_count;
     UIImageView *image_empty;
+    BOOL status;
    // NSInteger doha_miles_value, qr_dm_value;
     
 
@@ -37,6 +38,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    _TBL_cart_items.hidden = YES;
        [self set_UP_VIEW];
     [self.BTN_clear_cart addTarget:self action:@selector(clear_cart_action:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -45,7 +47,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     
     self.navigationItem.hidesBackButton = YES;
-    
+    status = NO;
   //    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
 //    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
 //    VW_overlay.clipsToBounds = YES;
@@ -90,6 +92,7 @@
     _VW_empty.center = self.view.center;
     [self.view addSubview:_VW_empty];
     _VW_empty.hidden = YES;
+    
     
     _BTN_empty.layer.cornerRadius = self.BTN_empty.frame.size.width / 2;
     _BTN_empty.layer.masksToBounds = YES;
@@ -186,7 +189,7 @@
             
             
         }
-        Cart_cell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+        Cart_cell *cell = (Cart_cell *)[tableView dequeueReusableCellWithIdentifier:identifier];
         
         if (cell == nil)
         {
@@ -197,21 +200,133 @@
         @try
         {
         
-            cell._TXT_count.delegate = self;
+        cell._TXT_count.delegate = self;
         cell.LBL_item_name.text = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"pname"]];
         NSString *img_url = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"product_image_path"]];
         @try
         {
-        NSString *str_variant =  [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"variantCombination"]];
+        NSString *str_variant =  [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"variantCombinationStatus"]];
         str_variant = [str_variant stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
          str_variant = [str_variant stringByReplacingOccurrencesOfString:@"" withString:@""];
             str_variant = [str_variant stringByReplacingOccurrencesOfString:@"Null" withString:@""];
+            NSString *str_custom = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"customerr"]];
+            str_custom = [str_custom stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            str_custom = [str_custom stringByReplacingOccurrencesOfString:@"" withString:@""];
+            str_custom = [str_custom stringByReplacingOccurrencesOfString:@"Null" withString:@""];
+            
+        if([str_variant isKindOfClass:[NSNull class]] || [str_custom isKindOfClass:[NSNull class]])
+        {
+            cell.LBL_error.text = @"";
+        }
 
-         if([str_variant isKindOfClass:[NSNull class]])
+         if([str_variant isEqualToString:@"A"])
          {
-             str_variant = @"";
+             cell.LBL_combo.text = [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"variantCombination"];
+              cell.LBL_error.text =@"";
+
          }
-        cell.LBL_combo.text = str_variant;
+            
+        
+         else{
+             
+              BOOL variant = NO;
+              BOOL custom =  NO;
+             if([str_variant isEqualToString:@""] || [str_variant isKindOfClass:[NSNull class]])
+             {
+                 variant =  NO;
+                 
+             }
+             else
+             {
+                 variant =  YES;
+                 cell.LBL_combo.text = [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"variantCombination"];
+             }
+             if([str_custom isEqualToString:@"0"])
+             {
+                 NSString *str_custom_data = [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"customoption"];
+                 str_custom_data = [str_custom_data stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+                 str_custom_data = [str_custom_data stringByReplacingOccurrencesOfString:@"" withString:@""];
+                 str_custom_data = [str_custom_data stringByReplacingOccurrencesOfString:@"Null" withString:@""];
+                 if([str_custom_data isKindOfClass:[NSNull class]]|| [str_custom_data isEqualToString:@""])
+                 {
+                     custom = NO;
+                     
+                 }
+                                else
+                 {
+                     custom = YES;
+                     cell.LBL_combo.text =str_custom_data;
+                     
+                 }
+             }
+             else
+             {
+                 status =  YES;
+                 NSString *str_custom_data = [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"customoption"];
+                 @try
+                 {
+                 str_custom_data = [str_custom_data stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+                 str_custom_data = [str_custom_data stringByReplacingOccurrencesOfString:@"" withString:@""];
+                 str_custom_data = [str_custom_data stringByReplacingOccurrencesOfString:@"Null" withString:@""];
+                     if([str_custom_data isKindOfClass:[NSNull class]]|| [str_custom_data isEqualToString:@""])
+                     {
+                         custom = YES;
+                         
+                     }
+                     else
+                     {
+                         custom = YES;
+                         cell.LBL_combo.text =str_custom_data;
+                         
+                     }
+                     
+
+                 }
+                 @catch(NSException *exception)
+                 {
+                     if([str_custom_data isKindOfClass:[NSNull class]]|| [str_custom_data isEqualToString:@""])
+                     {
+                         custom = YES;
+                         
+                     }
+                     else
+                     {
+                         custom = YES;
+                         cell.LBL_combo.text =str_custom_data;
+                         
+                     }
+
+                 }
+                
+               
+                 
+             }
+               if ([[NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"StockStatus"]] isEqualToString:@"Out of stock"])
+             {
+                 status = YES;
+             }
+
+            
+            if((variant == NO && custom == YES) )
+             {
+                   cell.LBL_error.text = [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"customerrmsg"];
+
+             }
+            else if(custom == NO && variant == YES)
+             {
+                 status =  YES;
+                 cell.LBL_error.text = [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"variantCombinationStatmsg"];
+
+
+             }
+             else
+             {
+                 cell.LBL_error.text =@"";
+                 cell.LBL_combo.text= @"";
+
+             }
+             
+         }
             
             
             
@@ -231,6 +346,7 @@
         NSString *qnty = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"qty"]];
         
         currency_code = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"currency"]];
+            
         NSString *current_price = [NSString stringWithFormat:@"%@", [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"special_price"]];
         
         NSString *prec_price = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"product_price"]];
@@ -288,7 +404,7 @@
         if ([cell.LBL_current_price respondsToSelector:@selector(setAttributedText:)]) {
             
             
-            if ([current_price isEqualToString:@""]|| [current_price isEqualToString:@"null"]||[current_price isEqualToString:@"<null>"]||[current_price isEqualToString:@"0"]) {
+            if ([current_price isEqualToString:@""]|| [current_price isEqualToString:@"null"]||[current_price isEqualToString:@"<null>"]||[current_price isEqualToString:@"0"] || [[NSString stringWithFormat:@"%@", [[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"special_price"]] isEqualToString:[NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"product_price"]]]) {
                 
                 
                 text = [NSString stringWithFormat:@"%@",prec_price];
@@ -378,7 +494,17 @@
         {
             cell.LBL_current_price.textAlignment = NSTextAlignmentRight;
         }
-        
+       
+            [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"pname"]];
+        // Stock Status
+            if ([[NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"StockStatus"]] isEqualToString:@"Out of stock"]) {
+                cell.LBL_stockStatus.text = @"OUT OF STOCK";
+            }
+            else{
+                cell.LBL_stockStatus.text = @"";
+
+            }
+            
         
             
         UIImage *newImage = [cell.BTN_close.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -596,7 +722,7 @@
     [self performSegueWithIdentifier:@"cart_list_product_detail" sender:self];
     }
 }
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0) {
         
@@ -604,34 +730,36 @@
         
         if(result.height <= 480)
         {
-            return 180;
+            return 230;
         }
         else if(result.height <= 568)
         {
-           return 190;
+            return 250;
         }
         else
         {
-           return 170;
+            return 210;
         }
+        
+        
+    }
+    else{
+        return 200;
+    }
+}
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if (indexPath.section == 0) {
+        return UITableViewAutomaticDimension;
         
     }
     else{
         return 180;
     }
-}
--(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    if (indexPath.section == 0) {
-        return UITableViewAutomaticDimension;
-
-    }
-    else{
-        return 155;
-    }
-
 }
+
 
 #pragma mark text field delgates
 
@@ -747,7 +875,19 @@
 }
 - (IBAction)BTN_next_action:(id)sender {
     @try {
-        [self performSegueWithIdentifier:@"order_detail_segue" sender:self];
+        if(status ==  YES)
+        {if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"]){
+            [HttpClient createaAlertWithMsg:@"يرجى حذف المنتجات التي لا تتوفر" andTitle:@""];
+        }
+        else{
+            
+            [HttpClient createaAlertWithMsg:@"Please delete the products which are not available." andTitle:@""];
+        }
+        }
+        else{
+            [self performSegueWithIdentifier:@"order_detail_segue" sender:self];
+
+        }
     } @catch (NSException *exception) {
         NSLog(@"Exception %@",exception);
     }
@@ -969,38 +1109,68 @@ params.put("customerId",customerid);
 }
 #pragma mark  cart_count_api
 -(void)cart_count{
-    
-    NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
+    NSString *user_id;
+    @try
+    {
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
     [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
         if (error) {
             [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
              ];
+            //            VW_overlay.hidden = YES;
+            //            [activityIndicatorView stopAnimating];
+            
+            
         }
         if (data) {
-            NSLog(@"%@",data);
+            NSLog(@"cart count sadas %@",data);
             NSDictionary *dict = data;
             @try {
-                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
-                NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
-                if([wishlist intValue] > 0)
-                {
                 
-                //NSString *badge_value = @"11";
-                if(badge_value.length > 99 || wishlist.length > 99)
-                {
-                    [_BTN_fav setBadgeString:[NSString stringWithFormat:@"%@",wishlist]];
-                    
-                    
-                }
-                else{
-                    [_BTN_fav setBadgeString:[NSString stringWithFormat:@"%@",wishlist]];
-                    
-                    
-                }
-                }
+                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
+                //   NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
+                [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"cart_count"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+                
+                [[NSUserDefaults standardUserDefaults] setValue:badge_value forKey:@"cart_count"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+                
                 
             } @catch (NSException *exception) {
-                NSLog(@"%@",exception);
+                //                 VW_overlay.hidden = YES;
+                //                [activityIndicatorView stopAnimating];
+                
+                
+                NSLog(@"asjdas dasjbd asdas iccxv %@",exception);
             }
             
         }
@@ -1156,6 +1326,7 @@ params.put("customerId",customerid);
                         [HttpClient createaAlertWithMsg:[data valueForKey:@"message"] andTitle:@""];
                         [self cartList_api_calling];
                         [self.TBL_cart_items reloadData];
+                        status = NO;
                         
 //                        VW_overlay.hidden=YES;
 //                        [activityIndicatorView stopAnimating];

@@ -21,5 +21,7 @@
 @property(nonatomic,strong) IBOutlet UIButton *BTN_plus;
 @property(nonatomic,strong) IBOutlet UIButton *BTN_minus;
 @property(nonatomic,strong) IBOutlet UITextField *_TXT_count;
+@property (weak, nonatomic) IBOutlet UILabel *LBL_error;
+@property (weak, nonatomic) IBOutlet UILabel *LBL_stockStatus;
 
 @end

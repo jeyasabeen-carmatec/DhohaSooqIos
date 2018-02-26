@@ -45,6 +45,19 @@
             _TXT_mail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"user_email"];
             _TXT_name.text = [dict valueForKey:@"firstname"];
             
+            if([[dict  valueForKey:@"phone"] isEqualToString:@"<null>"]||[[dict  valueForKey:@"phone"] isEqualToString:@""]||[[dict  valueForKey:@"phone"] isEqualToString:@"null"]||![dict  valueForKey:@"phone"])
+            {
+                
+                    _TXT_phone.text = @"";
+                    _TXT_code.text = @"+974";
+                }
+                else
+                {
+                    NSArray  *arr = [[dict valueForKey:@"phone"] componentsSeparatedByString:@"-"];
+                    _TXT_phone.text = [arr objectAtIndex:1];
+                    _TXT_code.text = [arr objectAtIndex:0];
+                }
+            
         }
     }@catch(NSException *exception)
     {
@@ -269,7 +282,7 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
     [_phone_picker_view addGestureRecognizer:tapToSelect];
 
     
-    NSLog(@"%@",phone_code_arr);
+   // NSLog(@"%@",phone_code_arr);
     
     UIToolbar* phone_close = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
     phone_close.barStyle = UIBarStyleBlackTranslucent;
@@ -331,6 +344,48 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
     
     
 }
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    NSInteger inte = _TXT_phone.text.length;
+    if([_TXT_code.text isEqualToString:@"+974"])
+    {
+        
+            if(inte == 8)
+            {
+                if ([string isEqualToString:@""])
+                {
+                    return YES;
+                }
+                else
+                {
+                    return NO;
+                }
+            }
+        
+        
+    }
+    else
+    {
+        if(inte >= 15)
+        {
+            if ([string isEqualToString:@""]) {
+                return YES;
+            }
+            else
+            {
+                return NO;
+            }
+        }
+    }
+    NSCharacterSet *notAllowedChar = [[NSCharacterSet characterSetWithCharactersInString:@"1234567890"] invertedSet];
+    NSString *resultStrin = [[_TXT_phone.text componentsSeparatedByCharactersInSet:notAllowedChar] componentsJoinedByString:@""];
+    
+    _TXT_phone.text = resultStrin;
+    
+
+    return YES;
+}
+
 #pragma Button Actions
 - (IBAction)back_action:(id)sender
 {
@@ -354,7 +409,7 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
         
         
     }
-   else if ([_TXT_phone.text isEqualToString:@""])
+    else if ([_TXT_phone.text isEqualToString:@""])
     {
         [_TXT_phone becomeFirstResponder];
         msg = @"Please enter Phone Number";
@@ -362,50 +417,77 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
         
         
     }
-    
-    else if (_TXT_phone.text.length < 5)
+    if([_TXT_code.text isEqualToString:@"+974"])
     {
-        [_TXT_phone becomeFirstResponder];
-        msg = @"Phone Number cannot be less than 5 digits";
-        
-        
-        
+        if(_TXT_phone.text.length < 8)
+        {
+            [_TXT_phone becomeFirstResponder];
+            msg = @"Phone Number cannot be less than 8 digits";
+        }
+        else if(_TXT_phone.text.length > 8)
+        {
+            [self.TXT_phone becomeFirstResponder];
+            
+            msg = @"Phone Number cannot be more than 8 digits";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"لا يجب ألا يقلّ رقم الجوال عن 8 أرقام ";
+            }
+        }
+
     }
-    else if(_TXT_phone.text.length>15)
-    {
-        [_TXT_phone becomeFirstResponder];
-        msg = @"Phone Number should not be more than 15 characters";
-        
-        
-    }
-    else if([_TXT_phone.text isEqualToString:@" "])
-    {
-        [_TXT_phone becomeFirstResponder];
-        msg = @"Blank space are not allowed";
-        
-        
-    }
-   else  if(_LBL_stat.tag == 0)
-    {
-        msg = @"please accept term and conditions";
-    }
-    
     
     else
     {
-        [Helper_activity animating_images:self];
-        [self performSelector:@selector(get_oreder_ID) withObject:nil afterDelay:0.01];
-
-     
+        if (_TXT_phone.text.length < 5)
+        {
+            [_TXT_phone becomeFirstResponder];
+            msg = @"Phone Number cannot be less than 5 digits";
+        }
+        
+        
+        
+        
+        else if(_TXT_phone.text.length>15)
+        {
+            [_TXT_phone becomeFirstResponder];
+            msg = @"Phone Number should not be more than 15 characters";
+            
+            
+        }
     }
+         if([_TXT_phone.text isEqualToString:@" "])
+        {
+            [_TXT_phone becomeFirstResponder];
+            msg = @"Blank space are not allowed";
+            
+            
+        }
+        else  if(_LBL_stat.tag == 0)
+        {
+            msg = @"Please accept the accept terms and conditions";
+        }
+        
+        
     
-
+    
     if(msg)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
         
     }
+    else
+        
+    {
+        
+        [Helper_activity animating_images:self];
+        [self performSelector:@selector(get_oreder_ID) withObject:nil afterDelay:0.01];
+        
+    }
+    
+
+
 
 }
 #pragma mark Generating Order ID

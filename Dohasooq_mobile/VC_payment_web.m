@@ -46,6 +46,7 @@
     lblLoading.font = [UIFont fontWithName:lblLoading.font.fontName size:15];
     lblLoading.textAlignment = NSTextAlignmentCenter;
     [loadingView addSubview:lblLoading];
+    [self.view addSubview:loadingView];
    @try
     {
      

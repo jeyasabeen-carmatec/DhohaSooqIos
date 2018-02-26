@@ -67,14 +67,14 @@
             if([name isEqualToString:@"balcony"])
             {
                 
-                [self createSeatButtonWithPosition:initial_seat_x and:initial_seat_y isAvailable:false isDisabled:false :[title_arrs objectAtIndex:i -1]:[title objectAtIndex:countVAL]:[family objectAtIndex:countVAL]];
+                [self createSeatButtonWithPosition:initial_seat_x and:initial_seat_y isAvailable:false isDisabled:true :[title_arrs objectAtIndex:i -1]:[title objectAtIndex:countVAL]:[family objectAtIndex:countVAL]];
                 
                 initial_seat_x += 1;
             }
             else{
                 
                 
-                [self createSeatButtonWithPosition:initial_seat_x and:initial_seat_y isAvailable:false isDisabled:false :[title_arrs objectAtIndex:i]:[title objectAtIndex:countVAL]:[family objectAtIndex:countVAL]];
+                [self createSeatButtonWithPosition:initial_seat_x and:initial_seat_y isAvailable:false isDisabled:true :[title_arrs objectAtIndex:i]:[title objectAtIndex:countVAL]:[family objectAtIndex:countVAL]];
                 
                 initial_seat_x += 1;
                 
@@ -122,7 +122,7 @@
 - (void)createSeatButtonWithPosition:(int)initial_x_seat and:(int)initial_y_seat isAvailable:(BOOL)available isDisabled:(BOOL)disabled :(NSString *)title_cell :(NSString *)title_row :(NSString *)family{
     
     title_btn = [[UIButton alloc]init];
-    title_btn.frame = CGRectMake(0,initial_seat_y*25, 20, 20);
+    title_btn.frame = CGRectMake(-20,initial_seat_y*25, 20, 20);
     title_btn.backgroundColor = [UIColor clearColor];
     [title_btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     title_btn.titleLabel.font = [UIFont systemFontOfSize:12];

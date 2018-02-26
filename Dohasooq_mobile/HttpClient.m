@@ -235,7 +235,7 @@
 {
     
     
-    Str = [NSString stringWithFormat:@"%f",ceil([Str floatValue])];
+    Str = [NSString stringWithFormat:@"%f",floor([Str floatValue])];
     
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init] ;
     [formatter setFormatterBehavior:NSNumberFormatterBehavior10_4];

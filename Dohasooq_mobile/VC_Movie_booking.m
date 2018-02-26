@@ -44,12 +44,7 @@
  
     [_BTN_trailer_watch addTarget:self action:@selector(BTN_trailer_watch) forControlEvents:UIControlEventTouchUpInside];
     
-    [Helper_activity animating_images:self];
-    [self dateVIEW];
-    [self performSelector:@selector(movie_detil_api) withObject:nil afterDelay:0.01];
-    
-
-    detail_dict  = [[NSMutableDictionary alloc]init];
+   
     
     
     
@@ -75,8 +70,12 @@
     dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateFormat:@"MM/dd/yyyy"];
     dateString = [dateFormat stringFromDate:[NSDate date]];
+    [Helper_activity animating_images:self];
+    [self dateVIEW];
+    [self performSelector:@selector(movie_detil_api) withObject:nil afterDelay:0.01];
     
-
+    
+    detail_dict  = [[NSMutableDictionary alloc]init];
     
 //    VW_overlay.hidden = YES;
 //    VW_overlay.hidden = NO;
@@ -151,7 +150,7 @@
             
             for (int j=0; j<[[date_Arr objectAtIndex:i] count]; j++) {
                 NSDate *tomorrow = [cal dateByAddingUnit:NSCalendarUnitDay
-                                                   value:1
+                                                   value:0
                                                   toDate:[dateFormat dateFromString:[[date_Arr objectAtIndex:i] objectAtIndex:j]]
                                                  options:0];
                 [arry_with_Dates addObject:tomorrow];
@@ -162,7 +161,7 @@
         }
         else{
             NSDate *tomorrow = [cal dateByAddingUnit:NSCalendarUnitDay
-                                               value:1
+                                               value:0
                                               toDate:[dateFormat dateFromString:[date_Arr objectAtIndex:i]]
                                              options:0];
             [arry_with_Dates addObject:tomorrow];
@@ -188,7 +187,7 @@
 //    [self dayPicker:self.dayPicker didSelectDay:[reverseOrder lastObject]];
     
     NSDate *yesterDay = [cal dateByAddingUnit:NSCalendarUnitDay
-                                        value:-1
+                                        value:0
                                        toDate:[reverseOrder lastObject]
                                       options:0];
     dateString = [dateFormat stringFromDate:yesterDay];
@@ -405,7 +404,7 @@
       [_tbl_timings reloadData];
     
     frameset = self.tbl_timings.frame;
-    frameset.size.height =  _tbl_timings.contentSize.height;
+    frameset.size.height = _tbl_timings.frame.origin.y+  _tbl_timings.contentSize.height;
     self.tbl_timings.frame = frameset;
     
 //    CAGradientLayer *gradient = [CAGradientLayer layer];
@@ -461,7 +460,7 @@
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.39 green:0.78 blue:0.05 alpha:1.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.39 green:0.78 blue:0.05 alpha:1.0]}
                                     range:ename];
         }
        _LBL_language.attributedText = attributedText;
@@ -668,18 +667,75 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    CGSize result = [[UIScreen mainScreen] bounds].size;
+    NSInteger ht = 0;
+
+    
     @try {
+        if([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"] isKindOfClass:[NSDictionary class]] || [[[ARR_temp objectAtIndex:indexPath.row]valueForKey:@"shows"] count]<=3)
+        {
+                      if(result.height <= 480)
+            {
+                ht = 100;
+            }
+            else if(result.height <= 568)
+            {
+                 ht = 100;
+            }
+            else
+            {
+                 ht = 80;
+            }
+
+            
+            return ht;
+        }
         if([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"] isKindOfClass:[NSDictionary class]] || [[[ARR_temp objectAtIndex:indexPath.row]valueForKey:@"shows"] count]<=4)
         {
-            return 80;
+            CGSize result = [[UIScreen mainScreen] bounds].size;
+            NSInteger ht = 0;
+            if(result.height <= 480)
+            {
+                ht = 140;
+            }
+            else if(result.height <= 568)
+            {
+                ht = 140;
+            }
+            else
+            {
+                ht = 80;
+            }
+            
+            
+            return ht;
         }
+
         
-        else if ([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count]>4 && [[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count]<=8 ){
-            return 180;
+        else if ([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count] >= 4 && [[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count]<=8 ){
+            
+            CGSize result = [[UIScreen mainScreen] bounds].size;
+            NSInteger ht = 0;
+            if(result.height <= 480)
+            {
+                ht = 180;
+            }
+            else if(result.height <= 568)
+            {
+                ht = 180;
+            }
+            else
+            {
+                ht = 160;
+            }
+
+            return ht;
         }
         
         else{
-            return 77*[[[ARR_temp objectAtIndex:indexPath.row]valueForKey:@"shows"] count]/4;
+        
+        
+            return 77*[[[ARR_temp objectAtIndex:indexPath.row]valueForKey:@"shows"] count]/4+65;
         }
         
         

@@ -11,7 +11,7 @@
 #import "ViewController.h"
 #import "Helper_activity.h"
 
-@interface VC_change_Password ()
+@interface VC_change_Password ()<UITextFieldDelegate>
 {
 //    UIView *VW_overlay;
 //    UIActivityIndicatorView *activityIndicatorView;
@@ -24,7 +24,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    _TXT_old_pwd.delegate= self;
+    _TXT_new_pwd.delegate = self;
+    _TXT_confirm_pwd.delegate = self;
     //_vw_align.center = self.view.center;
     
 }
@@ -41,7 +43,7 @@
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
     
-    if( textField == _TXT_old_pwd)
+    if( textField == _TXT_new_pwd || _TXT_confirm_pwd)
     {
         CGSize result = [[UIScreen mainScreen] bounds].size;
         
@@ -69,13 +71,12 @@
 
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
-    [UIView beginAnimations:nil context:NULL];
+  //  [UIView beginAnimations:nil context:NULL];
     
     if (textField == _TXT_old_pwd)
     {
         BOOL lowerCaseLetter = false,upperCaseLetter = false,digit = false,specialCharacter = 0;
-        if([textField.text length] >= 8)
-        {
+       
             for (int i = 0; i < [textField.text length]; i++)
             {
                 unichar c = [textField.text characterAtIndex:i];
@@ -97,13 +98,13 @@
                 }
             }
             
-            if( digit && lowerCaseLetter )
+            if( digit && lowerCaseLetter && upperCaseLetter)
             {
                 NSLog(@"Valid Password");
             }
             else
             {
-                NSString *str =  @"he password must contain one number and 8 char minimum";//
+                NSString *str =  @"The password must contain one number, one capital letter and 8 char minimum";//
 
                 NSString *str_ok = @"Ok";
                 
@@ -119,8 +120,8 @@
                 [textField becomeFirstResponder];
             }
             
-        }
-        else
+        
+      /*  else
         {
             NSString *str =  @"he password must contain one number and 8 char minimum";//
             
@@ -134,7 +135,7 @@
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
             [alert show];
             [textField becomeFirstResponder];
-        }
+        }*/
         
         
         
@@ -143,8 +144,7 @@
     {
         
         BOOL lowerCaseLetter = false,upperCaseLetter = false,digit = false,specialCharacter = 0;
-        if([textField.text length] >= 8)
-        {
+       
             for (int i = 0; i < [textField.text length]; i++)
             {
                 unichar c = [textField.text characterAtIndex:i];
@@ -166,13 +166,13 @@
                 }
             }
             
-            if( digit && lowerCaseLetter )
+            if( digit && lowerCaseLetter && upperCaseLetter )
             {
                 NSLog(@"Valid Password");
             }
             else
             {
-                NSString *str =  @"he password must contain one number and 8 char minimum";//
+                NSString *str =  @"The password must contain one number, one capital letter and 8 char minimum";//
                 
                 NSString *str_ok = @"Ok";
                 
@@ -186,8 +186,8 @@
                 [textField becomeFirstResponder];
             }
             
-        }
-        else
+        
+       /* else
         {
             NSString *str =  @"he password must contain one number and 8 char minimum";//
             
@@ -201,15 +201,14 @@
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
             [alert show];
             [textField becomeFirstResponder];
-        }
+        }*/
         
         
     }
     if (textField == _TXT_confirm_pwd)
     {
         BOOL lowerCaseLetter = false,upperCaseLetter = false,digit = false,specialCharacter = 0;
-        if([textField.text length] >= 8)
-        {
+       
             for (int i = 0; i < [textField.text length]; i++)
             {
                 unichar c = [textField.text characterAtIndex:i];
@@ -231,13 +230,13 @@
                 }
             }
             
-            if( digit && lowerCaseLetter )
+            if( digit && lowerCaseLetter && upperCaseLetter)
             {
                 NSLog(@"Valid Password");
             }
             else
             {
-                NSString *str =  @"he password must contain one number and 8 char minimum";//
+                NSString *str =  @"The password must contain one number, one capital letter and 8 char minimum";//
                 
                 NSString *str_ok = @"Ok";
                 
@@ -251,8 +250,8 @@
                 [textField becomeFirstResponder];
             }
             
-        }
-        else
+        
+      /*  else
         {
             NSString *str =  @"he password must contain one number and 8 char minimum";//
             
@@ -266,18 +265,16 @@
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
             [alert show];
             [textField becomeFirstResponder];
-        }
+        }*/
         
         
     }
 
-    if( textField == _TXT_confirm_pwd)
+    if( textField == _TXT_confirm_pwd || _TXT_new_pwd)
     {
-    self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
-    [UIView commitAnimations];
-    [UIView beginAnimations:nil context:NULL];
-    self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
-    [UIView commitAnimations];
+        [UIView beginAnimations:nil context:NULL];
+        self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
+        [UIView commitAnimations];
     }
     
 }
@@ -341,9 +338,6 @@
     
     [UIView beginAnimations:nil context:NULL];
     
-    self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
-    [UIView commitAnimations];
-    [UIView beginAnimations:nil context:NULL];
     self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
     [UIView commitAnimations];
 

@@ -57,6 +57,8 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     
+    self.navigationItem.hidesBackButton = YES;
+    
     VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     VW_overlay.clipsToBounds = YES;
@@ -233,54 +235,24 @@
                 
                 
                 
-                
+                 
                 NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
-                
-                int sizeval = 14;
-                
-                if (prec_price.length >= 10)
-                {
-                    sizeval = 12;
-                    seller.LBL_cost.textContainer.maximumNumberOfLines = 2;
-                    [seller.LBL_cost.layoutManager textContainerChangedGeometry:seller.LBL_cost.textContainer];
-                    
-                    text = [NSString stringWithFormat:@"%@ %@\n%@",currency_code,current_price,prec_price];
-                    
-                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-                    {
-                        prec_price = [NSString stringWithFormat:@"%.2f",[[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"product_price"] floatValue]];
-                        prec_price = [HttpClient currency_seperator:prec_price];
-                        prec_price = [NSString stringWithFormat:@"%@ %@",prec_price,currency_code];
-                        current_price =  [NSString stringWithFormat:@"%.2f",[[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"special_price"] floatValue]];
-                        current_price = [HttpClient currency_seperator:current_price];
-                        current_price = [NSString stringWithFormat:@"%@ %@",current_price,currency_code];
-                        
-                        
-                        text = [NSString stringWithFormat:@"%@ %@",prec_price,current_price];
-                        
-                    }
-                    
-                    
-                }
-                else{
-                    sizeval = 14;
-                }
                 
                 
                 NSRange ename = [text rangeOfString:current_price];
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                         range:ename];
                 
                 NSRange qrname = [text rangeOfString:currency_code];
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:14],NSForegroundColorAttributeName:[UIColor colorWithRed:0.90 green:0.22 blue:0.00 alpha:1.0]}
                                         range:qrname];
                 
                 
                 
                 //        [attributedText addAttribute:NSStrikethroughStyleAttributeName value:[NSNumber numberWithInt:3] range:[text rangeOfString:prec_price]];
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:sizeval],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:14],NSForegroundColorAttributeName:[UIColor grayColor],}range:[text rangeOfString:prec_price] ];
                 
                 [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
                 
@@ -307,6 +279,12 @@
         {
             seller.LBL_cost.text = text;
         }
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+            seller.LBL_cost.textAlignment = NSTextAlignmentRight;
+            }else{
+              seller.LBL_cost.textAlignment = NSTextAlignmentLeft;
+            }
     }
     @catch(NSException *exception)
     {
@@ -323,7 +301,7 @@
     seller.LBL_status.text =  delivary_stat;
     
     
-    NSString *item_str = [NSString stringWithFormat:@"%@",[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"title"]];
+    NSString *item_str = [NSString stringWithFormat:@"%@",[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"merchant_name"]];
     item_str = [item_str stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
     item_str = [item_str stringByReplacingOccurrencesOfString:@"(null)" withString:@"Not mentioned"];
     item_str = [item_str stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
@@ -331,15 +309,23 @@
     
     
 
-    starRatingView = [[HCSStarRatingView alloc] initWithFrame:seller.LBL_rating.frame];
+   /* starRatingView = [[HCSStarRatingView alloc] initWithFrame:seller.LBL_rating.frame];
       starRatingView.maximumValue = 5;
     starRatingView.minimumValue = 0;
     starRatingView.value = 0;
     starRatingView.tintColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
-    starRatingView.allowsHalfStars = YES;
+    starRatingView.allowsHalfStars = YES;*/
+        seller.starView.value =starRatingView.value = [[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"totalRatings"] intValue];
+        seller.starView.tintColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
+
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            starRatingView.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+            
+        }
     [seller addSubview:starRatingView];
     
-    starRatingView.value = [[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"totalRatings"] intValue];
+  //  starRatingView.value = [[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"totalRatings"] intValue];
     NSString *str_ratings = [NSString stringWithFormat:@"%@",[[seller_arr objectAtIndex:indexPath.row] valueForKey:@"totalRatings"]];
     str_ratings = [str_ratings stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
     str_ratings = [str_ratings stringByReplacingOccurrencesOfString:@"(null)" withString:@"0"];
@@ -349,9 +335,17 @@
     str_reviews = [str_reviews stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
     str_reviews = [str_reviews stringByReplacingOccurrencesOfString:@"(null)" withString:@"0"];
     str_reviews = [str_reviews stringByReplacingOccurrencesOfString:@"" withString:@"0"];
-        
-    
-    NSString *str_review_rating = [NSString stringWithFormat:@"%@ Ratings & %@ Reviews",str_ratings,str_reviews];
+       
+        NSString *str_review_rating;
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+           str_review_rating = [NSString stringWithFormat:@"%@ التقييم  & %@ الآراء  ",str_ratings,str_reviews];
+
+        }
+        else{
+         str_review_rating = [NSString stringWithFormat:@"%@ Ratings & %@ Reviews",str_ratings,str_reviews];
+
+        }
     
         if ([seller.LBL_riview respondsToSelector:@selector(setAttributedText:)])
         {
@@ -359,11 +353,11 @@
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:str_review_rating attributes:nil];
             
             NSRange ename = [str_review_rating rangeOfString:str_ratings];
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:14.0],NSForegroundColorAttributeName:seller.BTN_details.backgroundColor}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:16.0],NSForegroundColorAttributeName:seller.BTN_details.backgroundColor}
                                         range:ename];
             
             NSRange ranges = [str_review_rating rangeOfString:str_reviews];
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:14.0],NSForegroundColorAttributeName:seller.BTN_details.backgroundColor}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"FontAwesome" size:16.0],NSForegroundColorAttributeName:seller.BTN_details.backgroundColor}
                                     range:ranges];
             seller.LBL_riview.attributedText = attributedText;
   
@@ -393,7 +387,10 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 168;
+    return  UITableViewAutomaticDimension;
+}
+-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath{
+     return 168;
 }
 - (IBAction)Wish_list_action:(id)sender {
     
@@ -595,7 +592,7 @@
                         
                         
                         NSLog(@"  Error %@ Response %@",error,dict);
-                        [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
+                        //[HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
                     }
                 } @catch (NSException *exception) {
                     NSLog(@"%@",exception);
@@ -613,10 +610,14 @@
         }
         else
         {
+            
+            NSString *str_mercahant = [NSString stringWithFormat:@"%@",[[seller_arr objectAtIndex:sender.tag] valueForKey:@"merchant_id"]];
+            [self.delegate call_detail_api:str_mercahant];
             [[NSUserDefaults standardUserDefaults] setValue:[[seller_arr objectAtIndex:sender.tag] valueForKey:@"merchant_id"] forKey:@"Mercahnt_ID"];
             
             [[NSUserDefaults standardUserDefaults] setValue:[[seller_arr objectAtIndex:sender.tag] valueForKey:@"url_key"] forKey:@"product_list_key_sub"];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            
 
             [self.navigationController popViewControllerAnimated:NO];
         }
@@ -726,7 +727,7 @@
                     
                     
                     NSLog(@"  Error %@ Response %@",error,dict);
-                    [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
+                   // [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
                 }
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
@@ -811,7 +812,8 @@
 
 -(void)Details_action:(UIButton *)sender
 {
-    
+    NSString *str_mercahant = [NSString stringWithFormat:@"%@",[[seller_arr objectAtIndex:sender.tag] valueForKey:@"merchant_id"]];
+    [self.delegate call_detail_api:str_mercahant];
     [[NSUserDefaults standardUserDefaults] setValue:[[seller_arr objectAtIndex:sender.tag] valueForKey:@"merchant_id"] forKey:@"Mercahnt_ID"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [[NSUserDefaults standardUserDefaults] setValue:[[seller_arr objectAtIndex:sender.tag] valueForKey:@"url_key"] forKey:@"product_list_key_sub"];

@@ -547,7 +547,7 @@
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *lang = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
 
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/menuList/%@/%@.json",SERVER_URL,country,lang];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/getCategoryList/%@/%@.json",SERVER_URL,country,lang];
         
         NSLog(@"%ld,%ld",(long)[user_defaults integerForKey:@"country_id"],(long)[user_defaults integerForKey:@"language_id"]);
         
@@ -563,14 +563,14 @@
         {
             
             
-            NSMutableArray *json_DATA = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            NSDictionary *json_DATA = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             
           
             
           //  [self performSegueWithIdentifier:@"logint_to_home" sender:self];
             
             NSLog(@"the api_collection_product%@",json_DATA);
-            [[NSUserDefaults standardUserDefaults] setObject:json_DATA forKey:@"pho"];
+            [[NSUserDefaults standardUserDefaults] setObject:json_DATA  forKey:@"pho"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             
             VW_overlay.hidden = YES;
@@ -665,11 +665,20 @@
                         
                         [self MENU_api_call];
                         [self IMAGE_PATH_API];
+                        @try {
+                            [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Home_data"];
+                            [[NSUserDefaults standardUserDefaults] synchronize];
+                               [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
+                         
+                        } @catch (NSException *exception)
+                        {
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                            [alert show];
 
-                        [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Home_data"];
-                        [[NSUserDefaults standardUserDefaults] synchronize];
-                        [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
-
+                            
+                        }
+                      
+                  
                         
                     }
                     else

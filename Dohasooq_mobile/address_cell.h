@@ -16,6 +16,7 @@
 @property(nonatomic,weak) IBOutlet UIButton *BTN_edit_addres;
 @property(nonatomic,weak) IBOutlet UIView *VW_layer;
 @property (weak, nonatomic) IBOutlet UILabel *Btn_close;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *Btn_close_width;
 
 
 @end

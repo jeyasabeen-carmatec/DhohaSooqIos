@@ -9,9 +9,17 @@
 #import <UIKit/UIKit.h>
 #import "GIBadgeView.h"
 
+@protocol sellersprotocol <NSObject>
+
+-(void)call_detail_api:(NSString *)str_url;
+
+@end
+
+
 @interface multiple_sellers : UIViewController
 @property(nonatomic,weak) IBOutlet UITableView *TBL_sellers;
 @property(nonatomic,strong) IBOutlet GIBadgeView *badge_view;
+@property(nonatomic,assign) id <sellersprotocol>delegate;
 
 
 

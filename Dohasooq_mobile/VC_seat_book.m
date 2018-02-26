@@ -79,7 +79,7 @@
     if([[xmlDoc valueForKey:@"_status"] isEqualToString:@"false"])
     {
          [Helper_activity stop_activity_animation:self];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Not Available" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Show is getting delayed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
 
         
@@ -330,6 +330,10 @@
         }
 
     }
+    if(seats.backgroundColor == [UIColor grayColor])
+    {
+        seats.enabled= NO;
+    }
     
 //   if(seats_ARR.count >= [[[xmlDoc valueForKey:@"Classes"] valueForKey:@"_maxBooking"] intValue])
 //    {
@@ -353,8 +357,8 @@
 //
 //
 //    }
-//    else
-//    {
+    else
+   {
     @try
     {
     if([[title_arr objectAtIndex:i] isEqualToString:@""])
@@ -513,7 +517,7 @@
             
         }
     }
-   // }
+    }
     NSLog(@"the data:%@",seats_ARR);
 }
 

@@ -65,7 +65,7 @@
 
 @property (nonatomic, strong) UIPickerView *contry_pickerView;
 @property (nonatomic, strong) UIPickerView *state_pickerView;
-@property (nonatomic, strong) UIPickerView *group_pickerVIEW;
+//@property (nonatomic, strong) UIPickerView *group_pickerVIEW;
 @property(strong,nonatomic)UIPickerView *flag_contry_pickerCiew;
 
 

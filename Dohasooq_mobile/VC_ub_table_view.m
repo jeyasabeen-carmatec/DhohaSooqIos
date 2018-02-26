@@ -1,4 +1,4 @@
-//
+ //
 //  VC_ub_table_view.m
 //  Dohasooq_mobile
 //
@@ -7,10 +7,16 @@
 //
 
 #import "VC_ub_table_view.h"
+#import "HttpClient.h"
+#import "Helper_activity.h"
+#import "categorie_cell.h"
+#import "dynamic_categirie_cell.h"
 
 @interface VC_ub_table_view ()<UITableViewDelegate,UITableViewDataSource>
 {
-    NSArray *sub_arr;
+    NSMutableArray *sub_arr;
+    BOOL stat_tag;
+    BOOL isTableExpanded;
 }
 
 @end
@@ -20,6 +26,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    sub_arr = [[NSMutableArray alloc]init];
+    isTableExpanded=NO;
     
 #pragma Empty View Frame
     CGRect frameset = _VW_empty.frame;
@@ -29,10 +37,12 @@
     _VW_empty.center = self.view.center;
     [self.view addSubview:_VW_empty];
     _VW_empty.hidden = YES;
+    _TBL_sub_brnds.hidden = YES;
     
     _BTN_empty.layer.cornerRadius = self.BTN_empty.frame.size.width / 2;
     _BTN_empty.layer.masksToBounds = YES;
-
+    
+  
     
     _TBL_sub_brnds.delegate = self;
     _TBL_sub_brnds.dataSource = self;
@@ -55,32 +65,48 @@
    // [sub_arr  addObjectsFromArray:srt_arr];
     
 }
+
 -(void)load_DATA
 {
-    [_BTN_title setTitle:[[[NSUserDefaults standardUserDefaults] valueForKey:@"item_name"] uppercaseString] forState:UIControlStateNormal];
-    @try
-    {
-    sub_arr =[[[[NSUserDefaults standardUserDefaults] valueForKey:@"product_sub_list"] valueForKey:@"child_categories"] mutableCopy];
-    if(sub_arr.count  < 1)
-    {
-        _VW_empty.hidden = NO;
-        _TBL_sub_brnds.hidden = YES;
-    }
-    else
-    {
-        _VW_empty.hidden = YES;
-        _TBL_sub_brnds.hidden= NO;
-    }
     
-    [_TBL_sub_brnds reloadData];
-    }
-    @catch(NSException *exception)
-    {
-        
-    }
+    NSString *str_URL = [[NSUserDefaults standardUserDefaults] valueForKey:@"product_list_sub_url"];
+    NSString *urlGetuser;
+    urlGetuser =[NSString stringWithFormat:@"%@",str_URL];
+    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    [Helper_activity animating_images:self];
     
-     
+    [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                [Helper_activity stop_activity_animation:self];
+            }
+              if (data)
+              {
+                  [Helper_activity stop_activity_animation:self];
+                  sub_arr = [data mutableCopy];
+                  if(sub_arr.count  < 1)
+                  {
+                      _VW_empty.hidden = NO;
+                      _TBL_sub_brnds.hidden = YES;
+                  }
+                  else
+                  {
+                      _VW_empty.hidden = YES;
+                      _TBL_sub_brnds.hidden= NO;
+                  }
 
+                  [_TBL_sub_brnds reloadData];
+              }
+            
+            });
+        }];
+    
+
+    
+    
+    
+    [_BTN_title setTitle:[[[NSUserDefaults standardUserDefaults] valueForKey:@"item_name"] uppercaseString] forState:UIControlStateNormal];
+ 
 }
 -(void)viewWillAppear:(BOOL)animated{
     self.navigationItem.hidesBackButton = YES;
@@ -96,19 +122,242 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+    NSString *Title;
+    NSString *identifier;
+    NSInteger index;
     
-    cell.textLabel.textColor = [UIColor darkGrayColor];
-    cell.textLabel.text = [[[sub_arr  objectAtIndex:indexPath.row] valueForKey:@"name"] uppercaseString];
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        
+        identifier = @"cete_cell";
+        index = 1;
+        
+    }
+    else{
+        identifier = @"QCate_cell";
+        index = 0;
+        
+        
+    }
+
+    dynamic_categirie_cell *cell = (dynamic_categirie_cell *)[tableView dequeueReusableCellWithIdentifier:identifier];
     
-    
-    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"]){
-        cell.textLabel.textAlignment = NSTextAlignmentRight;
+       if (cell == nil)
+    {
+        NSArray *nib;
+        nib = [[NSBundle mainBundle] loadNibNamed:@"dynamic_categirie_cll" owner:self options:nil];
+        cell = [nib objectAtIndex:index];
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
     
+//    [cell.LBL_arrow addTarget:self action:@selector(showSubItems:) forControlEvents:UIControlEventTouchUpInside];
+    
+    NSDictionary *d1 = [sub_arr objectAtIndex:indexPath.row] ;
+    
+    if([[d1 valueForKey:@"sub_child"] count] > 0)
+    {
+        cell.LBL_arrow.alpha = 1.0;
+        [cell.LBL_arrow setTitle:@"+" forState:UIControlStateNormal];
+        cell.LBL_arrow.tag = indexPath.row;
+        [cell.LBL_arrow addTarget:self action:@selector(showSubItems:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    else
+    {
+        cell.LBL_arrow.alpha = 0.0;
+    }
+    
+    NSDictionary *d = [[sub_arr objectAtIndex:indexPath.row] mutableCopy] ;
+    NSArray *arr = [d valueForKey:@"sub_child"];
+    
+    for(NSDictionary *dInner in arr )
+    {
+        if([sub_arr indexOfObjectIdenticalTo:dInner]!=NSNotFound)
+        {
+            [cell.LBL_arrow setTitle:@"-" forState:UIControlStateNormal];
+            cell.LBL_arrow.tag = indexPath.row;
+            [cell.LBL_arrow addTarget:self action:@selector(showSubItems:) forControlEvents:UIControlEventTouchUpInside];
+        }
+    }
+    
+    Title= [[sub_arr objectAtIndex:indexPath.row] valueForKey:@"name"];
+    cell.LBL_name.text = Title;
+
+//   return [self createCellWithTitle:Title  indexPath:indexPath];
+    
     return cell;
 }
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)aTableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.editing == NO || !indexPath)
+        return UITableViewCellEditingStyleNone;
+    
+    if (self.editing && indexPath.row == ([sub_arr count]))
+        return UITableViewCellEditingStyleInsert;
+    else
+        if (self.editing && indexPath.row == ([sub_arr count]))
+            return UITableViewCellEditingStyleDelete;
+    
+    return UITableViewCellEditingStyleNone;
+}
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle) editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleInsert)
+    {
+        
+    }
+    else if(editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        
+    }
+}
+-(void)CollapseRows:(NSArray*)ar
+{
+    for(NSDictionary *dInner in ar )
+    {
+        NSUInteger indexToRemove=[sub_arr indexOfObjectIdenticalTo:dInner];
+        NSArray *arInner=[dInner valueForKey:@"sub_child"];
+        if(arInner && [arInner count]>0)
+        {
+            [self CollapseRows:arInner];
+        }
+        
+        if([sub_arr indexOfObjectIdenticalTo:dInner]!=NSNotFound)
+        {
+            [sub_arr removeObjectIdenticalTo:dInner];
+            [self.TBL_sub_brnds deleteRowsAtIndexPaths:[NSArray arrayWithObject:
+                                                   [NSIndexPath indexPathForRow:indexToRemove inSection:0]
+                                                   ]
+                                 withRowAnimation:UITableViewRowAnimationLeft];
+        }
+    }
+}
+
+/*- (UITableViewCell*)createCellWithTitle:(NSString *)title  indexPath:(NSIndexPath*)indexPath
+{
+    NSString *identifier;
+    NSInteger index;
+    
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        
+        identifier = @"cete_cell";
+        index = 1;
+        
+    }
+    else{
+        identifier = @"QCate_cell";
+        index = 0;
+        
+        
+    }
+    
+    dynamic_categirie_cell *cell = (dynamic_categirie_cell *)[self.TBL_sub_brnds dequeueReusableCellWithIdentifier:identifier];
+    if (cell == nil)
+    {
+        NSArray *nib;
+        nib = [[NSBundle mainBundle] loadNibNamed:@"dynamic_categirie_cll" owner:self options:nil];
+        cell = [nib objectAtIndex:index];
+    }
+    UIView *bgView = [[UIView alloc] init];
+    bgView.backgroundColor = [UIColor whiteColor];
+    cell.selectedBackgroundView = bgView;
+    cell.LBL_name.text = title;
+    cell.LBL_name.textColor = [UIColor blackColor];
+    
+    
+    [cell setIndentationLevel:[[[sub_arr objectAtIndex:indexPath.row] valueForKey:@"level"] intValue]];
+    cell.indentationWidth = 20;
+    
+    float indentPoints = cell.indentationLevel * cell.indentationWidth;
+    
+    cell.contentView.frame = CGRectMake(indentPoints+25,cell.contentView.frame.origin.y,cell.contentView.frame.size.width - indentPoints,cell.contentView.frame.size.height);
+    
+    NSDictionary *d1=[sub_arr objectAtIndex:indexPath.row] ;
+    
+    if([[d1 valueForKey:@"sub_child"] count] > 0)
+    {
+        cell.LBL_arrow.alpha = 1.0;
+        [cell.LBL_arrow setTitle:@"+" forState:UIControlStateNormal];
+      //  [cell.LBL_arrow setTitle:@"-" forState:UIControlStateHighlighted];
+      //  [cell.LBL_arrow setTitle:@"-" forState:UIControlStateSelected];
+
+        [cell.LBL_arrow addTarget:self action:@selector(showSubItems:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    else
+    {
+        cell.LBL_arrow.alpha = 0.0;
+    }
+    
+
+    
+       return cell;
+}*/
+
+-(void)showSubItems :(UIButton *) sender
+{
+
+    UIButton *btn = (UIButton*)sender;
+    CGRect buttonFrameInTableView = [btn convertRect:btn.bounds toView:self.TBL_sub_brnds];
+    NSIndexPath *indexPath = [self.TBL_sub_brnds indexPathForRowAtPoint:buttonFrameInTableView.origin];
+    
+    dynamic_categirie_cell *cell = (dynamic_categirie_cell *)[self.TBL_sub_brnds cellForRowAtIndexPath:indexPath];
+    
+    
+    if ([cell.LBL_arrow.titleLabel.text  isEqualToString:@"+"])
+    {
+        [cell.LBL_arrow setTitle:@"-" forState:UIControlStateNormal];
+    }
+    else
+    {
+        [cell.LBL_arrow setTitle:@"+" forState:UIControlStateNormal];
+    }
+    
+    NSDictionary *d = [[sub_arr objectAtIndex:indexPath.row] mutableCopy] ;
+    NSArray *arr = [d valueForKey:@"sub_child"];
+    if(arr)
+    {
+        for(NSDictionary *subitems in arr )
+        {
+            NSInteger index = [sub_arr indexOfObjectIdenticalTo:subitems];
+            isTableExpanded = (index>0 && index!=NSIntegerMax);
+            if(isTableExpanded) break;
+        }
+        if(isTableExpanded)
+        {
+            [self CollapseRows:arr];
+        }
+        else
+        {
+            NSUInteger count = indexPath.row+1;
+            NSMutableArray *arrCells=[NSMutableArray array];
+            for(NSDictionary *dInner in arr )
+            {
+                [arrCells addObject:[NSIndexPath indexPathForRow:count inSection:0]];
+                @try
+                {
+                [sub_arr insertObject:dInner atIndex:count++];
+                    
+                }
+                @catch(NSException *exception)
+                {
+                    
+                }
+            }
+            @try
+            {
+            [self.TBL_sub_brnds insertRowsAtIndexPaths:arrCells withRowAnimation:UITableViewRowAnimationLeft];
+            }
+            @catch(NSException *exception)
+            {
+                
+            }
+        }
+    }
+}
+
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
    // product_list_type
@@ -163,6 +412,7 @@ UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellSty
         }
         
     
+    
     NSString *list_TYPE = @"productList";
     NSString *url_key = [NSString stringWithFormat:@"%@/%@/0",list_TYPE,[[sub_arr objectAtIndex:indexPath.row] valueForKey:@"id"]];
     
@@ -173,9 +423,15 @@ UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellSty
     [[NSUserDefaults standardUserDefaults] setValue:url_key forKey:@"product_list_key"];
     [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    NSMutableDictionary *dic=[sub_arr objectAtIndex:indexPath.row];
+    
+    NSLog(@"Selected dict = %@",dic);
+    
+   
+    
     [self performSegueWithIdentifier:@"sublist_product_list" sender:self];
     
-    // [self dismissViewControllerAnimated:NO completion:nil];
 }
 - (IBAction)back_ACTIon:(id)sender
 {

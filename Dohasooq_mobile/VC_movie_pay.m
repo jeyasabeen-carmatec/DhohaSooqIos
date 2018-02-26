@@ -50,7 +50,7 @@
     
 //    
     CGRect framseset = _LBL_location.frame ;
-    framseset.origin.y = _LBL_event_name.frame.origin.y+ _LBL_event_name.frame.size.height + 3;
+    framseset.origin.y = _LBL_event_name.frame.origin.y+ _LBL_event_name.frame.size.height ;
     _LBL_location.frame = framseset;
     @try
     {
@@ -70,7 +70,7 @@
     
     
     framseset = _LBL_time.frame ;
-    framseset.origin.y = _LBL_location.frame.origin.y+ _LBL_location.frame.size.height + 3;
+    framseset.origin.y = _LBL_location.frame.origin.y+ _LBL_location.frame.size.height ;
     _LBL_time.frame = framseset;
     @try
     {
@@ -95,11 +95,18 @@
     framseset = _LBL_persons.frame ;
     framseset.origin.y = _LBL_time.frame.origin.y+ _LBL_time.frame.size.height ;
     _LBL_persons.frame = framseset;
-//    
+    
+    
+    framseset = _LBL_service_charges.frame ;
+    framseset.origin.x = _LBL_persons.frame.origin.x;
+    framseset.origin.y = _LBL_persons.frame.origin.y + _LBL_persons.frame.size
+    .height +3;
+    _LBL_service_charges.frame = framseset;
+    
     framseset = _LBL_seat.frame ;
-    framseset.origin.y = _LBL_persons.frame.origin.y+ _LBL_persons.frame.size.height ;
-   _LBL_seat.frame = framseset;
-//    
+    framseset.origin.y = _LBL_service_charges.frame.origin.y+ _LBL_service_charges.frame.size.height;
+    _LBL_seat.frame = framseset;
+    
     
     @try
     {
@@ -110,11 +117,9 @@
     {
         NSLog(@"%@",exception);
     }
-    
-    framseset = _LBL_service_charges.frame ;
-    framseset.origin.x = _LBL_persons.frame.size.width  + 10;
-    framseset.origin.y = _LBL_persons.frame.origin.y + 3;
-    _LBL_service_charges.frame = framseset;
+    [_LBL_seat sizeToFit];
+
+   
 //    
     framseset = _VW_contents.frame ;
     framseset.size.height = _LBL_seat.frame.origin.y + _LBL_seat.frame.size.height +20;
@@ -128,7 +133,7 @@
     {
         
         
-    NSString *text = [NSString stringWithFormat:@"Total Price \n%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"charges"],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+    NSString *text = [NSString stringWithFormat:@"Total Price : %@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],[[NSUserDefaults standardUserDefaults] valueForKey:@"charges"]];
         _LBL_service_charges.text = text;
     }
     @catch(NSException *exception)

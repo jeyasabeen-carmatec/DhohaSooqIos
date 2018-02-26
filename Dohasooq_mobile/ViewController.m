@@ -330,18 +330,21 @@
 }
 -(void)facebook_action:(UIButton*)sender{
     
-    NSString *fbAccessToken = [FBSDKAccessToken currentAccessToken].tokenString;
+  /*  NSString *fbAccessToken = [FBSDKAccessToken currentAccessToken].tokenString;
     NSLog(@"Token:%@",fbAccessToken);
     if([[NSUserDefaults standardUserDefaults]  objectForKey:@"login_details"])
     {
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:@"login_details"];
         NSLog(@"dict ------ %@",dict);
-        
+        NSString *str_id =  [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+         [self getFacebookProfileInfo:str_id];
         
     }
-
+    else{*/
+   
     FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
     login.loginBehavior = FBSDKLoginBehaviorWeb;
+    [login logOut];
     [login
      logInWithReadPermissions: @[@"email",@"public_profile"]
      fromViewController:self
@@ -364,7 +367,7 @@
 
          }
      }];
-
+  //  }
 }
 -(void)getFacebookProfileInfo:(NSString *)user_ID {
     
@@ -379,8 +382,8 @@
 //        // aHandler(result, error);
 //     }];
 //    
-    if([FBSDKAccessToken currentAccessToken])
-    {
+  //if([FBSDKAccessToken currentAccessToken])
+   // {
         [[[FBSDKGraphRequest alloc]initWithGraphPath:@"me" parameters:@{@"fields":@"id,name,first_name,last_name,picture,email"}] startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error)
         {
             if(!error)
@@ -403,7 +406,7 @@
             }
         }];
         
-    }
+   // }
     
         
 }
@@ -517,15 +520,16 @@ error:(NSError *)error{
     {
        
         NSString *type = @"Facebook";
-        NSString *first_name = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"first_name"]];
-        NSString *last_name = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"last_name"]];
+        NSString *first_nam = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"first_name"]];
+        NSString *last_nam = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"last_name"]];
         NSString *email = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"email"]];
+        email =  [email stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
         
         NSDictionary *parameters = @{
                                      @"login_type": type,
                                      @"email": email,
-                                     @"first_name": first_name,
-                                     @"last_name": last_name
+                                     @"first_name": first_nam,
+                                     @"last_name": last_nam
                                      
                                      };
         NSError *error;
@@ -877,7 +881,7 @@ error:(NSError *)error{
 }
 -(void)guest_action
 {
-    [self performSegueWithIdentifier:@"logint_to_home" sender:self];
+      [self dismissViewControllerAnimated:NO completion:nil];
 
     
 }
