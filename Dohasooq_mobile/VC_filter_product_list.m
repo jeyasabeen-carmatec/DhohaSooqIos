@@ -269,6 +269,8 @@
     url_str = [url_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
     
+    NSLog(@"%@",url_str);
+    
     
     [[NSUserDefaults standardUserDefaults] setValue:brands forKey:@"brnds"];
     [[NSUserDefaults standardUserDefaults] setValue:discount forKey:@"discount_val"];

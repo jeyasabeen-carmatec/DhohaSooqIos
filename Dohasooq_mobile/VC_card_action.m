@@ -234,7 +234,7 @@
 
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
-    return [[country_arr objectAtIndex:row] valueForKey:@"cntry_name"];
+    return [[country_arr objectAtIndex:row] valueForKey:@"name"];
     
 }
 
@@ -242,7 +242,7 @@
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
     
-    self.TXT_countries.text =  [[country_arr objectAtIndex:row] valueForKey:@"cntry_name"];
+    self.TXT_countries.text =  [[country_arr objectAtIndex:row] valueForKey:@"name"];
   //  NSLog(@"the text is:%@",_TXT_countries.text);
     
     
@@ -254,7 +254,7 @@
     @try {
         
         [Helper_activity animating_images:self];
-       NSMutableDictionary *response_countries_dic = [NSMutableDictionary dictionary];
+      // NSMutableDictionary *response_countries_dic = [NSMutableDictionary dictionary];
         NSString *country_ID = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/countriesapi/%@.json",SERVER_URL,country_ID];
         @try
@@ -285,8 +285,10 @@
             if(aData)
             {
                 
-                NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
-                NSLog(@"The response Api post sighn up API %@",json_DATA);
+                country_arr = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+                [Helper_activity stop_activity_animation:self];
+
+               /* NSLog(@"The response Api post sighn up API %@",json_DATA);
                 
                 
                 
@@ -335,12 +337,11 @@
                     
                 }
                 
-                 [Helper_activity stop_activity_animation:self];
                 
                 NSLog(@"sortedArr %@",sortedArr);
                 
                 [country_arr removeAllObjects];
-                [country_arr addObjectsFromArray:required_format];
+                [country_arr addObjectsFromArray:required_format];*/
                 [_country_picker_view reloadAllComponents];
             }
             else

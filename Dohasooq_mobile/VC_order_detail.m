@@ -21,7 +21,10 @@
 @interface VC_order_detail ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UITextFieldDelegate,UIGestureRecognizerDelegate>
 
 {
-       NSMutableArray *arr_product,*stat_arr,*reload_section,*arr_states,*picker_Arr,*response_picker_arr,*shipping_Countries_array;
+    
+    NSArray *ARR_pdts;
+    
+    NSMutableArray *stat_arr,*reload_section,*arr_states,*picker_Arr,*response_picker_arr,*shipping_Countries_array;
     NSString *TXT_count, *product_id,*item_count,*qr_code,*qar_miles_value;
     int i,j;
     NSInteger edit_tag,cntry_ID;
@@ -118,20 +121,18 @@
     
     //Country Code Related
     [self phone_code_view];
+    // Delivary Slot API
+     [self delivary_slot_API];
     
     dateFormatter = [[NSDateFormatter alloc] init];
 
-    
+    _VW_otp_vw.hidden =YES;
     _LBL_arrow.hidden = YES;
     isCash_on_delivary = YES;
     
     [self ShippingCountryAPICall];
     
-    
-    
-    
-    
-    
+   
     
 }
 -(void)viewWillAppear:(BOOL)animated
@@ -170,11 +171,11 @@
     
     if (_VW_otp_vw.hidden == NO) {
         _VW_otp_vw.hidden = YES;
-          [timer invalidate];
+        [timer invalidate];
         _LBL_next.hidden = NO;
     }
     
-  
+    
     [UIView commitAnimations];
 }
 
@@ -188,7 +189,7 @@
 
     
   
-    arr_product = [[NSMutableArray alloc]init];
+//    arr_product = [[NSMutableArray alloc]init];
    
     
     i = 1,j = 0;;
@@ -657,9 +658,9 @@
        
 // Shipping Country  ID Must Be  Related Country        
         
-        _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"cntry_name"];
-        cntry_ID = [[[shipping_Countries_array objectAtIndex:0] valueForKey:@"cntry_id"] integerValue];
-        ship_cntry_ID = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"cntry_id"];
+        _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"name"];
+        cntry_ID = [[[shipping_Countries_array objectAtIndex:0] valueForKey:@"id"] integerValue];
+        ship_cntry_ID = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"id"];
         
         //
         //         ship_cntry_ID = @"173";
@@ -1015,19 +1016,26 @@
         else
         {
             NSInteger count = 0;
-            NSArray *keys_arr;
+//            NSArray *keys_arr;
             
-            if([[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] isKindOfClass:[NSDictionary class]])
+           /* for(int l = 0;l<[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] count];l++)*/
+            //{
+//            NSArray *ARR_pdts = [[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"];
+            if([ARR_pdts count] != 0)
             {
-                keys_arr = [[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] allKeys];
-                count = keys_arr.count;
+//                keys_arr = [[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"];
+                
+//                [[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] objectAtIndex:0] allKeys];*/
+                
+//                count = [[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] count];
+                count = [ARR_pdts count];
                 
             }
             else
             {
                 count = 0;
             }
-            
+            //}
             
             return count;
             
@@ -1044,31 +1052,44 @@
         
         if(tableView == _TBL_orders)
         {
-            NSInteger ct = 0;
+//            NSInteger ct = 0;
+//            NSArray *ARR_pdts = [[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"];
+//            for(int k = 0;k<[ARR_pdts count];k++)
+//            {
+//            if([[ARR_pdts objectAtIndex:k] isKindOfClass:[NSDictionary class]])
+//            if([[ARR_pdts objectAtIndex:k] isKindOfClass:[NSArray class]])
+//            {
+//                NSArray *keys_arr = [ARR_pdts objectAtIndex:k];
             
-            if([[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] isKindOfClass:[NSDictionary class]])
-            {
-                NSArray *keys_arr = [[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] allKeys];
+                //[[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"]objectAtIndex:k] allKeys];
                 
-                
-                for(int m = 0;m< keys_arr.count;m++)
-                {
-                    if(section == m)
-                    {
-                        ct = [[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] valueForKey:[keys_arr objectAtIndex:m]]count];
-                    }
-                    
-                }
-                
-                
-            }
-            else
-            {
-                ct = 0;
-            }
+//                for(int m = 0;m< keys_arr.count;m++)
+//                {
+//                    if(section == m)
+//                    {
+//                        ct = [[[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] objectAtIndex:m] valueForKey:[keys_arr objectAtIndex:m]]count];
+//                    }
+//                    
+//                }
+//                ct = [ARR_pdts count];
             
+                
+//            }
+//            else
+//            {
+//                ct = 0;
+//            }
+//            }
             
-            return ct;
+            NSDictionary *ARR_val = [ARR_pdts objectAtIndex:section];
+            //            NSArray *keys_arr = [[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] objectAtIndex:indexPath.section] allKeys];
+            NSArray *keys_arr = [ARR_val allKeys];
+            
+            NSString *STR_cntnt = [keys_arr objectAtIndex:0];
+            
+            NSArray *ARR_CNNN = [ARR_val valueForKey:STR_cntnt];
+        
+            return [ARR_CNNN count];
         }
         else      // TableView Address
         {
@@ -1137,37 +1158,47 @@
             cell = [nib objectAtIndex:index];
         }
        // NSLog(@"IndexPatha :: %@",indexPath);
+
+        NSDictionary *ARR_val = [ARR_pdts objectAtIndex:indexPath.section];
+        //            NSArray *keys_arr = [[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] objectAtIndex:indexPath.section] allKeys];
+        NSArray *keys_arr = [ARR_val allKeys];
+        
+        NSString *STR_cntnt = [keys_arr objectAtIndex:0];
+        
+        NSArray *ARR_CNNN = [ARR_val valueForKey:STR_cntnt];
+//        if([[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] objectAtIndex:indexPath.section] isKindOfClass:[NSDictionary class]])
         
         
-        if([[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] isKindOfClass:[NSDictionary class]])
-        {
+        
+//        if([[ARR_CNNN objectAtIndex:indexPath.section] count] != 0)  /////////////////////
+//        {
+        
             
-            
-            
-            NSArray *keys_arr = [[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] allKeys];
-            arr_product = [[[jsonresponse_dic valueForKey:@"data"] valueForKey:@"pdts"] valueForKey:[keys_arr objectAtIndex:indexPath.section]];
+//            NSArray *keys_arr = [[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] objectAtIndex:indexPath.section] allKeys];
+//            arr_product = [ARR_CNNN objectAtIndex:indexPath.section];
+//            [[[[jsonresponse_dic valueForKey:@"data"] valueForKey:@"pdts"] objectAtIndex:indexPath.section] valueForKey:[keys_arr objectAtIndex:indexPath.section]];
             
             @try
             {
-                NSString *str = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"merchantId"]];
+                NSString *str = [NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"merchantId"]];
                
                 
-                NSString *img_url = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"productimage"]];
+                NSString *img_url = [NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"productimage"]];
 
                 [cell.IMG_item sd_setImageWithURL:[NSURL URLWithString:img_url]
                                  placeholderImage:[UIImage imageNamed:@"logo.png"]
                                           options:SDWebImageRefreshCached];
                 
-                NSString *item_name =[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"product_name"]];
+                NSString *item_name =[NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"product_name"]];
                 
                 item_name = [item_name stringByReplacingOccurrencesOfString:@"<null>" withString:@"not mentioned"];
                 
                 NSString *item_seller;
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                item_seller =[NSString stringWithFormat:@"البائع: %@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"merchantname"]];
+                item_seller =[NSString stringWithFormat:@"البائع: %@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"merchantname"]];
                 }else{
-                   item_seller =[NSString stringWithFormat:@"Seller: %@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"merchantname"]];
+                   item_seller =[NSString stringWithFormat:@"Seller: %@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"merchantname"]];
                 }
                 item_name = [item_name stringByReplacingOccurrencesOfString:@"<null>" withString:@"not mentioned"];
                 cell.LBL_item_name.text = item_name;
@@ -1191,8 +1222,8 @@
                 
                 
    // Product Quantity
-                cell._TXT_count.text = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"product_qty"]];
-                NSString *qnty = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"product_qty"]];
+                cell._TXT_count.text = [NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"product_qty"]];
+                NSString *qnty = [NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"product_qty"]];
                 if([qnty isEqualToString:@""]|| [qnty isEqualToString:@"null"]||[qnty isEqualToString:@"<null>"])
                 {
                     qnty = @"0";
@@ -1202,17 +1233,17 @@
                 
 #pragma mark Lbl_Price Attributed Text
                 
-                NSString *qr = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"currencycode"]];
+                NSString *qr = [NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"currencycode"]];
                 qr_code = qr;
                 NSString *mils;
                
-                NSString *prev_price = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"productprice"]];
+                NSString *prev_price = [NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"productprice"]];
                 
-                NSString *price = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"specialPrice"]];
+                NSString *price = [NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"specialPrice"]];
                 price = [price stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
                 price = [price stringByReplacingOccurrencesOfString:@"null" withString:@""];
                 
-                NSString *doha_miles = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"dohamileprice"]];
+                NSString *doha_miles = [NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"dohamileprice"]];
                 doha_miles = [doha_miles stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
                 doha_miles = [doha_miles stringByReplacingOccurrencesOfString:@"null" withString:@""];
                 
@@ -1468,18 +1499,18 @@
                 
                 [cell.BTN_plus addTarget:self action:@selector(plus_action:) forControlEvents:UIControlEventTouchUpInside];
                 [cell.BTN_minus addTarget:self action:@selector(minus_action:) forControlEvents:UIControlEventTouchUpInside];
-                cell.BTN_plus.tag = [[[arr_product objectAtIndex:indexPath.row] valueForKey:@"product_id"] intValue];
-                cell.BTN_minus.tag = [[[arr_product objectAtIndex:indexPath.row] valueForKey:@"product_id"] intValue];
+                cell.BTN_plus.tag = [[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"product_id"] intValue];
+                cell.BTN_minus.tag = [[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"product_id"] intValue];
             
                 
                 
-                cell.BTN_calendar.tag = [[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"merchantId"]] integerValue];
+                cell.BTN_calendar.tag = [[NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"merchantId"]] integerValue];
                 [cell.BTN_calendar addTarget:self action:@selector(calendar_action:) forControlEvents:UIControlEventTouchUpInside];
                 
                 [cell.BTN_stat addTarget:self action:@selector(BTN_check_clickds:) forControlEvents:UIControlEventTouchUpInside];
                 [cell.BTN_box addTarget:self action:@selector(BTN_check_clickds:) forControlEvents:UIControlEventTouchUpInside];
                 
-                cell.BTN_stat.tag = [[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"merchantId"]] integerValue];
+                cell.BTN_stat.tag = [[NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"merchantId"]] integerValue];
                 cell.BTN_box.tag = cell.BTN_stat.tag;
                 
                 cell.LBL_stat.tag =j;
@@ -1495,13 +1526,21 @@
                 cell.BTN_minus.layer.borderColor = [UIColor grayColor].CGColor;
                 
 
+                
+                NSInteger totalRow = [tableView numberOfRowsInSection:indexPath.section];//first get total rows in that section by current indexPath.
+                
+                
     // seperator View Border Setting
+                
+                if(indexPath.row == totalRow -1){ //last row
+
                 cell.seperator_view.layer.borderWidth = 0.2f;
                 cell.seperator_view.layer.borderColor = [UIColor lightGrayColor].CGColor;
+                }
                 
                 
      //Checking Cash On Delivary Available or Not For Payment Options
-                if ([[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"cod"]] isEqualToString:@"No"]) {
+                if ([[NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"cod"]] isEqualToString:@"No"]) {
                     isCash_on_delivary = NO;
                 }
 //                else
@@ -1512,10 +1551,9 @@
     //Delivary Slot checking Condition
                 
                 
-        NSString *delivery_slot_available  =[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"delivery_slot_available"]];
+        NSString *delivery_slot_available  =[NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"delivery_slot_available"]];
                 
-                
-            NSInteger totalRow = [tableView numberOfRowsInSection:indexPath.section];//first get total rows in that section by current indexPath.
+        
                 
                 if(indexPath.row == totalRow -1){ //last row
                     
@@ -1544,7 +1582,7 @@
                 
      //Expected Delivary Date customization
                 
-                NSString *expected_delivary_date  =[NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"expecteddelivery"]];
+                NSString *expected_delivary_date  =[NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"expecteddelivery"]];
                 
                 if ([expected_delivary_date isEqualToString:@"No delivery date allocated"]) {
                     
@@ -1685,7 +1723,7 @@
                 
 // Shipping Charge labelcustomization
                 NSString *CHRGE;
-                NSString *qrcode = [NSString stringWithFormat:@"%@",[[arr_product objectAtIndex:indexPath.row] valueForKey:@"currencycode"]];
+                NSString *qrcode = [NSString stringWithFormat:@"%@",[[ARR_CNNN objectAtIndex:indexPath.row] valueForKey:@"currencycode"]];
                 NSString *shipping_type;
                 
 //                if(indexPath.row == totalRow -1){
@@ -1787,7 +1825,7 @@
                 }
             
                
-                NSLog(@"........%@",text2);
+              //  NSLog(@"........%@",text2);
                 
                 
                 if ([cell.LBL_charge respondsToSelector:@selector(setAttributedText:)]) {
@@ -1898,14 +1936,14 @@
                 NSLog(@"%@",exception);
             }
         
-        }
+      //  }//
         
-        else{
-            
-            [HttpClient createaAlertWithMsg:@"No orders Found" andTitle:@""];
-            
-        }
-        
+//        else{
+//            
+//            [HttpClient createaAlertWithMsg:@"No orders Found" andTitle:@""];
+//            
+//        }
+    
         return cell;
         
     }
@@ -2034,19 +2072,26 @@
 {
     if(tableView == _TBL_orders)
     {
-        NSInteger ct;
+
         
         @try {
             
             
             CGSize result = [[UIScreen mainScreen] bounds].size;
             
+            NSDictionary *ARR_val = [ARR_pdts objectAtIndex:indexPath.row];
+            //            NSArray *keys_arr = [[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] objectAtIndex:indexPath.section] allKeys];
+            NSArray *keys_arr = [ARR_val allKeys];
             
-            NSArray *keys_arr = [[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] allKeys];
+            NSString *STR_cntnt = [keys_arr objectAtIndex:0];
             
-            ct = [[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] valueForKey:[keys_arr objectAtIndex:indexPath.section]]count];
+            NSArray *ARR_CNNN = [ARR_val valueForKey:STR_cntnt];
+//            ct = [[[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] objectAtIndex:0] valueForKey:[keys_arr objectAtIndex:indexPath.row]]count];
             
-            if (ct-1 == indexPath.row) {
+          
+//            int randomWordIndex = rand() % [ARR_cntnt count];
+            
+            if ([ARR_CNNN count]-1 == indexPath.row) {
                 
                 
                 if(result.height <= 480)
@@ -2248,10 +2293,12 @@
 {
     merchent_id = [NSString stringWithFormat:@"%ld",(long)sender.tag];
     
-    [self delivary_slot_API];
+   // [self delivary_slot_API];
     //[self performSelector:@selector(delivary_slot_API) withObject:activityIndicatorView afterDelay:0.001];
 
-   
+    _TXT_Date.text = nil;
+    _TXT_Time.text = nil;
+    
     VW_overlay.hidden = NO;
     _VW_delivery_slot.hidden = NO;
     _BTN_done.layer.cornerRadius = 2.0f;
@@ -3115,12 +3162,15 @@
         }
         if ([reduce isEqualToString:@"minus"]) {
             charge_ship = charge_ship-[reduce_amount floatValue];
+            
+            total = total-[reduce_amount floatValue];
+            
+            
         }
         else{
             charge_ship = charge_ship+[reduce_amount floatValue];
+              total = total+[reduce_amount floatValue];
         }
-        
-        
         
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
@@ -3144,8 +3194,10 @@
         }
         
     }
-    //[self set_data_to_product_Summary_View];
 // For Updating Total Amount and Dohamiles value in  product View Summary
+    
+    [self fill_value_to_Lbl_product_summary:@" "];
+    
     [self LBl_dohamilesAndTotalAmount:total];
 }
 
@@ -3771,18 +3823,26 @@
 - (IBAction)order_to_wishListPage:(id)sender {
     [self performSegueWithIdentifier:@"order_to_wish" sender:self];
 }
-#pragma mark filtering place order method paramaters
+#pragma mark filtering  paramaters for place order method
 
 -(void)filtering_MerchantId{
     
     
     charge_ship = 0;
-    if([[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] isKindOfClass:[NSDictionary class]])
+    for(int g=0;g<[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] count];g++)
+    {
+    if([[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] objectAtIndex:g] isKindOfClass:[NSDictionary class]])
     {
         
         NSString *shipChrge,*shipMethod;
         
-        NSArray *keys_arr = [[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] allKeys];
+        NSArray *keys_arr = [[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] objectAtIndex:g] allKeys];
+        
+        NSSortDescriptor *sortDescriptor;
+        sortDescriptor = [[NSSortDescriptor alloc] initWithKey:nil
+                                                     ascending:YES];
+       keys_arr = [keys_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
+        
         for (int k=0; k<keys_arr.count; k++) {
             
             
@@ -3808,9 +3868,10 @@
      [self set_data_to_product_Summary_View];
     
     //Product Summary View setting Ship Charge
-   // self.LBL_shipping_charge.text = [NSString stringWithFormat:@"%@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],charge_ship];
+   // self.LBL_shipping_charge.text = [NSString stringWithFormat:@"%@ %f",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],charge_ship];
     
     NSLog(@"charge for all products %.2f %@",charge_ship,date_time_merId_Arr);
+    }
 }
 
 #pragma mark order_detail_API_call
@@ -3818,7 +3879,6 @@
 -(void)order_detail_API_call
 {
     @try {
-        
         [Helper_activity animating_images:self];
         date_time_merId_Arr = [NSMutableArray array];
         jsonresponse_dic  = [[NSMutableDictionary alloc]init];
@@ -3827,8 +3887,8 @@
         
         NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-       
-         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/orderdetailsapi/%@/%@/%@.json",SERVER_URL,user_id,languge,country];
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/orderdetailsapi/%@/%@/%@/iOS.json",SERVER_URL,user_id,languge,country];
         NSLog(@"order_detail_API URL::::::%@",urlGetuser);
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         @try {
@@ -3837,56 +3897,126 @@
                     if (error) {
                         NSLog(@"%@",[error localizedDescription]);
                         [Helper_activity stop_activity_animation:self];
-
+                        
                     }
                     if (data) {
                         
-                       [Helper_activity stop_activity_animation:self];
-                            @try {
+                        [Helper_activity stop_activity_animation:self];
+                        @try {
+                            
+                            
+                            if ([data isKindOfClass:[NSDictionary class]]) {
+                                jsonresponse_dic = data;
                                 
-                               
-                                if ([data isKindOfClass:[NSDictionary class]]) {
-                                    jsonresponse_dic = data;
+                                
+                                NSLog(@"order_detail_API Response:::%@*********",data);
+                                
+                                
+                                // NSLog(@"..................... %@",[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] allKeys]);
+                                @try {
+                                    ARR_pdts = [[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"];
+                                    if (!ARR_pdts.count) {
+                                        NSLog(@" .................................");
+                                        
+                                        NSString *msg;
+                                        NSString *ok_btn;
+                                        
+                                            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                                            {
+                                                //[HttpClient createaAlertWithMsg:@"آسف لا مزيد من المنتجات الرجاء تحديث الصفحة" andTitle:@""];
+                                                msg = @"آسف لا مزيد من المنتجات، يرجى تحديث الصفحة";
+                                                ok_btn = @"حسنا";
+                                                
+                                            }
+                                            else{
+                                                  msg = @"Sorry No More Products, Please Refresh the Page";
+                                                ok_btn = @"OK";
+
+                                                //[HttpClient createaAlertWithMsg:@"Sorry No More Products Please Refresh the Page" andTitle:@""];
+                                            }
+                                        
+                                        
+                                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:ok_btn otherButtonTitles:nil, nil];
+                                                   alert.tag = 3;
+                                                   [alert show];
+                                        
+                                        
+                                    }
                                     
-                                  
-                                    NSLog(@"order_detail_API Response:::%@*********",data);
-                                    [self filtering_MerchantId];
-                                    [self Shipp_address_API];
-                                    [self set_UP_VIEW];
-                                   // [self next_page];
-                                  
-                                   
-                                    
-                                }
-                                else{
-                                    [HttpClient createaAlertWithMsg:@"The Data could not be read It is not in correct format" andTitle:@""];
-                                    
+                               /*     for(int m= 0;m < [ARR_pdts count];m++)
+                                    {
+                                        if ([[ARR_pdts objectAtIndex:m] isKindOfClass:[NSDictionary class]]) {
+                                            
+                                            if (![[ARR_pdts objectAtIndex:m]count]) {
+                                                
+                                                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                                                {
+                                                    [HttpClient createaAlertWithMsg:@"آسف لا مزيد من المنتجات الرجاء تحديث الصفحة" andTitle:@""];
+                                                }
+                                                else{
+                                                    [HttpClient createaAlertWithMsg:@"Sorry No More Products Please Refresh the Page" andTitle:@""];
+                                                }
+                                                
+                                                
+                                                [self performSegueWithIdentifier:@"checkout_home" sender:self];
+                                                
+                                            }
+                                        }else if ([[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] objectAtIndex:m] isKindOfClass:[NSArray class]]){
+                                            
+                                            if (![[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] objectAtIndex:m]count]) {
+                                                
+                                                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                                                {
+                                                    [HttpClient createaAlertWithMsg:@"آسف لا مزيد من المنتجات الرجاء تحديث الصفحة" andTitle:@""];
+                                                }
+                                                else{
+                                                    [HttpClient createaAlertWithMsg:@"Sorry No More Products Please Refresh the Page" andTitle:@""];
+                                                }
+                                                
+                                                [self performSegueWithIdentifier:@"checkout_home" sender:self];
+                                                
+                                                
+                                            }
+                                        }
+                                    }*/
+                                } @catch (NSException *exception) {
+                                    NSLog(@"Excepton In Order Details API %@",exception);
                                 }
                                 
-                            } @catch (NSException *exception) {
-                                NSLog(@"%@",exception);
-                               
+                                
+                                [self filtering_MerchantId];
+                                [self Shipp_address_API];
+                                [self set_UP_VIEW];
+                                // [self next_page];
+                                
+                                
                                 
                             }
+                            else{
+                                [HttpClient createaAlertWithMsg:@"The Data could not be read It is not in correct format" andTitle:@""];
+                            }
+                            
+                        } @catch (NSException *exception) {
+                            NSLog(@"%@",exception);
+                            
+                            
                         }
+                    }
                     
                 });
                 
             }];
         } @catch (NSException *exception) {
-             [Helper_activity stop_activity_animation:self];
+            [Helper_activity stop_activity_animation:self];
             NSLog(@"%@",exception);
-                  }
-        
-      
+        }
     } @catch (NSException *exception) {
-         [Helper_activity stop_activity_animation:self];
+        [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",exception);
-       
-
+        
+        
         
     }
-    
 }
 
 #pragma mark Shipp_address_API_Call
@@ -4166,76 +4296,11 @@
                     }
                     if (data) {
                         @try {
-                            if ([data isKindOfClass:[NSDictionary class]]) {
-                                
-                                NSLog(@".............%@",data);
-                                
-                                [response_countries_dic addEntriesFromDictionary:data];
+                            if ([data isKindOfClass:[NSArray class]]) {
                                 [response_picker_arr removeAllObjects];
-                             
-                                for (int x=0; x<[[response_countries_dic allKeys] count]; x++) {
-                                    NSDictionary *dic = @{@"cntry_id":[[response_countries_dic allKeys] objectAtIndex:x],@"cntry_name":[response_countries_dic valueForKey:[[response_countries_dic allKeys] objectAtIndex:x]]};
-                                    
-                                    [response_picker_arr addObject:dic];
-                                }
+                                NSLog(@".............%@",data);
+                                [response_picker_arr addObjectsFromArray:data];
                                 
-                                NSSortDescriptor *sortDescriptor;
-                                sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"cntry_name"
-                                                                             ascending:YES];
-                                NSArray *sortedArr = [response_picker_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
-                                
-                                
-                                NSMutableArray  *required_format = [NSMutableArray array];
-                                for (int l =0; l<sortedArr.count; l++) {
-                                    
-                                    if ([[[sortedArr objectAtIndex:l] valueForKey:@"cntry_name"] isEqualToString:@"Qatar"] ) {
-                                        
-                                        [required_format addObject:[sortedArr objectAtIndex:l]];
-                                        
-                                    }
-                                    
-                                }
-                                for (int l =0; l<sortedArr.count; l++) {
-                                    
-                                    if ([[[sortedArr objectAtIndex:l] valueForKey:@"cntry_name"] isEqualToString:@"India"]) {
-                                        
-                                        [required_format addObject:[sortedArr objectAtIndex:l]];
-                                        
-                                    }
-                                    
-                                }
-                                
-                                for (int m =0; m<sortedArr.count; m++) {
-                                    
-                                    if (![[[sortedArr objectAtIndex:m] valueForKey:@"cntry_name"] isEqualToString:@"Qatar"] && ![[[sortedArr objectAtIndex:m] valueForKey:@"cntry_name"] isEqualToString:@"India"]) {
-                                        
-                                        [required_format addObject:[sortedArr objectAtIndex:m]];
-                                        
-                                    }
-                                    
-                                }
-                                
-                                                               
-                                NSLog(@"sortedArr %@",sortedArr);
-                               [response_picker_arr removeAllObjects];
-                                if (!select_blng_ctry_state) {
-                                    
-                                    @try {
-                                        [response_picker_arr addObject:[required_format objectAtIndex:0]];
-                                    } @catch (NSException *exception) {
-                                        NSLog(@"No Countries");
-                                    }
-                                }
-                                
-                                else{
-                                    @try {
-                                     [response_picker_arr addObjectsFromArray:required_format];
-                                    } @catch (NSException *exception) {
-                                        NSLog(@"No Countries");
-                                    }
-                                    
-                            
-                                }
                                 [_staes_country_pickr reloadAllComponents];
                                 
                                
@@ -4294,16 +4359,19 @@
                     @try {
                         NSLog(@"%@",data);
                         
-                        if ([data isKindOfClass:[NSDictionary class]]) {
+                        if ([data isKindOfClass:[NSArray class]]) {
                            
-                            [response_countries_dic addEntriesFromDictionary:data];
+//                            [response_countries_dic addEntriesFromDictionary:data];
                             [shipping_Countries_array removeAllObjects];
                             
-                            for (int x=0; x<[[response_countries_dic allKeys] count]; x++) {
-                                NSDictionary *dic = @{@"cntry_id":[[response_countries_dic allKeys] objectAtIndex:x],@"cntry_name":[response_countries_dic valueForKey:[[response_countries_dic allKeys] objectAtIndex:x]]};
-                                
-                                [shipping_Countries_array addObject:dic];
-                            }
+//                            for (int x=0; x<[[response_countries_dic allKeys] count]; x++) {
+//                                NSDictionary *dic = @{@"id":[[response_countries_dic allKeys] objectAtIndex:x],@"name":[response_countries_dic valueForKey:[[response_countries_dic allKeys] objectAtIndex:x]]};
+//                                
+//                                [shipping_Countries_array addObject:dic];
+//                            }
+                            
+                            [shipping_Countries_array addObjectsFromArray:data];
+                            
                         [_shipping_PickerView reloadAllComponents];
 
                         }
@@ -4425,7 +4493,7 @@
     if (pickerView == _staes_country_pickr) {
         
         if (isCountrySelected) {
-            return [[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_name"];
+            return [[response_picker_arr objectAtIndex:row] valueForKey:@"name"];
         }
         else{
             
@@ -4435,7 +4503,7 @@
     else if (pickerView == _shipping_PickerView){ // Shipping Address Country
         
         
-        return [[shipping_Countries_array objectAtIndex:row] valueForKey:@"cntry_name"];
+        return [[shipping_Countries_array objectAtIndex:row] valueForKey:@"name"];
     }
 
     else if (pickerView ==_country_code_Pickerview){
@@ -4567,13 +4635,17 @@
         if (isCountrySelected) {
             @try {
                 
-                cntry_selection = [[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_name"];
-                cntry_ID = [[[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_id"] integerValue];
+                cntry_selection = [[response_picker_arr objectAtIndex:row] valueForKey:@"name"];
+                cntry_ID = [[[response_picker_arr objectAtIndex:row] valueForKey:@"id"] integerValue];
                 state_selection = @"";
                 
                 if (select_blng_ctry_state) {
-                    _TXT_state.text = nil;
-                    blng_cntry_ID = [[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_id"];
+                    
+                    if (![blng_cntry_ID isEqualToString:[NSString stringWithFormat:@"%@",[[response_picker_arr objectAtIndex:row] valueForKey:@"id"]]]) {
+                        _TXT_state.text = nil;
+                        blng_cntry_ID = [NSString stringWithFormat:@"%@",[[response_picker_arr objectAtIndex:row] valueForKey:@"id"]];
+                    }
+                   
                 }
                 
                 
@@ -4607,9 +4679,9 @@
        
         @try {
             
-            _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:row] valueForKey:@"cntry_name"];
-            cntry_ID = [[[shipping_Countries_array objectAtIndex:row] valueForKey:@"cntry_id"] integerValue];
-            ship_cntry_ID = [[shipping_Countries_array objectAtIndex:row] valueForKey:@"cntry_id"];
+            _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:row] valueForKey:@"name"];
+            cntry_ID = [[[shipping_Countries_array objectAtIndex:row] valueForKey:@"id"] integerValue];
+            ship_cntry_ID = [[shipping_Countries_array objectAtIndex:row] valueForKey:@"id"];
             state_selection = @"";
             _TXT_ship_state.text = nil;
             
@@ -4686,11 +4758,14 @@
                                if (isCash_on_delivary) {
                                     _BTN_cod.hidden = NO;
                                     _LBL_cash_on_Delivary.hidden = NO;
-                                    
+
+                                   
                                 }
                                 else{
                                     _BTN_cod.hidden = YES;
-                                     _LBL_cash_on_Delivary.hidden = YES;
+                                    _LBL_cash_on_Delivary.hidden = YES;
+
+                                     //_LBL_cash_on_Delivary.hidden = YES;
                                 }
                                
                             }
@@ -4759,8 +4834,11 @@
                                     
                                     // Updating Data In Labels After PromoCode
                                     [self after_applying_PromoCodeDiscount:promo_discount_value andTotalAmountAfterDiscount:total];
-                                    _TXT_cupon.text = nil; 
                                     
+                                    _TXT_cupon.text=nil;
+                                    
+                                    
+    
                                      [HttpClient createaAlertWithMsg:[data valueForKey:@"message"] andTitle:@""];
                                 }
                                 
@@ -5668,6 +5746,8 @@
             
         }
         
+        NSLog(@"..............%@",[[NSDictionary alloc]initWithDictionary:Formshipping copyItems:YES]);
+        
         
         data = [NSJSONSerialization dataWithJSONObject:Formshipping options:NSJSONWritingPrettyPrinted error:nil];
         NSString *form_shipping_str = [[NSString alloc] initWithData:data
@@ -6115,6 +6195,9 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         [self BTN_check_clickd];
         NSLog(@"*****************Select Checkbox*****************");
         
+    }else if (alertView.tag == 3){
+        // [self performSegueWithIdentifier:@"checkout_home" sender:self];
+        [self.navigationController popToRootViewControllerAnimated:YES];
     }
     
     

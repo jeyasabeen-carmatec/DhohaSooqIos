@@ -276,6 +276,8 @@
 -(void)CountryAPICall
 {
     @try {
+        required_format = [NSMutableArray array];
+
        NSMutableArray *countrypicker = [[NSMutableArray alloc]init];
         NSString *country_ID = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/countriesapi/%@.json",SERVER_URL,country_ID];
@@ -300,11 +302,10 @@
             if(aData)
             {
                 
-                country_dict = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+                required_format = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+
                 
-                
-                
-                for (int x=0; x<[[country_dict allKeys] count]; x++) {
+              /*  for (int x=0; x<[[country_dict allKeys] count]; x++) {
                     NSDictionary *dic = @{@"cntry_id":[[country_dict allKeys] objectAtIndex:x],@"cntry_name":[country_dict valueForKey:[[country_dict allKeys] objectAtIndex:x]]};
                     
                     [countrypicker addObject:dic];
@@ -369,11 +370,11 @@
 //                        
 //                    }
 //                    
-//                }
+//                }*/
 //
                 
-                [countrypicker removeAllObjects];
-                [countrypicker addObjectsFromArray:required_format];
+                //[countrypicker removeAllObjects];
+                //[countrypicker addObjectsFromArray:required_format];
                 [_contry_pickerView reloadAllComponents];
                // NSLog(@"The response Api post sighn up API %@",countrypicker);
                 
@@ -791,7 +792,7 @@
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
     
     if (pickerView == _contry_pickerView) {
-        return [required_format[row] valueForKey:@"cntry_name"];
+        return [required_format[row] valueForKey:@"name"];
     }
     if (pickerView == _state_pickerView) {
         return [[statepicker objectAtIndex:row] valueForKey:@"value"];
@@ -841,11 +842,11 @@
 //************ Country PickerView ************
     if ([pickerViewSelection isEqualToString:@"Country"]) {
         
-        country_val = [required_format[row] valueForKey:@"cntry_name"];
+        country_val = [required_format[row] valueForKey:@"name"];
         self.TXT_country.text = country_val;
 
         
-        country_id = [NSString stringWithFormat:@"%@",[required_format[row] valueForKey:@"cntry_id"]];
+        country_id = [NSString stringWithFormat:@"%@",[required_format[row] valueForKey:@"id"]];
         NSLog(@"the text is:%@",temp_arr);
         
         // [self states_API:[NSString stringWithFormat:@"%@",[required_format[row] valueForKey:@"cntry_id"]]];
@@ -1505,15 +1506,16 @@
    
    
   else if( _BTN_male.tag == 1 && _BTN_feamle.tag == 1)
-  {
-       msg = @"Please select Gender";
-      if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-      {
-          msg = @"يرجى تحديد الجنس";
-      }
+   {
+    msg = @"Please select Gender";
+       
+       if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+       {
+           msg = @"يرجى تحديد الجنس";
 
-  }
-    
+       }
+   }
+     
     if(msg)
     {
         [HttpClient createaAlertWithMsg:msg andTitle:@""];

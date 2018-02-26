@@ -2655,8 +2655,8 @@
             }
 
             NSString *list_key =[NSString stringWithFormat:@"%@/%@/0",list_TYPE,str_id];
-          //  [[NSUserDefaults standardUserDefaults] setValue:list_key forKey:@"product_list_key"];
-         //   [[NSUserDefaults standardUserDefaults] synchronize];
+            [[NSUserDefaults standardUserDefaults] setValue:list_key forKey:@"product_list_key"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             
             NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
             NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
@@ -4028,6 +4028,12 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
      }
     else
     {
+        
+        
+        
+        @try {
+            
+       
     for(int i=0 ; i < [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys] count];i++)
     {
         NSLog(@"The keys are %@",[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"two"] allKeys]);
@@ -4063,9 +4069,18 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
             
         }
         */
+    } // for loop Close
+        } @catch (NSException *exception) {
+            NSLog(@"Exception in TWO Deal %@",exception);
+        }
         
-    }
-        NSLog(@"Hot deals all keys:%@",[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys]);
+ // ********** Deal One *************
+//        NSLog(@"Hot deals all keys:%@",[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys]);
+        
+        @try {
+            
+      
+        
     for(int i=0 ; i < [[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] count];i++)
     {
           NSString *str_key = [NSString stringWithFormat:@"%@",[[[[json_Response_Dic valueForKey:@"dealSection"] valueForKey:@"one"] allKeys] objectAtIndex:i]];
@@ -4104,7 +4119,11 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
         
         */
     }
-    
+        } @catch (NSException *exception) {
+            NSLog(@"Exception in ONE Deal %@",exception);
+        }
+ // ********** Brands *************
+        
     brands_arr = [json_Response_Dic valueForKey:@"brands_female"];
     
     //  TIMER_new = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:nil repeats:YES];

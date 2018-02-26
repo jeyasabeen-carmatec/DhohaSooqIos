@@ -183,6 +183,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     self.navigationItem.hidesBackButton = YES;
+    self.navigationController.navigationBar.hidden = NO;
 }
 
 #pragma Button Ations

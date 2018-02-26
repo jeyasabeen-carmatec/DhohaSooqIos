@@ -1656,6 +1656,7 @@
                         <segue destination="pbc-hN-8EP" kind="push" identifier="order_to_cart" id="LJJ-ad-5gJ"/>
                         <segue destination="i9C-AL-c2e" kind="push" identifier="order_to_wish" id="a0t-dX-VXu"/>
                         <segue destination="GmQ-Pk-XR6" kind="push" identifier="move_to_pay" id="4M5-0m-fdo"/>
+                        <segue destination="pxu-nZ-TmL" kind="push" identifier="checkout_home" id="wZ3-07-46C"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Iad-x8-1TN" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -8736,14 +8737,14 @@ UVIgMAM
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="o1F-lI-VIX"/>
-        <segue reference="Vl2-Bh-ngv"/>
-        <segue reference="aks-Mo-RlK"/>
-        <segue reference="w7l-c9-Wq1"/>
+        <segue reference="wZ3-07-46C"/>
         <segue reference="s4c-Qx-Ots"/>
+        <segue reference="Vl2-Bh-ngv"/>
+        <segue reference="a0t-dX-VXu"/>
         <segue reference="Ah8-We-7n4"/>
         <segue reference="UCK-dQ-vRE"/>
         <segue reference="lT4-28-Wjm"/>
+        <segue reference="LJJ-ad-5gJ"/>
         <segue reference="WuY-ui-8aO"/>
         <segue reference="vMu-Y7-4Nz"/>
         <segue reference="GAW-2H-hzI"/>

@@ -1707,6 +1707,10 @@
         }
     
     NSString *url_str = [NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/Customer/1.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=%@",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"product_list_key"],country,languge,user_id,discount,min,max,brands,sort_key];
+    
+    NSLog(@"****** %@******",[[NSUserDefaults standardUserDefaults]valueForKey:@"product_list_key"]);
+    
+    
    url_str = [url_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
 
@@ -1798,6 +1802,22 @@
                            
                             
                         }
+                        else  if(![[json_DATA valueForKey:@"products"] isKindOfClass:[NSArray class]]){
+                            _LBL_oops.text = @"Oops!";
+                            _LBL_no_products.text = @"No matching products available.";
+                            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                            {
+                                _LBL_oops.text = @"عذراً";
+                                _LBL_no_products.text = @"لا يتوفر أي منتج مطابق";
+                            }
+                            
+                            _VW_empty.hidden = NO;
+                            // _VW_filter.hidden = YES;
+                            _BTN_top.hidden = YES;
+                            self.collection_product.hidden = YES;
+                            [self set_UP_VW];
+                        }
+                        
                         
 
                             @try
@@ -1915,6 +1935,22 @@
                                     
                                 }
                             }
+                            else{      // No products Case
+                                _LBL_oops.text = @"Oops!";
+                                _LBL_no_products.text = @"No matching products available.";
+                                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                                {
+                                    _LBL_oops.text = @"عذراً";
+                                    _LBL_no_products.text = @"لا يتوفر أي منتج مطابق";
+                                }
+                                
+                                _VW_empty.hidden = NO;
+                                //_VW_filter.hidden = YES;
+                                _BTN_top.hidden = YES;
+                                self.collection_product.hidden = YES;
+                                [self set_UP_VW];
+                            }
+                            
 
                             
                             @try
@@ -2388,8 +2424,15 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     int tag1 =  [[timer.userInfo valueForKey:@"tag"] intValue];
     
-    NSString *STR_bidDate =  [[productDataArray objectAtIndex:tag1]valueForKey:@"end_date"];//[TIMER_new.userInfo valueForKey:@"timer"];
-    if([STR_bidDate isKindOfClass:[NSNull class]]||[STR_bidDate isEqualToString:@"<null>"]||[STR_bidDate isEqualToString:@"(null)"]||!STR_bidDate)
+    
+    NSString *STR_bidDate;
+    @try {
+        STR_bidDate =  [[productDataArray objectAtIndex:tag1]valueForKey:@"end_date"];//[TIMER_new.userInfo valueForKey:@"timer"];
+
+    } @catch (NSException *exception) {
+        
+    }
+       if([STR_bidDate isKindOfClass:[NSNull class]]||[STR_bidDate isEqualToString:@"<null>"]||[STR_bidDate isEqualToString:@"(null)"]||!STR_bidDate)
     {
         
     }

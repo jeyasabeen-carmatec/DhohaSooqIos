@@ -87,7 +87,7 @@
     j=0;i = 0;
     
     
-    response_picker_arr = [NSMutableArray array];
+    response_picker_arr = [[NSMutableArray alloc]init];
     
     
     jsonresponse_dic_address = [[NSMutableDictionary alloc]init];
@@ -899,10 +899,10 @@
     else if(str_lname.length < 1)
     {
         [cell.TXT_last_name becomeFirstResponder];
-        msg = @"Last name should not be less than 1 characters";
+        msg = @"Last name should not be less than 3 characters";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-            msg = @"الكنية ألا يقل الاسم الأول عن 1 حروف";
+            msg = @"الكنية ألا يقل الاسم الأول عن 3 حروف";
         }
 
         
@@ -1545,12 +1545,12 @@ if (textField.tag == 8) {
             if(aData)
             {
                 
-                NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
-                NSLog(@"The response Api post sighn up API %@",json_DATA);
+                response_picker_arr = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+                //NSLog(@"The response Api post sighn up API %@",json_DATA);
                 
                 
                 
-                [response_countries_dic addEntriesFromDictionary:json_DATA];
+               /* [response_countries_dic addEntriesFromDictionary:json_DATA];
                 [response_picker_arr removeAllObjects];
                 //[response_picker_arr addObjectsFromArray:[response_countries_dic allKeys]]
                 for (int x=0; x<[[response_countries_dic allKeys] count]; x++) {
@@ -1602,7 +1602,7 @@ if (textField.tag == 8) {
                 else{
                     [response_picker_arr removeAllObjects];
                     [response_picker_arr addObjectsFromArray:required_format];
-                }
+                }*/
                 [_staes_country_pickr reloadAllComponents];
             }
             else
@@ -1664,57 +1664,21 @@ if (textField.tag == 8) {
                     @try {
                         NSLog(@"%@",data);
                         
-                        if ([data isKindOfClass:[NSDictionary class]]) {
+                       if ([data isKindOfClass:[NSArray class]]) {
                             
-                            [response_countries_dic addEntriesFromDictionary:data];
-                            [response_picker_arr removeAllObjects];
-                            
-                            for (int x=0; x<[[response_countries_dic allKeys] count]; x++) {
-                                NSDictionary *dic = @{@"cntry_id":[[response_countries_dic allKeys] objectAtIndex:x],@"cntry_name":[response_countries_dic valueForKey:[[response_countries_dic allKeys] objectAtIndex:x]]};
+                           [response_picker_arr removeAllObjects];
+                           [response_picker_arr addObjectsFromArray:data];
                                 
-                                [response_picker_arr addObject:dic];
-                            }
-                            
-//                            NSSortDescriptor *sortDescriptor;
-//                            sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"cntry_name"
-//                                                                         ascending:YES];
-//                            NSArray *sortedArr = [response_picker_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
-//                            
-//                            
-//                            NSMutableArray  *required_format = [NSMutableArray array];
-//                            for (int l =0; l<sortedArr.count; l++) {
-//                                
-//                                if ([[[sortedArr objectAtIndex:l] valueForKey:@"cntry_name"] isEqualToString:@"Qatar"] ) {
-//                                    
-//                                    [required_format addObject:[sortedArr objectAtIndex:l]];
-//                                    
-//                                }
-//                                
-//                            }
-//                            for (int l =0; l<sortedArr.count; l++) {
-//                                
-//                                if ([[[sortedArr objectAtIndex:l] valueForKey:@"cntry_name"] isEqualToString:@"India"]) {
-//                                    
-//                                    [required_format addObject:[sortedArr objectAtIndex:l]];
-//                                    
-//                                }
-//                                
-//                            }
-//                            
-//                            for (int m =0; m<sortedArr.count; m++) {
-//                                
-//                                if (![[[sortedArr objectAtIndex:m] valueForKey:@"cntry_name"] isEqualToString:@"Qatar"] && ![[[sortedArr objectAtIndex:m] valueForKey:@"cntry_name"] isEqualToString:@"India"]) {
-//                                    
-//                                    [required_format addObject:[sortedArr objectAtIndex:m]];
-//                                    
-//                                }
-//                                
-//                            }
-//                            [response_picker_arr removeAllObjects];
-//                            [response_picker_arr addObjectsFromArray:required_format];
+                           
+                           }
+                       else{
+                           [HttpClient createaAlertWithMsg:@"The Data Could not be read" andTitle:@""];
+                       }
+                           
+//
                             [_staes_country_pickr reloadAllComponents];
                             
-                        }
+                       // }
                         
                     } @catch (NSException *exception) {
                         
@@ -1751,6 +1715,7 @@ if (textField.tag == 8) {
 -(void)stateApiCall{
     
     @try {
+        response_picker_arr = [NSMutableArray array];
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/getstatebyconapi/%ld.json",SERVER_URL,(long)cntry_ID];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         @try {
@@ -1766,16 +1731,16 @@ if (textField.tag == 8) {
                                 //[arr_states addObjectsFromArray:data];
                                 [response_picker_arr removeAllObjects];
                                 
-                                [response_picker_arr addObjectsFromArray:data];
+                               // response_picker_arr = data;
                                 
                                 NSSortDescriptor *sortDescriptor;
                                 sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"value"
                                                                              ascending:YES];
-                                NSArray *sortedArr = [response_picker_arr sortedArrayUsingDescriptors:@[sortDescriptor]];
+                                NSArray *sortedArr = [data sortedArrayUsingDescriptors:@[sortDescriptor]];
                                 
                                 NSLog(@"sortedArr %@",sortedArr);
                                 
-                                [response_picker_arr removeAllObjects];
+                              //  [response_picker_arr removeAllObjects];
                                 [response_picker_arr addObjectsFromArray:sortedArr];
                                 [_staes_country_pickr reloadAllComponents];
 //                                [self.staes_country_pickr selectRow:0 inComponent:0 animated:NO];
@@ -1841,7 +1806,7 @@ if (textField.tag == 8) {
     
     @try {
         if (isCountrySelected) {
-            return [[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_name"];
+            return [[response_picker_arr objectAtIndex:row] valueForKey:@"name"];
         }
         else{
             
@@ -1907,9 +1872,9 @@ if (textField.tag == 8) {
         if (isCountrySelected) {
             @try {
                 
-                cntry_selection = [[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_name"];
+                cntry_selection = [[response_picker_arr objectAtIndex:row] valueForKey:@"name"];
                 
-                cntry_ID = [[[response_picker_arr objectAtIndex:row] valueForKey:@"cntry_id"] integerValue];
+                cntry_ID = [[[response_picker_arr objectAtIndex:row] valueForKey:@"id"] integerValue];
                 
                 state_selection = @"";
                 
@@ -1917,6 +1882,22 @@ if (textField.tag == 8) {
             } @catch (NSException *exception) {
                 NSLog(@"%@",exception);
             }
+        }
+        else if([pickerViewSelection isEqualToString:@"countryship"])
+        {
+            @try {
+                
+                cntry_selection = [[response_picker_arr objectAtIndex:row] valueForKey:@"name"];
+                
+                cntry_ID = [[[response_picker_arr objectAtIndex:row] valueForKey:@"id"] integerValue];
+                
+                state_selection = @"";
+                
+                //  NSLog(@"country::%@",cntry_selection);
+            } @catch (NSException *exception) {
+                NSLog(@"%@",exception);
+            }
+
         }
         else{
             @try {

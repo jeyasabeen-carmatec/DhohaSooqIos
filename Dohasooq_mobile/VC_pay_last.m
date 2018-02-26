@@ -127,8 +127,8 @@
             if(aData)
             {
                 
-                NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
-                NSLog(@"The response Api post sighn up API %@",json_DATA);
+                country_arr = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+              /*  NSLog(@"The response Api post sighn up API %@",json_DATA);
                 
                 
                 
@@ -182,7 +182,7 @@
                 NSLog(@"sortedArr %@",sortedArr);
                 
                 country_arr = [[NSMutableArray alloc] init];
-                [country_arr addObjectsFromArray:required_format];
+                [country_arr addObjectsFromArray:required_format];*/
                 [_country_picker_view reloadAllComponents];
             }
             else
@@ -233,7 +233,7 @@
 #pragma Button action
 -(void)cancel_action
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:NO];
 }
 -(void)BTN_american_express_action
 {
@@ -371,7 +371,7 @@
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
     @try {
-        return [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:row] valueForKey:@"cntry_name"]];
+        return [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:row] valueForKey:@"name"]];
     } @catch (NSException *exception) {
         NSLog(@"exception pickerView titleForRow %@ ",exception);
     }
@@ -381,7 +381,7 @@
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
     @try {
-        self.TXT_countries.text = [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:row] valueForKey:@"cntry_name"]];
+        self.TXT_countries.text = [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:row] valueForKey:@"name"]];
         NSLog(@"the text is:%@",_TXT_countries.text);
     } @catch (NSException *exception) {
         NSLog(@"Exception from picker country %@",exception);

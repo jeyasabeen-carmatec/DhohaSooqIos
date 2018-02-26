@@ -282,7 +282,7 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
     [_phone_picker_view addGestureRecognizer:tapToSelect];
 
     
-    NSLog(@"%@",phone_code_arr);
+   // NSLog(@"%@",phone_code_arr);
     
     UIToolbar* phone_close = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
     phone_close.barStyle = UIBarStyleBlackTranslucent;

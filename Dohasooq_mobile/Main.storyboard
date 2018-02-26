@@ -2039,7 +2039,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="filter.png" id="Bq2-GK-ImR">
-                                                <rect key="frame" x="14" y="5" width="20" height="20"/>
+                                                <rect key="frame" x="11" y="5" width="20" height="20"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             </imageView>
                                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="gjp-DN-JKB">
@@ -3233,11 +3233,12 @@
                         <outlet property="scroll_shipping" destination="Qxd-5i-Hr7" id="hNN-wo-o6x"/>
                         <outlet property="title_Discount" destination="Dhk-cm-22G" id="fh4-sl-mXi"/>
                         <segue destination="or9-WP-Pz2" kind="push" identifier="move_to_pay" animates="NO" id="ROL-QN-yyW"/>
+                        <segue destination="pxu-nZ-TmL" kind="push" identifier="checkout_home" id="xKJ-sZ-hWs"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Iad-x8-1TN" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <view contentMode="scaleToFill" misplaced="YES" id="tNz-po-qvn">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="218"/>
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="225"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Dear Customer, Your OTP for Cash On delivery" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="caj-sV-1RY">
@@ -3248,21 +3249,21 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="OTP (one time Password) has been sent to your Mobile" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Hte-1M-5VO">
-                            <rect key="frame" x="16" y="30" width="288" height="37"/>
+                            <rect key="frame" x="16" y="31" width="288" height="37"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="11"/>
                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" textAlignment="natural" minimumFontSize="17" id="HaQ-qp-AhM" customClass="Hoshi_Billing_ADDR">
-                            <rect key="frame" x="27" y="75" width="266" height="50"/>
+                            <rect key="frame" x="27" y="77" width="266" height="50"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
                             <textInputTraits key="textInputTraits"/>
                         </textField>
                         <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="MzD-No-HaE">
-                            <rect key="frame" x="90" y="168" width="140" height="21"/>
+                            <rect key="frame" x="92" y="173" width="140" height="21"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
                             <state key="normal" title="Resend OTP">
@@ -3279,7 +3280,7 @@
                             </state>
                         </button>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="1c0-JX-ADF">
-                            <rect key="frame" x="104" y="188" width="113" height="21"/>
+                            <rect key="frame" x="105" y="197" width="113" height="21"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -4003,7 +4004,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="obX-lj-mK0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3221" y="1186"/>
+            <point key="canvasLocation" x="3305" y="1169"/>
         </scene>
         <!--product detail-->
         <scene sceneID="m4h-cP-s9a">
@@ -4286,8 +4287,8 @@
                         <label opaque="NO" userInteractionEnabled="NO" alpha="0.94999999999999996" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="9" id="Uos-2v-C3D">
                             <rect key="frame" x="10" y="22" width="304" height="19"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
-                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
+                            <color key="textColor" red="0.27058823529411763" green="0.27058823529411763" blue="0.27058823529411763" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" alpha="0.90000000000000002" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aYR-Sx-1ur">
@@ -6066,7 +6067,7 @@
                                     <rect key="frame" x="173" y="10" width="131" height="29"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     <subviews>
-                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="VENUE" textAlignment="natural" minimumFontSize="17" id="Xtc-qq-bVI">
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="VENUE" textAlignment="center" minimumFontSize="17" id="Xtc-qq-bVI">
                                             <rect key="frame" x="12" y="2" width="107" height="25"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -9260,26 +9261,26 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Zyf-Jf-hDH"/>
-        <segue reference="mZG-92-WKz"/>
-        <segue reference="CGA-QG-v2I"/>
-        <segue reference="n8v-Km-OHF"/>
-        <segue reference="Fb4-74-wUL"/>
-        <segue reference="Eh1-NH-Qoz"/>
-        <segue reference="9v6-ul-yqt"/>
-        <segue reference="htO-L3-6dj"/>
-        <segue reference="thM-tK-ujK"/>
         <segue reference="xx1-cA-Spd"/>
-        <segue reference="Cw8-vV-nPW"/>
-        <segue reference="VlJ-8X-e9R"/>
-        <segue reference="pDU-cD-KDi"/>
-        <segue reference="U1I-tg-KmK"/>
-        <segue reference="1fc-cP-jfH"/>
-        <segue reference="6gT-Rb-aGG"/>
-        <segue reference="W9f-ts-VBE"/>
+        <segue reference="u1i-KR-yL0"/>
+        <segue reference="PIq-gb-2yd"/>
         <segue reference="5H5-cs-IyK"/>
+        <segue reference="x0e-hc-baO"/>
+        <segue reference="ftO-4d-EKK"/>
+        <segue reference="faj-2O-9a0"/>
         <segue reference="scE-Vh-P52"/>
         <segue reference="TQh-po-CZq"/>
-        <segue reference="PIq-gb-2yd"/>
+        <segue reference="Cw8-vV-nPW"/>
+        <segue reference="pDU-cD-KDi"/>
+        <segue reference="Ia6-yw-sEr"/>
+        <segue reference="1fc-cP-jfH"/>
+        <segue reference="6gT-Rb-aGG"/>
+        <segue reference="Eh1-NH-Qoz"/>
+        <segue reference="CGA-QG-v2I"/>
+        <segue reference="fdB-wy-FRl"/>
+        <segue reference="Zyf-Jf-hDH"/>
+        <segue reference="n8v-Km-OHF"/>
+        <segue reference="Fb4-74-wUL"/>
+        <segue reference="9v6-ul-yqt"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -16,15 +16,15 @@
 
 //pilot dohasooq
 //#define SERVER_URL @"http://pilot.dohasooq.com/"
-//#define IMG_URL @"http://pilot.dohasooq.com/"
+//#define IMG_URL @"https://pilot.dohasooq.com/"
 
 //test dohasooq
 //#define SERVER_URL @"http://test2.dohasooq.com/"
 //#define IMG_URL @"http://test2.dohasooq.com"
 
 //dohasooq carmatec
-#define SERVER_URL @"http://dohasooq.carmatec.com/"
-#define IMG_URL @"http://dohasooq.carmatec.com"
+#define SERVER_URL @"https://dohasooq.carmatec.com/"
+#define IMG_URL @"https://dohasooq.carmatec.com"
 
 
 //192.168.0.171
