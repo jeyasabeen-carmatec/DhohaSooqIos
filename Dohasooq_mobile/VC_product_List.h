@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "VC_filter_product_list.h"
 #import "MIBadgeButton.h"
-
+#import "GIBadgeView.h"
 @interface VC_product_List : UIViewController <filter_protocol>
 {
     NSTimer *TIMER_countdown;
@@ -19,12 +19,14 @@
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_product;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_product_count;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_product_name;
-@property(nonatomic,strong) IBOutlet MIBadgeButton *BTN_cart;
+@property(nonatomic,strong) IBOutlet UIButton *BTN_cart;
 @property(nonatomic,strong) IBOutlet MIBadgeButton *BTN_fav;
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_back;
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *products;
 @property(nonatomic,strong) IBOutlet UIButton *BTN_filter;
 @property(nonatomic,strong) IBOutlet UIButton *BTN_top;
+@property(nonatomic,strong) IBOutlet GIBadgeView *badge_view;
+
 
 //filter VIEW
 

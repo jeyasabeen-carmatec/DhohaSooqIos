@@ -11,6 +11,7 @@
 #import  <AssetsLibrary/AssetsLibrary.h>
 #import <Photos/Photos.h>
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_My_profile ()<UITextFieldDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
 {
@@ -20,7 +21,7 @@
     NSDictionary *user_dictionary;
 //    UIView *VW_overlay;
 //    UIActivityIndicatorView *activityIndicatorView;
-    NSString *state_val,*group_val,*country_val,*state_id,*country_id;
+    NSString *state_val,*country_val,*state_id,*country_id;
     
     NSArray *json_DATA;
     NSData *pngData;
@@ -30,9 +31,9 @@
     NSDictionary *country_dict;
     NSString *cntry_code;
     
-    
-  
-}
+    BOOL isPickerViewScrolled;
+    NSString *pickerViewSelection;
+    }
 
 @end
 
@@ -58,7 +59,7 @@
 //    
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(View_user_data) withObject:nil afterDelay:0.01];
     [self phone_code_view];
     [self set_UP_VIEW];
@@ -108,6 +109,8 @@
     _BTN_bank_employee.tag = 1;
     _BTN_male.tag = 1;
     _BTN_feamle.tag = 1;
+    
+    _TXT_country_fld.delegate = self;
 
     [_BTN_edit addTarget:self action:@selector(Button_edit_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_edit_billing addTarget:self action:@selector(Button_edit_billing_action) forControlEvents:UIControlEventTouchUpInside];
@@ -156,9 +159,9 @@
     _state_pickerView.delegate = self;
     _state_pickerView.dataSource = self;
     
-    _group_pickerVIEW = [[UIPickerView alloc] init];
-    _group_pickerVIEW.delegate = self;
-    _group_pickerVIEW.dataSource = self;
+//    _group_pickerVIEW = [[UIPickerView alloc] init];
+//    _group_pickerVIEW.delegate = self;
+    //_group_pickerVIEW.dataSource = self;
     
     _date_picker = [[UIDatePicker alloc] init];
     _date_picker.datePickerMode = UIDatePickerModeDate;
@@ -200,13 +203,15 @@
     _TXT_country_fld.inputView=_flag_contry_pickerCiew;
     self.TXT_country.inputView = _contry_pickerView;
     self.TXT_state.inputView=_state_pickerView;
-    _TXT_group.inputView = _group_pickerVIEW;
+   // _TXT_group.inputView = _group_pickerVIEW;
      _TXT_Dob.inputView = _date_picker;
 
     _TXT_country.tintColor=[UIColor clearColor];
     _TXT_state.tintColor=[UIColor clearColor];
     _TXT_group.tintColor=[UIColor clearColor];
     _TXT_Dob.tintColor=[UIColor clearColor];
+
+    
 
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -219,7 +224,7 @@
     [_date_picker setMaximumDate:min_date];
     [_date_picker addTarget:self action:@selector(fromdateTextField) forControlEvents:UIControlEventValueChanged];
 
-    [self CountryAPICall];
+    //[self CountryAPICall];
 //   temp_arr = [[NSMutableArray alloc]init];
 //    countrypicker = [[NSMutableArray alloc]init];
 //     temp_arr = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
@@ -236,7 +241,7 @@
 //        }
 //    }
    
-    [self customer_GROUP_API];
+   // [self customer_GROUP_API];
     
     // = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
 }
@@ -253,40 +258,26 @@
 }
 -(void)countrybuttonClick
 {
+    if (!isPickerViewScrolled) {
+     [self pickerViewCustomAction:0];
+    }
    
-    self.TXT_country.text = country_val;
-    self.TXT_state.text=state_val;
-    self.TXT_group.text  = group_val;
     
-    
-    for(int i = 0;i<country_dict.count;i++)
-    {
-        if([country_val isEqualToString:[[country_dict allValues]objectAtIndex:i]])
-        {
-            country_id =[NSString stringWithFormat:@"%@",[[country_dict allKeys]objectAtIndex:i]];
-            
-        }
-    }
-    for(int j = 0;j<json_DATA.count;j++)
-    {
-        if([state_val isEqualToString:[[json_DATA objectAtIndex:j]valueForKey:@"value"]])
-        {
-            state_id =[NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:j]valueForKey:@"key"]];
-            
-        }
-        
-    }
-
     [_TXT_country resignFirstResponder];
     [_TXT_group resignFirstResponder];
     [_TXT_Dob resignFirstResponder];
     [_TXT_state resignFirstResponder];
     [_TXT_country_fld resignFirstResponder];
+
+    
     
 }
+#pragma mark CountryAPICall
 -(void)CountryAPICall
 {
     @try {
+        required_format = [NSMutableArray array];
+
        NSMutableArray *countrypicker = [[NSMutableArray alloc]init];
         NSString *country_ID = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/countriesapi/%@.json",SERVER_URL,country_ID];
@@ -311,11 +302,10 @@
             if(aData)
             {
                 
-                country_dict = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+                required_format = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+
                 
-                
-                
-                for (int x=0; x<[[country_dict allKeys] count]; x++) {
+              /*  for (int x=0; x<[[country_dict allKeys] count]; x++) {
                     NSDictionary *dic = @{@"cntry_id":[[country_dict allKeys] objectAtIndex:x],@"cntry_name":[country_dict valueForKey:[[country_dict allKeys] objectAtIndex:x]]};
                     
                     [countrypicker addObject:dic];
@@ -357,16 +347,17 @@
                     }
                     
                 }
-                for(int i = 0;i<required_format.count;i++)
-                {
-                    if([[[user_dictionary valueForKey:@"detail"] valueForKey:@"country_name"] isEqualToString:[[required_format objectAtIndex:i] valueForKey:@"cntry_name"]])
-                    {
-                        country_id =[NSString stringWithFormat:@"%@",[[required_format objectAtIndex:i] valueForKey:@"cntry_id"]];
-                        [self states_API:country_id];
-                        
-                    }
-                }
-
+//                
+//                for(int i = 0;i<required_format.count;i++)
+//                {
+//                    if([[[user_dictionary valueForKey:@"detail"] valueForKey:@"country_name"] isEqualToString:[[required_format objectAtIndex:i] valueForKey:@"cntry_name"]])
+//                    {
+//                        country_id =[NSString stringWithFormat:@"%@",[[required_format objectAtIndex:i] valueForKey:@"cntry_id"]];
+//                        [self states_API:country_id];
+//                        
+//                    }
+//                }
+//
                 
                 
 //                for (int l =0; l<required_format.count; l++) {
@@ -379,23 +370,28 @@
 //                        
 //                    }
 //                    
-//                }
+//                }*/
 //
                 
-                [countrypicker removeAllObjects];
-                [countrypicker addObjectsFromArray:required_format];
+                //[countrypicker removeAllObjects];
+                //[countrypicker addObjectsFromArray:required_format];
                 [_contry_pickerView reloadAllComponents];
-                NSLog(@"The response Api post sighn up API %@",countrypicker);
+               // NSLog(@"The response Api post sighn up API %@",countrypicker);
                 
                 //  NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
             }
             else
             {
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 
-                
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+                }
+                else{
+                    [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+                }
+
             }
             
         }
@@ -646,14 +642,62 @@
 
 }
 
-#pragma Textfield delegates
+#pragma mark  Textfield delegates
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
     return YES;
 }
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    NSInteger inte = _TXT_mobile_phone.text.length;
+    if([_TXT_country_fld.text isEqualToString:@"+974"])
+    {
+        if(inte == 8)
+        {
+            if ([string isEqualToString:@""])
+            {
+                return YES;
+            }
+            else
+            {
+                return NO;
+            }
+        }
+       
+        
+
+    }
+    else
+    {
+        if(inte >= 15)
+        {
+            if ([string isEqualToString:@""]) {
+                return YES;
+            }
+            else
+            {
+                return NO;
+            }
+        }
+    }
+    NSCharacterSet *notAllowedChars = [[NSCharacterSet characterSetWithCharactersInString:@"1234567890"] invertedSet];
+    NSString *resultString = [[_TXT_mobile_phone.text componentsSeparatedByCharactersInSet:notAllowedChars] componentsJoinedByString:@""];
+    
+
+    _TXT_mobile_phone.text = resultString;
+    
+
+    return YES;
+}
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
+    isPickerViewScrolled = NO;
+    
+    if (textField == _TXT_Dob) {
+        pickerViewSelection = @"DOB";
+    }
+    
     
     if(textField == _TXT_city )
     {
@@ -678,10 +722,20 @@
     }
     
     if (textField == _TXT_country) {
+        pickerViewSelection = @"Country";
+        [self.contry_pickerView selectRow:0 inComponent:0 animated:YES];
         [_contry_pickerView reloadAllComponents];
     }
     if (textField == _TXT_state) {
+        
+        [self states_API:country_id];
+        pickerViewSelection = @"State";
+        [self.state_pickerView selectRow:0 inComponent:0 animated:YES];
         [_state_pickerView reloadAllComponents];
+    }
+    if (textField == _TXT_country_fld) {
+        pickerViewSelection = @"Phone";
+
     }
     
    
@@ -698,7 +752,7 @@
     }
     
 }
-#pragma Picker_Actions
+#pragma mark Picker_Actions
 
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
     if (pickerView == _contry_pickerView) {
@@ -707,10 +761,10 @@
     {
         return 1;
     }
-    if(pickerView == _group_pickerVIEW)
-    {
-        return 1;
-    }
+//    if(pickerView == _group_pickerVIEW)
+//    {
+//        return 1;
+//    }
     if (pickerView == _flag_contry_pickerCiew) {
         return 1;
     }
@@ -725,10 +779,10 @@
     if (pickerView == _state_pickerView) {
         return [statepicker count];
     }
-    if(pickerView == _group_pickerVIEW)
-    {
-        return [[grouppicker allValues] count];
-    }
+//    if(pickerView == _group_pickerVIEW)
+//    {
+//        return [[grouppicker allValues] count];
+//    }
     if (pickerView == _flag_contry_pickerCiew) {
         return phone_code_arr.count;
     }
@@ -736,16 +790,14 @@
     return 0;
 }
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    
     if (pickerView == _contry_pickerView) {
-        return [required_format[row] valueForKey:@"cntry_name"];
+        return [required_format[row] valueForKey:@"name"];
     }
     if (pickerView == _state_pickerView) {
-        return statepicker[row];
+        return [[statepicker objectAtIndex:row] valueForKey:@"value"];
     }
-    if(pickerView == _group_pickerVIEW)
-    {
-        return [grouppicker allValues][row];
-    }
+   
     if (pickerView == _flag_contry_pickerCiew) {
         return [NSString stringWithFormat:@"%@   %@",[phone_code_arr[row] valueForKey:@"name"],[phone_code_arr[row] valueForKey:@"code"]];
     }
@@ -754,34 +806,73 @@
 }
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-    if (pickerView == _contry_pickerView) {
+    
+    isPickerViewScrolled = YES;
+   
+    [self pickerViewCustomAction:row];
+   /* if (pickerView == _contry_pickerView) {
         
-            country_val = [required_format[row] valueForKey:@"cntry_name"];
-        
-        NSLog(@"the text is:%@",temp_arr);
-        
-//       NSArray *temp_arrs = [[NSUserDefaults standardUserDefaults] valueForKey:@"country_arr"];
-     
+        self.TXT_country.text = country_val;
 
-        [self states_API:[NSString stringWithFormat:@"%@",[required_format[row] valueForKey:@"cntry_id"]]];
+        country_val = [required_format[row] valueForKey:@"cntry_name"];
+        
+        country_id = [NSString stringWithFormat:@"%@",[required_format[row] valueForKey:@"cntry_id"]];
+        NSLog(@"the text is:%@",temp_arr);
+
+       // [self states_API:[NSString stringWithFormat:@"%@",[required_format[row] valueForKey:@"cntry_id"]]];
         self.TXT_state.enabled=YES;
     }
     if (pickerView == _state_pickerView) {
         
         self.TXT_email.enabled=YES;
-        state_val = statepicker[row];
+        state_val = [[statepicker objectAtIndex:row] valueForKey:@"value"];
 
-    }
-    if(pickerView == _group_pickerVIEW)
-    {
-        group_val = [grouppicker allValues][row];
+
+        _TXT_state.text = state_val;
         
-        [[NSUserDefaults standardUserDefaults] setValue:[grouppicker allKeys][row] forKey:@"groupid"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        state_id = [[statepicker objectAtIndex:row] valueForKey:@"key"];
+
     }
     if (pickerView == _flag_contry_pickerCiew) {
        self.TXT_country_fld.text = [phone_code_arr[row] valueForKey:@"code"];
+    } */
+}
+-(void)pickerViewCustomAction:(NSInteger )row{
+    
+//************ Country PickerView ************
+    if ([pickerViewSelection isEqualToString:@"Country"]) {
+        
+        country_val = [required_format[row] valueForKey:@"name"];
+        self.TXT_country.text = country_val;
+
+        
+        country_id = [NSString stringWithFormat:@"%@",[required_format[row] valueForKey:@"id"]];
+        NSLog(@"the text is:%@",temp_arr);
+        
+        // [self states_API:[NSString stringWithFormat:@"%@",[required_format[row] valueForKey:@"cntry_id"]]];
+        self.TXT_state.enabled=YES;
+        _TXT_state.text = nil;
+        
     }
+//************ State PickerView ************
+
+    else if ([pickerViewSelection isEqualToString:@"State"]){
+        
+        self.TXT_email.enabled=YES;
+        state_val = [[statepicker objectAtIndex:row] valueForKey:@"value"];
+        
+        
+        _TXT_state.text = state_val;
+        
+        state_id = [[statepicker objectAtIndex:row] valueForKey:@"key"];
+    }
+//************ Phone PickerView ************
+    else if ([pickerViewSelection isEqualToString:@"Phone"]){
+        
+        self.TXT_country_fld.text = [phone_code_arr[row] valueForKey:@"code"];
+
+    }
+    
 }
 
 
@@ -808,56 +899,64 @@
         if(aData)
         {
            json_DATA = (NSArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
-            NSLog(@"The response Api post sighn up API %@",json_DATA);
             statepicker = [[NSMutableArray alloc]init];
-            for(int i= 0;i<json_DATA.count;i++)
-            {
-                [statepicker addObject:[[json_DATA objectAtIndex:i] valueForKey:@"value"]];
-            }
-            NSString *str_state;
-           @try
-            {
-                str_state = [[user_dictionary valueForKey:@"detail"] valueForKey:@"state_name"];
-                str_state  = [str_state stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-
-                for(int j = 0;j<json_DATA.count;j++)
-                {
-                    if([str_state isEqualToString:[[json_DATA objectAtIndex:j]valueForKey:@"value"]])
-                    {
-                        state_id =[NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:j]valueForKey:@"key"]];
-                        
-                    }
-                    
+            
+            @try {
+                if ([json_DATA isKindOfClass:[NSArray class]]) {
+                    [statepicker addObjectsFromArray:json_DATA];
                 }
-
-            }
-            @catch(NSException *Exception)
-            {
-                str_state = @"";
-                for(int j = 0;j<json_DATA.count;j++)
-                {
-                    if([str_state isEqualToString:[[json_DATA objectAtIndex:j]valueForKey:@"value"]])
-                    {
-                        state_id =[NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:j]valueForKey:@"key"]];
-                        
-                    }
-                    
-                }
-
+            } @catch (NSException *exception) {
                 
             }
             
-            
-            for(int j = 0;j<json_DATA.count;j++)
-            {
-                if([str_state isEqualToString:[[json_DATA objectAtIndex:j]valueForKey:@"value"]])
-                {
-                    state_id =[NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:j]valueForKey:@"key"]];
-                    
-                }
-                
-            }
+//            for(int i= 0;i<json_DATA.count;i++)
+//            {
+//                [statepicker addObject:[[json_DATA objectAtIndex:i] valueForKey:@"value"]];
+//            }
+//            NSString *str_state;
+//           @try
+//            {
+//                str_state = [[user_dictionary valueForKey:@"detail"] valueForKey:@"state_name"];
+//                str_state  = [str_state stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+//
+//                for(int j = 0;j<json_DATA.count;j++)
+//                {
+//                    if([str_state isEqualToString:[[json_DATA objectAtIndex:j]valueForKey:@"value"]])
+//                    {
+//                        state_id =[NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:j]valueForKey:@"key"]];
+//                        
+//                    }
+//                    
+//                }
+//
+//            }
+//            @catch(NSException *Exception)
+//            {
+//                str_state = @"";
+//                for(int j = 0;j<json_DATA.count;j++)
+//                {
+//                    if([str_state isEqualToString:[[json_DATA objectAtIndex:j]valueForKey:@"value"]])
+//                    {
+//                        state_id =[NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:j]valueForKey:@"key"]];
+//                        
+//                    }
+//                    
+//                }
 
+                
+         //   }
+            
+            
+//            for(int j = 0;j<json_DATA.count;j++)
+//            {
+//                if([str_state isEqualToString:[[json_DATA objectAtIndex:j]valueForKey:@"value"]])
+//                {
+//                    state_id =[NSString stringWithFormat:@"%@",[[json_DATA objectAtIndex:j]valueForKey:@"key"]];
+//                    
+//                }
+//                
+//            }
+//
             
             
         }
@@ -865,9 +964,14 @@
     
     @catch(NSException *exception)
     {
-        NSLog(@"The error is:%@",exception);
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+        }
+        else{
+            [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+        }
+
     }
 
 }
@@ -905,8 +1009,14 @@
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+        }
+        else{
+            [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+        }
+
     }
     
 }
@@ -954,17 +1064,23 @@
             NSLog(@"The response Api post sighn up API %@",user_dictionary);
             
             [self set_DATA];
-            [self CountryAPICall];
-            [HttpClient stop_activity_animation];
+            
+            [Helper_activity stop_activity_animation:self];
         }
     }
     
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
-        [HttpClient stop_activity_animation];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+        }
+        else{
+            [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+        }
+
+        [Helper_activity stop_activity_animation:self];
 
     }
     
@@ -989,6 +1105,11 @@
      NSString *STR_address = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"address"]];
      NSString *STR_country = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"country_name"]];
      NSString *STR_state= [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"state_name"]];
+    
+    state_id = [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"state_id"]];
+    country_id =[NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"country_id"]];
+    
+    
     NSString *STR_zip_code= [NSString stringWithFormat:@"%@",[[user_dictionary valueForKey:@"detail"] valueForKey:@"zipcode"]];
     
     
@@ -1003,7 +1124,7 @@
    
     
     if ([cntry_code containsString:@"<null>"]||[cntry_code containsString:@"<nil>"]||[cntry_code isEqualToString:@""]) {
-        cntry_code = @"+974";
+        cntry_code = @"974";
     }
     
     NSString *unfilteredString =STR_mobile;
@@ -1033,8 +1154,13 @@
     STR_state = [STR_state stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
     STR_zip_code = [STR_zip_code stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     STR_zip_code = [STR_zip_code stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    if ([STR_zip_code containsString:@"null"] ||[STR_zip_code isEqualToString:@"<nill>"] || [STR_zip_code isKindOfClass:[NSNull class]] || [STR_zip_code isEqualToString:@"(null)"]) {
+        STR_zip_code = @"";
+         }
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Images_path"];
+
     
-    NSString *img_url = [NSString stringWithFormat:@"%@%@%@",SERVER_URL,[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_path"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_img"]];
+    NSString *img_url = [NSString stringWithFormat:@"%@%@%@",[dict valueForKey:@"awsPath"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_path"],[[user_dictionary valueForKey:@"detail"] valueForKey:@"profile_img"]];
     
     [_IMG_Profile_pic sd_setImageWithURL:[NSURL URLWithString:img_url]
                         placeholderImage:[UIImage imageNamed:@"upload-27.png"]
@@ -1055,7 +1181,7 @@
     _TXT_last_name.text = STR_lname;
     _TXT_land_phone.text = STR_land_phone;
     _TXT_mobile_phone.text = STR_mobile;
-    _TXT_country_fld.text =[NSString stringWithFormat:@"%@",cntry_code];
+    _TXT_country_fld.text =[NSString stringWithFormat:@"+%@",cntry_code];
     _TXT_Dob.text = STR_dob;
     _TXT_group.text = STR_customer_group;
     _TXT_name.text = [NSString stringWithFormat:@"%@ %@",STR_fname,STR_lname];
@@ -1115,7 +1241,7 @@
 
 
     
-   // [HttpClient stop_activity_animation];
+   // [HttpClient stop_activity_animation:self];
     
 }
 
@@ -1123,6 +1249,7 @@
 {
     if(_BTN_save.hidden == YES )
     {
+        _LBL_arrow .hidden = YES;
         _TXT_first_name.enabled = NO;
         _TXT_last_name.enabled = NO;
         _TXT_name.enabled = NO;
@@ -1147,6 +1274,7 @@
         
     }
     else{
+         _LBL_arrow .hidden = NO;
         _TXT_first_name.enabled = NO;
         _TXT_last_name.enabled = NO;
         _TXT_name.enabled = NO;
@@ -1272,15 +1400,55 @@
     {
         [_TXT_mobile_phone becomeFirstResponder];
         msg = @"Please enter Mobile Number";
-        
-        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"الرجاء إدخال رقم الجوال";
+        }
+    }
+    if([_TXT_country_fld.text isEqualToString:@"+974"])
+    {
+        if (_TXT_mobile_phone.text.length < 8)
+        {
+            [_TXT_mobile_phone becomeFirstResponder];
+            
+            msg = @"Mobile Number cannot be less than 8 digits";
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg =@"لا يمكن أن يكون رقم الجوال أقل من 8 أرقام";
+            }
+        }
+        else
+        {
+            if (_TXT_mobile_phone.text.length > 8)
+            {
+                [_TXT_mobile_phone becomeFirstResponder];
+                
+                msg = @"Mobile Number cannot be more than 8 digits";
+                
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    msg =@"رقم الجوال لا يمكن أن يكون أكثر من 8 أرقام";
+                }
+            }
+
+        }
         
     }
-    
-    else if (_TXT_mobile_phone.text.length < 5)
+        
+    else
     {
+         if (_TXT_mobile_phone.text.length < 5)
+         {
         [_TXT_mobile_phone becomeFirstResponder];
+        
         msg = @"Mobile Number cannot be less than 5 digits";
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg =@" لا يمكن أن يكون رقم الجوال أقل من 5 أرقام";
+        }
+
         
         
         
@@ -1289,20 +1457,37 @@
     {
         [_TXT_mobile_phone becomeFirstResponder];
         msg = @"Mobile Number should not be more than 15 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg =@"يجب ألا يزيد رقم الجوال عن 15 حرفا";
+
+        }
+
         
         
     }
-    else if([_TXT_mobile_phone.text isEqualToString:@""])
+    
+     if([_TXT_mobile_phone.text isEqualToString:@""])
     {
         [_TXT_mobile_phone becomeFirstResponder];
         msg = @"Blank space are not allowed";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"لا يسمح بترك مسافات فارغة";
+        }
+
         
         
     }
-    else if([_TXT_Dob.text isEqualToString:@""])
+    }
+     if([_TXT_Dob.text isEqualToString:@""])
     {
         [_TXT_Dob becomeFirstResponder];
         msg = @"Please enter Date of birth";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى إدخال تاريخ الميلاد";
+        }
         
         
     }
@@ -1311,29 +1496,39 @@
     {
         [_TXT_Dob becomeFirstResponder];
         msg = @"Blank space are not allowed";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى إدخال تاريخ الميلاد";
+        }
         
         
     }
    
    
-//  else if( _BTN_male.tag == 1 && _BTN_feamle.tag == 1)
-//   {
-//    msg = @"Please select Gender";
-//   }
-  else
-  {
-      [HttpClient animating_images:self];
-      
-      [self performSelector:@selector(Edit_user_data) withObject:nil afterDelay:0.01];
-      
-  }
+  else if( _BTN_male.tag == 1 && _BTN_feamle.tag == 1)
+   {
+    msg = @"Please select Gender";
+       
+       if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+       {
+           msg = @"يرجى تحديد الجنس";
 
+       }
+   }
+     
     if(msg)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
+        [HttpClient createaAlertWithMsg:msg andTitle:@""];
         
     }
+    else
+    {
+        [Helper_activity animating_images:self];
+        
+        [self performSelector:@selector(Edit_user_data) withObject:nil afterDelay:0.01];
+        
+    }
+
 
     
     
@@ -1360,6 +1555,8 @@
         NSString *customer_group = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"groupid"]];
         NSString *dob = _TXT_Dob.text;
         NSString *dohabank_customer;
+        NSString *str = _TXT_country_fld.text;
+        str = [str stringByReplacingOccurrencesOfString:@"+" withString:@""];
        
         dohabank_customer = [NSString stringWithFormat:@"%ld",(long)_BTN_bank_customer.tag];
         
@@ -1378,7 +1575,7 @@
                                       @"customer_group_id":customer_group,
                                       @"dohabank_customer":dohabank_customer,
                                       @"dohabank_employee":dohabank_employee,
-                                      @"gender":gender,@"countrycode_sel":cntry_code
+                                      @"gender":gender,@"countrycode_sel":str
                                       };
         NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
         NSLog(@"the posted data is:%@",parameters);
@@ -1410,28 +1607,41 @@
         [request setHTTPShouldHandleCookies:NO];
         NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         if (error) {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
         }
         
         if(aData)
         {
-           [HttpClient stop_activity_animation];
+           [Helper_activity stop_activity_animation:self];
             
             NSMutableDictionary *json_DATAs = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             NSString *status = [NSString stringWithFormat:@"%@",[json_DATAs valueForKey:@"success"]];
             if([status isEqualToString:@"1"])
             {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATAs valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                NSString *str = @"Ok";
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    str = @"حسنا";
+                }
+    
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATAs valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:str, nil];
                 [alert show];
                 _BTN_save.hidden = YES;
                 [_BTN_edit setTitle:@"" forState:UIControlStateNormal];
+                [self TEXT_hidden];
                // [self Edit_user_data];
                 [self scroll_HANDLER];
                 
                 
             }
             else{
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATAs valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                NSString *str = @"Ok";
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    str = @"حسنا";
+                }
+
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATAs valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:str, nil];
                 [alert show];
                 
             }
@@ -1439,31 +1649,47 @@
         }
         else
         {
-             [HttpClient stop_activity_animation];
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-            [alert show];
+             [Helper_activity stop_activity_animation:self];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+            }
+            else{
+                [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+            }
+
         }
     }
     @catch(NSException *exception)
     {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
     }
     
 }
 -(void)Save_button_Billing_clicked
 {
     NSString *msg;
+    
+    
     if ([_TXT_state.text isEqualToString:@""])
     {
         [_TXT_state becomeFirstResponder];
         msg = @"Please select State";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى تحديد الدولة";
+        }
         
     }
     
     else if ([_TXT_country.text isEqualToString:@""])
     {
         [_TXT_country becomeFirstResponder];
-        msg = @"Please select State";
+        msg = @"Please select Country";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى تحديد البلد";
+        }
         
         
         
@@ -1471,56 +1697,98 @@
     else if(_TXT_city.text.length < 3)
     {
         [_TXT_city becomeFirstResponder];
-        msg = @"City name should be more than 3 characters";
+        msg = @"City should not be less than 3 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يقل حقل المدينة عن 3 أحرف";
+        }
         
         
     }
     else if(_TXT_city.text.length < 1)
     {
         [_TXT_city becomeFirstResponder];
-        msg = @"Please enter City";
+        msg = @"City Should Not be Empty";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب عدم ترك حقل المدينة فارغاً";
+        }
         
         
     }
     else if(_TXT_address1.text.length < 3)
     {
         [_TXT_address1 becomeFirstResponder];
-        msg = @"Address name should be more than 3 characters";
-        
+        msg = @"Address name should be more than 3 characters";//يجب أن يكون اسم العنوان أكثر من 3 أحرف
+
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب أن يكون اسم العنوان أكثر من 3 أحرف";
+        }
         
     }
+    else if (_TXT_address1.text.length > 200)
+    {
+        [_TXT_address1 becomeFirstResponder];
+        msg = @"Address should not be more than 200 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يزيد العنوان عن 200 رمز";
+        }
+        
+    }
+
     else if(_TXT_address1.text.length < 1)
     {
         [_TXT_address1 becomeFirstResponder];
-        msg = @"Please enter Address";
+        msg = @"Address1 Should Not be Empty";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب  1 عدم ترك حقل العنوان فارغا";
+        }
         
         
     }
 
-    else if(_TXT_zipcode.text.length < 3)
+   /* else if(_TXT_zipcode.text.length < 3)
     {
         [_TXT_zipcode becomeFirstResponder];
-        msg = @"Zipcode name should be more than 3 characters";
-        
+        msg = @"Zip code should not be less than 3 characters";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب ألا يقل حقل الرمز البريدي عن 3 أرقام";
+        }
         
     }
     else if(_TXT_zipcode.text.length < 1)
     {
         [_TXT_zipcode becomeFirstResponder];
-        msg = @"Please enter Zipcode";
+        msg = @"Zipcode Should not be Empty";
+        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يجب عدم ترك حقل الرمز البريدي فارغاً";
+        }
         
         
-    }
+    }*/
     else
     {
         
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         [self performSelector:@selector(Edit_billing_addres) withObject:nil afterDelay:0.01];
     }
     if(msg)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        NSString *str = @"Ok";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"حسنا";
+        }
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:str, nil];
         [alert show];
+
         
     }
 
@@ -1648,13 +1916,13 @@
         if (returnData)
             
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             NSMutableDictionary *json_DATAs = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&error];
             NSLog(@"The response Api post sighn up API %@",json_DATAs);
             NSString *status = [NSString stringWithFormat:@"%@",[json_DATAs valueForKey:@"success"]];
             //NSString *status = [json_DATA valueForKey:@"message"];
             
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             if([status isEqualToString:@"1"])
             {
                
@@ -1663,13 +1931,12 @@
                  scroll_ht = _VW_billing.frame.origin.y + _VW_billing.frame.size.height;
            
                 [self viewDidLayoutSubviews];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[json_DATAs valueForKey:@"message"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
+                [HttpClient createaAlertWithMsg:[json_DATAs valueForKey:@"message"] andTitle:@""];
                 [self View_user_data];
                 _BTN_save_billing.hidden = YES;
                 [_BTN_edit_billing setTitle:@"" forState:UIControlStateNormal];
                 //[self Edit_billing_addres];
-
+                [self TEXT_billing_hidden];
                 [self scroll_HANDLER];
 
                // [self Button_edit_billing_action];
@@ -1678,13 +1945,13 @@
             }
             else
             {
-                 [HttpClient stop_activity_animation];
+                 [Helper_activity stop_activity_animation:self];
             }
             
         }
         else
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
         }
         
     }
@@ -1692,7 +1959,7 @@
     @catch(NSException *exception)
     {
         NSLog(@"The error is:%@",exception);
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
     }
     
 
@@ -1732,7 +1999,7 @@
 //    NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
 //    if(aData)
 //    {
-//        [HttpClient stop_activity_animation];
+//        [HttpClient stop_activity_animation:self];
 //        NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
 //        NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
 //        if([status isEqualToString:@"1"])
@@ -1751,7 +2018,7 @@
 //    }
 //    else
 //    {
-//        [HttpClient stop_activity_animation];
+//        [HttpClient stop_activity_animation:self];
 //        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
 //        [alert show];
 //    }
@@ -1759,21 +2026,32 @@
 //
 //@catch(NSException *exception)
 //{
-//     [HttpClient stop_activity_animation];}
+//     [HttpClient stop_activity_animation:self];}
 //
 //}
 }
 
 -(void)take_Picture
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Pick From"
-                                                             delegate:self
-                                                    cancelButtonTitle:@"cancel"
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"Camera", @"From Gallery", nil];
-    
-    [actionSheet showInView:self.view];
-    
+    UIActionSheet *actionSheet;
+
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:@"اختار من"
+                                                                 delegate:self
+                                                        cancelButtonTitle:@"إلغاء"
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:@"الة تصوير", @"صالة عرض", nil];
+    }
+    else{
+        actionSheet = [[UIActionSheet alloc] initWithTitle:@"Pick From"
+                                                  delegate:self
+                                         cancelButtonTitle:@"Cancel"
+                                    destructiveButtonTitle:nil
+                                         otherButtonTitles:@"Camera", @"Gallery", nil];
+ 
+    }
+     [actionSheet showInView:self.view];
 }
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
@@ -1840,7 +2118,7 @@
 {
     
     
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     NSLog(@"%@",yourImage);
     
    
@@ -1897,7 +2175,7 @@
     
     if (err) {
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         NSLog(@"%@",[err localizedDescription]);
     }
     
@@ -1907,14 +2185,15 @@
                                   options:NSJSONReadingMutableLeaves
                                   error:nil];
         NSLog(@"jsonObject  %@",jsonObject);
+        NSString *str_image_profile = [NSString stringWithFormat:@"%@",[jsonObject valueForKey:@"path_detail"]];
         
         if ([[NSString stringWithFormat:@"%@",[jsonObject valueForKey:@"success"]] isEqualToString:@"1"]) {
-            [[NSUserDefaults standardUserDefaults] setObject:[jsonObject valueForKey:@"path_detail"] forKey:@"profile_image"];
+            [[NSUserDefaults standardUserDefaults] setObject:str_image_profile forKey:@"profile_image"];
             [[NSUserDefaults standardUserDefaults]synchronize];
         }
     }
     
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
 }
 
 #pragma mark PhoneCodeView

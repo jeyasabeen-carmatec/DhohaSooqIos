@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface dynamic_categirie_cell : UITableViewCell
-@property(nonatomic,weak) IBOutlet UILabel *LBL_name;
-@property(nonatomic,weak) IBOutlet UILabel *LBL_arrow;
-@property(nonatomic,weak) IBOutlet UIButton *btnExpand;
+@property(nonatomic,strong) IBOutlet UILabel *LBL_name;
+@property(nonatomic,weak) IBOutlet UIButton *LBL_arrow;
+@property(nonatomic,weak) IBOutlet UIView *VW_line1;
 
 @end

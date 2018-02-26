@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "HttpClient.h"
 #import <Google/SignIn.h>
+#import "Helper_activity.h"
 
 
 @interface ViewController ()<UITextFieldDelegate,FBSDKLoginButtonDelegate,GIDSignInUIDelegate,GIDSignInDelegate>
@@ -55,7 +56,7 @@
     
 }
 - (void)signInWillDispatch:(GIDSignIn *)signIn error:(NSError *)error {
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -114,11 +115,11 @@
         
         NSString *sign_UP = @"SIGN UP";
 
-        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+       /* if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             sign_UP =@"تفضّل بالتسجيل ";
             need_sign = @"هل تحتاج إلى إنشاء حساب؟";
-        }
+        }*/
         
         
         NSString *text = [NSString stringWithFormat:@"%@ %@",need_sign,sign_UP];
@@ -329,18 +330,21 @@
 }
 -(void)facebook_action:(UIButton*)sender{
     
-    NSString *fbAccessToken = [FBSDKAccessToken currentAccessToken].tokenString;
+  /*  NSString *fbAccessToken = [FBSDKAccessToken currentAccessToken].tokenString;
     NSLog(@"Token:%@",fbAccessToken);
     if([[NSUserDefaults standardUserDefaults]  objectForKey:@"login_details"])
     {
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:@"login_details"];
         NSLog(@"dict ------ %@",dict);
-        
+        NSString *str_id =  [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+         [self getFacebookProfileInfo:str_id];
         
     }
-
+    else{*/
+   
     FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
     login.loginBehavior = FBSDKLoginBehaviorWeb;
+    [login logOut];
     [login
      logInWithReadPermissions: @[@"email",@"public_profile"]
      fromViewController:self
@@ -363,7 +367,7 @@
 
          }
      }];
-
+  //  }
 }
 -(void)getFacebookProfileInfo:(NSString *)user_ID {
     
@@ -378,8 +382,8 @@
 //        // aHandler(result, error);
 //     }];
 //    
-    if([FBSDKAccessToken currentAccessToken])
-    {
+  //if([FBSDKAccessToken currentAccessToken])
+   // {
         [[[FBSDKGraphRequest alloc]initWithGraphPath:@"me" parameters:@{@"fields":@"id,name,first_name,last_name,picture,email"}] startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error)
         {
             if(!error)
@@ -402,7 +406,7 @@
             }
         }];
         
-    }
+   // }
     
         
 }
@@ -469,9 +473,9 @@ error:(NSError *)error{
                 
                  [[NSUserDefaults standardUserDefaults] setValue:dictMutable forKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
-
-                
                 [self MENU_api_call];
+                
+                [self cart_count];
                 
                 
                 
@@ -516,15 +520,16 @@ error:(NSError *)error{
     {
        
         NSString *type = @"Facebook";
-        NSString *first_name = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"first_name"]];
-        NSString *last_name = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"last_name"]];
+        NSString *first_nam = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"first_name"]];
+        NSString *last_nam = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"last_name"]];
         NSString *email = [NSString stringWithFormat:@"%@",[social_dictl valueForKey:@"email"]];
+        email =  [email stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
         
         NSDictionary *parameters = @{
                                      @"login_type": type,
                                      @"email": email,
-                                     @"first_name": first_name,
-                                     @"last_name": last_name
+                                     @"first_name": first_nam,
+                                     @"last_name": last_nam
                                      
                                      };
         NSError *error;
@@ -566,11 +571,9 @@ error:(NSError *)error{
                 [[NSUserDefaults standardUserDefaults] setValue:dictMutable forKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
 
-                
-                
-                
-                
                 [self MENU_api_call];
+                
+                [self cart_count];
                 
                 
 //                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
@@ -710,9 +713,10 @@ error:(NSError *)error{
                 [[NSUserDefaults standardUserDefaults]setObject:self.TXT_username.text forKey:@"email"];
                 [[NSUserDefaults standardUserDefaults] setObject:email forKey:@"user_email"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
-
-                
                 [self MENU_api_call];
+
+                [self cart_count];
+                
                 
                 
                // UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
@@ -752,6 +756,77 @@ error:(NSError *)error{
     
     
 }
+-(void)cart_count{
+    
+    NSString *user_id;
+    @try
+    {
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
+    [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        if (error) {
+            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
+             ];
+            //            VW_overlay.hidden = YES;
+            //            [activityIndicatorView stopAnimating];
+            
+            
+        }
+        if (data) {
+            NSLog(@"cart count sadas %@",data);
+            NSDictionary *dict = data;
+            @try {
+                
+                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
+                //   NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
+                [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"cart_count"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+
+                [[NSUserDefaults standardUserDefaults] setValue:badge_value forKey:@"cart_count"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+                [self dismissViewControllerAnimated:NO completion:nil];
+                
+                
+            } @catch (NSException *exception) {
+                //                 VW_overlay.hidden = YES;
+                //                [activityIndicatorView stopAnimating];
+                
+                
+                NSLog(@"asjdas dasjbd asdas iccxv %@",exception);
+            }
+            
+        }
+    }];
+}
+
 -(void)MENU_api_call
 {
     
@@ -783,7 +858,7 @@ error:(NSError *)error{
             
             [[NSUserDefaults standardUserDefaults] setObject:json_DATA forKey:@"menu_detail"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            [self dismissViewControllerAnimated:NO completion:nil];
+          
             
            // [self performSegueWithIdentifier:@"logint_to_home" sender:self];
             
@@ -794,7 +869,7 @@ error:(NSError *)error{
     @catch(NSException *exception)
     {
         NSLog(@"%@",exception);
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
         
@@ -806,7 +881,7 @@ error:(NSError *)error{
 }
 -(void)guest_action
 {
-    [self performSegueWithIdentifier:@"logint_to_home" sender:self];
+      [self dismissViewControllerAnimated:NO completion:nil];
 
     
 }

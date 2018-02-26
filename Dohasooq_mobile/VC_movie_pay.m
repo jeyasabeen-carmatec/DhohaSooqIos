@@ -9,12 +9,14 @@
 #import "VC_movie_pay.h"
 #import "XMLDictionary/XMLDictionary.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_movie_pay ()
 {
     UIActivityIndicatorView *activityIndicatorView;
     UIView *VW_overlay;
     NSString *booking_info;
+    int k;
 }
 
 
@@ -27,7 +29,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    
+    k = 0;
     NSMutableDictionary  *movie_dtl_dict = [[NSMutableDictionary alloc]init];
     
     
@@ -47,9 +49,9 @@
     
     
 //    
-//    CGRect framseset = _LBL_location.frame ;
-//    framseset.origin.y = _LBL_event_name.frame.origin.y+ _LBL_event_name.frame.size.height + 3;
-//    _LBL_location.frame = framseset;
+    CGRect framseset = _LBL_location.frame ;
+    framseset.origin.y = _LBL_event_name.frame.origin.y+ _LBL_event_name.frame.size.height ;
+    _LBL_location.frame = framseset;
     @try
     {
         _LBL_location.text = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"theatre"]];
@@ -67,9 +69,9 @@
     
     
     
-//    framseset = _LBL_time.frame ;
-//    framseset.origin.y = _LBL_location.frame.origin.y+ _LBL_location.frame.size.height + 3;
-//    _LBL_time.frame = framseset;
+    framseset = _LBL_time.frame ;
+    framseset.origin.y = _LBL_location.frame.origin.y+ _LBL_location.frame.size.height ;
+    _LBL_time.frame = framseset;
     @try
     {
         NSDateFormatter *df = [[NSDateFormatter alloc]init];
@@ -90,14 +92,21 @@
     // [_LBL_persons sizeToFit];
     
     
-//    framseset = _LBL_persons.frame ;
-//    framseset.origin.y = _LBL_time.frame.origin.y+ _LBL_time.frame.size.height ;
-//    _LBL_persons.frame = framseset;
-//    
-//    framseset = _LBL_seat.frame ;
-//    framseset.origin.y = _LBL_persons.frame.origin.y+ _LBL_persons.frame.size.height ;
-//    _LBL_seat.frame = framseset;
-//    
+    framseset = _LBL_persons.frame ;
+    framseset.origin.y = _LBL_time.frame.origin.y+ _LBL_time.frame.size.height ;
+    _LBL_persons.frame = framseset;
+    
+    
+    framseset = _LBL_service_charges.frame ;
+    framseset.origin.x = _LBL_persons.frame.origin.x;
+    framseset.origin.y = _LBL_persons.frame.origin.y + _LBL_persons.frame.size
+    .height +3;
+    _LBL_service_charges.frame = framseset;
+    
+    framseset = _LBL_seat.frame ;
+    framseset.origin.y = _LBL_service_charges.frame.origin.y+ _LBL_service_charges.frame.size.height;
+    _LBL_seat.frame = framseset;
+    
     
     @try
     {
@@ -108,24 +117,23 @@
     {
         NSLog(@"%@",exception);
     }
-    
-//    framseset = _LBL_service_charges.frame ;
-//    framseset.origin.y = _LBL_persons.frame.origin.y + 3;
-//    _LBL_service_charges.frame = framseset;
+    [_LBL_seat sizeToFit];
+
+   
 //    
-//    framseset = _VW_contents.frame ;
-//    framseset.size.height = _LBL_seat.frame.origin.y + _LBL_seat.frame.size.height +20;
-//    _VW_contents.frame = framseset;
+    framseset = _VW_contents.frame ;
+    framseset.size.height = _LBL_seat.frame.origin.y + _LBL_seat.frame.size.height +20;
+   _VW_contents.frame = framseset;
 //    
 //    
-//    framseset = _BTN_pay.frame ;
-//    framseset.origin.y = _VW_contents.frame.origin.y + _VW_contents.frame.size.height +15;
-//    _BTN_pay.frame = framseset;
+   framseset = _BTN_pay.frame ;
+    framseset.origin.y = _VW_contents.frame.origin.y + _VW_contents.frame.size.height +15;
+    _BTN_pay.frame = framseset;
     @try
     {
         
         
-    NSString *text = [NSString stringWithFormat:@"Total Price \n%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"charges"],[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+    NSString *text = [NSString stringWithFormat:@"Total Price : %@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],[[NSUserDefaults standardUserDefaults] valueForKey:@"charges"]];
         _LBL_service_charges.text = text;
     }
     @catch(NSException *exception)
@@ -165,18 +173,18 @@
     }
 -(void)pay_action_checked
 {
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(get_order_iD) withObject:activityIndicatorView afterDelay:0.01];
 }
 #pragma mark Generating Booking ID
 
 -(void)get_order_iD
 {
-
-   
     
-    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/lock_confirm_request?Transaction_Id=%@&AppSource=11&AppVersion=1.0",[[NSUserDefaults standardUserDefaults] valueForKey:@"TID"]];
+    NSString* Identifier = [[[UIDevice currentDevice] identifierForVendor] UUIDString]; // IOS 6+
+    NSLog(@"output is : %@", Identifier);
+    
+    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/lock_confirm_request?Transaction_Id=%@&Source=11&AppVersion=1.0",[[NSUserDefaults standardUserDefaults] valueForKey:@"TID"]];
 
     
     NSURL *URL = [[NSURL alloc] initWithString:str_url];
@@ -186,37 +194,57 @@
    
     
     NSLog(@"The Order Data is:%@",xmlDoc);
-    
-    
-    [[NSUserDefaults standardUserDefaults] setObject:xmlDoc forKey:@"order_details"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
-    
-    NSString *tr_id = [[NSUserDefaults standardUserDefaults] valueForKey:@"TID"];
-    
-    
-    if ([[[xmlDoc valueForKey:@"result"] valueForKey:@"_Transaction_Id"] isEqualToString:tr_id]) {
+    NSString *str_stat = [NSString stringWithFormat:@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_status"]];
+    if([str_stat isEqualToString:@"True"])
+    {
+       
+        [Helper_activity stop_activity_animation:self];
+        
+        [[NSUserDefaults standardUserDefaults] setObject:xmlDoc forKey:@"order_details"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         
         
-         NSLog(@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_OrderInfo"]);
-        booking_info =[NSString stringWithFormat:@"%@", [[xmlDoc valueForKey:@"result"] valueForKey:@"_OrderInfo"]];
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
         
-        [self performSelector:@selector(save_bookings) withObject:activityIndicatorView afterDelay:0.0001];
+        NSString *tr_id = [[NSUserDefaults standardUserDefaults] valueForKey:@"TID"];
         
         
-        // Move to Next Page
-       // [self performSegueWithIdentifier:@"Movie_pay_selection" sender:self];
+        if ([[[xmlDoc valueForKey:@"result"] valueForKey:@"_Transaction_Id"] isEqualToString:tr_id])
+        {
+            
+            
+            NSLog(@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_OrderInfo"]);
+            booking_info =[NSString stringWithFormat:@"%@", [[xmlDoc valueForKey:@"result"] valueForKey:@"_OrderInfo"]];
+            
+            [self performSelector:@selector(save_bookings) withObject:activityIndicatorView afterDelay:0.0001];
+            
+            
+            // Move to Next Page
+            // [self performSegueWithIdentifier:@"Movie_pay_selection" sender:self];
+            
+        }
+        else
+        {
+            [HttpClient createaAlertWithMsg:@"Please Conform Booking ID" andTitle:@""];
+        }
         
-    }
-    else{
-        [HttpClient createaAlertWithMsg:@"Please Conform Booking ID" andTitle:@""];
-    }
+    
 
-    
+        
     }
+    else
+    {
+        if([[[xmlDoc valueForKey:@"result"] valueForKey:@"_msg"] isEqualToString:@"send lockrequest again"])
+        {
+        
+        [self get_order_iD];
+        }
+        
+      
+        
+    }
+}
  
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

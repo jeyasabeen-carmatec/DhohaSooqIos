@@ -13,6 +13,7 @@
 #import "XMLDictionary/XMLDictionary.h"
 #import "MZDayPickerCell.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 
 @interface VC_Movie_booking ()<UITableViewDelegate,UITableViewDataSource,MZDayPickerDelegate, MZDayPickerDataSource,UICollectionViewDelegate,UICollectionViewDataSource,UIAlertViewDelegate>
@@ -26,6 +27,8 @@
     NSMutableArray *ARR_temp;
     NSString *dateString;
     NSDateFormatter *dateFormat;
+    
+    NSDate *selec_date;
 
 }
 @property (nonatomic,strong) NSDateFormatter *dateFormatter;
@@ -38,11 +41,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self dateVIEW];
+ 
     [_BTN_trailer_watch addTarget:self action:@selector(BTN_trailer_watch) forControlEvents:UIControlEventTouchUpInside];
     
-
-    detail_dict  = [[NSMutableDictionary alloc]init];
+   
+    
+    
     
 }
 -(void)viewWillAppear:(BOOL)animated
@@ -66,14 +70,17 @@
     dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateFormat:@"MM/dd/yyyy"];
     dateString = [dateFormat stringFromDate:[NSDate date]];
+    [Helper_activity animating_images:self];
+    [self dateVIEW];
+    [self performSelector:@selector(movie_detil_api) withObject:nil afterDelay:0.01];
     
-
+    
+    detail_dict  = [[NSMutableDictionary alloc]init];
     
 //    VW_overlay.hidden = YES;
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-     [HttpClient animating_images:self];
-    [self performSelector:@selector(movie_detil_api) withObject:nil afterDelay:0.01];
+    
 }
 
 -(void)filtering_date{
@@ -143,7 +150,7 @@
             
             for (int j=0; j<[[date_Arr objectAtIndex:i] count]; j++) {
                 NSDate *tomorrow = [cal dateByAddingUnit:NSCalendarUnitDay
-                                                   value:1
+                                                   value:0
                                                   toDate:[dateFormat dateFromString:[[date_Arr objectAtIndex:i] objectAtIndex:j]]
                                                  options:0];
                 [arry_with_Dates addObject:tomorrow];
@@ -154,7 +161,7 @@
         }
         else{
             NSDate *tomorrow = [cal dateByAddingUnit:NSCalendarUnitDay
-                                               value:1
+                                               value:0
                                               toDate:[dateFormat dateFromString:[date_Arr objectAtIndex:i]]
                                              options:0];
             [arry_with_Dates addObject:tomorrow];
@@ -177,8 +184,10 @@
     
     [self.dayPicker setStartDate:[reverseOrder lastObject] endDate:endDate];
     
+//    [self dayPicker:self.dayPicker didSelectDay:[reverseOrder lastObject]];
+    
     NSDate *yesterDay = [cal dateByAddingUnit:NSCalendarUnitDay
-                                        value:-1
+                                        value:0
                                        toDate:[reverseOrder lastObject]
                                       options:0];
     dateString = [dateFormat stringFromDate:yesterDay];
@@ -187,7 +196,26 @@
     NSArray *arr = [dateString componentsSeparatedByString:@"/"];
     
     
+//    [self.dayPicker setCurrentDay:[[arr objectAtIndex:1] intValue]];
+    
+    selec_date = [NSDate dateFromDay:[[arr objectAtIndex:1] intValue] month:[[arr objectAtIndex:0]intValue] year:[[arr objectAtIndex:2]intValue]];
+    
     [self.dayPicker setCurrentDate:[NSDate dateFromDay:[[arr objectAtIndex:1] intValue] month:[[arr objectAtIndex:0]intValue] year:[[arr objectAtIndex:2]intValue]] animated:NO];
+    
+    
+//    MZDay *day_sel = [[MZDay alloc]init];
+//    day_sel.date = [NSDate dateFromDay:[[arr objectAtIndex:1] intValue] month:[[arr objectAtIndex:0]intValue] year:[[arr objectAtIndex:2]intValue]];
+    
+//    - (void)setCurrentIndex:(NSIndexPath *)currentIndex
+    [self.dayPicker select_date:[NSIndexPath indexPathForRow:0 inSection:0]];
+    [self.dayPicker select_date:[NSIndexPath indexPathForRow:0 inSection:0]];
+    
+//    [self dayPicker:self.dayPicker titleForCellDayLabelInDay:day_sel];
+//    [self dayPicker:self.dayPicker didSelectDay:day_sel];
+    
+//    [self.dayPicker setCurrentDay:[[arr objectAtIndex:1] intValue] animated:NO];
+    
+//    [self.dayPicker setCurrentDay:[[arr objectAtIndex:1] intValue]];
     
 //    NSString *temp_s = [arr componentsJoinedByString:@"/"];
 //    NSDateFormatter *df = [[NSDateFormatter alloc]init];
@@ -198,7 +226,8 @@
 
     [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-
+    
+//    [self.dayPicker setCurrentDay:[[arr objectAtIndex:1] intValue]];
     
 }
 
@@ -338,7 +367,7 @@
     
      [self set_UP_VIEW];
     
-     [HttpClient stop_activity_animation];
+     [Helper_activity stop_activity_animation:self];
      [self viewDidLayoutSubviews];
 }
 
@@ -375,7 +404,7 @@
       [_tbl_timings reloadData];
     
     frameset = self.tbl_timings.frame;
-    frameset.size.height =  _tbl_timings.contentSize.height;
+    frameset.size.height = _tbl_timings.frame.origin.y+  _tbl_timings.contentSize.height;
     self.tbl_timings.frame = frameset;
     
 //    CAGradientLayer *gradient = [CAGradientLayer layer];
@@ -431,7 +460,7 @@
         }
         else
         {
-            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Roboto-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.39 green:0.78 blue:0.05 alpha:1.0]}
+            [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor colorWithRed:0.39 green:0.78 blue:0.05 alpha:1.0]}
                                     range:ename];
         }
        _LBL_language.attributedText = attributedText;
@@ -539,8 +568,9 @@
 //
 //    
 //    [self.dayPicker setStartDate:currentDate endDate:sevenDays];
-//    [self.dayPicker setCurrentDate:currentDate animated:NO];
-//    
+//    [self.dayPicker setCurrentDate:selec_date animated:NO];
+//    - (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day
+//    [self dayPicker:self.dayPicker didSelectDay:selec_date];
 }
 
 -(void)viewDidLayoutSubviews
@@ -637,18 +667,75 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    CGSize result = [[UIScreen mainScreen] bounds].size;
+    NSInteger ht = 0;
+
+    
     @try {
+        if([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"] isKindOfClass:[NSDictionary class]] || [[[ARR_temp objectAtIndex:indexPath.row]valueForKey:@"shows"] count]<=3)
+        {
+                      if(result.height <= 480)
+            {
+                ht = 100;
+            }
+            else if(result.height <= 568)
+            {
+                 ht = 100;
+            }
+            else
+            {
+                 ht = 80;
+            }
+
+            
+            return ht;
+        }
         if([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"] isKindOfClass:[NSDictionary class]] || [[[ARR_temp objectAtIndex:indexPath.row]valueForKey:@"shows"] count]<=4)
         {
-            return 80;
+            CGSize result = [[UIScreen mainScreen] bounds].size;
+            NSInteger ht = 0;
+            if(result.height <= 480)
+            {
+                ht = 140;
+            }
+            else if(result.height <= 568)
+            {
+                ht = 140;
+            }
+            else
+            {
+                ht = 80;
+            }
+            
+            
+            return ht;
         }
+
         
-        else if ([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count]>4 && [[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count]<=8 ){
-            return 180;
+        else if ([[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count] >= 4 && [[[ARR_temp objectAtIndex:indexPath.row] valueForKey:@"shows"]count]<=8 ){
+            
+            CGSize result = [[UIScreen mainScreen] bounds].size;
+            NSInteger ht = 0;
+            if(result.height <= 480)
+            {
+                ht = 180;
+            }
+            else if(result.height <= 568)
+            {
+                ht = 180;
+            }
+            else
+            {
+                ht = 160;
+            }
+
+            return ht;
         }
         
         else{
-            return 77*[[[ARR_temp objectAtIndex:indexPath.row]valueForKey:@"shows"] count]/4;
+        
+        
+            return 77*[[[ARR_temp objectAtIndex:indexPath.row]valueForKey:@"shows"] count]/4+65;
         }
         
         
@@ -806,8 +893,6 @@
     {
         cell.BTN_time.font = [UIFont fontWithName:@"Poppins" size:13];
         cell.BTN_time.textAlignment = NSTextAlignmentCenter;
-
-        
     }
 
 
@@ -828,12 +913,8 @@
             {
             [[NSUserDefaults standardUserDefaults] setValue:[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] valueForKey:@"_id"] forKey:@"movie_id"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-//            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"movie_date"];
-//            [[NSUserDefaults standardUserDefaults] synchronize];
-
             [[NSUserDefaults standardUserDefaults] setValue:dateString forKey:@"movie_date"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            [self performSegueWithIdentifier:@"booking_seat" sender:self];
             [[NSUserDefaults standardUserDefaults] setValue:[[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"shows"] valueForKey:@"_time"] forKey:@"movie_time"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             [[NSUserDefaults standardUserDefaults] setValue:[[ARR_temp objectAtIndex:collectionView.tag] valueForKey:@"theatre"] forKey:@"theatre"];
@@ -846,7 +927,7 @@
                 NSString *text_str =[NSString stringWithFormat:@"You Are trying to book a %@ Rated movie.\nEntrance is not allowed for person below %@ years old.\nSupervisor Reserves the Right to Reject Without Refund \n\n  أنت تحاول حجز فيلم تصنيفه %@\n يمنع الدخول لمن تقل أعمارهم عن %@\nويحتفظ مشرف السينما بالحق في رفض دخول الفيلم دون إرجاع سعر التذكرة في حال مخالفة القوانين ",str_censor,str_censor,str_censor,str_censor];
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Caution" message:text_str delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
-                alert.tag = 0;
+                alert.tag = 1;
                 [alert show];
                
               //  [self performSegueWithIdentifier:@"booking_seat" sender:self];
@@ -936,7 +1017,7 @@
 
 -(void)ok_action
 {
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
     _VW_alert.hidden = YES;
 }
 - (IBAction)back_action:(id)sender

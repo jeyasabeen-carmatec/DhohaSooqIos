@@ -18,10 +18,10 @@
     BOOL filter_val;
     
 }
-
 @end
 
 @implementation VC_filter_product_list
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -31,7 +31,7 @@
 
     NSArray  *Temp_arr =[[[NSUserDefaults standardUserDefaults] valueForKey:@"brands_LISTs"] allObjects];
     product_arr = [Temp_arr sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    NSLog(@"THE userdefaults%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"brands_LIST"]);
+    NSLog(@"THE userdefaults%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"brands_LISTs"]);
     
       CGRect framset = _VW_contents.frame;
     framset.size.height = _BTN_submit.frame.origin.y + _BTN_submit.frame.size.height;
@@ -40,6 +40,12 @@
     [self.scroll_contents addSubview:_VW_contents];
     Brands_arr_post  = [[NSMutableArray alloc]init];
     
+    
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        [_collection_produtcs setTransform:CGAffineTransformMakeScale(-1, 1)];
+
+    }
     
     
     
@@ -80,10 +86,11 @@
             
             
             lower = [lower stringByReplacingOccurrencesOfString:@"<nil>" withString:@"0"];
-            lower = [lower stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
+            upper = [upper stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
             
             self.LBL_slider.minValue =0;
             self.LBL_slider.maxValue = [upper floatValue];
+            
             _LBL_slider.hideLabels = YES;
             _LBL_slider.lineHeight = 7.0f;
             _LBL_slider.handleImage = [UIImage imageNamed:@"UISliderHandleDefault.png"];
@@ -91,10 +98,23 @@
             
             self.LBL_slider.selectedMinimum = [lower floatValue];
             self.LBL_slider.selectedMaximum = [upper floatValue];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                self.LBL_slider.selectedMinimum = [lower floatValue];
+                self.LBL_slider.selectedMaximum = [upper floatValue];
+                
+            }
             
             
             lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMinimum];
             upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMinimum];
+                lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
+
+            }
+
         }
         @catch(NSException *exceprtion)
         {
@@ -110,8 +130,15 @@
             
             self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"], (int)self.LBL_slider.selectedMaximum];
             self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d", [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],(int)self.LBL_slider.selectedMinimum];
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                self.LBL_max.text = [NSString stringWithFormat:@"%d %@ دقيقة",(int)self.LBL_slider.selectedMaximum,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+                self.LBL_min.text = [NSString stringWithFormat:@"%d %@ ماكس",(int)self.LBL_slider.selectedMinimum, [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+            }
+            
             NSLog(@"%@ /n %@",lower,upper);
-        } @catch (NSException *exception) {
+        } @catch (NSException *exception) {//دقيقة
             NSLog(@"%@",exception);
         }
         
@@ -132,12 +159,39 @@
     _BTN_check.tag = 1;
     
     [_collection_produtcs reloadData];
+    if(product_arr.count < 1)
+    {
+        _LBL_brands.hidden = YES;
+        _Vw_line1.hidden = YES;
+        _collection_produtcs.hidden =  YES;
+        
+        framset = _VW_radio.frame;
+        framset.origin.y = _vw_line.frame.origin.y + _vw_line.frame.size.height + 5;
+        _VW_radio.frame = framset;
+        
+        framset = _VW_contents.frame;
+        framset.size.width = _VW_contents.frame.size.width;
+        framset.size.height = _VW_radio.frame.origin.y + _VW_radio.frame.size.height;
+        _VW_contents.frame = framset;
+         [self viewDidLayoutSubviews];
+
+        
+    }
+    else
+    {
+
     
     framset = _collection_produtcs.frame;
+    if( product_arr.count < 5)
+    {
+    framset.size.height =  _collection_produtcs.collectionViewLayout.collectionViewContentSize.height + 30;
+    }
+    else
     framset.size.height =  _collection_produtcs.collectionViewLayout.collectionViewContentSize.height;
+    
     framset.size.width = _Vw_line1.frame.size.width;
     _collection_produtcs.frame = framset;
-    
+   
     framset = _Vw_line1.frame;
     framset.origin.y = _collection_produtcs.frame.origin.y + _collection_produtcs.frame.size.height + 5;
     _Vw_line1.frame = framset;
@@ -145,19 +199,22 @@
     framset = _VW_radio.frame;
     framset.origin.y = _Vw_line1.frame.origin.y + _Vw_line1.frame.size.height + 5;
     _VW_radio.frame = framset;
-    framset = _BTN_submit.frame;
-    framset.origin.y = _VW_radio.frame.origin.y + _VW_radio.frame.size.height;
-    _BTN_submit.frame = framset;
+    
+//    framset = _BTN_submit.frame;
+//    framset.origin.y = _VW_radio.frame.origin.y + _VW_radio.frame.size.height;
+//    _BTN_submit.frame = framset;
     
     framset = _VW_contents.frame;
     framset.size.width = _VW_contents.frame.size.width;
-    framset.size.height = _BTN_submit.frame.origin.y + _BTN_submit.frame.size.height;
+    framset.size.height = _VW_radio.frame.origin.y + _VW_radio.frame.size.height;
     _VW_contents.frame = framset;
     
-    framset = _IMG_back_ground.frame;
-    framset.size.width = _VW_contents.frame.size.width;
-    framset.size.height = _scroll_contents.frame.origin.y + _scroll_contents.frame.size.height;
-    _IMG_back_ground.frame = framset;
+//    framset = _IMG_back_ground.frame;
+//    framset.size.width = _VW_contents.frame.size.width;
+ //   framset.size.height = _scroll_contents.frame.origin.y + _scroll_contents.frame.size.height;
+//    _IMG_back_ground.frame = framset;
+    [self viewDidLayoutSubviews];
+    }
 }
 -(void)viewWillAppear:(BOOL)animated{
     self.navigationItem.hidesBackButton = YES;
@@ -177,6 +234,12 @@
     upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
     self.LBL_max.text = [NSString stringWithFormat:@"Max %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"] ,(int)self.LBL_slider.selectedMaximum];
     self.LBL_min.text = [NSString stringWithFormat:@"Min %@ %d",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"] ,(int)self.LBL_slider.selectedMinimum];
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        self.LBL_max.text = [NSString stringWithFormat:@"%d %@ دقيقة",(int)self.LBL_slider.selectedMaximum,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+        self.LBL_min.text = [NSString stringWithFormat:@"%d %@ ماكس",(int)self.LBL_slider.selectedMinimum, [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+    }
+
     
     
 }
@@ -205,6 +268,8 @@
     NSString *url_str = [NSString stringWithFormat:@"%@apis/%@/%@/%@/%@/Customer/1.json?discountValue=%@ &range=%@,%@&brand=%@&sortKeyword=",SERVER_URL,[[NSUserDefaults standardUserDefaults]valueForKey:@"product_list_key"],country,languge,user_id,discount,min,max,brands];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     url_str = [url_str stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    
+    NSLog(@"%@",url_str);
     
     
     [[NSUserDefaults standardUserDefaults] setValue:brands forKey:@"brnds"];
@@ -352,21 +417,33 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return product_arr.count;
+    
+    
+    return  product_arr.count;
 }
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     filter_cell *cell = (filter_cell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
+    
+    
+    
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+        [cell.contentView setTransform:CGAffineTransformMakeScale(-1, 1)];
+    }
+
+    
     cell.LBL_name.text = [product_arr objectAtIndex:indexPath.row];
     cell.BTN_check.tag = indexPath.row;
     [cell.BTN_check addTarget:self action:@selector(check_action:) forControlEvents:UIControlEventTouchUpInside];
+    
 
     
     return cell;
 }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(self.collection_produtcs.bounds.size.width/2.2, 50);
+    return CGSizeMake(self.collection_produtcs.frame.size.width/2.2, 50);
 }
 -(void)check_action:(UIButton *)sender
 {

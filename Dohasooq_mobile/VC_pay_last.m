@@ -32,7 +32,8 @@
 
     [_BTN_cancel addTarget:self action:@selector(cancel_action) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_american_express addTarget:self action:@selector(BTN_american_express_action) forControlEvents:UIControlEventTouchUpInside];
-    
+    [_BTN_debit_card addTarget:self action:@selector(BTN_debit_action) forControlEvents:UIControlEventTouchUpInside];
+
     [_BTN_visa addTarget:self action:@selector(BTN_visa_action) forControlEvents:UIControlEventTouchUpInside];
     
     [_BTN_dohabank addTarget:self action:@selector(BTN_dohabank_action) forControlEvents:UIControlEventTouchUpInside];
@@ -88,9 +89,8 @@
     _TXT_countries.layer.borderWidth = 0.5f;
     _TXT_countries.layer.borderColor = [UIColor lightGrayColor].CGColor;
     
-    _TXT_countries.inputAccessoryView=phone_close;
-    _TXT_countries.inputView = _country_picker_view;
-    
+    _TXT_countries.inputAccessoryView = phone_close;
+    _TXT_countries.delegate = self;
 
 }
 -(void)CountryAPICall{
@@ -127,8 +127,8 @@
             if(aData)
             {
                 
-                NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
-                NSLog(@"The response Api post sighn up API %@",json_DATA);
+                country_arr = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+              /*  NSLog(@"The response Api post sighn up API %@",json_DATA);
                 
                 
                 
@@ -181,8 +181,8 @@
                 
                 NSLog(@"sortedArr %@",sortedArr);
                 
-                [country_arr removeAllObjects];
-                [country_arr addObjectsFromArray:required_format];
+                country_arr = [[NSMutableArray alloc] init];
+                [country_arr addObjectsFromArray:required_format];*/
                 [_country_picker_view reloadAllComponents];
             }
             else
@@ -233,7 +233,7 @@
 #pragma Button action
 -(void)cancel_action
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:NO];
 }
 -(void)BTN_american_express_action
 {
@@ -243,6 +243,8 @@
     
     _BTN_visa.layer.borderColor = [UIColor whiteColor].CGColor;
     _BTN_dohabank.layer.borderColor = [UIColor whiteColor].CGColor;
+    _BTN_debit_card.layer.borderColor = [UIColor whiteColor].CGColor;
+    
     str_URL = @"6";
     
     
@@ -255,7 +257,22 @@
     
     _BTN_american_express.layer.borderColor = [UIColor whiteColor].CGColor;
     _BTN_dohabank.layer.borderColor = [UIColor whiteColor].CGColor;
+    _BTN_debit_card.layer.borderColor = [UIColor whiteColor].CGColor;
+    
     str_URL = @"4";
+}
+-(void)BTN_debit_action
+{
+    self.BTN_debit_card.layer.cornerRadius = 2.0f;
+    _BTN_debit_card.layer.borderWidth = 2.0f;
+    _BTN_debit_card.layer.borderColor = self.BTN_pay.backgroundColor.CGColor;
+    
+    _BTN_american_express.layer.borderColor = [UIColor whiteColor].CGColor;
+    _BTN_dohabank.layer.borderColor = [UIColor whiteColor].CGColor;
+    _BTN_visa.layer.borderColor = [UIColor whiteColor].CGColor;
+    
+    str_URL = @"3";
+    
 }
 -(void)BTN_dohabank_action
 {
@@ -265,6 +282,8 @@
     
     _BTN_visa.layer.borderColor = [UIColor whiteColor].CGColor;
     _BTN_american_express.layer.borderColor = [UIColor whiteColor].CGColor;
+    _BTN_debit_card.layer.borderColor = [UIColor whiteColor].CGColor;
+    
     str_URL = @"1";
     
 }
@@ -287,6 +306,14 @@
     
     NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/Qpayment-registration.aspx?Currency=QAR&Amount=%@&OrderName=online&OrderID=%@&nationality=Qatar&paymenttype=%@",[order_dict valueForKey:@"_balanceamount"],[order_dict  valueForKey:@"_orderid"],str_URL];
             str_url = [str_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+            
+            if([str_URL isEqualToString:@"3"])
+            {
+                str_url = [NSString stringWithFormat:@"https://q-tickets.com/Qpayment-registration1.aspx?Currency=QAR&Amount=%@&OrderName=online&OrderID=%@&nationality=Qatar&paymenttype=%@",[order_dict valueForKey:@"_balanceamount"],[order_dict  valueForKey:@"_orderid"],str_URL];
+                str_url = [str_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+            }
+        
+            
 
     [[NSUserDefaults standardUserDefaults] setValue:str_url forKey:@"payment_url"];
     [[NSUserDefaults standardUserDefaults]  synchronize];
@@ -343,18 +370,22 @@
 
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
-    return country_arr[row];
-    
+    @try {
+        return [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:row] valueForKey:@"name"]];
+    } @catch (NSException *exception) {
+        NSLog(@"exception pickerView titleForRow %@ ",exception);
+    }
 }
 
 // #6
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    
-    self.TXT_countries.text = country_arr[row];
-    NSLog(@"the text is:%@",_TXT_countries.text);
-    
-    
+    @try {
+        self.TXT_countries.text = [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:row] valueForKey:@"name"]];
+        NSLog(@"the text is:%@",_TXT_countries.text);
+    } @catch (NSException *exception) {
+        NSLog(@"Exception from picker country %@",exception);
+    }
 }
 
 
@@ -373,5 +404,12 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+#pragma mark - Uitextfield deligate
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    [_country_picker_view reloadAllComponents];
+    _TXT_countries.inputView = _country_picker_view;
+}
 
 @end

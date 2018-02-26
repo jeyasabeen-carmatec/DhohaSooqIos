@@ -38,6 +38,7 @@
 @property(nonatomic,weak)IBOutlet UIView *VW_empty;
 @property(nonatomic,weak)IBOutlet UIButton *BTN_empty;
 
+//scrol view
 
 
 

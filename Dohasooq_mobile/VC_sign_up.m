@@ -9,6 +9,7 @@
 #import "VC_sign_up.h"
 #import "Home_page_Qtickets.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_sign_up ()<UIGestureRecognizerDelegate,UITextFieldDelegate,UIAlertViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
 {
@@ -197,8 +198,8 @@
     if (textField == _TXT_password) {
         
         BOOL lowerCaseLetter = false,upperCaseLetter = false,digit = false,specialCharacter = 0;
-        if([textField.text length] >= 8)
-        {
+       // if([textField.text length] >= 8)
+        //{
             for (int i = 0; i < [textField.text length]; i++)
             {
                 unichar c = [textField.text characterAtIndex:i];
@@ -220,22 +221,18 @@
                 }
             }
             
-            if( digit && lowerCaseLetter )
+            if( digit && lowerCaseLetter && upperCaseLetter )
             {
                 NSLog(@"Valid Password");
             }
             else
             {
-                [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
+                
+                [HttpClient createaAlertWithMsg:@"The password must contain one number, one capital letter and 8 char minimum" andTitle:@""];
                 [textField becomeFirstResponder];
             }
             
-        }
-        else
-        {
-           [HttpClient createaAlertWithMsg:@"The password must contain one number and 8 char minimum" andTitle:@""];
-            [textField becomeFirstResponder];
-        }
+       // }
         
         
         
@@ -286,14 +283,32 @@
     if(textField.tag==3)
     {
         NSInteger inte = textField.text.length;
-        if(inte >= 15)
+        if([_TXT_prefix.text isEqualToString:@"+974"])
         {
+            if(inte == 8)
+            {
+              if ([string isEqualToString:@""])
+              {
+                return YES;
+              }
+              else
+              {
+                return NO;
+               }
+            }
+
+        }
+        else
+        {
+            if(inte >= 15)
+            {
             if ([string isEqualToString:@""]) {
                 return YES;
             }
             else
             {
                 return NO;
+            }
             }
         }
 //        NSCharacterSet *invalidCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789()+- "] invertedSet];
@@ -307,6 +322,8 @@
 -(void)submit_Action
 {
     NSString *text_to_compare_email = _TXT_email.text;
+    NSString *text_phone  = _TXT_phone.text;
+
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
      NSString *msg;
     if ([_TXT_F_name.text isEqualToString:@""])
@@ -370,8 +387,22 @@
         
          
      }
+    if([_TXT_prefix.text isEqualToString:@"+974"])
+    {
+        if(_TXT_phone.text.length < 8)
+        {
+            _TXT_phone.text = text_phone;
+            [_TXT_phone becomeFirstResponder];
+            msg = @"Phone Number should be 8 characters";
+            
+            
+        }
 
-    else if (_TXT_phone.text.length < 5)
+    }
+    else
+    {
+
+     if (_TXT_phone.text.length < 5)
     {
          [_TXT_phone becomeFirstResponder];
          msg = @"Phone Number cannot be less than 5 digits";
@@ -386,7 +417,8 @@
        
       
     }
-    else if([_TXT_phone.text isEqualToString:@" "])
+    }
+     if([_TXT_phone.text isEqualToString:@" "])
     {
           [_TXT_phone becomeFirstResponder];
          msg = @"Blank space are not allowed";
@@ -422,20 +454,24 @@
          msg = @"These passwords don't match. Try again?";
     }
     
+        
+    
+    if(msg)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+        
+    }
     else
     {
-//        [HttpClient animating_images:self];
+        //        [HttpClient animating_images:self];
         VW_overlay.hidden = NO;
         [activityIndicatorView startAnimating];
         [self performSelector:@selector(_sign_up_api_integration) withObject:activityIndicatorView afterDelay:0.01];
         
     }
-    if(msg)
-    {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
 
-    }
+
    // [self performSegueWithIdentifier:@"" sender:self];
     
    
@@ -533,7 +569,7 @@
         if (returnData)
         
     {
-       // [HttpClient stop_activity_animation];
+       // [HttpClient stop_activity_animation:self];
         NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&error];
         NSLog(@"The response Api post sighn up API %@",json_DATA);
         NSString *status = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"success"]];
@@ -558,7 +594,7 @@
             
             [self.view endEditing:TRUE];
 
-//            [HttpClient stop_activity_animation];
+//            [HttpClient stop_activity_animation:self];
             [activityIndicatorView stopAnimating];
             VW_overlay.hidden = YES;
 
@@ -569,7 +605,7 @@
         {
             [activityIndicatorView stopAnimating];
             VW_overlay.hidden = YES;
-//             [HttpClient stop_activity_animation];
+//             [HttpClient stop_activity_animation:self];
             if ([msg isEqualToString:@"User already exists"])
             {
                 msg = @"Email address already in use, Please try with different email.";
@@ -583,7 +619,7 @@
     }
     else
     {
-//      [HttpClient stop_activity_animation];
+//      [HttpClient stop_activity_animation:self];
         [activityIndicatorView stopAnimating];
         VW_overlay.hidden = YES;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
@@ -595,14 +631,14 @@
         
     @catch(NSException *exception)
     {
-//         [HttpClient stop_activity_animation];
+//         [HttpClient stop_activity_animation:self];
         [activityIndicatorView stopAnimating];
         VW_overlay.hidden = YES;
         NSLog(@"The error is:%@",exception);
         
     }
     
-//    [HttpClient stop_activity_animation];
+//    [HttpClient stop_activity_animation:self];
     
 }
 - (void)alertView:(UIAlertView *)alertView
@@ -621,6 +657,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
             
 //            Home_page_Qtickets *intial = [self.storyboard instantiateViewControllerWithIdentifier:@"QT_controller"];
 //            [self presentViewController:intial animated:NO completion:nil];
+            [self cart_count];
             [self performSegueWithIdentifier:@"signUP_home" sender:self];
 
             
@@ -668,7 +705,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
             
             if([status isEqualToString:@"1"])
             {
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 
                 [[NSUserDefaults standardUserDefaults]  removeObjectForKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
@@ -687,7 +724,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
             }
             else
             {
-               [HttpClient stop_activity_animation];
+               [Helper_activity stop_activity_animation:self];
                 if ([msg isEqualToString:@"User already exists"])
                 {
                     msg = @"Email address already in use, Please try with different email.";
@@ -700,7 +737,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
         }
         else
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
             [alert show];
         }
@@ -714,6 +751,78 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
     
     
 }
+
+-(void)cart_count{
+    
+    NSString *user_id;
+    @try
+    {
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
+    [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        if (error) {
+            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
+             ];
+            //            VW_overlay.hidden = YES;
+            //            [activityIndicatorView stopAnimating];
+            
+            
+        }
+        if (data) {
+            NSLog(@"cart count sadas %@",data);
+            NSDictionary *dict = data;
+            @try {
+                
+                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
+                //   NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
+                [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"cart_count"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+                
+                [[NSUserDefaults standardUserDefaults] setValue:badge_value forKey:@"cart_count"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+                [self dismissViewControllerAnimated:NO completion:nil];
+                
+                
+            } @catch (NSException *exception) {
+                //                 VW_overlay.hidden = YES;
+                //                [activityIndicatorView stopAnimating];
+                
+                
+                NSLog(@"asjdas dasjbd asdas iccxv %@",exception);
+            }
+            
+        }
+    }];
+}
+
 -(void)phone_code_view
 {
     

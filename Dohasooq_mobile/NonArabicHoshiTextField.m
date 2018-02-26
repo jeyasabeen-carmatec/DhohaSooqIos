@@ -20,8 +20,8 @@
 @implementation NonArabicHoshiTextField
 
 #pragma mark - Constants
-static CGFloat const activeBorderThickness = 1.5;
-static CGFloat const inactiveBorderThickness = 0.8;
+static CGFloat const activeBorderThickness = 0.5;
+static CGFloat const inactiveBorderThickness = 0.5;
 static CGPoint const textFieldInsets = {0, 12};
 static CGPoint const placeholderInsets = {0, 6};
 
@@ -30,6 +30,8 @@ static CGPoint const placeholderInsets = {0, 6};
     _borderInactiveColor = borderInactiveColor;
     
     [self updateBorder];
+    
+    
 }
 
 - (void)setBorderActiveColor:(UIColor *)borderActiveColor {
@@ -93,29 +95,34 @@ static CGPoint const placeholderInsets = {0, 6};
 }
 
 - (void) commonInit {
-        
+    
     self.inactiveBorderLayer = [[CALayer alloc] init];
     self.activeBorderLayer = [[CALayer alloc] init];
-    self.placeholderLabel = [[UILabel alloc] init];    
+    self.placeholderLabel = [[UILabel alloc] init];
     
-    
-    self.borderInactiveColor = [UIColor colorWithRed:0.7255 green:0.7569 blue:0.7922 alpha:1.0];
-    self.borderActiveColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
+    self.borderInactiveColor = [UIColor lightGrayColor];
+    self.borderActiveColor = [UIColor lightGrayColor];
     self.placeholderColor = [UIColor grayColor];
     self.cursorColor = [UIColor colorWithRed:0.349 green:0.3725 blue:0.4314 alpha:1.0];
-    self.textColor =  [UIColor grayColor];
-    [self setFont:[UIFont fontWithName:@"Poppins-Regular" size:19]];
+    self.textColor = [UIColor grayColor];
+    [self setFont:[UIFont fontWithName:@"Poppins-Light" size:17]];
     
     self.placeholderFontScale = 0.65;
     self.activePlaceholderPoint = CGPointZero;
+    
 }
 
 #pragma mark - Overridden methods
 
 - (void)drawRect:(CGRect)rect {
-    CGRect frame = CGRectMake(20, rect.size.height, rect.size.width, rect.size.height);
+    
+    CGRect frame;
+    frame = CGRectMake(20, rect.size.height, rect.size.width, rect.size.height);
+    
+    
     self.placeholderLabel.frame = CGRectInset(frame, placeholderInsets.x, placeholderInsets.y);
     self.placeholderLabel.font = [self placeholderFontFromFont:self.font];
+    
     
     [self updateBorder];
     [self updatePlaceholder];
@@ -126,17 +133,25 @@ static CGPoint const placeholderInsets = {0, 6};
 }
 
 - (CGRect)editingRectForBounds:(CGRect)bounds {
-    return CGRectMake(30, bounds.origin.y + 5, bounds.size.width, bounds.size.height);
+    
+            return CGRectMake(30, bounds.origin.y + 5, bounds.size.width, bounds.size.height);
+        
+    
+    
 }
 
-- (CGRect)textRectForBounds:(CGRect)bounds {
+- (CGRect)textRectForBounds:(CGRect)bounds
+{
     return CGRectMake(30, bounds.origin.y + 5, bounds.size.width, bounds.size.height);
+        
+   
 }
 
 - (void)animateViewsForTextEntry {
     if (self.text.length == 0) {
         [UIView animateWithDuration:0.35 delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:1.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-            self.placeholderLabel.frame = CGRectMake(20, self.placeholderLabel.frame.origin.y, CGRectGetWidth(self.placeholderLabel.frame), CGRectGetHeight(self.placeholderLabel.frame));
+                           self.placeholderLabel.frame = CGRectMake(20, self.placeholderLabel.frame.origin.y, CGRectGetWidth(self.placeholderLabel.frame), CGRectGetHeight(self.placeholderLabel.frame));
+         
             self.placeholderLabel.textColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
         } completion:^(BOOL finished) {
             if (self.didBeginEditingHandler != nil) {
@@ -160,7 +175,7 @@ static CGPoint const placeholderInsets = {0, 6};
         [UIView animateWithDuration:0.35 delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:2.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
             [self layoutPlaceholderInTextRect];
             self.placeholderLabel.textColor = [UIColor grayColor];
-
+            
         } completion:^(BOOL finished) {
             if (self.didEndEditingHandler != nil) {
                 self.didEndEditingHandler();
@@ -189,12 +204,13 @@ static CGPoint const placeholderInsets = {0, 6};
     
     if ([self isFirstResponder] || self.text.length!=0) {
         self.placeholderLabel.textColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
-
+        
         [self animateViewsForTextEntry];
     }
 }
 
 - (UIFont *)placeholderFontFromFont:(UIFont *)font {
+    
     UIFont *smallerFont = [UIFont fontWithName:@"Poppins-Regular" size:font.pointSize*self.placeholderFontScale+2];
     
     return smallerFont;
@@ -211,20 +227,11 @@ static CGPoint const placeholderInsets = {0, 6};
 - (void)layoutPlaceholderInTextRect {
     CGRect textRect = [self textRectForBounds:self.bounds];
     CGFloat originX = 30;
-//    
-//    switch (self.textAlignment) {
-//        case NSTextAlignmentCenter:
-//            originX += textRect.size.width/2-self.placeholderLabel.bounds.size.width/2;
-//            break;
-//        case NSTextAlignmentRight:
-//            originX += textRect.size.width-self.placeholderLabel.bounds.size.width;
-//            break;
-//       default:
-//           break;
-//    }
     
-    self.placeholderLabel.frame = CGRectMake(originX, textRect.size.height/2.2, CGRectGetWidth(self.placeholderLabel.bounds), CGRectGetHeight(self.placeholderLabel.bounds));
-    self.activePlaceholderPoint = CGPointMake(30, self.placeholderLabel.frame.origin.y-self.placeholderLabel.frame.size.height-placeholderInsets.y);
+        
+        self.placeholderLabel.frame = CGRectMake(originX, textRect.size.height/2.5, CGRectGetWidth(self.placeholderLabel.bounds), CGRectGetHeight(self.placeholderLabel.bounds));
+        self.activePlaceholderPoint = CGPointMake(30, self.placeholderLabel.frame.origin.y-self.placeholderLabel.frame.size.height);
+    
+    
 }
-
 @end

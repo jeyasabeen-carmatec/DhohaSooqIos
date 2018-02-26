@@ -12,20 +12,24 @@
 #import "qtickets_cell.h"
 #import "upcoming_cell.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 #import <SDWebImage/UIImageView+WebCache.h>
 
 
-@interface Home_detail ()<UITabBarDelegate,UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource>
+@interface Home_detail ()<UITabBarDelegate,UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource,UITextFieldDelegate>
 {
-    NSMutableArray *Movies_arr,*Events_arr,*Sports_arr,*Leisure_arr;
-//    UIView *VW_overlay;
-//    UIActivityIndicatorView *activityIndicatorView;
+    NSMutableArray *Movies_arr,*Events_arr,*Sports_arr,*Leisure_arr,*movie,*lang,*venues;
+
     NSArray *langugage_arr,*halls_arr,*venues_arr,*sports_venues,*leisure_venues;
     NSString *halls_text,*leng_text;
     NSDictionary *temp_dicts;
     NSString *headre_name;
     UIButton *all;
+    
+    NSString *selectedPicker;
+    // NSInteger rowValue;
+    BOOL isScrolled;
 }
 @property (nonatomic, strong) HMSegmentedControl *segmentedControl4;
 
@@ -55,6 +59,13 @@
     Sports_arr = [[NSMutableArray alloc] init];
     Events_arr = [[NSMutableArray alloc] init];
     
+    
+    //  For Filtering
+    
+    movie = [[NSMutableArray alloc]init];
+     lang = [[NSMutableArray alloc]init];
+     venues = [[NSMutableArray alloc]init];
+    
     CGRect frameset = _VW_empty.frame;
     frameset.size.width = 200;
     frameset.size.height = 200;
@@ -70,7 +81,7 @@
    
     _BTN_leisure_venues.text = _BTN_venues.text;
     _BTN_sports_venues.text = _BTN_venues.text;
-    leng_text = @"LANGUAGE";
+    leng_text = @"LANGUAGES";
     halls_text =@"CINEMA";
     
     [self ATTRIBUTE_TEXT];
@@ -111,12 +122,15 @@
     UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     _Tab_MENU.selectionIndicatorImage = img;
+    [self VIew_APPEAR];
 
-    
+}
+-(void)VIew_APPEAR
+{
    if([headre_name isEqualToString:@"MOVIES"])
    {
         [self Movies_view];
-       [HttpClient animating_images:self];
+       [Helper_activity animating_images:self];
        [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:0]];
        
@@ -126,13 +140,10 @@
    else if([headre_name isEqualToString:@"EVENTS"])
    {
        [self Events_view];
-       [HttpClient animating_images:self];
+       [Helper_activity animating_images:self];
        [self performSelector:@selector(Events_API_CALL) withObject:nil afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:1]];
 
-       
-       
-       
        
     }
     else if([headre_name isEqualToString:@"SPORTS"])
@@ -142,7 +153,7 @@
 //        VW_overlay.hidden = NO;
           _VW_sports.hidden = NO;
 //        [activityIndicatorView startAnimating];
-       [HttpClient animating_images:self];
+       [Helper_activity animating_images:self];
        
         [self performSelector:@selector(Sports_API_call) withObject:nil afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:2]];
@@ -157,7 +168,7 @@
        // VW_overlay.hidden = NO;
        _VW_Leisure.hidden = NO;
        // [activityIndicatorView startAnimating];
-       [HttpClient animating_images:self];
+       [Helper_activity animating_images:self];
        [self performSelector:@selector(Leisure_API_call) withObject:nil afterDelay:0.01];
        [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:3]];
 
@@ -171,7 +182,7 @@
         //[self.view addSubview:VW_overlay];
       //  VW_overlay.hidden = NO;
       //  [activityIndicatorView startAnimating];
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
         [self.Tab_MENU setSelectedItem:[[self.Tab_MENU items] objectAtIndex:0]];
         [_Header_name setTitle:@"Movies" forState:UIControlStateNormal];
@@ -181,6 +192,9 @@
     }
 
     
+}
+- (IBAction)LOGO_ACTION:(id)sender {
+    [self VIew_APPEAR];
 }
 
 -(void)picker_view_set_UP
@@ -226,20 +240,33 @@
     _BTN_leisure_venues.inputAccessoryView = conutry_close;
     _BTN_sports_venues.inputAccessoryView = conutry_close;
     _BTN_venues.inputAccessoryView=conutry_close;
+    
+    
     self.BTN_all_lang.inputView = _lang_picker;
     self.BTN_all_halls.inputView=_halls_picker;
     _BTN_venues.inputView = _venue_picker;
     _BTN_leisure_venues.inputView = _leisure_venues;
     _BTN_sports_venues.inputView = _sports_venue_picker;
+    
     _BTN_all_lang.tintColor=[UIColor clearColor];
     _BTN_all_halls.tintColor=[UIColor clearColor];
     _BTN_venues.tintColor=[UIColor clearColor];
     _BTN_sports_venues.tintColor=[UIColor clearColor];
     _BTN_leisure_venues.tintColor=[UIColor clearColor];
     
+    _BTN_all_lang.delegate=self;
+    _BTN_all_halls.delegate=self;
+    _BTN_leisure_venues.delegate=self;
+    _BTN_sports_venues.delegate=self;
+    _BTN_venues.delegate=self;
+    
 }
 -(void)countrybuttonClick
 {
+    if (!isScrolled) {
+         [self pickerCustomAction:0];
+    }
+    
     [self.BTN_all_lang resignFirstResponder];
     [self.BTN_all_halls resignFirstResponder];
     [_BTN_sports_venues resignFirstResponder];
@@ -389,7 +416,7 @@
       
         [user_defafults setValue:@"Events" forKey:@"header_name"];
         [self ATTRIBUTE_TEXT];
-      [HttpClient animating_images:self];
+      [Helper_activity animating_images:self];
         [self performSelector:@selector(Events_API_CALL) withObject:nil afterDelay:0.01];
         [self Event_API_CALL];
 
@@ -459,7 +486,7 @@
         [user_defafults setValue:@"MOVIES" forKey:@"header_name"];
 
         _VW_filter.hidden = NO;
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
 //        VW_overlay.hidden = NO;
 //        [activityIndicatorView startAnimating];
         [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
@@ -490,7 +517,7 @@
 //               [self.VW_Leisure addSubview:VW_overlay];
            [_Header_name setTitle:@"LEISURE" forState:UIControlStateNormal];
         [user_defafults setValue:@"LEISURE" forKey:@"header_name"];
-          [HttpClient animating_images:self];
+          [Helper_activity animating_images:self];
 //        VW_overlay.hidden = NO;
 //        [activityIndicatorView startAnimating];
         [self performSelector:@selector(Leisure_API_call) withObject:nil afterDelay:0.01];
@@ -1019,7 +1046,7 @@
         
         else
         {
-       [HttpClient animating_images:self];
+       [Helper_activity animating_images:self];
             [self performSelector:@selector(event_detail) withObject:nil afterDelay:0.01];
         }
         }
@@ -1078,7 +1105,7 @@
            
            else
            {
-              [HttpClient animating_images:self];
+              [Helper_activity animating_images:self];
                [self performSelector:@selector(event_detail) withObject:nil afterDelay:0.01];
            }
        }
@@ -1108,13 +1135,13 @@
 -(void)sports_detail
 {
     [self performSegueWithIdentifier:@"Home_sports_detail" sender:self];
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
 }
 -(void)event_detail
 {
     
     [self performSegueWithIdentifier:@"leisure_detail_segue" sender:self];
-  [HttpClient stop_activity_animation];
+  [Helper_activity stop_activity_animation:self];
 
 }
 
@@ -1146,7 +1173,7 @@
                 cell.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[dict valueForKey:@"_IMDB_rating"]];
                 cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
                 NSString *img_url = [dict valueForKey:@"_iphonethumb"];
-                img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+             //  img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
                 
                 [cell.IMG_banner sd_setImageWithURL:[NSURL URLWithString:img_url]
                                    placeholderImage:[UIImage imageNamed:@"upload-8.png"]
@@ -1217,7 +1244,7 @@
                 cell.LBL_rating.text = [NSString stringWithFormat:@"%@ votes",[dict valueForKey:@"_willwatch"]];
                 //cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
                 NSString *img_url = [dict valueForKey:@"_thumbURL"];
-                img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+               // img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
                 
                 [cell.IMG_banner sd_setImageWithURL:[NSURL URLWithString:img_url]
                                    placeholderImage:[UIImage imageNamed:@"upload-8.png"]
@@ -1282,7 +1309,7 @@
                 cell.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[dict valueForKey:@"_IMDB_rating"]];
                 cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
                 NSString *img_url = [dict valueForKey:@"_iphonethumb"];
-                img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+                //img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
                 
                 [cell.IMG_banner sd_setImageWithURL:[NSURL URLWithString:img_url]
                                    placeholderImage:[UIImage imageNamed:@"upload-8.png"]
@@ -1398,8 +1425,8 @@
     self.segmentedControl4.sectionTitles = @[@"Now Showing", @"Coming Soon",@"Top Movies"];
     
     self.segmentedControl4.backgroundColor = [UIColor clearColor];
-    self.segmentedControl4.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:16]};
-    self.segmentedControl4.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14]};
+    self.segmentedControl4.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:16]};
+    self.segmentedControl4.selectedTitleTextAttributes = @{NSForegroundColorAttributeName : [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0],NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:16]};
     self.segmentedControl4.selectionIndicatorColor = [UIColor colorWithRed:0.99 green:0.68 blue:0.16 alpha:1.0];
     //    self.segmentedControl4.selectionIndicatorColor
     self.segmentedControl4.selectionStyle = HMSegmentedControlSelectionStyleFullWidthStripe;
@@ -1417,7 +1444,7 @@
     if(self.segmentedControl4.selectedSegmentIndex == 0)
     {
         _VW_filter.hidden = NO;
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         
         [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
         
@@ -1427,7 +1454,7 @@
     else if(self.segmentedControl4.selectedSegmentIndex == 1)
     {
         _VW_filter.hidden = YES;
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
 
         [self performSelector:@selector(up_coming_API) withObject:nil afterDelay:0.01];
         
@@ -1435,7 +1462,7 @@
     }
     else{
         _VW_filter.hidden = YES;
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
 
         [self performSelector:@selector(Top_movies_API) withObject:nil afterDelay:0.01];
         
@@ -1545,7 +1572,7 @@
            // }
         }
       
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         [Movies_arr removeAllObjects];
         Movies_arr = [new_arr mutableCopy];
         [_Collection_movies reloadData];
@@ -1596,7 +1623,7 @@
         }
         
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         [Movies_arr removeAllObjects];
         Movies_arr = [new_arr mutableCopy];
         [_Collection_movies reloadData];
@@ -1646,7 +1673,7 @@
         }
         
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         [Movies_arr removeAllObjects];
         Movies_arr = [new_arr mutableCopy];
         [_Collection_movies reloadData];
@@ -1724,7 +1751,7 @@
         
         [_TBL_event_list reloadData];
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         
         //  [self performSegueWithIdentifier:@"Home_to_detail" sender:self];
         
@@ -1733,14 +1760,14 @@
     @catch(NSException *exception)
     {
         NSLog(@"Event api call exception %@",exception);
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
     }
     
 }
 
 -(void)Event_API_CALL
 {
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
     //[Events_arr removeAllObjects];
     Events_arr = [[[NSUserDefaults standardUserDefaults] valueForKey:@"Events_arr"] mutableCopy];
     if(Events_arr.count<1)
@@ -1765,7 +1792,7 @@
 -(void)Sports_API_call
 
 {
-    [HttpClient stop_activity_animation];
+    [Helper_activity stop_activity_animation:self];
     Sports_arr = [[[NSUserDefaults standardUserDefaults] valueForKey:@"Sports_arr"] mutableCopy];
     if(Sports_arr.count < 1)
     {
@@ -1800,7 +1827,7 @@
 }
 -(void)Leisure_API_call
 {
-     [HttpClient stop_activity_animation];
+     [Helper_activity stop_activity_animation:self];
     
     Leisure_arr = [[[NSUserDefaults standardUserDefaults] valueForKey:@"leisure_arr"] mutableCopy];
     if(Leisure_arr.count < 1)
@@ -1834,10 +1861,13 @@
 
 -(void)API_movie
 {
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(movie_API_CALL) withObject:nil afterDelay:0.01];
     
 }
+
+#pragma mark - UIPickerView Delegate DataSourse
+
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
     if (pickerView == _halls_picker) {
         return 1;
@@ -1894,8 +1924,6 @@
     return 0;
 }
 
-#pragma mark - UIPickerViewDelegate
-
 
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
     if (pickerView == _halls_picker) {
@@ -1926,16 +1954,19 @@
     {
         return [[NSUserDefaults standardUserDefaults] valueForKey:@"languages"][row];
     }
-    
-    
-    
     return nil;
 }
 
 // #6
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     
-    NSMutableArray *movie = [[NSMutableArray alloc]init];
+    isScrolled = YES;
+   // rowValue = row;
+    
+    
+    [self pickerCustomAction:row];
+    
+   /* NSMutableArray *movie = [[NSMutableArray alloc]init];
     NSMutableArray *lang = [[NSMutableArray alloc]init];
     NSMutableArray *venues = [[NSMutableArray alloc]init];
     
@@ -2115,8 +2146,205 @@
             [_TBL_sports_list reloadData];
         }
         
-    }
+    }*/
 }
+-(void)pickerCustomAction:(NSInteger)row{
+    /*        selectedPicker = @"languages";
+     selectedPicker = @"halls";
+     selectedPicker = @"sportsVenue";
+     selectedPicker = @"leisureVenue";
+     selectedPicker = @"venues";
+*/
+    [movie removeAllObjects];
+    [lang removeAllObjects];
+   [venues removeAllObjects];
+    
+    
+    if ([selectedPicker isEqualToString:@"languages"]) {
+        
+        if([langugage_arr[row] isEqualToString:@"ALL LANGUAGES"])
+        {
+            [self movie_API_CALL];
+        }
+        else
+        {
+            
+            [self movie_API_CALL];
+            // [lang addObject:@"ALL"];
+            for(int l = 0;l<Movies_arr.count;l++)
+            {
+                if([[[Movies_arr objectAtIndex:l]valueForKey:@"_Languageid"] isEqualToString:langugage_arr[row]])
+                {
+                    [lang addObject:[Movies_arr objectAtIndex:l]];
+                }
+            }
+            
+            
+            NSLog(@"The langauge arr:%@",langugage_arr[row]);
+            
+            if(lang.count < 1)
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No movies found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                
+            }
+            else
+            {
+                [Movies_arr removeAllObjects];
+                [Movies_arr addObjectsFromArray:lang];
+                [_Collection_movies reloadData];
+                leng_text = langugage_arr[row];
+            }
+            
+            [self ATTRIBUTE_TEXT];
+            // _BTN_all_lang.text = halls_text;
+        }
+ 
+    }
+    else if ([selectedPicker isEqualToString:@"halls"]){
+        
+        if([halls_arr[row] isEqualToString:@"ALL CINEMA HALLS"])
+        {
+            [self movie_API_CALL];
+        }
+        else
+        {
+            [self movie_API_CALL];
+            
+            for(int i=0;i<Movies_arr.count;i++)
+            {
+                @try
+                {
+                    //   [movie addObject:@"ALL"];
+                    for(int k=0;k< [[[Movies_arr objectAtIndex:i]valueForKey:@"Theatre"] count];k++)
+                    {
+                        
+                        if([[[[[Movies_arr objectAtIndex:i]valueForKey:@"Theatre"] objectAtIndex:k]valueForKey:@"_name"] isEqualToString:halls_arr[row]])
+                        {
+                            [movie addObject:[Movies_arr objectAtIndex:i]];
+                        }
+                    }
+                    
+                }
+                @catch(NSException *exception)
+                {
+                    // [movie addObject:@"ALL"];
+                    
+                    if([[[[Movies_arr objectAtIndex:i]valueForKey:@"Theatre"]valueForKey:@"_name"] isEqualToString:halls_arr[row]])
+                    {
+                        
+                        [movie addObject:[Movies_arr objectAtIndex:i]];
+                        
+                        
+                        
+                    }
+                    
+                    
+                }
+                
+                
+                
+            }
+            [Movies_arr removeAllObjects];
+            [Movies_arr addObjectsFromArray:movie];
+            [_Collection_movies reloadData];
+            halls_text = halls_arr[row];
+            [self ATTRIBUTE_TEXT];
+        }
+    }
+// ***************** SportsVenue**************
+    else if ([selectedPicker isEqualToString:@"sportsVenue"]){
+        
+        if([venues_arr[row] isEqualToString:@"ALL VENUES"])
+        {
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+        }
+        else
+        {
+            
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+            // [venues addObject:@"ALL"];
+            
+            for(int l = 0;l<Sports_arr.count;l++)
+            {
+                if([[[Sports_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:sports_venues[row]])
+                {
+                    [venues addObject:[Sports_arr objectAtIndex:l]];
+                }
+            }
+            
+            NSLog(@"Venue arr:%@",venues_arr[row]);
+            [Sports_arr removeAllObjects];
+            [Sports_arr addObjectsFromArray:venues];
+            [_TBL_sports_list reloadData];
+        }
+ 
+    }
+ //****************** leisureVenue ************
+    else if ([selectedPicker isEqualToString:@"leisureVenue"]){
+        
+        if([venues_arr[row] isEqualToString:@"ALL VENUES"])
+        {
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+        }
+        else
+        {
+            
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+            //  [venues addObject:@"ALL"];
+            
+            for(int l = 0;l<Leisure_arr.count;l++)
+            {
+                if([[[Leisure_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:leisure_venues[row]])
+                {
+                    [venues addObject:[Leisure_arr objectAtIndex:l]];
+                }
+            }
+            NSLog(@"Venue arr:%@",venues_arr[row]);
+            [Leisure_arr removeAllObjects];
+            [Leisure_arr addObjectsFromArray:venues];
+            [_TBL_lisure_list reloadData];
+        }
+        
+    }
+ // ****************** venues **************
+    else if ([selectedPicker isEqualToString:@"venues"]){
+        if([venues_arr[row] isEqualToString:@"ALL VENUES"])
+        {
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+        }
+        else
+        {
+            [self Events_API_CALL];
+            [self Event_API_CALL];
+            //  [venues addObject:@"ALL"];
+            for(int l = 0;l<Events_arr.count;l++)
+            {
+                if([[[Events_arr objectAtIndex:l]valueForKey:@"_Venue"] isEqualToString:venues_arr[row]])
+                {
+                    [venues addObject:[Events_arr objectAtIndex:l]];
+                }
+            }
+            
+            NSLog(@"The venue arr:%@",venues_arr[row]);
+            [Events_arr removeAllObjects];
+            [Events_arr addObjectsFromArray:venues];
+            [_TBL_event_list reloadData];
+        }
+ 
+    }
+    
+    
+}
+
+
+
+
 - (void)filter_action
 {
     [self performSegueWithIdentifier:@"events_filter" sender:self];
@@ -2132,6 +2360,40 @@
 }
 - (IBAction)shop_action:(id)sender {
     
+}
+
+
+#pragma mark UItextField Delegate
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
+    
+    isScrolled = NO;
+    
+       return YES;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField{
+    
+    if (textField == _BTN_all_lang) {
+        selectedPicker = @"languages";
+       // [self.lang_picker selectRow:0 inComponent:0 animated:YES];
+
+    }
+    else if (textField == _BTN_all_halls){
+        
+        selectedPicker = @"halls";
+        //[self.halls_picker selectRow:2 inComponent:0 animated:YES];
+    }
+    else if (textField == _BTN_sports_venues)
+    {
+        selectedPicker = @"sportsVenue";
+        
+    }
+    else if (textField == _BTN_leisure_venues){
+        selectedPicker = @"leisureVenue";
+    }
+    else if (textField == _BTN_venues){
+        selectedPicker = @"venues";
+    }
 }
 
 /*

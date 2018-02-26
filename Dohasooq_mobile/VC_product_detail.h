@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "HMSegmentedControl.h"
 #import "MIBadgeButton.h"
+#import "GIBadgeView.h"
+
+#import "multiple_sellers.h"
 
 
-
-@interface VC_product_detail : UIViewController
+@interface VC_product_detail : UIViewController<sellersprotocol>
 {
     NSTimer *TIMER_countdown;
 }
@@ -20,12 +22,13 @@
 @property(nonatomic,weak) IBOutlet UIScrollView *Scroll_content;
 
 
-@property(nonatomic,strong) IBOutlet MIBadgeButton *BTN_cart;
+@property(nonatomic,strong) IBOutlet UIButton *BTN_cart;
 @property(nonatomic,strong) IBOutlet MIBadgeButton *BTN_fav;
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_back;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_back_modal;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_cart_list;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_wish_list;
+@property(nonatomic,strong) IBOutlet GIBadgeView *badge_view;
 //@property(nonatomic,weak) IBOutlet UIButton *header_name;
 
 
@@ -45,6 +48,8 @@
 
 @property(nonatomic,weak) IBOutlet UILabel *LBL_discount;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_item_name;
+@property (weak, nonatomic) IBOutlet UILabel *LBL_dohaMiles;
+
 
 //third view
 @property(nonatomic,weak) IBOutlet UIView *VW_third;
@@ -61,7 +66,7 @@
 @property(nonatomic,weak) IBOutlet UIButton *LBL_more_sellers;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_sold_by;
 
-@property(nonatomic,weak) IBOutlet UILabel *LBL_merchant_sellers;
+@property(nonatomic,weak) IBOutlet UITextView *LBL_merchant_sellers;
 @property(nonatomic,weak) IBOutlet UILabel *BTN_left;
 @property(nonatomic,weak) IBOutlet UILabel *BTN_right;
 

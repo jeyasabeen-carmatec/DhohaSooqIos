@@ -98,6 +98,8 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_shipping_charge;
 @property (weak, nonatomic) IBOutlet Hoshi_Billing_ADDR *TXT_cupon;
 @property (weak, nonatomic) IBOutlet UILabel *LBL_summry_miles;
+@property (weak, nonatomic) IBOutlet UILabel *title_Discount;
+@property (weak, nonatomic) IBOutlet UILabel *LBL_Promo_discount;
 
 
 
@@ -136,8 +138,13 @@
 @property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_message_field;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_timer_lbl;
 
+//special instructions view
+
+@property(nonatomic,weak) IBOutlet UIView *VW_special;
+@property(nonatomic,weak) IBOutlet Hoshi_Billing_ADDR *TXT_instructions;
 
 
 
+@property(strong,nonatomic)UIPickerView *shipping_PickerView;
 
 @end

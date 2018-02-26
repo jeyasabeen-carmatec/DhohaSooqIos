@@ -7,12 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MIBadgeButton.h"
+#import "GIBadgeView.h"
+
+@protocol sellersprotocol <NSObject>
+
+-(void)call_detail_api:(NSString *)str_url;
+
+@end
+
 
 @interface multiple_sellers : UIViewController
 @property(nonatomic,weak) IBOutlet UITableView *TBL_sellers;
-@property(nonatomic,weak) IBOutlet MIBadgeButton *BTN_cart;
-@property(nonatomic,weak) IBOutlet MIBadgeButton *BTN_fav;
+@property(nonatomic,strong) IBOutlet GIBadgeView *badge_view;
+@property(nonatomic,assign) id <sellersprotocol>delegate;
 
 
 

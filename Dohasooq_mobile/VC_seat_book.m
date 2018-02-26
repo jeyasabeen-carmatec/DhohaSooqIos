@@ -9,7 +9,7 @@
 #import "VC_seat_book.h"
 #import "XMLDictionary/XMLDictionary.h"
 #import "ViewController.h"
-#import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_seat_book ()<UIAlertViewDelegate>
 {
@@ -78,15 +78,15 @@
     NSLog(@"%@",xmlDoc);
     if([[xmlDoc valueForKey:@"_status"] isEqualToString:@"false"])
     {
-         [HttpClient stop_activity_animation];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Not Available" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+         [Helper_activity stop_activity_animation:self];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Show is getting delayed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
 
         
     }
     else{
         
-     [HttpClient stop_activity_animation];
+     [Helper_activity stop_activity_animation:self];
     
        NSMutableArray *arrfinal = [[NSMutableArray alloc]init];
     NSMutableArray *title_row = [[NSMutableArray alloc]init];
@@ -330,6 +330,10 @@
         }
 
     }
+    if(seats.backgroundColor == [UIColor grayColor])
+    {
+        seats.enabled= NO;
+    }
     
 //   if(seats_ARR.count >= [[[xmlDoc valueForKey:@"Classes"] valueForKey:@"_maxBooking"] intValue])
 //    {
@@ -353,8 +357,8 @@
 //
 //
 //    }
-//    else
-//    {
+    else
+   {
     @try
     {
     if([[title_arr objectAtIndex:i] isEqualToString:@""])
@@ -513,7 +517,7 @@
             
         }
     }
-   // }
+    }
     NSLog(@"the data:%@",seats_ARR);
 }
 
@@ -545,7 +549,7 @@
     else{
         
     
-    [HttpClient animating_images:self];
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(Book_action) withObject:nil afterDelay:0.01];
     }
 
@@ -588,7 +592,7 @@
     }
     if([user_id isEqualToString:@"(null)"])
     {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please login to continue" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
         alert.tag = 1;
         [alert show];
@@ -603,19 +607,19 @@
     
     NSLog(@"%@",str);
     
-    NSURL *URL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/block_seats_qtickets?showid=%@&seats=%@&AppSource=11",[[NSUserDefaults standardUserDefaults] valueForKey:@"movie_id"],str]];
+    NSURL *URL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/block_seats_qtickets?showid=%@&seats=%@&Source=11",[[NSUserDefaults standardUserDefaults] valueForKey:@"movie_id"],str]];
     NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
     NSDictionary *jsonrespnse = [NSDictionary dictionaryWithXMLString:xmlString];
     NSLog(@"%@",jsonrespnse);
     if([[[jsonrespnse valueForKey:@"result"] valueForKey:@"_status"] isEqualToString:@"False"])
     {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[[jsonrespnse valueForKey:@"result"] valueForKey:@"_errormsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
  
     }
     else{
-         [HttpClient stop_activity_animation];
+         [Helper_activity stop_activity_animation:self];
         [[NSUserDefaults standardUserDefaults] setObject:jsonrespnse  forKey:@"Amount_dict"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         

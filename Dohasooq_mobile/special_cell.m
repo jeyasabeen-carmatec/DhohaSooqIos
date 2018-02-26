@@ -1,18 +1,20 @@
 //
-//  payment_cell.m
+//  special_cell.m
 //  Dohasooq_mobile
 //
-//  Created by Test User on 08/01/18.
+//  Created by anumolu mac mini on 06/02/18.
 //  Copyright © 2018 Test User. All rights reserved.
 //
 
-#import "payment_cell.h"
+#import "special_cell.h"
 
-@implementation payment_cell
+@implementation special_cell
 
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
+    self.LBL_instructions.layer.borderWidth = 0.5f;
+    self.LBL_instructions.layer.borderColor = [UIColor lightGrayColor].CGColor;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

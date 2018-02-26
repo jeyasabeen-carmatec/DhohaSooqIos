@@ -7,8 +7,9 @@
 //
 
 #import "VC_event_user.h"
-#import "HttpClient.h"
+#import "Helper_activity.h"
 #import "XMLDictionary/XMLDictionary.h"
+
 
 @interface VC_event_user ()<UITextFieldDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIWebViewDelegate>
 {
@@ -28,6 +29,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    _TXT_name.delegate = self;
+    _TXT_code.delegate = self;
+    _TXT_mail.delegate = self;
+    _TXT_phone.delegate = self;
+    _TXT_voucher.delegate = self;
+    
     
     @try
     {
@@ -37,6 +44,19 @@
             
             _TXT_mail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"user_email"];
             _TXT_name.text = [dict valueForKey:@"firstname"];
+            
+            if([[dict  valueForKey:@"phone"] isEqualToString:@"<null>"]||[[dict  valueForKey:@"phone"] isEqualToString:@""]||[[dict  valueForKey:@"phone"] isEqualToString:@"null"]||![dict  valueForKey:@"phone"])
+            {
+                
+                    _TXT_phone.text = @"";
+                    _TXT_code.text = @"+974";
+                }
+                else
+                {
+                    NSArray  *arr = [[dict valueForKey:@"phone"] componentsSeparatedByString:@"-"];
+                    _TXT_phone.text = [arr objectAtIndex:1];
+                    _TXT_code.text = [arr objectAtIndex:0];
+                }
             
         }
     }@catch(NSException *exception)
@@ -262,7 +282,7 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
     [_phone_picker_view addGestureRecognizer:tapToSelect];
 
     
-    NSLog(@"%@",phone_code_arr);
+   // NSLog(@"%@",phone_code_arr);
     
     UIToolbar* phone_close = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
     phone_close.barStyle = UIBarStyleBlackTranslucent;
@@ -324,6 +344,48 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
     
     
 }
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    NSInteger inte = _TXT_phone.text.length;
+    if([_TXT_code.text isEqualToString:@"+974"])
+    {
+        
+            if(inte == 8)
+            {
+                if ([string isEqualToString:@""])
+                {
+                    return YES;
+                }
+                else
+                {
+                    return NO;
+                }
+            }
+        
+        
+    }
+    else
+    {
+        if(inte >= 15)
+        {
+            if ([string isEqualToString:@""]) {
+                return YES;
+            }
+            else
+            {
+                return NO;
+            }
+        }
+    }
+    NSCharacterSet *notAllowedChar = [[NSCharacterSet characterSetWithCharactersInString:@"1234567890"] invertedSet];
+    NSString *resultStrin = [[_TXT_phone.text componentsSeparatedByCharactersInSet:notAllowedChar] componentsJoinedByString:@""];
+    
+    _TXT_phone.text = resultStrin;
+    
+
+    return YES;
+}
+
 #pragma Button Actions
 - (IBAction)back_action:(id)sender
 {
@@ -347,7 +409,7 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
         
         
     }
-   else if ([_TXT_phone.text isEqualToString:@""])
+    else if ([_TXT_phone.text isEqualToString:@""])
     {
         [_TXT_phone becomeFirstResponder];
         msg = @"Please enter Phone Number";
@@ -355,50 +417,77 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
         
         
     }
-    
-    else if (_TXT_phone.text.length < 5)
+    if([_TXT_code.text isEqualToString:@"+974"])
     {
-        [_TXT_phone becomeFirstResponder];
-        msg = @"Phone Number cannot be less than 5 digits";
-        
-        
-        
+        if(_TXT_phone.text.length < 8)
+        {
+            [_TXT_phone becomeFirstResponder];
+            msg = @"Phone Number cannot be less than 8 digits";
+        }
+        else if(_TXT_phone.text.length > 8)
+        {
+            [self.TXT_phone becomeFirstResponder];
+            
+            msg = @"Phone Number cannot be more than 8 digits";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                msg = @"لا يجب ألا يقلّ رقم الجوال عن 8 أرقام ";
+            }
+        }
+
     }
-    else if(_TXT_phone.text.length>15)
-    {
-        [_TXT_phone becomeFirstResponder];
-        msg = @"Phone Number should not be more than 15 characters";
-        
-        
-    }
-    else if([_TXT_phone.text isEqualToString:@" "])
-    {
-        [_TXT_phone becomeFirstResponder];
-        msg = @"Blank space are not allowed";
-        
-        
-    }
-   else  if(_LBL_stat.tag == 0)
-    {
-        msg = @"please accept term and conditions";
-    }
-    
     
     else
     {
-        [HttpClient animating_images:self];
-        [self performSelector:@selector(get_oreder_ID) withObject:nil afterDelay:0.01];
-
-     
+        if (_TXT_phone.text.length < 5)
+        {
+            [_TXT_phone becomeFirstResponder];
+            msg = @"Phone Number cannot be less than 5 digits";
+        }
+        
+        
+        
+        
+        else if(_TXT_phone.text.length>15)
+        {
+            [_TXT_phone becomeFirstResponder];
+            msg = @"Phone Number should not be more than 15 characters";
+            
+            
+        }
     }
+         if([_TXT_phone.text isEqualToString:@" "])
+        {
+            [_TXT_phone becomeFirstResponder];
+            msg = @"Blank space are not allowed";
+            
+            
+        }
+        else  if(_LBL_stat.tag == 0)
+        {
+            msg = @"Please accept the accept terms and conditions";
+        }
+        
+        
     
-
+    
     if(msg)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
         
     }
+    else
+        
+    {
+        
+        [Helper_activity animating_images:self];
+        [self performSelector:@selector(get_oreder_ID) withObject:nil afterDelay:0.01];
+        
+    }
+    
+
+
 
 }
 #pragma mark Generating Order ID
@@ -451,7 +540,7 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
 
         NSString* Identifier = [[[UIDevice currentDevice] identifierForVendor] UUIDString]; // IOS 6+
         NSLog(@"output is : %@", Identifier);
-        NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/eventbookings?eventid=%@&ticket_id=%@&amount=%@&tkt_count=%@&NoOftktPerid=%@&camount=0&email=%@&name=%@&phone=%@&prefix=%@&bdate=%@&btime=%@&balamount=0&couponcodes=null&AppSource=11&AppVersion=1.0",event_id,event_master_id,str_price,str_count,event_price_id,_TXT_mail.text,_TXT_name.text,_TXT_phone.text,str_prefix,start_date,start_time];
+        NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/eventbookings?eventid=%@&ticket_id=%@&amount=%@&tkt_count=%@&NoOftktPerid=%@&camount=0&email=%@&name=%@&phone=%@&prefix=%@&bdate=%@&btime=%@&balamount=0&couponcodes=null&Source=11&AppVersion=1.0",event_id,event_master_id,str_price,str_count,event_price_id,_TXT_mail.text,_TXT_name.text,_TXT_phone.text,str_prefix,start_date,start_time];
         str_url = [str_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
 
         
@@ -460,6 +549,24 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
         NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
         NSDictionary *xmlDoc = [NSDictionary dictionaryWithXMLString:xmlString];
         NSLog(@"The booking_data is:%@",xmlDoc);
+        NSString *str_stat =[NSString stringWithFormat:@"%@",[[xmlDoc valueForKey:@"result"] valueForKey:@"_status"]];
+        if(![xmlDoc valueForKey:@"result"])
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Some Thing Went Wrong" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+             [Helper_activity stop_activity_animation:self];
+            // [self get_transaction_id];
+        }
+
+        else  if([str_stat isEqualToString:@"False"])
+        {
+             [Helper_activity stop_activity_animation:self];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[[xmlDoc valueForKey:@"result"] valueForKey:@"_errormsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+        }
+        else
+        {
+
         
         
         //_Transaction_Id
@@ -479,9 +586,11 @@ NSString *htmlString = [NSString stringWithFormat:@"<span style=\"font-family: %
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         
-        [HttpClient stop_activity_animation];
-        // Move to next 
-        [self performSegueWithIdentifier:@"user_detail_pay" sender:self];
+        [Helper_activity stop_activity_animation:self];
+            [self performSegueWithIdentifier:@"user_detail_pay" sender:self];
+
+        }
+        // Move to next
     }
     @catch(NSException *exception)
     {

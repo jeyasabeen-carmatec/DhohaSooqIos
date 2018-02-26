@@ -139,12 +139,13 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    return UITableViewAutomaticDimension;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     return 120;
 }
-//-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    return 10;
-//}
 -(void)close_action
 {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -154,15 +155,16 @@
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
-    VW_overlay.hidden = NO;
-    [activityIndicatorView startAnimating];
-    [self performSelector:@selector(api_calling) withObject:activityIndicatorView afterDelay:0.01];
+  
 
     return YES;
 }
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
     _TBL_results.hidden = NO;
+ /*   VW_overlay.hidden = NO;
+    [activityIndicatorView startAnimating];
+    [self performSelector:@selector(api_calling) withObject:activityIndicatorView afterDelay:0.01];*/
     
 }
 -(void)textFieldDidEndEditing:(UITextField *)textField
@@ -177,55 +179,56 @@
 }
 -(void)api_calling
 {
-    NSString *str_url = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/getsearchresult?search=%@",_TXT_search.text];
-    str_url = [str_url stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    NSString *urlGetuser = [NSString stringWithFormat:@"https://api.q-tickets.com/V2.0/getsearchresult?search=%@",_TXT_search.text];
+    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
 
-       // NSURL *URL = [[NSURL alloc] initWithString:str_url];
-       // NSString *xmlString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
-    [HttpClient postServiceCall:str_url andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSMutableDictionary *json = [[NSMutableDictionary alloc]init];
+    NSHTTPURLResponse *response = nil;
+    
+    NSError *error;
+    // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:urlProducts];
+    [request setHTTPMethod:@"GET"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+   
+    //[request setAllHTTPHeaderFields:headers];
+    [request setHTTPShouldHandleCookies:NO];
+    NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    
+        if (aData) {
+            NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSJSONReadingAllowFragments error:&error];
+            NSLog(@"The response Api post sighn up API %@",json_DATA);
 
-            if (error) {
-                [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
-            }
-          
-            if (data) {
-                json = data;
                 
                 @try {
                     [arr_events removeAllObjects];
-                    if([[json valueForKey:@"items"] count]<1)
+                    VW_overlay.hidden = YES;
+                    [activityIndicatorView stopAnimating];
+
+                    if([[json_DATA valueForKey:@"items"] count]<1)
                     {
+                      // VW_overlay.hidden = YES;
+                        //[activityIndicatorView stopAnimating];
+                        
                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"NO data Found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                         [alert show];
 
                     }
                     else{
-                    [arr_events addObjectsFromArray:[json valueForKey:@"items"]];
-                        VW_overlay.hidden = YES;
-                        [activityIndicatorView stopAnimating];
-                    [_TBL_results reloadData];
+                    [arr_events addObjectsFromArray:[json_DATA valueForKey:@"items"]];
+                       
+                   
                     _TBL_results.hidden = NO;
-                     NSLog(@"%@",json);
+                         [_TBL_results reloadData];
+                     NSLog(@"%@",json_DATA);
                     }
                     
                 } @catch (NSException *exception) {
                     NSLog(@"%@",exception);
-                    VW_overlay.hidden = YES;
-                    [activityIndicatorView stopAnimating];
-
                 }
-                
-            }
-            
-        });
-        VW_overlay.hidden = YES;
-        [activityIndicatorView stopAnimating];
-
-    }];
-   
-
+        }
+    
 }
 -(void)movie_detil_api
 {

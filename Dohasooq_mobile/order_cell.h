@@ -30,5 +30,10 @@
 @property(nonatomic,weak) IBOutlet UIImageView *LBL_stat;
 
 @property (weak, nonatomic) IBOutlet UIView *seperator_view;
+@property (weak, nonatomic) IBOutlet UILabel *_LBL_Doha_Miles;
+
+
+// HeightConstraints
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *CalenderHeight;
 
 @end

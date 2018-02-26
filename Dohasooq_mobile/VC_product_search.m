@@ -7,14 +7,18 @@
 //
 
 #import "VC_product_search.h"
+#import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_product_search ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 {
-    UIView *VW_overlay;
-    UIActivityIndicatorView *activityIndicatorView;
+    //UIView *VW_overlay;
+   // UIActivityIndicatorView *activityIndicatorView;
     NSArray *search_ARR;;
     NSArray *search_arr;
     NSString *lower,*upper,*discount;
+    NSMutableArray *search_total_PRODUCT_ARR;
+    
     
 }
 @end
@@ -24,10 +28,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    
-  
-    
+
     CGRect frame_nav = _VW_navMenu.frame;
     frame_nav.origin.x = 0.0f;
     frame_nav.size.width = self.navigationController.navigationBar.frame.size.width - _BTN_search.frame.size.width;
@@ -38,7 +39,15 @@
     _TXT_search.frame = frame_nav;
     
     frame_nav = _BTN_search.frame;
-    frame_nav.origin.x = _TXT_search.frame.size.width - _BTN_search.frame.size.width-2;
+    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+    {
+         frame_nav.origin.x = _TXT_search.frame.origin.x- _BTN_search.frame.size.width-2;
+    }
+    else
+    {
+         frame_nav.origin.x = _TXT_search.frame.size.width - _BTN_search.frame.size.width-2;
+    }
+   // frame_nav.origin.x = _TXT_search.frame.size.width - _BTN_search.frame.size.width-2;
     _BTN_search.frame =  frame_nav;
    //  _TBL_search_results.hidden = YES;
     
@@ -60,6 +69,10 @@
     
     _BTN_empty.layer.cornerRadius = self.BTN_empty.frame.size.width / 2;
     _BTN_empty.layer.masksToBounds = YES;
+    
+    [Helper_activity animating_images:self];
+    [self performSelector:@selector(search_DATA) withObject:nil afterDelay:0.01];
+
 
    // [self search_API_ALL];
 
@@ -73,7 +86,7 @@
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
    
-    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+   /* VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     VW_overlay.clipsToBounds = YES;
     //    VW_overlay.layer.cornerRadius = 10.0;
@@ -83,9 +96,13 @@
     activityIndicatorView.center = VW_overlay.center;
     [VW_overlay addSubview:activityIndicatorView];
     [self.navigationController.view addSubview:VW_overlay];
-    VW_overlay.hidden = YES;
-    _TBL_search_results.hidden = YES;
-    _TXT_search.text = @"";
+    VW_overlay.hidden = YES;*/
+    //_TBL_search_results.hidden = YES;
+   // _TXT_search.text = @"";
+   
+    
+    
+    
    // [_TBL_search_results reloadData];
     
     
@@ -108,18 +125,43 @@
 }
 -(void)search_API
 {
-    if(_TXT_search.text.length < 1)
-    {
-        _TBL_search_results.hidden =NO;
-    }
-    else
-    {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self performSelector:@selector(search_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+    //if(_TXT_search.text.length < 1)
+   // {
+    //    _TBL_search_results.hidden =NO;
+   // }
+   // else
+   // {
+    
+            
+            NSString *substring = [NSString stringWithString:_TXT_search.text];
+            
+            NSArray *arr = [search_total_PRODUCT_ARR mutableCopy];
+    
+    
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF['name'] BEGINSWITH[c] %@",substring];
+            
+           search_ARR = [arr filteredArrayUsingPredicate:predicate];//BEGINSWITH//CONTAINS
+           if(search_ARR.count < 1)
+           {
+               _TBL_search_results.hidden = YES;
+            }
+           else{
+                _TBL_search_results.hidden =NO;
+            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"name"
+                                                                 ascending:YES];
+            NSArray *sortDescriptors = [NSArray arrayWithObject:sortByName];
+            NSArray *sortedArray = [search_ARR sortedArrayUsingDescriptors:sortDescriptors];
+    
+            search_ARR = sortedArray;
 
-        });
+            [_TBL_search_results reloadData];
+           }
 
-    }
+           // [self performSelector:@selector(search_API_CALL) withObject:activityIndicatorView afterDelay:0.01];
+
+    
+
+   // }
 //{
 //    if(_BTN_search.tag == 0)
 //    {
@@ -144,7 +186,7 @@
   //   }
     
 }
--(void)search_API_CALL
+/*-(void)search_API_CALL
 {
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
@@ -242,7 +284,7 @@
         [activityIndicatorView stopAnimating];
         
     }
-}
+}*/
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
 //    if(_BTN_search.tag == 1)
@@ -300,7 +342,7 @@
 //    }
 //    else{
         cell.textLabel.text = [NSString stringWithFormat:@"%@",
-                               [[search_ARR objectAtIndex:indexPath.row] valueForKey:@"title"]];
+                               [[search_ARR objectAtIndex:indexPath.row] valueForKey:@"name"]];
     
     NSString *str = cell.textLabel.text;
       str  =[str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
@@ -319,14 +361,39 @@
 //    if(_BTN_search.tag == 1)
 //    {
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
-    if([user_id isEqualToString:@"(null)"])
+    NSString *user_id;
+    @try
     {
-        
-        user_id = 0;
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
     }
-
-    NSString *url_key= [NSString stringWithFormat:@"%@",[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"title"]];
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
+    NSString *url_key= [NSString stringWithFormat:@"%@",[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"name"]];
 //    url_key = [url_key lowercaseString];
 //    url_key = [url_key stringByReplacingOccurrencesOfString:@" " withString:@"-"];
     NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
@@ -335,7 +402,7 @@
    // apis/productNamesList/" + country_val + "/" + language_val + "/.json
     NSString *list_TYPE = @"productList";
     
-    NSString *str_key = [NSString stringWithFormat:@"%@/txt_%@/0",list_TYPE,[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"title"]];
+    NSString *str_key = [NSString stringWithFormat:@"%@/txt_%@/0",list_TYPE,[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"name"]];
     [[NSUserDefaults standardUserDefaults] setValue:str_key forKey:@"product_list_key"];
     
 
@@ -350,46 +417,47 @@
     
 
     [self performSegueWithIdentifier:@"search_product_list" sender:self];
-   // }
-//    else
-//    {
-//        NSString *url_key= [NSString stringWithFormat:@"%@",[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"name"]];
-//        url_key = [url_key lowercaseString];
-//        url_key = [url_key stringByReplacingOccurrencesOfString:@" " withString:@"-"];
-//        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
-//        NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
-//        // NSString *user_id =  [[[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"] valueForKey:@"id"];
-//        // apis/productNamesList/" + country_val + "/" + language_val + "/.json
-//        NSString *list_TYPE = @"productList";
-//        NSString * urlGetuser =[NSString stringWithFormat:@"%@apis/%@/txt_%@/0/%@/%@.json",SERVER_URL,list_TYPE,_TXT_search.text,country,languge];
-//        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-//        
-//        [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
-//        [[NSUserDefaults standardUserDefaults] synchronize];
-//        
-//        [[NSUserDefaults standardUserDefaults] setValue:[[search_ARR objectAtIndex:indexPath.row] valueForKey:@"name"] forKey:@"item_name"];
-//        [[NSUserDefaults standardUserDefaults] synchronize];
-//        
-//        
-//        [self performSegueWithIdentifier:@"search_product_list" sender:self];
-//
-//    }
-    
-    
+      
     
 }
 -(void)search_API_ALL
 
 {
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    NSString *user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
-    if([user_id isEqualToString:@"(null)"])
+    NSString *user_id;
+    @try
     {
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
         
-        user_id = 0;
     }
     
-    if(_TXT_search.text.length > 0)
+    if(_TXT_search.text.length > 1)
     {
     _BTN_search.tag = 0;
     NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
@@ -411,7 +479,12 @@
     }
     else
     {
-        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please enter a keyword to search for products" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+        [alert show];
+
+        
+      /*  NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
         NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
         NSString *list_TYPE = @"productList";
         NSString *str_key = [NSString stringWithFormat:@"%@/txt_%@/0",list_TYPE,_TXT_search.text];
@@ -421,7 +494,7 @@
         
         [[NSUserDefaults standardUserDefaults] setValue:urlGetuser forKey:@"product_list_url"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        [self performSegueWithIdentifier:@"search_product_list" sender:self];
+        [self performSegueWithIdentifier:@"search_product_list" sender:self];*/
 
 
     }
@@ -429,16 +502,17 @@
     
     
     
-    VW_overlay.hidden = NO;
+  /*  VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
-    [self performSelector:@selector(search_DATA) withObject:activityIndicatorView afterDelay:0.01];
+    [self performSelector:@selector(search_DATA) withObject:activityIndicatorView afterDelay:0.01];*/
 
 }
 -(void)search_DATA
 {
+    search_total_PRODUCT_ARR = [[NSMutableArray alloc]init];;
     @try
     {
-      NSError *error;
+    NSError *error;
     NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
     NSString *languge = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
        NSString *list_TYPE = @"productNamesList";
@@ -457,43 +531,29 @@
     NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     if(aData)
     {
-        search_ARR  = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
-        NSLog(@"The response Api post sighn up API %@",search_ARR);
+        [Helper_activity stop_activity_animation:self];
+        search_total_PRODUCT_ARR  = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
        // search_ARR = [dictin valueForKey:@"products"];
-        if([search_ARR isKindOfClass:[NSArray class]])
-        {
-            [_TBL_search_results reloadData];
-            
-            _TBL_search_results.hidden =  NO;
-                       VW_overlay.hidden = YES;
-            [activityIndicatorView stopAnimating];
-            
-        }
-        else
-        {
-            VW_overlay.hidden = YES;
-            [activityIndicatorView stopAnimating];
-            _TBL_search_results.hidden =  YES;
-                      //  [_TBL_search_results reloadData];
-            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"No data found" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-            [alert show];
-            
-        }
-        
         
         
     }
+    else
+    {
+           [Helper_activity stop_activity_animation:self];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+        [alert show];
+    }
+        
 }
 
 @catch(NSException *exception)
 {
+       [Helper_activity stop_activity_animation:self];
     NSLog(@"The error is:%@",exception);
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
     [alert show];
     
-    VW_overlay.hidden = YES;
-    [activityIndicatorView stopAnimating];
+   
     
 }
 

@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "MIBadgeButton.h"
-
+#import "GIBadgeView.h"
 @interface Home_page_Qtickets : UIViewController
 {
     NSTimer *TIMER_countdown;
+    NSTimer *best_deals_Timer;
 }
 
 @property(nonatomic,strong) NSArray *items;
@@ -32,6 +33,8 @@
 @property(nonatomic,weak) IBOutlet UILabel *LBL_address;
 @property(nonatomic,strong) UIPickerView *lang_pickers;
 @property(nonatomic,weak) IBOutlet UILabel *invisible_LBL;
+@property (nonatomic, strong) GIBadgeView *badgeView;
+
 
 
 @property(nonatomic,weak) IBOutlet UIImageView *IMG_profile;
@@ -47,7 +50,7 @@
 
 
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_fav;
-@property(nonatomic,weak) IBOutlet MIBadgeButton *BTN_cart;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_cart;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_QT_view;
 @property(nonatomic,weak) IBOutlet UITextField *TXT_search;
 @property(nonatomic,weak) IBOutlet UITableView *TBL_search_results;
@@ -166,6 +169,9 @@
 @property (nonatomic, strong) UIPickerView *leisure_venues;
 @property(nonatomic,weak) IBOutlet UIView *VW_leisure_filter;
 
+//Brands Arrows
+@property(nonatomic,weak) IBOutlet UIButton *BTN_brand_left;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_brand_right;
 
 
 @end

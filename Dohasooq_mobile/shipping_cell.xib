@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="17B48" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -35,7 +35,7 @@
                                 </constraints>
                                 <state key="normal" backgroundImage="radiobtn.png"/>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="FSf-Md-zPF">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="FSf-Md-zPF">
                                 <rect key="frame" x="59" y="50" width="222" height="28"/>
                                 <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -77,6 +77,7 @@
                             <constraint firstAttribute="trailing" secondItem="cHr-mo-UuW" secondAttribute="trailing" constant="5" id="E58-pH-eSP"/>
                             <constraint firstItem="kpj-Gn-h0t" firstAttribute="bottom" secondItem="iiH-oa-NsX" secondAttribute="bottom" id="LNf-Hp-2qP"/>
                             <constraint firstItem="drY-Or-fbU" firstAttribute="top" secondItem="iiH-oa-NsX" secondAttribute="top" id="bqW-E9-0jq"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="FSf-Md-zPF" secondAttribute="bottom" constant="5" id="cTQ-fg-XAK"/>
                             <constraint firstItem="iiH-oa-NsX" firstAttribute="baseline" secondItem="drY-Or-fbU" secondAttribute="baseline" id="cVI-cD-nFb"/>
                             <constraint firstItem="FSf-Md-zPF" firstAttribute="top" secondItem="kpj-Gn-h0t" secondAttribute="bottom" constant="12" id="dUI-Fz-Rgf"/>
                             <constraint firstItem="kpj-Gn-h0t" firstAttribute="leading" secondItem="drY-Or-fbU" secondAttribute="trailing" constant="9" id="fcE-sT-h5a"/>
@@ -125,7 +126,7 @@
                                 </constraints>
                                 <state key="normal" backgroundImage="radiobtn.png"/>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="Y52-je-Zhw">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="Y52-je-Zhw">
                                 <rect key="frame" x="40" y="47" width="220" height="28"/>
                                 <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -168,6 +169,7 @@
                             <constraint firstItem="hY5-CX-dLS" firstAttribute="leading" secondItem="JLv-6E-7nU" secondAttribute="trailing" constant="31" id="6wM-0W-3u8"/>
                             <constraint firstItem="JLv-6E-7nU" firstAttribute="top" secondItem="JrB-PK-87q" secondAttribute="top" constant="9" id="SpN-ga-NIE"/>
                             <constraint firstItem="hY5-CX-dLS" firstAttribute="top" secondItem="JLv-6E-7nU" secondAttribute="top" id="Xf6-Bh-K0n"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Y52-je-Zhw" secondAttribute="bottom" constant="5" id="cy5-kr-BIt"/>
                             <constraint firstAttribute="bottom" secondItem="f3p-5A-KKP" secondAttribute="bottom" constant="-25" id="fkJ-rZ-sCX"/>
                             <constraint firstItem="hY5-CX-dLS" firstAttribute="top" secondItem="wS8-Kx-Sar" secondAttribute="top" id="jcM-6N-u8J"/>
                             <constraint firstItem="wS8-Kx-Sar" firstAttribute="leading" secondItem="hY5-CX-dLS" secondAttribute="trailing" constant="16" id="mUQ-KE-gr4"/>
@@ -194,7 +196,7 @@
                 <outlet property="LBL_address" destination="Y52-je-Zhw" id="lxE-t1-rNH"/>
                 <outlet property="LBL_name" destination="hY5-CX-dLS" id="m05-yx-8qE"/>
             </connections>
-            <point key="canvasLocation" x="23" y="331"/>
+            <point key="canvasLocation" x="22.5" y="330.5"/>
         </tableViewCell>
     </objects>
     <resources>

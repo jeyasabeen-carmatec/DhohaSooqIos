@@ -16,6 +16,7 @@
 @property(nonatomic,weak) IBOutlet UIButton *BTN_american_express;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_visa;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_dohabank;
+@property(nonatomic,weak) IBOutlet UIButton *BTN_debit_card;
 
 
 @property (nonatomic, strong) UIPickerView *country_picker_view;

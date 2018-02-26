@@ -8,6 +8,7 @@
 
 #import "VC_intial.h"
 #import "HttpClient.h"
+//#import "Helper_activity.h"
 #import "ViewController.h"
 #import "Home_page_Qtickets.h"
 #import "Reachability.h"
@@ -87,7 +88,16 @@
         // Update the UI on the main thread
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please check Your Internet Connection" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            NSString *str_alert = @"No Internet Connection!";
+            NSString *str_ok = @"Ok";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                str_alert = @"لا يوجد اتصال بالإنترنت!";
+                str_ok = @"حسنا";
+            }
+
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str_alert delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
             [alert show];
         });
     };
@@ -109,7 +119,8 @@
     [timer invalidate];
     VW_overlay.hidden = NO;
   //  [activityIndicatorView startAnimating];
-    [self performSelector:@selector(MENU_api_call) withObject:activityIndicatorView afterDelay:0.01];
+    [self cart_count];
+    [self performSelector:@selector(API_call) withObject:activityIndicatorView afterDelay:0.01];
 
 
     
@@ -181,7 +192,7 @@
     VW_overlay.clipsToBounds = YES;
         VW_overlay.layer.cornerRadius = 10.0;
     // Custom Activity Indicator
-  [HttpClient animating_images:self];
+ // [Helper_activity animating_images:self];
 
     VW_overlay.hidden = YES;
     
@@ -231,7 +242,7 @@
     @try
     {
         
-        [HttpClient animating_images:self];
+       // [Helper_activity animating_images:self];
         
         NSString *urlGetuser =[NSString stringWithFormat:@"%@countries/index.json",SERVER_URL];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
@@ -311,7 +322,7 @@
 
     }
     
-[HttpClient stop_activity_animation];
+  //[Helper_activity stop_activity_animation:self];
 }
 #pragma Picker delegates
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
@@ -454,13 +465,13 @@
                             [[NSUserDefaults standardUserDefaults] setInteger:[[[lang_arr objectAtIndex:j]valueForKey:@"id"] integerValue] forKey:@"language_id"];
                             [[NSUserDefaults standardUserDefaults] setValue: [[lang_arr  objectAtIndex:j]valueForKey:@"language_name"] forKey:@"language"];
                             [[NSUserDefaults standardUserDefaults] synchronize];
+                            [self performSelector:@selector(API_call) withObject:activityIndicatorView afterDelay:0.01];
                         }
                     }
 
                     
                     [[NSUserDefaults standardUserDefaults] setObject:lang_arr forKey:@"language_arr"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
-                     [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
                 }
                 else{
                     VW_overlay.hidden = YES;
@@ -483,246 +494,6 @@
     
 }
 
--(void)go_to_login
-{
-    NSString *msg;
-    if([_TXT_country.text isEqualToString:@""])
-    {
-        [_TXT_country becomeFirstResponder];
-        msg = @"Please select country";
-        
-    }
-    else if([_TXT_language.text isEqualToString:@""])
-    {
-          [_TXT_language becomeFirstResponder];
-        msg = @"please select language";
-    }
-    else
-    {
-    
-         if ([self.TXT_language.text isEqualToString:@"Arabic"])
-         {
-             
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"story_board_language"];
-        [[NSUserDefaults  standardUserDefaults] setValue:_TXT_language.text forKey:@"story_board_language"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Arabic" bundle:nil];
-        
-        Home_page_Qtickets *controller = [storyboard instantiateViewControllerWithIdentifier:@"Home_page_Qtickets"];
-        UINavigationController *navigationController =
-        [[UINavigationController alloc] initWithRootViewController:controller];
-        [self  presentViewController:navigationController animated:NO completion:nil];
-        
-            }
-            else
-             {
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"story_board_language"];
-                [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
-             // [self  presentViewController:QT animated:NO completion:nil];
-             //[self performSegueWithIdentifier:@"intial_login" sender:self];
-               
-             }
-    
-//     [[NSUserDefaults standardUserDefaults] setObject:lang_arr forKey:@"languages"];
-    
-    [[NSUserDefaults  standardUserDefaults] setValue:_TXT_language.text forKey:@"languge"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-
-    if(msg)
-    {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
-
-    }
-}
-#pragma textfield delegates
-
--(BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    [_TXT_country resignFirstResponder];
-    [_TXT_language resignFirstResponder];
-    return YES;
-}
--(void)textFieldDidBeginEditing:(UITextField *)textField
-{
-//    if(textField == _TXT_country)
-//    {
-//        _TBL_list_coutry.hidden = NO;
-//        _TBL_list_lang.hidden  =YES;
-//        
-//    }
-//    else if(textField == _TXT_language)
-//    {
-//        _TBL_list_lang.hidden  =NO;
-//        _TBL_list_coutry.hidden = YES;
-//    }
-}
--(void)textFieldDidEndEditing:(UITextField *)textField
-{
-//    if(textField == _TXT_country)
-//    {
-//        _TBL_list_coutry.hidden = YES;
-//    }
-//    else if(textField == _TXT_language)
-//    {
-//        _TBL_list_coutry.hidden = YES;
-//    }
-    
-}
-#pragma tableview delgates
-//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-//{
-//    if(tableView == _TBL_list_coutry)
-//    {
-//        return country_arr.count;
-//    }
-//    else
-//        return lang_arr.count;
-//}
-//
-//
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    if(tableView == _TBL_list_coutry)
-//    {
-//        UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"cell"];
-//        temp_dict = [country_arr objectAtIndex:indexPath.row];
-//        
-//        
-//        if (cell == nil)
-//        {
-//            cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
-//        }
-//        cell.textLabel.text = [temp_dict valueForKey:@"name"];
-//        return cell;
-//    }
-//    else
-//    {
-//        UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"cell"];
-//        
-//        if (cell == nil)
-//        {
-//            cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
-//        }
-//        if(lang_arr.count == 0)
-//        {
-//            cell.textLabel.text = @"please select Country";
-//            
-//        }
-//        else
-//        {
-//            cell.textLabel.text = [[lang_arr objectAtIndex:indexPath.row]valueForKey:@"language_name"];
-//        }
-//        return cell;
-//        
-//    }
-//}
-//-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    NSUserDefaults *usd = [NSUserDefaults standardUserDefaults];
-//    if(tableView == _TBL_list_coutry)
-//    {
-//        _TBL_list_coutry.hidden = YES;
-//        //NSLog(@"%@",country_arr);
-//        _TXT_country.text = [[country_arr objectAtIndex:indexPath.row] valueForKey:@"name"];
-//        country_ID = [NSString stringWithFormat:@"%@",[[country_arr objectAtIndex:indexPath.row] valueForKey:@"id"]];
-//        _TXT_language.text = @"";
-//        
-//        [usd setInteger:[[[country_arr objectAtIndex:indexPath.row]valueForKey:@"id" ] integerValue] forKey:@"country_id"];
-//        //NSLog(@"Country id:::%@",[usd valueForKey:@"country_id"]);
-//        
-//       // [self language_api_call];
-//#pragma Language_api_integration Method Calling
-//        
-//        @try
-//        {
-//            
-//            NSString *urlGetuser =[NSString stringWithFormat:@"%@Languages/getLangByCountry/%@.json",SERVER_URL,country_ID];
-//            urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-//            [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    if (error) {
-//                        [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
-//                    }
-//                    if (data) {
-//                        NSMutableDictionary *json_DATA = data;
-//                        lang_arr = [NSMutableArray array];
-//                        lang_arr = [json_DATA valueForKey:@"languages"];
-//                           
-//                        [_TBL_list_lang reloadData];
-//                        
-//                        
-//                    }
-//                    
-//                });
-//            }];
-//        }
-//        @catch(NSException *exception)
-//        {
-//            NSLog(@"The error is:%@",exception);
-//            [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
-//           
-//        }
-//        
-//    }
-//    if(tableView == _TBL_list_lang)
-//    {
-//               _TBL_list_lang.hidden = YES;
-//        //_TXT_username.text = [];
-//        _TXT_language.text = [[lang_arr objectAtIndex:indexPath.row]valueForKey:@"language_name"];
-//        
-//        [usd setInteger:[[[lang_arr objectAtIndex:indexPath.row] valueForKey:@"id"] integerValue] forKey:@"language_id"];
-//        [usd setValue: [[lang_arr objectAtIndex:indexPath.row]valueForKey:@"language_name"] forKey:@"language"];
-//        [usd synchronize];
-//        
-//        //NSLog(@"Language id:::%@",[usd valueForKey:@"language_id"]);
-//        
-//        
-//    }
-//    
-//}
-#pragma API call
-//-(void)country_api_call
-//{
-//    @try
-//    {
-//        NSError *error;
-//        // NSError *err;
-//        NSHTTPURLResponse *response = nil;
-//
-//        //        NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSASCIIStringEncoding error:&err];
-//        //        NSLog(@"the posted data is:%@",parameters);
-//        NSString *urlGetuser =[NSString stringWithFormat:@"%@countries/index.json",SERVER_URL];
-//        // urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-//        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
-//        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-//        [request setURL:urlProducts];
-//        [request setHTTPMethod:@"POST"];
-//        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-//        // [request setHTTPBody:postData];
-//        //[request setAllHTTPHeaderFields:headers];
-//        [request setHTTPShouldHandleCookies:NO];
-//        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-//        if(aData)
-//        {
-//            NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
-//            //NSLog(@"The response Api post sighn up API %@",json_DATA);
-//
-////            country_arr = [json_DATA valueForKey:@"countries"];
-////            [_TBL_list_coutry reloadData];
-//
-//
-//
-//        }
-//    }
-//
-//    @catch(NSException *exception)
-//    {
-//        NSLog(@"The error is:%@",exception);
-//    }
-//
-//}
 
 -(void)language_api_call{
     @try
@@ -747,6 +518,7 @@
             //NSLog(@"The response Api post sighn up API %@",json_DATA);
             
             lang_arr = [json_DATA valueForKey:@"languages"];
+            
                       //NSLog(@"%@",lang_arr);
           
             
@@ -772,10 +544,10 @@
         NSHTTPURLResponse *response = nil;
         NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
         //    NSString *urlGetuser =[NSString stringWithFormat:@"%@menuList/%ld/%ld.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]];
-        NSString *lang = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
-        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        NSString *lang = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
 
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/menuList/%@/%@.json",SERVER_URL,country,lang];
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/getCategoryList/%@/%@.json",SERVER_URL,country,lang];
         
         NSLog(@"%ld,%ld",(long)[user_defaults integerForKey:@"country_id"],(long)[user_defaults integerForKey:@"language_id"]);
         
@@ -791,14 +563,16 @@
         {
             
             
-            NSMutableArray *json_DATA = (NSMutableArray *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            NSDictionary *json_DATA = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             
-            [[NSUserDefaults standardUserDefaults] setObject:json_DATA forKey:@"menu_detail"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+          
             
           //  [self performSegueWithIdentifier:@"logint_to_home" sender:self];
             
             NSLog(@"the api_collection_product%@",json_DATA);
+            [[NSUserDefaults standardUserDefaults] setObject:json_DATA  forKey:@"pho"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
             VW_overlay.hidden = YES;
            // [self dismissViewControllerAnimated:NO completion:nil];
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
@@ -808,6 +582,8 @@
                 Home_page_Qtickets *controller = [storyboard instantiateViewControllerWithIdentifier:@"Home_page_Qtickets"];
                 UINavigationController *navigationController =
                 [[UINavigationController alloc] initWithRootViewController:controller];
+                navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+                navigationController.navigationBar.barTintColor = [UIColor whiteColor];
                 [self  presentViewController:navigationController animated:NO completion:nil];
                 
             }
@@ -828,6 +604,237 @@
         
     }
        
+}
+-(void)API_call
+{
+    
+        @try
+        {
+          //  [Helper_activity animating_images:self];
+            
+            /**********   After passing Language Id and Country ID ************/
+            NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
+           
+            NSString *user_id;
+            @try
+            {
+                NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+                if(dict.count == 0)
+                {
+                    user_id = @"(null)";
+                }
+                else
+                {
+                    NSString *str_id = @"user_id";
+                    // NSString *user_id;
+                    for(int i = 0;i<[[dict allKeys] count];i++)
+                    {
+                        if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                        {
+                            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                            break;
+                        }
+                        else
+                        {
+                            
+                            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                        }
+                        
+                    }
+                }
+            }
+            @catch(NSException *exception)
+            {
+                user_id = @"(null)";
+                
+            }
+            
+            NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/home/%ld/%ld/%@/Customer.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"],user_id];            NSLog(@"country id %ld ,language id %ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
+            
+            
+            
+            urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+            [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error) {
+                        [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                        
+                     //   [Helper_activity stop_activity_animation:self];
+                    }
+                    if (data) {
+                        
+                        [self MENU_api_call];
+                        [self IMAGE_PATH_API];
+                        @try {
+                            [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Home_data"];
+                            [[NSUserDefaults standardUserDefaults] synchronize];
+                               [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
+                         
+                        } @catch (NSException *exception)
+                        {
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                            [alert show];
+
+                            
+                        }
+                      
+                  
+                        
+                    }
+                    else
+                    {
+                      //  [Helper_activity stop_activity_animation:self];
+                        //                        VW_overlay.hidden = YES;
+                        //                        [activityIndicatorView stopAnimating];
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        [alert show];
+                        // [self viewWillAppear:NO];
+                        
+                        
+                        
+                    }
+                    
+                   // [Helper_activity stop_activity_animation:self];
+                    
+                });
+            }];
+        }
+        @catch(NSException *exception)
+        {
+            NSLog(@"The error is:%@",exception);
+            [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+            //        VW_overlay.hidden = YES;
+            //        [activityIndicatorView stopAnimating];
+            // [self viewWillAppear:NO];
+           // [Helper_activity stop_activity_animation:self];
+            
+        }
+        
+        
+    
+
+}
+-(void)IMAGE_PATH_API
+{
+    @try
+    {
+    NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/allImagePaths",SERVER_URL];
+    
+    
+    
+    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                
+                //   [Helper_activity stop_activity_animation:self];
+            }
+            @try
+            {
+            if (data) {
+                
+                
+                [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Images_path"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                
+            }
+            else
+            {
+                //  [Helper_activity stop_activity_animation:self];
+                //                        VW_overlay.hidden = YES;
+                //                        [activityIndicatorView stopAnimating];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                [alert show];
+                // [self viewWillAppear:NO];
+                
+                
+                
+            }
+            }
+            @catch(NSException *exception)
+            {
+                
+            }
+            
+            // [Helper_activity stop_activity_animation:self];
+            
+        });
+    }];
+    }
+        @catch(NSException *exception)
+        {
+            
+        }
+
+}
+-(void)cart_count{
+    
+    NSString *user_id;
+    @try
+    {
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+        if(dict.count == 0)
+        {
+            user_id = @"(null)";
+        }
+        else
+        {
+            NSString *str_id = @"user_id";
+            // NSString *user_id;
+            for(int i = 0;i<[[dict allKeys] count];i++)
+            {
+                if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                {
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                    break;
+                }
+                else
+                {
+                    
+                    user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                }
+                
+            }
+        }
+    }
+    @catch(NSException *exception)
+    {
+        user_id = @"(null)";
+        
+    }
+    [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+        if (error) {
+            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
+             ];
+            //            VW_overlay.hidden = YES;
+            //            [activityIndicatorView stopAnimating];
+            
+            
+        }
+        if (data) {
+            NSLog(@"cart count sadas %@",data);
+            NSDictionary *dict = data;
+            @try {
+                
+                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
+                //   NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
+                [[NSUserDefaults standardUserDefaults] setValue:badge_value forKey:@"cart_count"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+                
+                
+                
+            } @catch (NSException *exception) {
+                //                 VW_overlay.hidden = YES;
+                //                [activityIndicatorView stopAnimating];
+                
+                
+                NSLog(@"asjdas dasjbd asdas iccxv %@",exception);
+            }
+            
+        }
+    }];
 }
 
 

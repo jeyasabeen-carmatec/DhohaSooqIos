@@ -8,6 +8,7 @@
 
 #import "VC_forgot_PWD.h"
 #import "HttpClient.h"
+#import "Helper_activity.h"
 
 @interface VC_forgot_PWD ()<UITextFieldDelegate,UIGestureRecognizerDelegate>
 {
@@ -27,7 +28,7 @@
     //[_lbl_forgot_pwd sizeToFit];
     _vw_align.center = self.view.center;
     CGRect set_frame = _BTN_close.frame;
-    set_frame.origin.x = self.view.frame.size.width / 2;
+    set_frame.origin.x = self.view.frame.size.width / 2 - _BTN_close.frame.size.width/2 +10;;
     _BTN_close.frame = set_frame;
 
     UIImage *newImage = [_BTN_close.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -52,23 +53,8 @@
     }
 -(void)viewWillAppear:(BOOL)animated
 {
-//    
-//    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-//    VW_overlay.clipsToBounds = YES;
-//    //    VW_overlay.layer.cornerRadius = 10.0;
-//    
-//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-//    activityIndicatorView.center = VW_overlay.center;
-//    [VW_overlay addSubview:activityIndicatorView];
-//    [self.view addSubview:VW_overlay];
-//    
-//    VW_overlay.hidden = YES;
-//    
-    
+    self.navigationItem.hidesBackButton = YES;
 }
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -98,7 +84,7 @@
     else
     {
         [self.view endEditing:TRUE];
-        [HttpClient animating_images:self];
+        [Helper_activity animating_images:self];
         [self performSelector:@selector(Forgot_api_integration) withObject:nil afterDelay:0.01];
         
     }
@@ -196,7 +182,7 @@
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 
                 
-                 [HttpClient stop_activity_animation];
+                 [Helper_activity stop_activity_animation:self];
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 [alert show];
@@ -204,7 +190,7 @@
             }
             else
             {
-                [HttpClient stop_activity_animation];
+                [Helper_activity stop_activity_animation:self];
                 
                 if ([msg isEqualToString:@"User already exists"])
                 {
@@ -218,7 +204,7 @@
         }
         else
         {
-            [HttpClient stop_activity_animation];
+            [Helper_activity stop_activity_animation:self];
 
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];

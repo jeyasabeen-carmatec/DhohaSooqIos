@@ -10,6 +10,18 @@
 
 @implementation dynamic_categirie_cell
 
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        self.LBL_name = [[UILabel alloc]initWithFrame:CGRectMake(15, 10, 320, 20)];
+        self.LBL_name.backgroundColor = [UIColor clearColor];
+        [self.contentView addSubview:self.LBL_name];
+        // Initialization code
+    }
+    return self;
+}
+
         
     - (void)setSelected:(BOOL)selected animated:(BOOL)animated
     {

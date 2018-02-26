@@ -17,6 +17,8 @@
 #import "Transaction_Type_cell.h"
 #import "transaction_cell.h"
 #import "paymentCell.h"
+#import "Helper_activity.h"
+#import "special_cell.h"
 
 #import <SDWebImage/UIImageView+WebCache.h>
 
@@ -52,7 +54,8 @@ int j ,i;
 //    
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
-    [HttpClient animating_images:self];
+    _TBL_orders.hidden = YES;
+    [Helper_activity animating_images:self];
     [self performSelector:@selector(orders_LIST_Detail) withObject:nil afterDelay:0.01];
     
     
@@ -75,7 +78,7 @@ int j ,i;
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 8;
+    return 9;
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -95,6 +98,25 @@ int j ,i;
         }
      
         return count;
+    }
+    if(section == 5)
+    {
+        NSArray *key = [[json_DATA valueForKey:@"Order"] allKeys];
+         NSInteger count =0;
+
+      NSString  *str_payment_method = [NSString stringWithFormat:@"%@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[key objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"payment_method"]];
+        if([str_payment_method isEqualToString:@"COD"])
+        {
+            count = 0;
+          
+        }
+        else{
+            count = 1;
+        }
+        
+        return count;
+       
+        
     }
   
         return 1;
@@ -165,10 +187,15 @@ int j ,i;
             order_cell.LBL_seller.text = item_seller;
             
             NSString *qr =[NSString stringWithFormat:@"%@",[[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Products"] objectAtIndex:indexPath.row] valueForKey:@"product_subtotal"]];
+            qr  = [HttpClient currency_seperator:qr];
             qr = [qr stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             qr = [qr stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
             
             NSString *price = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],qr];
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                price = [NSString stringWithFormat:@"%@ %@",qr,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
+            }
             
             if ([order_cell.LBL_price respondsToSelector:@selector(setAttributedText:)]) {
                 
@@ -208,12 +235,29 @@ int j ,i;
             }
             
             
-             NSString *date =[NSString stringWithFormat:@"%@",[[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Products"] objectAtIndex:indexPath.row] valueForKey:@"delivery_time"]];
+             //NSString *date =[NSString stringWithFormat:@"%@",[[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Products"] objectAtIndex:indexPath.row] valueForKey:@"delivery_time"]];
             
+            
+             NSString *date=[NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"modified"]];
+            
+            
+            //NSString *date=[NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_status"]];
+         
+ 
+#pragma mark Order Status
+// Order Status is Delivered
+    if ([[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_status"] isEqualToString:@"Delivered"])
+    {
+                    order_cell.LBL_Deliver_on.hidden = YES;
+        
             date = [date stringByReplacingOccurrencesOfString:@"<null>" withString:@"No delivery time allocated "];
             date = [date stringByReplacingOccurrencesOfString:@"" withString:@"No delivery time allocated "];
-            NSString *expect_text = @"Expected Delivary On  ";
-            
+            NSString *expect_text = @"Delivered On :";
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+               expect_text = @"الموعد المتوقع للتسليم";   // have toChange Arabic into Delivered On
+                date =[NSString stringWithFormat:@": %@",[[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Products"] objectAtIndex:indexPath.row] valueForKey:@"delivery_time"]];
+            }
             NSString *date_text = [NSString stringWithFormat:@"%@%@",expect_text,date];
             
             
@@ -256,9 +300,6 @@ int j ,i;
                     [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor grayColor]}
                                             range:ename];
                     
-                    
-
-             
                 }
 
                 
@@ -269,6 +310,102 @@ int j ,i;
             {
                 order_cell.LBL_Deliver_on.text = date_text;
             }
+                
+            }
+    else{      //Order Status is Not Delivered(pending or else)
+                order_cell.LBL_Deliver_on.hidden = YES;
+   }
+            
+            
+#pragma mark shipping_method
+            
+          NSString *shipping_method = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"shipping_method"]];
+            
+            NSString *shipping_text;
+            
+            if ([shipping_method containsString:@"Pickup from Merchant Location"]) {
+                
+              //  order_cell.LBL_shipping_type.text = [NSString stringWithFormat:@"Delivery Slot: %@",shipping_method];
+                   shipping_text = [NSString stringWithFormat:@"Delivery Slot: %@",shipping_method];
+            }
+            else{
+               
+                shipping_method = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"delivery_slot"]];
+                
+                if ([shipping_method isEqualToString:@"No Scheduled Delivery Slots"]) {
+                    
+                    
+                    
+                    NSString *Delivery_time =[NSString stringWithFormat:@"%@",[[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Products"] objectAtIndex:indexPath.row] valueForKey:@"delivery_time"]];
+                    
+                    shipping_method = Delivery_time;
+                    
+                    //order_cell.LBL_shipping_type.text = [NSString stringWithFormat:@"Expected Delivery on: %@",Delivery_time];
+                    shipping_text =[NSString stringWithFormat:@"Expected Delivery on: %@",shipping_method];
+                    
+                }else{
+                      //order_cell.LBL_shipping_type.text = [NSString stringWithFormat:@"Delivery Slot: %@",shipping_method];
+                    shipping_text = [NSString stringWithFormat:@"Delivery Slot: %@",shipping_method];
+                    
+                }
+                
+            }
+            
+          
+            
+            
+            if ([order_cell.LBL_shipping_type respondsToSelector:@selector(setAttributedText:)]) {
+                
+                NSDictionary *attribs = @{
+                                          NSForegroundColorAttributeName:order_cell.LBL_shipping_type.textColor,
+                                          NSFontAttributeName: order_cell.LBL_shipping_type.font
+                                          };
+                NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:shipping_text attributes:attribs];
+                
+                
+                
+                NSRange ename = [shipping_text rangeOfString:date];
+                CGSize result = [[UIScreen mainScreen] bounds].size;
+                if(result.height <= 480)
+                {
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
+                                            range:[shipping_text rangeOfString:shipping_method]];
+                    
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor grayColor]}
+                                            range:ename];
+                    
+                    
+                }
+                else if(result.height <= 568)
+                {
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
+                                            range:[shipping_text rangeOfString:shipping_method]];
+                    
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor grayColor]}
+                                            range:ename];
+                    
+                }
+                else
+                {
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor darkGrayColor]}
+                                            range:[shipping_text rangeOfString:shipping_method]];
+                    
+                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor grayColor]}
+                                            range:ename];
+                    
+                }
+                
+                
+                
+                order_cell.LBL_shipping_type.attributedText = attributedText;
+            }
+            else
+            {
+                order_cell.LBL_shipping_type.text = shipping_text;
+            }
+            
+            
+            /////////////////////////////////
             [order_cell.BTN_rating addTarget:self action:@selector(review_Screen:) forControlEvents:UIControlEventTouchUpInside];
             NSString *status = [NSString stringWithFormat:@"%@",[[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Products"] objectAtIndex:indexPath.row] valueForKey:@"shipment_status"]];
             status = [status stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
@@ -283,12 +420,12 @@ int j ,i;
           
             if([status isEqualToString:@""])
             {
-                order_cell.IMG_track_image.image = [UIImage imageNamed:@"5"];
+                order_cell.IMG_track_image.image = [UIImage imageNamed:@"finalzero"];
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"5"].CGImage
-                                                                scale:[UIImage imageNamed:@"5"].scale
+                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"finalzero"].CGImage
+                                                                scale:[UIImage imageNamed:@"finalzero"].scale
                                                           orientation:UIImageOrientationUpMirrored];
                     order_cell.IMG_track_image.image = flippedImage;
                 }
@@ -297,12 +434,12 @@ int j ,i;
             }
             else  if([status isEqualToString:@"Pending"])
             {
-                order_cell.IMG_track_image.image = [UIImage imageNamed:@"4"];
+                order_cell.IMG_track_image.image = [UIImage imageNamed:@"final"];
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"4"].CGImage
-                                                                scale:[UIImage imageNamed:@"4"].scale
+                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"final"].CGImage
+                                                                scale:[UIImage imageNamed:@"final"].scale
                                                           orientation:UIImageOrientationUpMirrored];
                     order_cell.IMG_track_image.image = flippedImage;
                 }
@@ -311,24 +448,24 @@ int j ,i;
             }
             else  if([status isEqualToString:@"Packed"])
             {
-                order_cell.IMG_track_image.image = [UIImage imageNamed:@"3"];
+                order_cell.IMG_track_image.image = [UIImage imageNamed:@"finalone"];
                 
                 
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"3"].CGImage
-                                                                scale:[UIImage imageNamed:@"3"].scale
+                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"finalone"].CGImage
+                                                                scale:[UIImage imageNamed:@"finalone"].scale
                                                           orientation:UIImageOrientationUpMirrored];
                     order_cell.IMG_track_image.image = flippedImage;
                 }
             }
             else  if([status isEqualToString:@"Dispatched"])
             {
-                order_cell.IMG_track_image.image = [UIImage imageNamed:@"2"];
+                order_cell.IMG_track_image.image = [UIImage imageNamed:@"finaltwo"];
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"2"].CGImage
-                                                                scale:[UIImage imageNamed:@"2"].scale
+                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"finaltwo"].CGImage
+                                                                scale:[UIImage imageNamed:@"finaltwo"].scale
                                                           orientation:UIImageOrientationUpMirrored];
                     order_cell.IMG_track_image.image = flippedImage;
                 }
@@ -339,11 +476,11 @@ int j ,i;
                 order_cell.LBL_Deliver_on.text = @"Delivered";
                 order_cell.BTN_rating.hidden = NO;
                 
-                order_cell.IMG_track_image.image = [UIImage imageNamed:@"1"];
+                order_cell.IMG_track_image.image = [UIImage imageNamed:@"finalthree"];
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
-                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"1"].CGImage
-                                                                scale:[UIImage imageNamed:@"1"].scale
+                    UIImage* flippedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"finalthree"].CGImage
+                                                                scale:[UIImage imageNamed:@"finalthree"].scale
                                                           orientation:UIImageOrientationUpMirrored];
                     order_cell.IMG_track_image.image = flippedImage;
                 }
@@ -369,9 +506,12 @@ int j ,i;
             NSString *item = [NSString stringWithFormat:@"%lu",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"Products"] count]];
             item = [item stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             item = [item stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
-           cost_cell.LBL_Total_items.text = [NSString stringWithFormat:@"Total Items: %@",item];
+           cost_cell.LBL_Total_items.text = [NSString stringWithFormat:@"Total Items :%@",item];
             
-            NSString *qr = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_total"]];
+           //NSString *qr = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_total"]];
+            NSString *qr = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_subtotal"]];
+            
+            qr = [HttpClient currency_seperator:qr];
             qr = [qr stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
             qr = [qr stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
             
@@ -380,7 +520,7 @@ int j ,i;
             
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                cost_cell.LBL_Total_items.text = [NSString stringWithFormat:@" إجمالي العناصر: %@",item];
+                cost_cell.LBL_Total_items.text = [NSString stringWithFormat:@" إجمالي العناصر:%@",item];
                 price = [NSString stringWithFormat:@"%@ %@",qr,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
             }
             
@@ -589,7 +729,9 @@ int j ,i;
                 NSString *str_amount,*str_payment_method,*str_transaction_id,*str_payment_response;
                 if(index == 1)
                 {
-                    str_amount = [NSString stringWithFormat:@"%@ :",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"amount"]];
+                    str_amount =[NSString stringWithFormat:@"%.2f",[[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"amount"] floatValue]];
+                    str_amount = [HttpClient currency_seperator:str_amount];
+                    str_amount = [NSString stringWithFormat:@"%@ %@ :",str_amount,[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"]];
                     
                     str_payment_method = [NSString stringWithFormat:@"%@ :",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"payment_method"]];
                     
@@ -600,7 +742,9 @@ int j ,i;
                 }
                 else
                 {
-           str_amount = [NSString stringWithFormat:@": %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"amount"]];
+                    str_amount =[NSString stringWithFormat:@"%.2f",[[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"amount"] floatValue]];
+                    str_amount = [HttpClient currency_seperator:str_amount];
+           str_amount = [NSString stringWithFormat:@": %@ %@",[[NSUserDefaults standardUserDefaults] valueForKey:@"currency"],str_amount];
             
             str_payment_method = [NSString stringWithFormat:@": %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"payment_method"]];
             
@@ -630,9 +774,29 @@ int j ,i;
             break;
 
         }
-          
         case 6:
         {
+            special_cell *cell = (special_cell *)[tableView dequeueReusableCellWithIdentifier:@"spec_cell"];
+            
+            if (cell == nil)
+            {
+                NSArray *nib;
+                nib = [[NSBundle mainBundle] loadNibNamed:@"special_cell" owner:self options:nil];
+                cell = [nib objectAtIndex:0];
+            }
+           
+           NSString *str = [[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"SpecialInstruction"] valueForKey:@"special_instructions"];
+            str = [str stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+            cell.LBL_instructions.text = str;
+            return cell;
+            break;
+
+
+        }
+          
+        case 7:
+        {
+            
             
             //Transaction_Type_cell
             
@@ -647,14 +811,24 @@ int j ,i;
             @try
             {
             NSString *transaction_str;
-              NSString *str_pay = @" AMOUNT PAID THROUGH:";
+              NSString *str_pay = @" AMOUNT PAID THROUGH";
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    str_pay = @"المبلغ المدفوع عبر";
+                }
+                
+                
             NSString *type_str;
             @try {
                 if ([[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"transactionstatus"] isKindOfClass:[NSDictionary class]]) {
                 
-                    type_str =[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"transactionstatus"] valueForKey:@"payment_method"];
+                    type_str =[NSString stringWithFormat:@": %@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"transactionstatus"] valueForKey:@"payment_method"]];
                     if ([type_str isEqualToString:@"<nil>"]||[type_str isEqualToString:@"<null>"]||[type_str isEqualToString:@""]) {
                         type_str = @"";
+                    }
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                         type_str =[NSString stringWithFormat:@":%@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"transactionstatus"] valueForKey:@"payment_method"]];
                     }
                    
                 }
@@ -675,28 +849,28 @@ int j ,i;
                     CGSize result = [[UIScreen mainScreen] bounds].size;
                     if(result.height <= 480)
                     {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor blackColor]}
                                                 range:[transaction_str rangeOfString:str_pay]];
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor grayColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor grayColor]}
                                                 range:ename];
                         
                         
                     }
                     else if(result.height <= 568)
                     {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor blackColor]}
                                                 range:[transaction_str rangeOfString:str_pay]];
                         
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor grayColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor grayColor]}
                                                 range:ename];
                         
                     }
                     else
                     {
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor blackColor]}
                                                range:[transaction_str rangeOfString:str_pay]];
                         
-                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:12.0],NSForegroundColorAttributeName :[UIColor grayColor]}
+                        [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:14.0],NSForegroundColorAttributeName :[UIColor grayColor]}
                                                 range:ename];
             
                     }
@@ -738,14 +912,19 @@ int j ,i;
             @try
             {
             NSString *sub_total = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"order_subtotal"]];
+            sub_total = [HttpClient currency_seperator:sub_total];
             sub_total = [sub_total stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
             sub_total = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],sub_total];
             
-            NSString *shipping = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"shipping_amount"]];
+            NSString *shipping = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"shipping_amount"]];
+                shipping = [HttpClient currency_seperator:shipping];
+            shipping = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],shipping];
             shipping = [shipping stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
+
             
             NSString *discount = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults]valueForKey:@"currency"],[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"discount"]];
             discount = [discount stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
+           
             NSString *str_disc =[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"discount"];
             
             if([str_disc isKindOfClass:[NSNull class]])
@@ -761,13 +940,6 @@ int j ,i;
 
             str_disc = [str_disc stringByReplacingOccurrencesOfString:@"<null>" withString:@"0"];
 
-            }
-            @catch(NSException *exception)
-            {
-                cell.LBL_discount.text = @"";
-                cell.LBL_discount_TXT.text = @"";
-            }
-            cell.LBL_discount.text = @"";
             if([str_disc isEqualToString:@"0"])
             {
                 
@@ -782,15 +954,27 @@ int j ,i;
             }
             else{
                
-                 cell.LBL_discount.text = discount;
-                cell.LBL_discount_TXT.text = @"Discount";
+                cell.LBL_discount.text = discount;//
+               cell.LBL_discount_TXT.text = @"DISCOUNT";
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    cell.LBL_discount_TXT.text = @"خصم";
+                }
+                
             }
+            }
+                @catch(NSException *exception)
+                {
+                    cell.LBL_discount.text = @"";
+                    cell.LBL_discount_TXT.text = @"";
+                }
+
             }
            
             cell.LBL_sub_total.text = sub_total;
             cell.LBL_ship_charge.text = shipping;
             
-            cell.LBL_total.text =sub_total;
+           // cell.LBL_total.text =sub_total;
             NSString *current_price = [[NSUserDefaults standardUserDefaults] valueForKey:@"currency"];
              //NSString *current_price = [NSString stringWithFormat:@"QR"];
             NSString *prec_price = [NSString stringWithFormat:@"%@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]]  valueForKey:@"order_total"]];
@@ -808,16 +992,9 @@ int j ,i;
                 
                 
                 NSRange ename = [text rangeOfString:current_price];
-                if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:25.0]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}
                                             range:ename];
-                }
-                else
-                {
-                    [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:19.0]}
-                                            range:ename];
-                }
+                
                 NSRange cmp = [text rangeOfString:prec_price];
             
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Medium" size:15.0],NSForegroundColorAttributeName:[UIColor blackColor],}
@@ -849,7 +1026,7 @@ int j ,i;
         return 260;
     }
     
-    if(indexPath.section == 1 || indexPath.section == 6)
+    if(indexPath.section == 1 || indexPath.section == 7)
     {
         return 45;
     }
@@ -863,14 +1040,17 @@ int j ,i;
     }
 
     
-    if(indexPath.section == 2)
+    if(indexPath.section == 2 || indexPath.section == 3)
     {
-        return 190;
+        return UITableViewAutomaticDimension;
     }
     
-    if(indexPath.section == 3)
-    {
-        return 190;
+  //  if(indexPath.section == 3)
+   // {
+   //     return 190;
+   // }
+    if(indexPath.section == 6)        {
+        return UITableViewAutomaticDimension;
     }
     
     return 180;
@@ -880,13 +1060,17 @@ int j ,i;
 {
     if(indexPath.section == 2 || indexPath.section == 3)
     {
-    return 10;
+    return 190;
     }
     if(indexPath.section == 4)
     {
         return 138;
     }
     if(indexPath.section == 5)
+    {
+        return 100;
+    }
+    if(indexPath.section == 6)
     {
         return 168;
     }
@@ -898,22 +1082,81 @@ int j ,i;
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (section == 2)
     {
-        return @"BILLING ADDRESS";
+        NSString *str = @"BILLING ADDRESS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"عنوان الفاتورة ";
+        }
+
+        
+        return str;
     }
     if (section == 3)
     {
-        return @"SHIPPING ADDRESS";
+        
+        NSString *str = @"SHIPPING ADDRESS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"عنوان الشحن";
+        }
+        
+        
+        return str;
     }
     if(section == 4)
     {
-        return @"PAYMENT STATUS";
+        NSString *str = @"PAYMENT STATUS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"حالة الدفع";
+        }
+        
+        
+        return str;
+
         
     }
     if(section == 5)
     {
-        return @"TRANSACTION DETAILS";
+        
+        NSString *str = @"TRANSACTION DETAILS";
+        NSArray *key = [[json_DATA valueForKey:@"Order"] allKeys];
+        
+        NSString  *str_payment_method = [NSString stringWithFormat:@"%@",[[[[json_DATA valueForKey:@"Order"] valueForKey:[key objectAtIndex:0]] valueForKey:@"transactionstatus"] valueForKey:@"payment_method"]];
+        if([str_payment_method isEqualToString:@"COD"])
+        {
+            str = @"";
+            
+        }
+        else{
+            str = @"TRANSACTION DETAILS";
+        }
+        
+
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str = @"تفاصيل المعاملة ";
+        }
+        
+        
+        return str;
+
+        
+        
         
     }
+    if(section == 6)
+    {
+        NSString *str =  @"SPECIAL INSTRUCTIONS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            str =  @"تعليمات خاصة";
+        }
+        return str;
+
+        
+    }
+
 
    
     else{
@@ -959,16 +1202,37 @@ int j ,i;
     {
         label.text= @"PAYMENT STATUS";
         
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            label.text =@"حالة الدفع";
+            label.textAlignment = NSTextAlignmentRight;
+        }
+
+        
     }
     if(section == 5)
     {
         label.text= @"TRANSACTION DETAILS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            label.text =@"تفاصيل المعاملة ";
+            label.textAlignment = NSTextAlignmentRight;
+        }
+
         
     }
-    else
+    if(section == 6)
     {
+         label.text= @"SPECIAL INSTRUCTIONS";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            label.text = @"تعليمات خاصة";
+            label.textAlignment = NSTextAlignmentRight;
+        }
         
     }
+    
+    
     
     return headerView;
 }
@@ -1025,7 +1289,10 @@ int j ,i;
     
     NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
     
-    if (returnData) {
+    if (returnData)
+    {
+        _TBL_orders.hidden= NO;
+        
         json_DATA = [[NSMutableDictionary alloc]init];
     json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
                NSLog(@"%@", [NSString stringWithFormat:@"JSON DATA OF ORDER DETAIL: %@", json_DATA]);
@@ -1044,7 +1311,7 @@ int j ,i;
         
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
-        od_id = @":رقم الطلبية";
+        od_id = @" :رقم الطلبية";
         text = [NSString stringWithFormat:@"%@%@",str,od_id];
         }
         
@@ -1066,7 +1333,7 @@ int j ,i;
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor grayColor]}
                                         range:[text rangeOfString:od_id]];
 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor blueColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:8.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
                                         range:ename];
  
             }
@@ -1075,16 +1342,16 @@ int j ,i;
                 [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor grayColor]}
                                         range:[text rangeOfString:od_id]];
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor blueColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:10.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
                                         range:ename];
 
             }
             else
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName :[UIColor grayColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:11.0],NSForegroundColorAttributeName :[UIColor grayColor]}
                                         range:[text rangeOfString:od_id]];
 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName :[UIColor blueColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:11.0],NSForegroundColorAttributeName :[UIColor colorWithRed:0.15 green:0.31 blue:0.62 alpha:1.0]}
                                         range:ename];
                 
 
@@ -1103,6 +1370,13 @@ int j ,i;
         date = [date stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
         
         NSString *date_txt= @"Ordered On:";
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            date_txt = @" أنشأت الطلبية بتاريخ";
+            date = [NSString stringWithFormat:@": %@",[[[json_DATA valueForKey:@"Order"] valueForKey:[keys_arr objectAtIndex:0]] valueForKey:@"order_created"]];
+            date = [date stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
+            date = [date stringByReplacingOccurrencesOfString:@"" withString:@"Not mentioned"];
+        }
         NSString *date_text = [NSString stringWithFormat:@"%@%@",date_txt,date];
         
         
@@ -1142,11 +1416,11 @@ int j ,i;
             }
             else
             {
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:11.0],NSForegroundColorAttributeName :[UIColor blackColor]}
                                         range:[date_text rangeOfString:date_txt]];
                 
                 
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:13.0],NSForegroundColorAttributeName :[UIColor blackColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Regular" size:11.0],NSForegroundColorAttributeName :[UIColor blackColor]}
                                         range:ename];
             }
             
@@ -1157,13 +1431,13 @@ int j ,i;
             _LBL_order_date.text = text;
         }
         
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
         
     }
     else
     {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
 
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection Failed" message:@"" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
@@ -1173,7 +1447,7 @@ int j ,i;
     }
     @catch(NSException *exception)
     {
-        [HttpClient stop_activity_animation];
+        [Helper_activity stop_activity_animation:self];
         NSLog(@"THE EXception:%@",exception);
         
     }
