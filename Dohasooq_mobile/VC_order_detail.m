@@ -6087,7 +6087,8 @@
 
 #pragma mark go_To_Home:
 -(void)go_To_Home{
-    [self.navigationController popToRootViewControllerAnimated:YES];
+//    [self.navigationController popToRootViewControllerAnimated:YES];
+    [self.navigationController popViewControllerAnimated:YES];
     
 }
 #pragma mark Getting One Time Password For Cash On Delivary (API CALLING)
