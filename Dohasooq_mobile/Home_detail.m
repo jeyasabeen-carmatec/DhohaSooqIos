@@ -93,6 +93,8 @@
 }
 -(void)viewWillAppear:(BOOL)animated
 {
+    self.navigationController.navigationBar.hidden = NO;
+    
     NSLog(@"Header name label %@",_Header_name.titleLabel.text);
     headre_name =[[NSUserDefaults standardUserDefaults] valueForKey:@"header_name"];
    
