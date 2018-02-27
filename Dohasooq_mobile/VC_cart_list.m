@@ -1305,7 +1305,7 @@ params.put("customerId",customerid);
      Method : GET
 
      */
-    //[HttpClient animating_images:self];
+   [Helper_activity animating_images:self];
     
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
@@ -1332,6 +1332,8 @@ params.put("customerId",customerid);
 //                        [activityIndicatorView stopAnimating];
                         
                     } @catch (NSException *exception) {
+                        [Helper_activity stop_activity_animation:self];
+
                         NSLog(@"%@",exception);
                     }
                    
@@ -1342,12 +1344,11 @@ params.put("customerId",customerid);
         }];
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);
+        [Helper_activity stop_activity_animation:self];
+
 //        VW_overlay.hidden=YES;
 //        [activityIndicatorView stopAnimating];
     }
-
-    [Helper_activity stop_activity_animation:self];
-    
 }
 #pragma mark updating_cart_API
 /*
