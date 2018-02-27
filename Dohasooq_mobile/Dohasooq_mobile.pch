@@ -16,7 +16,10 @@
 
 //pilot dohasooq
 //#define SERVER_URL @"http://pilot.dohasooq.com/"
-//#define IMG_URL @"https://pilot.dohasooq.com/"
+//#define IMG_URL @"http://pilot.dohasooq.com/"
+
+#define SERVER_URL @"https://pilot.dohasooq.com/"
+#define IMG_URL @"https://pilot.dohasooq.com/"
 
 //test dohasooq
 //#define SERVER_URL @"http://test2.dohasooq.com/"
