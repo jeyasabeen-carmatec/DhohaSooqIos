@@ -805,6 +805,14 @@
                 cell.LBL_event_location.text =  [events_dict valueForKey:@"_Venue"];
                 cell.LBL_banner_label.hidden = YES;
                 NSString *img_url = [events_dict valueForKey:@"_bannerURL"];
+                if([img_url containsString:@"https"])
+                {
+                    
+                }
+                else{
+                    img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+                }
+
                 img_url = [img_url stringByReplacingOccurrencesOfString:@"App" withString:@"movie"];
                 
                 [cell.IMG_event sd_setImageWithURL:[NSURL URLWithString:img_url]
@@ -884,6 +892,14 @@
                 cell.LBL_event_location.text =  [sports_dict valueForKey:@"_Venue"];
                 cell.LBL_banner_label.hidden = YES;
                 NSString *img_url = [sports_dict valueForKey:@"_bannerURL"];
+                if([img_url containsString:@"https"])
+                {
+                    
+                }
+                else{
+                    img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+                }
+
                 img_url = [img_url stringByReplacingOccurrencesOfString:@"App" withString:@"movie"];
                 
                 [cell.IMG_event sd_setImageWithURL:[NSURL URLWithString:img_url]
@@ -960,6 +976,14 @@
                 cell.LBL_event_location.text =  [leisure_dict valueForKey:@"_Venue"];
                 cell.LBL_banner_label.hidden = YES;
                 NSString *img_url = [leisure_dict valueForKey:@"_bannerURL"];
+                if([img_url containsString:@"https"])
+                {
+                    
+                }
+                else{
+                    img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+                }
+
                 img_url = [img_url stringByReplacingOccurrencesOfString:@"App" withString:@"movie"];
                 
                 [cell.IMG_event sd_setImageWithURL:[NSURL URLWithString:img_url]
@@ -1175,7 +1199,13 @@
                 cell.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[dict valueForKey:@"_IMDB_rating"]];
                 cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
                 NSString *img_url = [dict valueForKey:@"_iphonethumb"];
-             //  img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+                if([img_url containsString:@"https"])
+                {
+                    
+                }
+                else{
+                    img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+                }
                 
                 [cell.IMG_banner sd_setImageWithURL:[NSURL URLWithString:img_url]
                                    placeholderImage:[UIImage imageNamed:@"upload-8.png"]
@@ -1246,6 +1276,14 @@
                 cell.LBL_rating.text = [NSString stringWithFormat:@"%@ votes",[dict valueForKey:@"_willwatch"]];
                 //cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
                 NSString *img_url = [dict valueForKey:@"_thumbURL"];
+                if([img_url containsString:@"https"])
+                {
+                    
+                }
+                else{
+                    img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+                }
+
                // img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
                 
                 [cell.IMG_banner sd_setImageWithURL:[NSURL URLWithString:img_url]
@@ -1311,6 +1349,14 @@
                 cell.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[dict valueForKey:@"_IMDB_rating"]];
                 cell.LBL_censor.text = [dict valueForKey:@"_Censor"];
                 NSString *img_url = [dict valueForKey:@"_iphonethumb"];
+                if([img_url containsString:@"https"])
+                {
+                    
+                }
+                else{
+                    img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+                }
+
                 //img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
                 
                 [cell.IMG_banner sd_setImageWithURL:[NSURL URLWithString:img_url]

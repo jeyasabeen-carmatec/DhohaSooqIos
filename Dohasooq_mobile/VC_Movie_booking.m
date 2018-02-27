@@ -428,7 +428,13 @@
         self.LBL_rating.text = [NSString stringWithFormat:@"%@/10",[detail_dict valueForKey:@"_IMDB_rating"]];
       _LBL_censor.text = [detail_dict valueForKey:@"_Censor"];
         NSString *img_url = [detail_dict valueForKey:@"_iphonethumb"];
-        img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+        if([img_url containsString:@"https"])
+        {
+            
+        }
+        else{
+            img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+        }
         [self.IMG_movie sd_setImageWithURL:[NSURL URLWithString:img_url]
                            placeholderImage:[UIImage imageNamed:@"upload-8.png"]
                                     options:SDWebImageRefreshCached];

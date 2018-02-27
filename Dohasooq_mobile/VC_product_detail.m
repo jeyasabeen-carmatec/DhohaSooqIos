@@ -147,7 +147,10 @@
            } forState:UIControlStateNormal];
         
         _TXT_count.text =  @"1";
-        
+    
+    
+    
+    
         CGRect  frame_set = _VW_First.frame;
         frame_set.size.height = _custom_story_page_controller.frame.origin.y + _custom_story_page_controller.frame.size.height;
         frame_set.size.width = self.Scroll_content.frame.size.width;
@@ -170,7 +173,9 @@
         {
             
         }
-        
+    
+         // ********* Frame of second View having Name,price, ating,discount
+
         [_LBL_item_name sizeToFit];
         frame_set = _LBL_item_name.frame;
         frame_set.size.width= _LBL_discount.frame.size.width;
@@ -526,7 +531,8 @@
         {
             
         }
-        
+        //*********Frame of third view
+    
         frame_set = _VW_second.frame;
         frame_set.origin.y = _VW_First.frame.origin.y + _VW_First.frame.size.height + 1;
         frame_set.size.height = _LBL_discount.frame.origin.y + _LBL_discount.frame.size.height + 10;
@@ -817,17 +823,33 @@
     }*/
    
     frame_set.origin.y = _LBL_delivery_cod.frame.origin.y + _LBL_delivery_cod.frame.size.height -3;
-  
-    _LBL_merchant_sellers.frame = frame_set;
+
     
    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
     {
         _LBL_merchant_sellers.textAlignment =NSTextAlignmentRight;
-         frame_set.size.width = self.VW_third.frame.size.width - _LBL_sold_by.frame.size.width ;
+        int SIZE_VAL =0;
+        CGSize result = [[UIScreen mainScreen] bounds].size;
+            if(result.height <= 480)
+            {
+            SIZE_VAL = 30;
+            }
+            else if(result.height <= 568)
+            {
+                 SIZE_VAL = 30;
+            }
+            else
+            {
+                 SIZE_VAL = 10;
+            }
+        frame_set.size.width = self.VW_third.frame.size.width - _LBL_sold_by.frame.size.width-SIZE_VAL;
+
     }
     else{
           _LBL_merchant_sellers.textAlignment =NSTextAlignmentLeft;
+
     }
+    _LBL_merchant_sellers.frame = frame_set;
 
    // _LBL_merchant_sellers.backgroundColor = [UIColor yellowColor];
     
@@ -1023,14 +1045,15 @@
         
         [self.Scroll_content addSubview:_VW_third];
         
-        
+        // ************ segment Frame
+    
         frame_set = _VW_segemnt.frame;
         frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
         _VW_segemnt.frame = frame_set;
         
         // _TXTVW_description.numberOfLines = 0;
         
-        
+        //************* Fourth View frame
         
         frame_set = _VW_fourth.frame;
         frame_set.origin.y = _VW_third.frame.origin.y + _VW_third.frame.size.height + 1;

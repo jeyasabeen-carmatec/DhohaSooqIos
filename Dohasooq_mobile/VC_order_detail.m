@@ -656,11 +656,17 @@
         _TXT_state.text =  str_state;
         
        
-// Shipping Country  ID Must Be  Related Country        
+// Shipping Country  ID Must Be  Related Country
         
-        _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"name"];
-        cntry_ID = [[[shipping_Countries_array objectAtIndex:0] valueForKey:@"id"] integerValue];
-        ship_cntry_ID = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"id"];
+        @try {
+            _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"name"];
+            cntry_ID = [[[shipping_Countries_array objectAtIndex:0] valueForKey:@"id"] integerValue];
+            ship_cntry_ID = [NSString stringWithFormat:@"%@",[[shipping_Countries_array objectAtIndex:0] valueForKey:@"id"]];
+        } @catch (NSException *exception) {
+            NSLog(@"No Countries");
+        }
+        
+        
         
         //
         //         ship_cntry_ID = @"173";
@@ -2949,9 +2955,15 @@
     
     
 // Shipping Country  ID Must Be  Related Country Country ID
-    _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"cntry_name"];
-    cntry_ID = [[[shipping_Countries_array objectAtIndex:0] valueForKey:@"cntry_id"] integerValue];
-    ship_cntry_ID = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"cntry_id"];
+    
+    @try {
+        _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"name"];
+        cntry_ID = [[[shipping_Countries_array objectAtIndex:0] valueForKey:@"id"] integerValue];
+        ship_cntry_ID = [NSString stringWithFormat:@"%@",[[shipping_Countries_array objectAtIndex:0] valueForKey:@"id"]];
+
+    } @catch (NSException *exception) {
+        NSLog(@"No Countries ");
+    }
     
 }
 
@@ -4681,7 +4693,8 @@
             
             _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:row] valueForKey:@"name"];
             cntry_ID = [[[shipping_Countries_array objectAtIndex:row] valueForKey:@"id"] integerValue];
-            ship_cntry_ID = [[shipping_Countries_array objectAtIndex:row] valueForKey:@"id"];
+            ship_cntry_ID = [NSString stringWithFormat:@"%@",[[shipping_Countries_array objectAtIndex:row] valueForKey:@"id"]];
+            
             state_selection = @"";
             _TXT_ship_state.text = nil;
             
@@ -5316,24 +5329,24 @@
             
         }
         
-        else if(![ship_cntry_ID isEqualToString:@"173"])
-        {
-            NSString *mesagesg = @"Sorry we cannot ship products out side Qatar, Please enter different shipping address to proceed";
-            
-            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-            {
-                msg = @"عذراً، لا يمكننا شحن هذه المنتجات خارج قطر,للاستمرار، يرجى إدخال عنوان آخر للتسليم ";
-                
-                
-            }
-            
-            
-            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:mesagesg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-            alert.tag = 2;
-            [alert show];
-            
-        }
+//      else if(![ship_cntry_ID isEqualToString:@"173"])
+//        {
+//            NSString *mesagesg = @"Sorry we cannot ship products out side Qatar, Please enter different shipping address to proceed";
+//            
+//            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+//            {
+//                msg = @"عذراً، لا يمكننا شحن هذه المنتجات خارج قطر,للاستمرار، يرجى إدخال عنوان آخر للتسليم ";
+//                
+//                
+//            }
+//            
+//            
+//            
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:mesagesg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+//            alert.tag = 2;
+//            [alert show];
+//            
+//        }
         else if ([_TXT_ship_phone.text isEqualToString:@""])
         {
             [_TXT_ship_phone becomeFirstResponder];
@@ -5359,7 +5372,7 @@
             }
             else if(_TXT_ship_phone.text.length > 8)
             {
-                [self.TXT_phone becomeFirstResponder];
+                [self.TXT_ship_phone becomeFirstResponder];
                 
                 msg = @"Phone Number cannot be more than 8 digits";
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
@@ -5418,7 +5431,7 @@
     }
     
     else{
-        if(![blng_cntry_ID isEqualToString:@"173"] && [billcheck_clicked isEqualToString:@"0"])
+        if(![blng_cntry_ID isEqualToString:ship_cntry_ID] && [billcheck_clicked isEqualToString:@"0"])
         {
             NSString *mesagesg = @"Sorry we cannot ship products out side Qatar, Please enter different shipping address to proceed";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
@@ -5723,7 +5736,7 @@
           str_ph_code = [str_ph_code stringByReplacingOccurrencesOfString:@"+" withString:@""];
         
         NSDictionary *Formshipping;
-        if ([billcheck_clicked isEqualToString:@"0"] && [blng_cntry_ID isEqualToString:@"173"]) {
+        if ([billcheck_clicked isEqualToString:@"0"] && [blng_cntry_ID isEqualToString:ship_cntry_ID]) {
             
             
             @try {
