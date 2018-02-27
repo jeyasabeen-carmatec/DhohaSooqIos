@@ -50,6 +50,14 @@
     [_LBL_event_address sizeToFit];
     
     NSString *img_url = [event_dtl_dict valueForKey:@"_thumbURL"];
+        if([img_url containsString:@"https"])
+        {
+            
+        }
+        else{
+            img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+        }
+
         img_url = [img_url stringByReplacingOccurrencesOfString:@"App" withString:@"movie"];
         
     [_IMG_banner sd_setImageWithURL:[NSURL URLWithString:img_url]

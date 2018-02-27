@@ -7694,7 +7694,7 @@ UVIgMAM
                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="right" misplaced="YES" scrollEnabled="NO" editable="NO" textAlignment="right" id="rzZ-hi-wsd">
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="right" semanticContentAttribute="forceRightToLeft" misplaced="YES" scrollEnabled="NO" editable="NO" textAlignment="right" id="rzZ-hi-wsd">
                             <rect key="frame" x="10" y="46" width="200" height="49"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -8737,22 +8737,22 @@ UVIgMAM
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="wZ3-07-46C"/>
-        <segue reference="s4c-Qx-Ots"/>
+        <segue reference="vMu-Y7-4Nz"/>
+        <segue reference="o1F-lI-VIX"/>
         <segue reference="Vl2-Bh-ngv"/>
-        <segue reference="a0t-dX-VXu"/>
+        <segue reference="8eD-Yu-RUD"/>
+        <segue reference="T1q-8G-uBq"/>
+        <segue reference="s4c-Qx-Ots"/>
         <segue reference="Ah8-We-7n4"/>
         <segue reference="UCK-dQ-vRE"/>
         <segue reference="lT4-28-Wjm"/>
-        <segue reference="LJJ-ad-5gJ"/>
+        <segue reference="1PO-jV-8IF"/>
+        <segue reference="z2t-AS-he8"/>
         <segue reference="WuY-ui-8aO"/>
-        <segue reference="vMu-Y7-4Nz"/>
         <segue reference="GAW-2H-hzI"/>
         <segue reference="gcz-vd-Onb"/>
         <segue reference="ARc-Qe-9DQ"/>
         <segue reference="qYK-Na-3Yd"/>
-        <segue reference="1PO-jV-8IF"/>
-        <segue reference="z2t-AS-he8"/>
         <segue reference="GRj-KQ-Ops"/>
         <segue reference="9v6-ul-yqt"/>
     </inferredMetricsTieBreakers>
