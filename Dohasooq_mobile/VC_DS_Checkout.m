@@ -48,7 +48,7 @@
     activityView.tag = 100;
     [loadingView addSubview:activityView];
     
-    UILabel* lblLoading = [[UILabel alloc]initWithFrame:CGRectMake(0, 48, 80, 30)];
+    UILabel* lblLoading = [[UILabel alloc]initWithFrame:CGRectMake(10, 48, 80, 30)];
     lblLoading.text = @"Loading...";
     lblLoading.textColor = [UIColor whiteColor];
     lblLoading.font = [UIFont fontWithName:lblLoading.font.fontName size:15];

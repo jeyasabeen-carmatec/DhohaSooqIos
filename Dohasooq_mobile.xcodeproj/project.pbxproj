@@ -2320,7 +2320,7 @@
 				TargetAttributes = {
 					BE3065D31F74B0CC003F6C40 = {
 						CreatedOnToolsVersion = 8.3;
-						DevelopmentTeam = 4MCGAH3G26;
+						DevelopmentTeam = M83J52L2K3;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Keychain = {
@@ -2807,11 +2807,11 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Carmatec IT Solutions Private Limited (4MCGAH3G26)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Carmatec IT Solutions Private Limited (4MCGAH3G26)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: DOHA BANK QSC (M83J52L2K3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: DOHA BANK QSC (M83J52L2K3)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 4MCGAH3G26;
+				DEVELOPMENT_TEAM = M83J52L2K3;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -2831,7 +2831,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "b4e9f54d-3f1b-4b8b-a3d7-b89b4048fe55";
+				PROVISIONING_PROFILE = "a6c1db2b-25ae-4bea-8113-19d13b012798";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2859,11 +2859,11 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Carmatec IT Solutions Private Limited (4MCGAH3G26)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Carmatec IT Solutions Private Limited (4MCGAH3G26)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: DOHA BANK QSC (M83J52L2K3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: DOHA BANK QSC (M83J52L2K3)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 4MCGAH3G26;
+				DEVELOPMENT_TEAM = M83J52L2K3;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -2876,7 +2876,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "b4e9f54d-3f1b-4b8b-a3d7-b89b4048fe55";
+				PROVISIONING_PROFILE = "a6c1db2b-25ae-4bea-8113-19d13b012798";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -2889,9 +2889,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Dohasooq_mobile/Dohasooq_mobile.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Aromal P. Rajagopal (CPRZV94W5U)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Aromal P. Rajagopal (CPRZV94W5U)";
-				DEVELOPMENT_TEAM = 4MCGAH3G26;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: DOHA BANK QSC (M83J52L2K3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: DOHA BANK QSC (M83J52L2K3)";
+				DEVELOPMENT_TEAM = M83J52L2K3;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2904,8 +2904,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.dohasooq.onlineshopping;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "b53ccd97-7792-46ed-b635-2198c9338f14";
-				PROVISIONING_PROFILE_SPECIFIER = DEV_DS;
+				PROVISIONING_PROFILE = "a6c1db2b-25ae-4bea-8113-19d13b012798";
+				PROVISIONING_PROFILE_SPECIFIER = DS_DEP_IDE;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -2916,9 +2916,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Dohasooq_mobile/Dohasooq_mobile.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Aromal P. Rajagopal (CPRZV94W5U)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Aromal P. Rajagopal (CPRZV94W5U)";
-				DEVELOPMENT_TEAM = 4MCGAH3G26;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: DOHA BANK QSC (M83J52L2K3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: DOHA BANK QSC (M83J52L2K3)";
+				DEVELOPMENT_TEAM = M83J52L2K3;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2931,8 +2931,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.dohasooq.onlineshopping;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "b53ccd97-7792-46ed-b635-2198c9338f14";
-				PROVISIONING_PROFILE_SPECIFIER = DEV_DS;
+				PROVISIONING_PROFILE = "a6c1db2b-25ae-4bea-8113-19d13b012798";
+				PROVISIONING_PROFILE_SPECIFIER = DS_DEP_IDE;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
