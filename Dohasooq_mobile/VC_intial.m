@@ -257,9 +257,15 @@
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
                 }
                 if (data) {
-                    NSMutableDictionary *json_DATA = data;
-                    if(json_DATA)
-                    {
+                    
+                    NSLog(@"................... %@",data);
+                    
+                    NSMutableDictionary *json_DATA;
+                    
+                    if ([data isKindOfClass:[NSDictionary class]]) {
+                        
+                        
+                         json_DATA = data;
                     
                     country_arr = [[NSMutableArray alloc]init];
                     NSMutableArray *temp_arr = [json_DATA valueForKey:@"countries"];

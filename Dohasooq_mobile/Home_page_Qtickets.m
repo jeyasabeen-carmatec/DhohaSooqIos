@@ -1141,6 +1141,14 @@
         @try
         {
             NSString *img_url = [[[temp_dicts valueForKey:@"movie"]objectAtIndex:indexPath.row]valueForKey:@"_iphonethumb"];
+            if([img_url containsString:@"https"])
+            {
+                
+            }
+            else{
+                img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
+            }
+
            // img_url = [img_url stringByReplacingOccurrencesOfString:@"http" withString:@"https"];
             [img_cell.img sd_setImageWithURL:[NSURL URLWithString:img_url]
                             placeholderImage:[UIImage imageNamed:@"upload-8.png"]
@@ -3278,43 +3286,7 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"story_board_language"];
         [[NSUserDefaults  standardUserDefaults] setValue:language forKey:@"story_board_language"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        if([language isEqualToString:@"Arabic"])
-        {
-            
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Arabic" bundle:nil];
-            
-            Home_page_Qtickets *controller = [storyboard instantiateViewControllerWithIdentifier:@"Home_page_Qtickets"];
-            
-            
-            UINavigationController *navigationController =
-            [[UINavigationController alloc] initWithRootViewController:controller];
-            navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
-            navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-            [self  presentViewController:navigationController animated:NO completion:nil];
-            [self API_call_total];
-             [_TBL_menu reloadData];
-            
-        }
-        else{
-            
-            //[HttpClient createaAlertWithMsg:@"Plesase Select English Story board" andTitle:@""];
-            
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-            
-            Home_page_Qtickets *controller = [storyboard instantiateViewControllerWithIdentifier:@"QT_controller"];
-            UINavigationController *navigationController =
-            [[UINavigationController alloc] initWithRootViewController:controller];
-            navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
-            navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-            [self  presentViewController:navigationController animated:NO completion:nil];
-             [_TBL_menu reloadData];
-            [self API_call_total];
-
-            
-            
-            
-        }
+        [self API_call_total];
         
         [self menu_set_UP];
     }
@@ -4304,6 +4276,44 @@ if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
                     {
                     [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Home_data"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
+                        
+                        if([language isEqualToString:@"Arabic"])
+                        {
+                            
+                            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Arabic" bundle:nil];
+                            
+                            Home_page_Qtickets *controller = [storyboard instantiateViewControllerWithIdentifier:@"Home_page_Qtickets"];
+                            
+                            
+                            UINavigationController *navigationController =
+                            [[UINavigationController alloc] initWithRootViewController:controller];
+                            navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+                            navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+                            [self  presentViewController:navigationController animated:NO completion:nil];
+                          
+                            [_TBL_menu reloadData];
+                            
+                        }
+                        else{
+                            
+                            //[HttpClient createaAlertWithMsg:@"Plesase Select English Story board" andTitle:@""];
+                            
+                            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                            
+                            Home_page_Qtickets *controller = [storyboard instantiateViewControllerWithIdentifier:@"QT_controller"];
+                            UINavigationController *navigationController =
+                            [[UINavigationController alloc] initWithRootViewController:controller];
+                            navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+                            navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+                            [self  presentViewController:navigationController animated:NO completion:nil];
+                            [_TBL_menu reloadData];
+                            
+                            
+                            
+                            
+                        }
+     
+                        
                     [self view_appear];
                     }
                     @catch(NSException *exception)
