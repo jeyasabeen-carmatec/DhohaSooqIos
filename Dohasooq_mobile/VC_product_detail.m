@@ -614,7 +614,7 @@
                 str_cod =  @"not available";
             }
             NSString *cod_TEXT;
-            NSString *str_shipp = [NSString stringWithFormat:@"Free shipping is %@",[[json_Response_Dic valueForKey:@"products"] valueForKey:@"freeShipping"]];
+            NSString *str_shipp = [NSString stringWithFormat:@"%@",[[json_Response_Dic valueForKey:@"products"] valueForKey:@"freeShipping"]];
             if([str_shipp isEqualToString:@"Free shipping is Not Available"])
             {
                 str_shipp =@"<null>";

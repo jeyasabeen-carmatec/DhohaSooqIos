@@ -144,7 +144,7 @@
     {
         NSString *email = _TXT_forgot_pwd.text;
         NSDictionary *parameters = @{
-                                     @"username": email
+                                     @"email": email
                                      
                                      };
         NSError *error;
@@ -183,6 +183,8 @@
                 
                 
                  [Helper_activity stop_activity_animation:self];
+                
+                [self dismissViewControllerAnimated:YES completion:nil];
                 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:msg delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                 [alert show];

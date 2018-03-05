@@ -62,6 +62,7 @@
     int currMinute;
     int currSeconds;
     NSString *otp_str;
+    BOOL isResendSelected;
   
     //For Picker Default Selection
     NSString *pickerSelection;
@@ -129,6 +130,7 @@
     _VW_otp_vw.hidden =YES;
     _LBL_arrow.hidden = YES;
     isCash_on_delivary = YES;
+    isResendSelected = NO;
     
     [self ShippingCountryAPICall];
     
@@ -169,10 +171,16 @@
     _VW_summary.hidden=YES;
     _VW_delivery_slot.hidden = YES;
     
-    if (_VW_otp_vw.hidden == NO) {
-        _VW_otp_vw.hidden = YES;
-        [timer invalidate];
+    if (_VW_otp_vw.hidden == NO && _VW_pay_cards.hidden == NO) {
+        VW_overlay.hidden = NO;
+
+       // _VW_otp_vw.hidden = YES;
+        //[timer invalidate];
         _LBL_next.hidden = NO;
+    }
+    else{
+         VW_overlay.hidden = YES;
+        _VW_otp_vw.hidden = YES;
     }
     
     
@@ -656,17 +664,23 @@
         _TXT_state.text =  str_state;
         
        
-// Shipping Country  ID Must Be  Related Country
+// Shipping Country  ID Must Be  Related Country        
+        
         
         @try {
+            if (shipping_Countries_array.count !=0) {
+                
             _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"name"];
             cntry_ID = [[[shipping_Countries_array objectAtIndex:0] valueForKey:@"id"] integerValue];
             ship_cntry_ID = [NSString stringWithFormat:@"%@",[[shipping_Countries_array objectAtIndex:0] valueForKey:@"id"]];
+            }
+            else{
+                NSLog(@"No Countries ");
+            }
         } @catch (NSException *exception) {
-            NSLog(@"No Countries");
+            
         }
-        
-        
+       
         
         //
         //         ship_cntry_ID = @"173";
@@ -2526,12 +2540,36 @@
     }
     else
     {
-        
-       
         [timer invalidate];
         
+        if (isResendSelected == YES) {
+            
+            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+            {
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"نتهت صلاحية مكتب المدعي العام، الرجاء إعادة المحاولة" delegate:self cancelButtonTitle:@"حسنا" otherButtonTitles:nil, nil];
+                alert.tag = 1;
+                [alert show];
+                
+            }
+            else
+            {
+                
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"OTP expired, Please try again" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                alert.tag = 1;
+                [alert show];
+                
+            }
+
+            _BTN_resend_otp.hidden  = YES;
+        }
+        else{
+            
         [_BTN_resend_otp setEnabled:YES];
-         [_BTN_resend_otp setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        
+        [_BTN_resend_otp setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        }
     }
    }
 // Validate_OTP Action
@@ -2554,6 +2592,8 @@
    }
 //resend_action
 -(void)resend_action{
+    
+    
     [timer invalidate];
     [self gettingOtpForCashOnDelivary];
     [_LBL_timer_lbl setText:@"05:00"];
@@ -2561,6 +2601,9 @@
     currSeconds=00;
     timer=[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerFired) userInfo:nil repeats:YES];
     _LBL_next.hidden = YES;
+    isResendSelected = YES;
+    _BTN_resend_otp.hidden = YES;
+    
     
 }
 
@@ -2957,14 +3000,20 @@
 // Shipping Country  ID Must Be  Related Country Country ID
     
     @try {
+        
+        if (shipping_Countries_array.count != 0) {
+       
         _TXT_ship_country.text = [[shipping_Countries_array objectAtIndex:0] valueForKey:@"name"];
         cntry_ID = [[[shipping_Countries_array objectAtIndex:0] valueForKey:@"id"] integerValue];
         ship_cntry_ID = [NSString stringWithFormat:@"%@",[[shipping_Countries_array objectAtIndex:0] valueForKey:@"id"]];
+        }
+        else{
+            NSLog(@"No Countries ");
+        }
 
     } @catch (NSException *exception) {
-        NSLog(@"No Countries ");
+        
     }
-    
 }
 
 -(void)deliveryslot_action // Done Button
@@ -3918,13 +3967,13 @@
                             
                             
                             if ([data isKindOfClass:[NSDictionary class]]) {
+                               
                                 jsonresponse_dic = data;
-                                
                                 
                                 NSLog(@"order_detail_API Response:::%@*********",data);
                                 
                                 
-                                // NSLog(@"..................... %@",[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] allKeys]);
+                               
                                 @try {
                                     ARR_pdts = [[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"];
                                     if (!ARR_pdts.count) {
@@ -3955,43 +4004,7 @@
                                         
                                     }
                                     
-                               /*     for(int m= 0;m < [ARR_pdts count];m++)
-                                    {
-                                        if ([[ARR_pdts objectAtIndex:m] isKindOfClass:[NSDictionary class]]) {
-                                            
-                                            if (![[ARR_pdts objectAtIndex:m]count]) {
-                                                
-                                                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-                                                {
-                                                    [HttpClient createaAlertWithMsg:@"آسف لا مزيد من المنتجات الرجاء تحديث الصفحة" andTitle:@""];
-                                                }
-                                                else{
-                                                    [HttpClient createaAlertWithMsg:@"Sorry No More Products Please Refresh the Page" andTitle:@""];
-                                                }
-                                                
-                                                
-                                                [self performSegueWithIdentifier:@"checkout_home" sender:self];
-                                                
-                                            }
-                                        }else if ([[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] objectAtIndex:m] isKindOfClass:[NSArray class]]){
-                                            
-                                            if (![[[[jsonresponse_dic valueForKey:@"data"]valueForKey:@"pdts"] objectAtIndex:m]count]) {
-                                                
-                                                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-                                                {
-                                                    [HttpClient createaAlertWithMsg:@"آسف لا مزيد من المنتجات الرجاء تحديث الصفحة" andTitle:@""];
-                                                }
-                                                else{
-                                                    [HttpClient createaAlertWithMsg:@"Sorry No More Products Please Refresh the Page" andTitle:@""];
-                                                }
-                                                
-                                                [self performSegueWithIdentifier:@"checkout_home" sender:self];
-                                                
-                                                
-                                            }
-                                        }
-                                    }*/
-                                } @catch (NSException *exception) {
+                            } @catch (NSException *exception) {
                                     NSLog(@"Excepton In Order Details API %@",exception);
                                 }
                                 
@@ -5372,7 +5385,7 @@
             }
             else if(_TXT_ship_phone.text.length > 8)
             {
-                [self.TXT_ship_phone becomeFirstResponder];
+                [self.TXT_phone becomeFirstResponder];
                 
                 msg = @"Phone Number cannot be more than 8 digits";
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
@@ -6100,8 +6113,7 @@
 
 #pragma mark go_To_Home:
 -(void)go_To_Home{
-//    [self.navigationController popToRootViewControllerAnimated:YES];
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popToRootViewControllerAnimated:YES];
     
 }
 #pragma mark Getting One Time Password For Cash On Delivary (API CALLING)

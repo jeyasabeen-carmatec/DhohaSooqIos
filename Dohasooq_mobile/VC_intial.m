@@ -37,8 +37,6 @@
     self.IMG_logo.hidden = NO;
     [self testInternetConnection];
    
-//    NSURL *url = [[NSBundle mainBundle] URLForResource:@"Loader-2" withExtension:@"gif"];
-//    activityIndicatorView.image = [UIImage animatedImageWithAnimatedGIFURL:url];                [self performSelector:@selector(country_API_call) withObject:activityIndicatorView afterDelay:0.01];
 
 
       }
@@ -227,9 +225,8 @@
     _IMG_logo.frame = frameset;
     
     
-    [_BTN_next addTarget:self action:@selector(go_to_login) forControlEvents:UIControlEventTouchUpInside];
+    //[_BTN_next addTarget:self action:@selector(go_to_login) forControlEvents:UIControlEventTouchUpInside];
     
-    //[self country_api_call];
     /***************************/
     
     
@@ -257,15 +254,9 @@
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
                 }
                 if (data) {
-                    
-                    NSLog(@"................... %@",data);
-                    
-                    NSMutableDictionary *json_DATA;
-                    
-                    if ([data isKindOfClass:[NSDictionary class]]) {
-                        
-                        
-                         json_DATA = data;
+                    NSMutableDictionary *json_DATA = data;
+                    if(json_DATA)
+                    {
                     
                     country_arr = [[NSMutableArray alloc]init];
                     NSMutableArray *temp_arr = [json_DATA valueForKey:@"countries"];
@@ -500,7 +491,7 @@
     
 }
 
-
+/*
 -(void)language_api_call{
     @try
     {
@@ -540,6 +531,8 @@
         [alert show];
     }
 }
+
+*/
 -(void)MENU_api_call
 {
     
@@ -573,7 +566,6 @@
             
           
             
-          //  [self performSegueWithIdentifier:@"logint_to_home" sender:self];
             
             NSLog(@"the api_collection_product%@",json_DATA);
             [[NSUserDefaults standardUserDefaults] setObject:json_DATA  forKey:@"pho"];
@@ -614,110 +606,110 @@
 -(void)API_call
 {
     
-        @try
-        {
-          //  [Helper_activity animating_images:self];
-            
-            /**********   After passing Language Id and Country ID ************/
-            NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
-           
-            NSString *user_id;
-            @try
-            {
-                NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-                if(dict.count == 0)
-                {
-                    user_id = @"(null)";
-                }
-                else
-                {
-                    NSString *str_id = @"user_id";
-                    // NSString *user_id;
-                    for(int i = 0;i<[[dict allKeys] count];i++)
-                    {
-                        if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
-                        {
-                            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
-                            break;
-                        }
-                        else
-                        {
-                            
-                            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
-                        }
-                        
-                    }
-                }
-            }
-            @catch(NSException *exception)
-            {
-                user_id = @"(null)";
-                
-            }
-            
-            NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/home/%ld/%ld/%@/Customer.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"],user_id];            NSLog(@"country id %ld ,language id %ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
-            
-            
-            
-            urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-            [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if (error) {
-                        [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
-                        
-                     //   [Helper_activity stop_activity_animation:self];
-                    }
-                    if (data) {
-                        
-                        [self MENU_api_call];
-                        [self IMAGE_PATH_API];
-                        @try {
-                            [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Home_data"];
-                            [[NSUserDefaults standardUserDefaults] synchronize];
-                               [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
-                         
-                        } @catch (NSException *exception)
-                        {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                            [alert show];
-
-                            
-                        }
-                      
-                  
-                        
-                    }
-                    else
-                    {
-                      //  [Helper_activity stop_activity_animation:self];
-                        //                        VW_overlay.hidden = YES;
-                        //                        [activityIndicatorView stopAnimating];
-                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                        [alert show];
-                        // [self viewWillAppear:NO];
-                        
-                        
-                        
-                    }
-                    
-                   // [Helper_activity stop_activity_animation:self];
-                    
-                });
-            }];
-        }
-        @catch(NSException *exception)
-        {
-            NSLog(@"The error is:%@",exception);
-            [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
-            //        VW_overlay.hidden = YES;
-            //        [activityIndicatorView stopAnimating];
-            // [self viewWillAppear:NO];
-           // [Helper_activity stop_activity_animation:self];
-            
-        }
-        
-        
+//        @try
+//        {
+//          //  [Helper_activity animating_images:self];
+//            
+//            /**********   After passing Language Id and Country ID ************/
+//            NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
+//           
+//            NSString *user_id;
+//            @try
+//            {
+//                NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+//                if(dict.count == 0)
+//                {
+//                    user_id = @"(null)";
+//                }
+//                else
+//                {
+//                    NSString *str_id = @"user_id";
+//                    // NSString *user_id;
+//                    for(int i = 0;i<[[dict allKeys] count];i++)
+//                    {
+//                        if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+//                        {
+//                            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+//                            break;
+//                        }
+//                        else
+//                        {
+//                            
+//                            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+//                        }
+//                        
+//                    }
+//                }
+//            }
+//            @catch(NSException *exception)
+//            {
+//                user_id = @"(null)";
+//                
+//            }
+//            
+//            NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/home/%ld/%ld/%@/Customer.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"],user_id];
+//            //NSLog(@"country id %ld ,language id %ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
+//            
+//            
+//            
+//            urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+//            [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    if (error) {
+//                        [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+//                        
+//                     //   [Helper_activity stop_activity_animation:self];
+//                    }
+//                    if (data) {
     
+                        [self IMAGE_PATH_API];
+//                        @try {
+//                            [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Home_data"];
+//                            [[NSUserDefaults standardUserDefaults] synchronize];
+//                               [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
+//                         
+//                        } @catch (NSException *exception)
+//                        {
+//                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//                            [alert show];
+//
+//                            
+//                        }
+//                      
+//                  
+//                        
+//                    }
+//                    else
+//                    {
+//                      //  [Helper_activity stop_activity_animation:self];
+//                        //                        VW_overlay.hidden = YES;
+//                        //                        [activityIndicatorView stopAnimating];
+//                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//                        [alert show];
+//                        // [self viewWillAppear:NO];
+//                        
+//                        
+//                        
+//                    }
+//                    
+//                   // [Helper_activity stop_activity_animation:self];
+//                    
+//                });
+//            }];
+//        }
+//        @catch(NSException *exception)
+//        {
+//            NSLog(@"The error is:%@",exception);
+//            [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+//            //        VW_overlay.hidden = YES;
+//            //        [activityIndicatorView stopAnimating];
+//            // [self viewWillAppear:NO];
+//           // [Helper_activity stop_activity_animation:self];
+//            
+//        }
+//        
+//        
+//    
 
 }
 -(void)IMAGE_PATH_API
@@ -743,6 +735,9 @@
                 
                 [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Images_path"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                [self MENU_api_call];
+
                 
                 
             }
@@ -775,6 +770,9 @@
         }
 
 }
+
+#pragma mark Cart Count
+
 -(void)cart_count{
     
     NSString *user_id;
