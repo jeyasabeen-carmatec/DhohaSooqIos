@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1F13698181D01B6EFE99B076 /* libPods-Dohasooq_mobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C41277D23F1B32E27A37F90E /* libPods-Dohasooq_mobile.a */; };
 		73AA06CD2011F7C9006EDCC7 /* product_cell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73AA06CC2011F7C9006EDCC7 /* product_cell.xib */; };
+		73C0EA8B2046B1F3009AFB9F /* TOp_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 73C0EA8A2046B1F3009AFB9F /* TOp_logo.png */; };
 		73E7EDC0200F2C0D00650C02 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73E7EDBF200F2C0D00650C02 /* CoreTelephony.framework */; };
 		73E7EDC2200F2C2700650C02 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 73E7EDC1200F2C2700650C02 /* libc++.tbd */; };
 		73E7EDC4200F2C3500650C02 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 73E7EDC3200F2C3500650C02 /* libz.tbd */; };
@@ -51,7 +52,6 @@
 		BE1C84B81FE11C99002B9116 /* Sports.png in Resources */ = {isa = PBXBuildFile; fileRef = BE1C84B11FE11C99002B9116 /* Sports.png */; };
 		BE1C84BB1FE11E1A002B9116 /* collection_MENU.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1C84BA1FE11E1A002B9116 /* collection_MENU.m */; };
 		BE1C84BD1FE13CB8002B9116 /* banner_main.png in Resources */ = {isa = PBXBuildFile; fileRef = BE1C84BC1FE13CB7002B9116 /* banner_main.png */; };
-		BE1C84C51FE175D8002B9116 /* TOp_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = BE1C84C41FE175D8002B9116 /* TOp_logo.png */; };
 		BE1D11101F84F70E003A3954 /* shipping_cell.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1D110E1F84F70E003A3954 /* shipping_cell.m */; };
 		BE1D11141F84F884003A3954 /* edit.png in Resources */ = {isa = PBXBuildFile; fileRef = BE1D11121F84F884003A3954 /* edit.png */; };
 		BE1D11171F84F9AF003A3954 /* add.png in Resources */ = {isa = PBXBuildFile; fileRef = BE1D11161F84F9AF003A3954 /* add.png */; };
@@ -370,6 +370,7 @@
 
 /* Begin PBXFileReference section */
 		73AA06CC2011F7C9006EDCC7 /* product_cell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = product_cell.xib; sourceTree = "<group>"; };
+		73C0EA8A2046B1F3009AFB9F /* TOp_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOp_logo.png; sourceTree = "<group>"; };
 		73E7EDBF200F2C0D00650C02 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		73E7EDC1200F2C2700650C02 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		73E7EDC3200F2C3500650C02 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -434,7 +435,6 @@
 		BE1C84B91FE11E1A002B9116 /* collection_MENU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = collection_MENU.h; sourceTree = "<group>"; };
 		BE1C84BA1FE11E1A002B9116 /* collection_MENU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = collection_MENU.m; sourceTree = "<group>"; };
 		BE1C84BC1FE13CB7002B9116 /* banner_main.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = banner_main.png; sourceTree = "<group>"; };
-		BE1C84C41FE175D8002B9116 /* TOp_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOp_logo.png; sourceTree = "<group>"; };
 		BE1D110D1F84F70E003A3954 /* shipping_cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shipping_cell.h; sourceTree = "<group>"; };
 		BE1D110E1F84F70E003A3954 /* shipping_cell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = shipping_cell.m; sourceTree = "<group>"; };
 		BE1D11121F84F884003A3954 /* edit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit.png; sourceTree = "<group>"; };
@@ -1372,7 +1372,7 @@
 				BE1B68C51FE2476800D84ACD /* checkbox_select.png */,
 				BE1C84AA1FE11C99002B9116 /* 13.12.17 */,
 				BE6BA43C1FE00F5700E41B2E /* Logo1.png */,
-				BE1C84C41FE175D8002B9116 /* TOp_logo.png */,
+				73C0EA8A2046B1F3009AFB9F /* TOp_logo.png */,
 				BE6BA42F1FDE6B4E00E41B2E /* Track Images */,
 				BE7DA3F11FD5147600295F77 /* upload-16.png */,
 				BE83382D1FD1036900C5EB25 /* radio button */,
@@ -2382,7 +2382,6 @@
 				BE3FD01C1F9A03F6001C6F2C /* bg.png in Resources */,
 				BE6BA43B1FDFFF9B00E41B2E /* logo.png in Resources */,
 				D07842CD201CB75200E77C36 /* orders_not.png in Resources */,
-				BE1C84C51FE175D8002B9116 /* TOp_logo.png in Resources */,
 				BE53F7021FBAC70700891E4F /* upload-9.png in Resources */,
 				BE5A6CB61FFBA2960085D000 /* replace_qtickets.png in Resources */,
 				BE1C84B31FE11C99002B9116 /* event.png in Resources */,
@@ -2458,6 +2457,7 @@
 				BE64232F1F849C2E00BB1E02 /* checked_order.png in Resources */,
 				BE04D8A51FBDB082008926F6 /* Search_cell.xib in Resources */,
 				BE84C50D1F9AEDF000210ACC /* qtickets_cell.xib in Resources */,
+				73C0EA8B2046B1F3009AFB9F /* TOp_logo.png in Resources */,
 				D0A283AD201746D60096D70F /* wv5.jpg in Resources */,
 				BE30691A1F78D841003F6C40 /* Info.plist in Resources */,
 				BE6796A21F9726FE007C45EC /* square-2_2_60x60.png in Resources */,

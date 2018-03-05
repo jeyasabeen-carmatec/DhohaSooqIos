@@ -340,8 +340,7 @@
         cell.BTN_close.image = newImage;
         
         cell.BTN_close .userInteractionEnabled = YES;
-        
-    tapGesture1 = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tapGesture_close:)];
+        tapGesture1 = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tapGesture_close:)];
         
         tapGesture1.numberOfTapsRequired = 1;
         
