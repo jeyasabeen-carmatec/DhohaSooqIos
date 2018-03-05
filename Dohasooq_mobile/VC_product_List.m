@@ -49,7 +49,7 @@
     NSMutableDictionary *json_Response_Dic,*json_DATA,*sort_array;
     float oldwidth;
     int page_count;
-    NSArray *productDataArray;
+    NSMutableArray *productDataArray;
    
 
 }
@@ -78,7 +78,10 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     
-//     productDataArray  = [[NSMutableArray alloc]init];
+     productDataArray  = [[NSMutableArray alloc]init];
+    
+    
+    
     [_collection_product setDragDelegate:self refreshDatePermanentKey:@"FriendList"];
     _collection_product.showLoadMoreView = YES;
 
@@ -112,6 +115,10 @@
     _BTN_empty.layer.masksToBounds = YES;
     [_BTN_top addTarget:self action:@selector(scroll_top) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_cart addTarget:self action:@selector(going_to_cart_action) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    
+  
     
 }
 
@@ -228,7 +235,7 @@
 }
 -(void)brands_STORE
 {
-    productDataArray = [json_DATA valueForKey:@"products"];
+    productDataArray = [[json_DATA valueForKey:@"products"] mutableCopy];
     //BOOL stat = @"YES";
     
     if([[json_DATA valueForKey:@"brands"] isKindOfClass:[NSDictionary class]])
@@ -322,10 +329,13 @@
     [done setTitle:@"Done" forState:UIControlStateNormal];
     [done addTarget:self action:@selector(countrybuttonClick) forControlEvents:UIControlEventTouchUpInside];
     [conutry_close addSubview:done];
+    
     _BTN_sort.inputAccessoryView=conutry_close;
     _BTN_sort_deals.inputAccessoryView = conutry_close;
+    
     self.BTN_sort.inputView = _sort_pickers;
     _BTN_sort_deals.inputView = _sort_pickers;
+    
     _BTN_sort.tintColor=[UIColor clearColor];
     _BTN_sort_deals.tintColor=[UIColor clearColor];
 
@@ -810,7 +820,7 @@
 
 #pragma mark delete_from_wishList_API_calling
 
--(void)delete_from_wishLis:(NSString *)pd_id
+-(void)delete_from_wishLis:(NSString *)pd_id andIndexPath:(NSIndexPath*)index;
 {
     
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
@@ -827,23 +837,58 @@
                 }
                 if (data) {
                     NSLog(@"%@",data);
-                    NSDictionary *dict = data;
-                    if(dict)
-                   
                     
-                    @try {
+                    NSDictionary *dict;
+                    
+                    if ([data isKindOfClass:[NSDictionary class]]) {
+                        dict = data;
                         
-                        [HttpClient createaAlertWithMsg:[dict valueForKey:@"msg"]andTitle:@""];
-                       // [self product_list_API];
-                         //[self cart_count];
+                        @try {
+                            
+                            if ([[dict valueForKey:@"msg"] isEqualToString:@"Removed from your Wishlist"]) {
+                                
+                                      // Updating Array after Remove zfrom Wishlist;
+    
+                            
+                                @try {
+                                    product_cell *cell = (product_cell *)[self.collection_product cellForItemAtIndexPath:index];
+                                    [cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
+                                    [cell.BTN_fav setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                                    
+                                    
+                                    NSMutableDictionary *wishDic = [[NSMutableDictionary alloc] initWithDictionary:[productDataArray objectAtIndex:index.row]];
+                                    
+                                    [wishDic setObject:@"No" forKey:@"wishListStatus"];
+                                    
+                                    [productDataArray replaceObjectAtIndex:index.row withObject:wishDic];
+                                    NSLog(@" ***** %@",wishDic);
+                                } @catch (NSException *exception) {
+                                    NSLog(@"Wish list Delete Exception..........");
+                                }
+                                
+                                
+                                
+                            }
+                            
+                            
+                            [HttpClient createaAlertWithMsg:[dict valueForKey:@"msg"]andTitle:@""];
+                            
+                            
+                        } @catch (NSException *exception) {
+                            NSLog(@"%@",exception);
+                            
+                        }
+
                         
-                    } @catch (NSException *exception) {
-                        NSLog(@"%@",exception);
-                        
+                    }
+                    else{
+                        [HttpClient createaAlertWithMsg:@"Something went wrong Please try again later." andTitle:@""];
                     }
                     
                 }
                 
+                    
+                   
             });
             
         }];
@@ -929,16 +974,19 @@
             product_id =[NSString stringWithFormat:@"%@", [[productDataArray objectAtIndex:sender.tag] valueForKey:@"id"]];
             //[[NSUserDefaults standardUserDefaults]setObject:product_id forKey:@"product_id"];
             
+            
             if ([sender.titleLabel.text isEqualToString:@""]) {
-                [self delete_from_wishLis:product_id];
+              
                 NSIndexPath *index = [NSIndexPath indexPathForRow:sender.tag inSection:0];
-                product_cell *cell = (product_cell *)[self.collection_product cellForItemAtIndexPath:index];
+              
                 
-                [cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
-                [cell.BTN_fav setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                //  [self delete_from_wishLis:product_id];
+                [self delete_from_wishLis:product_id andIndexPath:index];
                 
-             //   [self product_list_API];
-            }
+                
+                
+                
+                }
             else{
                 
                 [Helper_activity animating_images:self];
@@ -973,23 +1021,48 @@
                                 
                                 @try {
                                    if (json_Response_Dic ) {
-                                    
-                                      //  [self product_list_API];
                                        
-                                        [cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
-                                        
-                                        [cell.BTN_fav setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-
-                                        [HttpClient createaAlertWithMsg:[json_Response_Dic valueForKey:@"msg"] andTitle:@""];
-                                        //[self cart_count];
-                                        
-                                        // [self product_list_API];
+                                      
+                                       
+                                       if ([[json_Response_Dic valueForKey:@"msg"] isEqualToString:@"Added to your Wishlist"]) {
+                                           [cell.BTN_fav setTitle:@"" forState:UIControlStateNormal];
+                                           
+                                           [cell.BTN_fav setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+                                           
+                                           [HttpClient createaAlertWithMsg:[json_Response_Dic valueForKey:@"msg"] andTitle:@""];
+                                           
+                                           
+                                           @try {
+                                               NSMutableDictionary *wishDic = [[NSMutableDictionary alloc]initWithDictionary:[productDataArray objectAtIndex:index.row]];
+                                               
+                                               [wishDic setObject:@"Yes" forKey:@"wishListStatus"];
+                                               
+                                               NSLog(@" ***** %@",wishDic);
+                                               
+                                               
+                                               NSLog(@"%@",productDataArray);
+                                               
+                                               NSLog(@"%ld",(long)index.row);
+                                               
+                                               [productDataArray replaceObjectAtIndex:index.row withObject:wishDic];
+                                           } @catch (NSException *exception) {
+                                               NSLog(@"Wish list add  Exception...............");
+                                           }
+                                           
+                                           
+                                          
+                                       }
+                                       
+                                       
+                                       
+                                       
                                     }
                                                                         
                                     
                                 } @catch (NSException *exception) {
                                     NSLog(@"%@",exception);
-                                    [self product_list_API];
+                                    
+                                   // [self product_list_API];
                                     
                                 }
                                 
@@ -1200,18 +1273,20 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
                     
-//                    VW_overlay.hidden = YES;
-//                    [activityIndicatorView stopAnimating];
                     
                     [Helper_activity stop_activity_animation:self];
                     
-                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-                    {
-                        [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
-                    }
-                    else{
-                        [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
-                    }
+//                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+//                    {
+//                        [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
+//                    }
+//                    else{
+//                        [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
+//                    }
+                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                    
+                    
+                    
                 }
                 if (data) {
                     
@@ -1266,7 +1341,7 @@
                             {
                             if([[json_DATA valueForKey:@"products"] isKindOfClass:[NSArray class]])
                             {
-                                 productDataArray = [json_DATA valueForKey:@"products"];
+                                 productDataArray = [[json_DATA valueForKey:@"products"] mutableCopy];
                                 if([[json_DATA valueForKey:@"brands"] isKindOfClass:[NSDictionary class]])
                                 {
                                     [[NSUserDefaults standardUserDefaults]  setObject:[json_DATA valueForKey:@"brands"] forKey:@"brands_LISTs"];
@@ -1726,7 +1801,7 @@
 
     
 }
-
+#pragma mark sort_API
 -(void)sort_API
 {
     @try
@@ -1748,13 +1823,15 @@
             if (error) {
                 
                 [Helper_activity stop_activity_animation:self];
-                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+               /* if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
                     [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
                 }
                 else{
                     [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
-                }
+                }*/
+                
             }
             if (data1) {
                 //NSDictionary *json_DAT;
@@ -1795,8 +1872,12 @@
                             else
                             {
                                
-                                productDataArray = temp_arr;
-                              
+                                //productDataArray = temp_arr;       //////////////
+                                
+                                [productDataArray removeAllObjects];
+                                [productDataArray addObjectsFromArray:temp_arr];
+                                
+                                
                                 
                             }
                            
@@ -1854,7 +1935,7 @@
      }
      @catch(NSException *exception)
      {
-        NSLog(@"%@",exception);
+        NSLog(@"Sort API ......  %@",exception);
      }
 
 }
@@ -1882,14 +1963,15 @@
                 if (error) {
                     
                     [Helper_activity stop_activity_animation:self];
+                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
 
-                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                 /*   if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                     {
                         [HttpClient createaAlertWithMsg:@"خطأ في الإتصال" andTitle:@""];
                     }
                     else{
                         [HttpClient createaAlertWithMsg:@"Connection error" andTitle:@""];
-                    }
+                    }*/
                 }
                 if (data1) {
                     //NSDictionary *json_DAT;
@@ -1929,7 +2011,11 @@
                                 else
                                 {
                                     
-                                    productDataArray = temp_arr;
+                                    //productDataArray = temp_arr;
+                                    [productDataArray removeAllObjects];
+                                    [productDataArray addObjectsFromArray:temp_arr];
+                                    
+                                    
                                     [self set_UP_VW];
                                     
                                     
@@ -2189,7 +2275,13 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                                 {
                                     @try {
                                         NSArray *newArray=[productDataArray arrayByAddingObjectsFromArray:temp_arr];
-                                        productDataArray = newArray;
+                                        //productDataArray = newArray;
+                                        
+                                        [productDataArray  removeAllObjects];
+                                        [productDataArray addObjectsFromArray:newArray];
+                                        
+                                        //productDataArray = [newArray mutableCopy];
+                                        
                                     } @catch (NSException *exception) {
                                         NSLog(@"Add array exception %@",exception);
                                     }
@@ -2323,7 +2415,11 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                                     else
                                     {
                                         NSArray *newArray=[productDataArray arrayByAddingObjectsFromArray:temp_arr];
-                                        productDataArray = newArray;
+                                        
+                                        [productDataArray removeAllObjects];
+                                        [productDataArray addObjectsFromArray:newArray];
+                                        
+                                        //productDataArray = newArray;
                                     }
                                     
                                     

@@ -80,56 +80,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    [self API_call];
     
     
-    
-      _Scroll_contents.delegate =self;
-    
-   // TIMER_new = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:nil repeats:YES];
-  //  [self popUpZoomIn:_BTN_fashion];
-    [self.collection_images registerNib:[UINib nibWithNibName:@"cell_image" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
-    [self.collection_features registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"features_cell"];
-    [self.collection_showing_movies registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"showing_movies_cell"];
-     [self.collection_hot_deals registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
-     [self.collection_best_deals registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
-    [self.collection_fashion_categirie registerNib:[UINib nibWithNibName:@"Fashion_categorie_cell" bundle:nil]  forCellWithReuseIdentifier:@"fashion_categorie"];
-
-    
-     [self.Collection_movies registerNib:[UINib nibWithNibName:@"Movies_cell" bundle:nil]  forCellWithReuseIdentifier:@"movie_cell"];
-    
-    [self.Collection_movies registerNib:[UINib nibWithNibName:@"Image_qtickets" bundle:nil]  forCellWithReuseIdentifier:@"Image_qtickets"];
-    [self.Collection_movies registerNib:[UINib nibWithNibName:@"upcoming_cell" bundle:nil]  forCellWithReuseIdentifier:@"upcoming_cell"];
-  
    
-    tag =0;
-        leng_text = @"LANGUAGES";
-    halls_text =@"THEATERS";
-    
-     collection_tag = 0;
-    _BTN_leisure_venues.text = _BTN_venues.text;
-    _BTN_sports_venues.text = _BTN_venues.text;
-     brands_arr = [[NSMutableArray alloc]init];
-    _TXT_search.delegate =self;
-    
-    
-    _TXT_search.layer.borderColor = [UIColor lightGrayColor].CGColor;
-    _TXT_search.layer.borderWidth = 0.2f;
-    
-    
-    _hot_deals_more.layer.cornerRadius = 2.0f;
-    _hot_deals_more.layer.masksToBounds = YES;
-    
-    _best_deals_more.layer.cornerRadius = 2.0f;
-    _best_deals_more.layer.masksToBounds = YES;
-    
-    [_BTN_brand_right addTarget:self action:@selector(brand_right_action) forControlEvents:UIControlEventTouchUpInside];
-    [_BTN_brand_left addTarget:self action:@selector(BTN_left_brand_action) forControlEvents:UIControlEventTouchUpInside];
-
-    [_BTN_TOP addTarget:self action:@selector(TOP_action) forControlEvents:UIControlEventTouchUpInside];
-    [_BTN_search addTarget:self action:@selector(seacrh_ACTION) forControlEvents:UIControlEventTouchUpInside];
-    [_logo addTarget:self action:@selector(logo_api_call) forControlEvents:UIControlEventTouchUpInside];
-    [self view_appear];
-
 
     
 }
@@ -1116,7 +1070,7 @@
             else
             {
                   NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"Images_path"];
-                NSLog(@"THE IMAGE PATH RESPONSE:%@",dict);
+                //NSLog(@"THE IMAGE PATH RESPONSE:%@",dict);
                 NSString *url_Img_FULL = [NSString stringWithFormat:@"%@%@%@",[dict valueForKey:@"awsPath"],[dict valueForKey:@"banner"],[[image_Top_ARR objectAtIndex:indexPath.row] valueForKey:@"banner"]];
                 url_Img_FULL  =[url_Img_FULL stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
                 [img_cell.img sd_setImageWithURL:[NSURL URLWithString:url_Img_FULL]
@@ -5975,5 +5929,168 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
     return [NSString stringWithFormat:@"%d",temp_test];
 }
 */
+#pragma mark First Time Total API call
+-(void)API_call
+{
+    
+            @try
+            {
+                [Helper_activity animating_images:self];
+    
+                /**********   After passing Language Id and Country ID ************/
+                NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
+    
+                NSString *user_id;
+                @try
+                {
+                    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
+                    if(dict.count == 0)
+                    {
+                        user_id = @"(null)";
+                    }
+                    else
+                    {
+                        NSString *str_id = @"user_id";
+                        // NSString *user_id;
+                        for(int i = 0;i<[[dict allKeys] count];i++)
+                        {
+                            if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
+                            {
+                                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
+                                break;
+                            }
+                            else
+                            {
+    
+                                user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+                            }
+    
+                        }
+                    }
+                }
+                @catch(NSException *exception)
+                {
+                    user_id = @"(null)";
+                    [Helper_activity stop_activity_animation:self];
+    
+                }
+    
+                NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/home/%ld/%ld/%@/Customer.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"],user_id];
+               NSLog(@"country id %ld ,language id %ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
+    
+    
+    
+                urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+                [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (error) {
+                            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+    
+                            [Helper_activity stop_activity_animation:self];
+                        }
+                        if (data) {
+    
+                            @try {
+                                 [Helper_activity stop_activity_animation:self];
+                                [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Home_data"];
+                                [[NSUserDefaults standardUserDefaults] synchronize];
+                                
+                                
+                                _Scroll_contents.delegate =self;
+                                
+                                // TIMER_new = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:nil repeats:YES];
+                                //  [self popUpZoomIn:_BTN_fashion];
+                                [self.collection_images registerNib:[UINib nibWithNibName:@"cell_image" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
+                                [self.collection_features registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"features_cell"];
+                                [self.collection_showing_movies registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"showing_movies_cell"];
+                                [self.collection_hot_deals registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
+                                [self.collection_best_deals registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
+                                [self.collection_fashion_categirie registerNib:[UINib nibWithNibName:@"Fashion_categorie_cell" bundle:nil]  forCellWithReuseIdentifier:@"fashion_categorie"];
+                                
+                                
+                                [self.Collection_movies registerNib:[UINib nibWithNibName:@"Movies_cell" bundle:nil]  forCellWithReuseIdentifier:@"movie_cell"];
+                                
+                                [self.Collection_movies registerNib:[UINib nibWithNibName:@"Image_qtickets" bundle:nil]  forCellWithReuseIdentifier:@"Image_qtickets"];
+                                [self.Collection_movies registerNib:[UINib nibWithNibName:@"upcoming_cell" bundle:nil]  forCellWithReuseIdentifier:@"upcoming_cell"];
+                                
+                                
+                                tag =0;
+                                leng_text = @"LANGUAGES";
+                                halls_text =@"THEATERS";
+                                
+                                collection_tag = 0;
+                                _BTN_leisure_venues.text = _BTN_venues.text;
+                                _BTN_sports_venues.text = _BTN_venues.text;
+                                brands_arr = [[NSMutableArray alloc]init];
+                                _TXT_search.delegate =self;
+                                
+                                
+                                _TXT_search.layer.borderColor = [UIColor lightGrayColor].CGColor;
+                                _TXT_search.layer.borderWidth = 0.2f;
+                                
+                                
+                                _hot_deals_more.layer.cornerRadius = 2.0f;
+                                _hot_deals_more.layer.masksToBounds = YES;
+                                
+                                _best_deals_more.layer.cornerRadius = 2.0f;
+                                _best_deals_more.layer.masksToBounds = YES;
+                                
+                                [_BTN_brand_right addTarget:self action:@selector(brand_right_action) forControlEvents:UIControlEventTouchUpInside];
+                                [_BTN_brand_left addTarget:self action:@selector(BTN_left_brand_action) forControlEvents:UIControlEventTouchUpInside];
+                                
+                                [_BTN_TOP addTarget:self action:@selector(TOP_action) forControlEvents:UIControlEventTouchUpInside];
+                                [_BTN_search addTarget:self action:@selector(seacrh_ACTION) forControlEvents:UIControlEventTouchUpInside];
+                                [_logo addTarget:self action:@selector(logo_api_call) forControlEvents:UIControlEventTouchUpInside];
+                                [self view_appear];
+
+                             
+                                
+                            } @catch (NSException *exception)
+                            {
+                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                                [alert show];
+    
+    
+                            }
+    
+    
+    
+                        }
+                        else
+                        {
+                           [Helper_activity stop_activity_animation:self];
+                            //                        VW_overlay.hidden = YES;
+                            //                        [activityIndicatorView stopAnimating];
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                            [alert show];
+                            // [self viewWillAppear:NO];
+    
+    
+    
+                        }
+    
+                      //  [Helper_activity stop_activity_animation:self];
+    
+                    });
+                }];
+            }
+            @catch(NSException *exception)
+            {
+                NSLog(@"The error is:%@",exception);
+                [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
+                //        VW_overlay.hidden = YES;
+                //        [activityIndicatorView stopAnimating];
+                // [self viewWillAppear:NO];
+               [Helper_activity stop_activity_animation:self];
+                
+            }
+            
+            
+        
+    
+}
+
+
+
 
 @end
