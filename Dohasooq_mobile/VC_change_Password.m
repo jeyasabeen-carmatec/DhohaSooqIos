@@ -24,9 +24,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
     _TXT_old_pwd.delegate= self;
     _TXT_new_pwd.delegate = self;
     _TXT_confirm_pwd.delegate = self;
+    
     //_vw_align.center = self.view.center;
     
 }
@@ -43,30 +45,34 @@
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
     
-    if( textField == _TXT_new_pwd || _TXT_confirm_pwd)
+    if( textField == _TXT_new_pwd ||textField ==  _TXT_confirm_pwd)
     {
-        CGSize result = [[UIScreen mainScreen] bounds].size;
-        
-        
-        if(result.height <= 480)
-        {
+//        CGSize result = [[UIScreen mainScreen] bounds].size;
+//        if(result.height <= 480)
+//        {
             [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
             [UIView beginAnimations:nil context:NULL];
             self.view.frame = CGRectMake(0,-110,self.view.frame.size.width,self.view.frame.size.height);
             [UIView commitAnimations];
-
             
-        }
-       else if(result.height <= 568)
-       {
+//            
+//        }
+//        else if(result.height <= 568)
+//        {
+//            [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
+//            [UIView beginAnimations:nil context:NULL];
+//            self.view.frame = CGRectMake(0,-110,self.view.frame.size.width,self.view.frame.size.height);
+//            [UIView commitAnimations];
+//            
+//        }
+    }
+    else
+    {
         [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
         [UIView beginAnimations:nil context:NULL];
-        self.view.frame = CGRectMake(0,-110,self.view.frame.size.width,self.view.frame.size.height);
+        self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
         [UIView commitAnimations];
-
-        }
-   
-        }
+    }
 }
 
 -(void)textFieldDidEndEditing:(UITextField *)textField
@@ -251,31 +257,15 @@
             }
             
         
-      /*  else
-        {
-            NSString *str =  @"he password must contain one number and 8 char minimum";//
-            
-            NSString *str_ok = @"Ok";
-            
-            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-            {
-                str = @"يجب أن تحتوي كلمة المرور على رقم واحد و 8 رموز على الأقل";
-                str_ok = @"حسنا";
-            }
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str delegate:self cancelButtonTitle:nil otherButtonTitles:str_ok, nil];
-            [alert show];
-            [textField becomeFirstResponder];
-        }*/
-        
         
     }
 
-    if( textField == _TXT_confirm_pwd || _TXT_new_pwd)
-    {
+//    if( textField == _TXT_confirm_pwd || _TXT_new_pwd)
+//    {
         [UIView beginAnimations:nil context:NULL];
         self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
         [UIView commitAnimations];
-    }
+//    }
     
 }
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string

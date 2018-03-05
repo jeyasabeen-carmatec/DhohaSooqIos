@@ -56,7 +56,8 @@
     
 }
 - (void)signInWillDispatch:(GIDSignIn *)signIn error:(NSError *)error {
-    [Helper_activity animating_images:self];
+    
+   //[Helper_activity animating_images:self];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -289,27 +290,42 @@
                           name, @"userName",
                           email, @"userEmail",
                           nil];
-    NSString *str = [dict valueForKey:@"userName"];
-    NSArray *arr = [str componentsSeparatedByString:@" "];
-    NSLog(@"The first name is:%@",[arr objectAtIndex:0]);
-    first_name = [NSString stringWithFormat:@"%@",[arr objectAtIndex:0]];
-    last_name = [NSString stringWithFormat:@"%@",[arr objectAtIndex:1]];
-    emails = [NSString stringWithFormat:@"%@",[dict valueForKey:@"userEmail"]];
+    
+  
 
 
     VW_overlay.hidden = NO;
     [activityIndicatorView startAnimating];
-    [self performSelector:@selector(Google_plus_login) withObject:nil afterDelay:0.01];
-
     
-
+    if (![dict count]) {
+        
+       // [HttpClient createaAlertWithMsg:@"Nothing" andTitle:@""];
+        
+        VW_overlay.hidden = YES;
+        [activityIndicatorView stopAnimating];
+        
+    }
+    else{
+        
+        NSString *str = [dict valueForKey:@"userName"];
+        NSArray *arr = [str componentsSeparatedByString:@" "];
+        NSLog(@"The first name is:%@",[arr objectAtIndex:0]);
+        first_name = [NSString stringWithFormat:@"%@",[arr objectAtIndex:0]];
+        last_name = [NSString stringWithFormat:@"%@",[arr objectAtIndex:1]];
+        emails = [NSString stringWithFormat:@"%@",[dict valueForKey:@"userEmail"]];
+        
+        
+        [self performSelector:@selector(Google_plus_login) withObject:nil afterDelay:0.01];
+        
+        
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"GoogleUserInfo" object:[UIApplication sharedApplication].keyWindow.rootViewController userInfo:dict];
+    }
     
     
     
-   
     
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"GoogleUserInfo" object:[UIApplication sharedApplication].keyWindow.rootViewController userInfo:dict];
+  
     
 }
 
@@ -468,12 +484,13 @@ error:(NSError *)error{
 //                [[NSUserDefaults standardUserDefaults] synchronize];
                 VW_overlay.hidden = YES;
                 [activityIndicatorView stopAnimating];
+                
                 NSMutableDictionary *dictMutable = [[json_DATA valueForKey:@"detail"] mutableCopy];
                 [dictMutable removeObjectsForKeys:[[json_DATA valueForKey:@"detail"] allKeysForObject:[NSNull null]]];
                 
                  [[NSUserDefaults standardUserDefaults] setValue:dictMutable forKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
-                [self MENU_api_call];
+                //[self MENU_api_call];
                 
                 [self cart_count];
                 
@@ -571,7 +588,7 @@ error:(NSError *)error{
                 [[NSUserDefaults standardUserDefaults] setValue:dictMutable forKey:@"userdata"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
 
-                [self MENU_api_call];
+               // [self MENU_api_call];
                 
                 [self cart_count];
                 
@@ -713,7 +730,7 @@ error:(NSError *)error{
                 [[NSUserDefaults standardUserDefaults]setObject:self.TXT_username.text forKey:@"email"];
                 [[NSUserDefaults standardUserDefaults] setObject:email forKey:@"user_email"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
-                [self MENU_api_call];
+               // [self MENU_api_call];
 
                 [self cart_count];
                 
@@ -758,6 +775,8 @@ error:(NSError *)error{
 }
 -(void)cart_count{
     
+    [Helper_activity animating_images:self];
+    
     NSString *user_id;
     @try
     {
@@ -789,21 +808,24 @@ error:(NSError *)error{
     @catch(NSException *exception)
     {
         user_id = @"(null)";
+        [Helper_activity stop_activity_animation:self];
         
     }
     [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
         if (error) {
             [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
              ];
-            //            VW_overlay.hidden = YES;
-            //            [activityIndicatorView stopAnimating];
-            
+           
+            [Helper_activity stop_activity_animation:self];
             
         }
         if (data) {
             NSLog(@"cart count sadas %@",data);
             NSDictionary *dict = data;
             @try {
+                
+                
+                
                 
                 NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
                 //   NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
@@ -812,22 +834,26 @@ error:(NSError *)error{
 
                 [[NSUserDefaults standardUserDefaults] setValue:badge_value forKey:@"cart_count"];
                 [[NSUserDefaults standardUserDefaults]synchronize];
+                
+                
+                 [Helper_activity stop_activity_animation:self];
+                
                 [self dismissViewControllerAnimated:NO completion:nil];
                 
                 
             } @catch (NSException *exception) {
-                //                 VW_overlay.hidden = YES;
-                //                [activityIndicatorView stopAnimating];
                 
+                 [Helper_activity stop_activity_animation:self];
                 
                 NSLog(@"asjdas dasjbd asdas iccxv %@",exception);
+                
             }
             
         }
     }];
 }
 
--(void)MENU_api_call
+/* -(void)MENU_api_call
 {
     
     @try
@@ -879,6 +905,8 @@ error:(NSError *)error{
     //    [alert show];
     
 }
+ */
+
 -(void)guest_action
 {
       [self dismissViewControllerAnimated:NO completion:nil];

@@ -20,8 +20,7 @@
     NSURL *url = [NSURL URLWithString:urlStr];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:url];
     [request setHTTPMethod:@"POST"];
-    [request setTimeoutInterval:30];
-    //[request setHTTPBody:postData];
+    [request setTimeoutInterval:70];
     [request setValue:@"application/json" forHTTPHeaderField:@"content-type"];
     [request setValue:@"application/json" forHTTPHeaderField:@"accept"];
     
@@ -31,26 +30,21 @@
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(id  _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
-            completionHandler(error,nil);
+            completionHandler(nil,error);
 
-            NSLog(@"eror 1:%@",[error localizedDescription]);
+            NSLog(@"eror g1:%@",[error localizedDescription]);
         }else{
             NSError *err = nil;
-            id resposeJSon = [NSJSONSerialization JSONObjectWithData:data options:0 error:&err];
+            id resposeJSon = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
             if (err) {
-                completionHandler(err,nil);
-                //NSLog(@"eror 2:%@",[err localizedDescription]);
+                completionHandler(nil,err);
+                NSLog(@"eror g2:%@",[error localizedDescription]);
             }else{
                 @try {
                     if (resposeJSon) {
                         completionHandler(resposeJSon,nil);
 
                     }
-//                    if ([resposeJSon objectForKey:@"response"]) {
-//                        NSError *er = [NSError errorWithDomain:[resposeJSon objectForKey:@"msg"] code:200 userInfo:nil];
-//                        completionHandler(nil,er);
-//                    }else{
-                    //}
 
                 } @catch (NSException *exception) {
                     NSLog(@" 3 %@",exception);
@@ -68,30 +62,30 @@
     NSURL *url = [NSURL URLWithString:urlGetuser];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:url];
     [request setHTTPMethod:@"GET"];
-    [request setTimeoutInterval:30];
+    [request setTimeoutInterval:70];
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     configuration.allowsCellularAccess = YES;
     configuration.HTTPMaximumConnectionsPerHost = 10;
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(id  _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
-            NSLog(@"eror :%@",[error localizedDescription]);
+            completionHandler(nil,error);
+            
+            NSLog(@"eror c1:%@",[error localizedDescription]);
         }else{
             NSError *err = nil;
             id resposeJSon = [NSJSONSerialization JSONObjectWithData:data options:0 error:&err];
             if (err) {
-                NSLog(@"eror :%@",[err localizedDescription]);
+                
+                completionHandler(nil,err);
+                
+                NSLog(@"eror c2:%@",[err localizedDescription]);
             }else{
                 @try {
                     if (resposeJSon) {
                         completionHandler(resposeJSon,nil);
                         
                     }
-                    //                    if ([resposeJSon objectForKey:@"response"]) {
-                    //                        NSError *er = [NSError errorWithDomain:[resposeJSon objectForKey:@"msg"] code:200 userInfo:nil];
-                    //                        completionHandler(nil,er);
-                    //                    }else{
-                    //}
                     
                 } @catch (NSException *exception) {
                     NSLog(@"%@",exception);
@@ -122,7 +116,7 @@
     NSURL *url = [NSURL URLWithString:urlStr];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:url];
     [request setHTTPMethod:@"POST"];
-    [request setTimeoutInterval:30];
+    [request setTimeoutInterval:70];
     [request setHTTPBody:postData];
     [request setValue:@"application/json" forHTTPHeaderField:@"content-type"];
     [request setValue:@"application/json" forHTTPHeaderField:@"accept"];
@@ -133,11 +127,14 @@
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(id  _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
+            completionHandler(nil,error);
             NSLog(@"eror :%@",[error localizedDescription]);
         }else{
             NSError *err = nil;
             id resposeJSon = [NSJSONSerialization JSONObjectWithData:data options:0 error:&err];
             if (err) {
+                completionHandler(nil,error);
+
                 NSLog(@"eror :%@",[err localizedDescription]);
             }else{
                 @try {
