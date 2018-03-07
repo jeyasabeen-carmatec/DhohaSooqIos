@@ -148,40 +148,21 @@
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
     
-    if(textField == _TXT_phone || _TXT_organisation)
+    if(textField == _TXT_phone || textField == _TXT_organisation || textField == _TXT_organisation || textField == _TXT_message)
     {
-        scroll_ht = scroll_ht + 120;
+        scroll_ht = scroll_ht + 200;
         [self viewDidLayoutSubviews];
     }
-    if(textField == _TXT_organisation)
-    {
-        [UIView beginAnimations:nil context:NULL];
-        self.view.frame = CGRectMake(0,-110,self.view.frame.size.width,self.view.frame.size.height);
-        [UIView commitAnimations];
-
-    }
-    
+  
 }
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
-     if(textField == _TXT_phone || _TXT_organisation)
+     if(textField == _TXT_phone ||textField == _TXT_organisation || textField == _TXT_organisation || textField == _TXT_message)
     {
-        scroll_ht = scroll_ht - 120;
+        scroll_ht = scroll_ht - 200;
         [self viewDidLayoutSubviews];
     }
-    if(textField == _TXT_organisation)
-    {
-        
-        [UIView beginAnimations:nil context:NULL];
-        
-        self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
-        [UIView commitAnimations];
-        [UIView beginAnimations:nil context:NULL];
-        self.view.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height);
-        [UIView commitAnimations];
-        
 
-    }
     
     
 }

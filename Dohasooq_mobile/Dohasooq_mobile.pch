@@ -18,8 +18,8 @@
 //#define SERVER_URL @"http://pilot.dohasooq.com/"
 //#define IMG_URL @"http://pilot.dohasooq.com/"
 
-#define SERVER_URL @"https://pilot.dohasooq.com/"
-#define IMG_URL @"https://pilot.dohasooq.com/"
+//#define SERVER_URL @"https://pilot.dohasooq.com/"
+//#define IMG_URL @"https://pilot.dohasooq.com/"
 
 //test dohasooq
 //#define SERVER_URL @"http://test2.dohasooq.com/"
@@ -40,17 +40,17 @@
 // Production server
 
 
-//#define SERVER_URL @"https://www.dohasooq.com/"
-//#define IMG_URL @"https://www.dohasooq.com/"
+#define SERVER_URL @"https://www.dohasooq.com/"
+#define IMG_URL @"https://www.dohasooq.com/"
 
 
-#define language_Url @"Languages/getLangByCountry/"
+//#define language_Url @"Languages/getLangByCountry/"
 
 
 
 
-#define Product_List_Url @"Pages/catalog/Electronics/1/1.json"
-#define Product_Detail_Url @"Pages/details/glamrock-gr50136/3/1.json"
-#define MERCHANT_URL @"https://codewebber.s3.amazonaws.com/"
+//#define Product_List_Url @"Pages/catalog/Electronics/1/1.json"
+//#define Product_Detail_Url @"Pages/details/glamrock-gr50136/3/1.json"
+//#define MERCHANT_URL @"https://codewebber.s3.amazonaws.com/"
 
 #endif /* Dohasooq_mobile_pch */

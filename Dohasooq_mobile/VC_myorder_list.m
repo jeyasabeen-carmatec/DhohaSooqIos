@@ -426,7 +426,7 @@
           NSMutableDictionary *json_DAT = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             json_DATA = [json_DAT valueForKey:@"Orders"];
             NSLog(@"The response Api post sighn up API %@",json_DATA);
-            if([json_DATA isKindOfClass:[NSArray class]] && json_DATA.count > 1)
+            if([json_DATA isKindOfClass:[NSArray class]] && json_DATA.count >= 1)
             {
              
                 

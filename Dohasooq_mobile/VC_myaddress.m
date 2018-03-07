@@ -854,32 +854,40 @@
     if ([str_fname isEqualToString:@""]) {
         
         [cell.TXT_first_name becomeFirstResponder];
-       msg = @"Please enter First Name field";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يرجى تعبئة حقل الاسم الأول";
+        }
+        else{
+            msg = @"Please enter First Name field";
+
         }
         
     }
     else if (str_fname.length<3 )
     {
         [cell.TXT_first_name becomeFirstResponder];
-           msg = @"First name should not be less than 3 characters";
         
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب ألا يقل الاسم الأول عن 3 حروف";
+        }else{
+            msg = @"First name should not be less than 3 characters";
+
         }
 
     }
     else if (str_fname.length > 30)
     {
         [cell.TXT_first_name becomeFirstResponder];
-        msg = @"First name should not be more than 30 characters";
         
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب ألا يزيد الاسم الأول عن 30 حرفاً";
+        }
+        else{
+            msg = @"First name should not be more than 30 characters";
+
         }
         
     }
@@ -888,10 +896,13 @@
     else if ([str_lname isEqualToString:@""]) {
         
         [cell.TXT_last_name becomeFirstResponder];
-        msg = @"Please enter Last Name field";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يرجى تعبئة حقل الاسم الأخير ";
+        }
+        else{
+            msg = @"Please enter Last Name field";
+
         }
 
         
@@ -899,10 +910,13 @@
     else if(str_lname.length < 1)
     {
         [cell.TXT_last_name becomeFirstResponder];
-        msg = @"Last name should not be less than 3 characters";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"الكنية ألا يقل الاسم الأول عن 3 حروف";
+        }
+        else{
+            msg = @"Last name should not be less than 3 characters";
+
         }
 
         
@@ -910,10 +924,13 @@
     else if (str_lname.length>30)
     {
         [cell.TXT_last_name becomeFirstResponder];
-       msg = @"Last name should not be more than 30 characters";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"ألا يزيد اسم العائلة عن 30 حرفا";
+        }
+        else{
+            msg = @"Last name should not be more than 30 characters";
+
         }
 
         
@@ -921,31 +938,40 @@
     else if ([str_addr1 isEqualToString:@""]) {
         
         [cell.TXT_address1 becomeFirstResponder];
-        msg = @"Address1 Should Not be Empty";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب  1 عدم ترك حقل العنوان فارغا";
+        }
+        else{
+            msg = @"Address1 Should Not be Empty";
+
         }
         
     }
     else if(str_addr1.length < 3)
     {
         [cell.TXT_address1 becomeFirstResponder];
-        msg = @"Address name should be more than 3 characters";//يجب أن يكون اسم العنوان أكثر من 3 أحرف
+   
         
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب أن يكون اسم العنوان أكثر من 3 أحرف";
+        }
+        else{
+             msg = @"Address name should be more than 3 characters";//يجب أن يكون اسم العنوان أكثر من 3 أحرف
         }
         
     }
     else if (str_addr1.length > 200)
     {
         [cell.TXT_address1 becomeFirstResponder];
-        msg = @"Address should not be more than 200 characters";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب ألا يزيد العنوان عن 200 رمز";
+        }
+        else{
+            msg = @"Address should not be more than 200 characters";
+
         }
         
     }
@@ -954,30 +980,39 @@
     else if ([str_city isEqualToString:@""]) {
         
         [cell.TXT_city becomeFirstResponder];
-        msg = @"City Should Not be Empty";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب عدم ترك حقل المدينة فارغاً";
+        }
+        else{
+            msg = @"City Should Not be Empty";
+
         }
         
     }
     else if (str_city.length<3)
     {
         [cell.TXT_city becomeFirstResponder];
-        msg = @"City should not be less than 3 characters";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب ألا يقل حقل المدينة عن 3 أحرف";
+        }
+        else{
+            msg = @"City should not be less than 3 characters";
+
         }
 
     }
     else if (str_city.length > 30)
     {
         [cell.TXT_city becomeFirstResponder];
-        msg = @"City should not be more than 30 characters";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب ألا يزيد حقل المدينة عن 30 حرفاً";
+        }
+        else{
+            msg = @"City should not be more than 30 characters";
+
         }
         
     }
@@ -1018,10 +1053,13 @@
     else if ([str_country isEqualToString:@""])
     {
         [cell.TXT_country becomeFirstResponder];
-        msg = @"Please Select Country";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يرجى تحديد البلد";
+        }
+        else{
+            msg = @"Please Select Country";
+
         }
     }
     
@@ -1029,10 +1067,13 @@
     else if ([str_state isEqualToString:@""])
     {
         [cell.TXT_state becomeFirstResponder];
-        msg = @"Please Select State";//يرجى تحديد البلد
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يرجى تحديد الدولة";
+        }
+        else{
+            msg = @"Please Select State";//يرجى تحديد البلد
+
         }
         
     }
@@ -1043,10 +1084,13 @@
         {
             
             [cell.TXT_phone becomeFirstResponder];
-            msg = @"Phone Number  Should Not be Empty";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"رقم الهاتف ترك حقل المدينة فارغاً";
+            }
+            else{
+                msg = @"Phone Number  Should Not be Empty";
+
             }
             
         }
@@ -1056,11 +1100,14 @@
             {
             [cell.TXT_phone becomeFirstResponder];
               
-                msg = @"Phone Number cannot be less than 8 digits";
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
                     msg =@"رقم الهاتف لا يمكن أن يكون أقل من 8 أرقام ";
                     
+                }
+                else{
+                    msg = @"Phone Number cannot be less than 8 digits";
+
                 }
             }
             
@@ -1068,11 +1115,14 @@
             {
                 [cell.TXT_phone becomeFirstResponder];
                 
-                msg = @"Phone Number cannot be more than 8 digits";
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
                     msg = @"رقم الهاتف لا يمكن أن يكون أكثر من 8 أرقام";
                     ;
+                }
+                else{
+                    msg = @"Phone Number cannot be more than 8 digits";
+
                 }
             }
 
@@ -1081,19 +1131,25 @@
                 if (str_phone.length<5)
                 {
                 [cell.TXT_phone becomeFirstResponder];
-                    msg = @"Phone Number cannot be less than 5 digits";
                     if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                     {
                         msg =@"رقم الهاتف لا يمكن أن يكون أقل من 5 أرقام ";
+                    }
+                    else{
+                        msg = @"Phone Number cannot be less than 5 digits";
+
                     }
                 }
                 else if (str_phone.length > 15)
                 {
                 [cell.TXT_phone becomeFirstResponder];
-                    msg = @"Phone Number cannot be more than 15 digits";
                     if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                     {
                         msg = @"لا يجب أن يتجاوز رقم الهاتف 15 أرقام";
+                    }
+                    else{
+                        msg = @"Phone Number cannot be more than 15 digits";
+
                     }
                 }
                 
@@ -1106,10 +1162,13 @@
         else if (![str_country isEqualToString:@"Qatar"])
         {
             [cell.TXT_country becomeFirstResponder];
-            msg = @"Sorry! we cannot Ship Products Outside Qatar";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"يرجى تحديد البلد";
+            }
+            else{
+                msg = @"Sorry! we cannot Ship Products Outside Qatar";
+
             }
         }
 

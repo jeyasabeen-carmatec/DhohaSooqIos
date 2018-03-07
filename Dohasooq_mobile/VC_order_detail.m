@@ -62,7 +62,7 @@
     int currMinute;
     int currSeconds;
     NSString *otp_str;
-    BOOL isResendSelected;
+    BOOL isResendSelected;            //,isTimeExpired
   
     //For Picker Default Selection
     NSString *pickerSelection;
@@ -130,7 +130,9 @@
     _VW_otp_vw.hidden =YES;
     _LBL_arrow.hidden = YES;
     isCash_on_delivary = YES;
+    
     isResendSelected = NO;
+    //isTimeExpired = NO;
     
     [self ShippingCountryAPICall];
     
@@ -173,10 +175,7 @@
     
     if (_VW_otp_vw.hidden == NO && _VW_pay_cards.hidden == NO) {
         VW_overlay.hidden = NO;
-
-       // _VW_otp_vw.hidden = YES;
-        //[timer invalidate];
-        _LBL_next.hidden = NO;
+       //_LBL_next.hidden = NO;
     }
     else{
          VW_overlay.hidden = YES;
@@ -554,38 +553,54 @@
         //  state = [state stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
         
         //  country = [country stringByReplacingOccurrencesOfString:@"<null>" withString:@"Not mentioned"];
-        NSString *str_fname,*str_lname,*str_addr1,*str_addr2,*str_city,*str_zip_code,*str_phone,*str_country,*str_state,*str_email,*str_cntry_code;
+        NSString *str_fname,*str_lname,*str_addr1,*str_addr2,*str_city,*str_zip_code,*str_phone,*str_country,*str_state,*str_cntry_code;
         
         //fnaem
         str_fname = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"firstname"];
-        str_fname = [str_fname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+      
+       
+        if ([str_fname isKindOfClass:[NSNull class]]||[str_fname isEqualToString:@"<null>"] ||[str_fname isEqualToString:@"<nil>"]||[str_fname isEqualToString:@"null"] ) {
+            str_fname = @"";
+        }
         _TXT_fname.text =  str_fname;
         
         //lname
-        str_lname = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"lastname"];
-        str_lname = [str_lname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
+         str_lname = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"lastname"];
+        if ([str_lname isKindOfClass:[NSNull class]]||[str_lname isEqualToString:@"<null>"] ||[str_lname isEqualToString:@"<nil>"]||[str_lname isEqualToString:@"null"] ) {
+            str_lname = @"";
+        }
+        
         _TXT_lname.text =  str_lname;
         
         //phone
         str_phone = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"phone"];
         
-        if ([str_phone isEqualToString:@"<null>"] ||[str_phone isEqualToString:@"<nil>"]||[str_phone isEqualToString:@""] ) {
-            str_phone = @"";
-            _TXT_phone.userInteractionEnabled = YES;
-            _TXT_phone.backgroundColor = [UIColor clearColor];
+        @try {
+            
+            if ([str_phone isKindOfClass:[NSNull class]] ||[str_phone isEqualToString:@"<null>"] ||[str_phone isEqualToString:@"<nil>"]||[str_phone isEqualToString:@""]) {
+                str_phone = @"";
+                _TXT_phone.userInteractionEnabled = YES;
+                _TXT_phone.backgroundColor = [UIColor clearColor];
+            }
+            else{
+                _TXT_phone.userInteractionEnabled = NO;
+                _TXT_phone.backgroundColor = [UIColor lightGrayColor];
+            }
+        } @catch (NSException *exception) {
+            NSLog(@"Phone exception....");
         }
-        else{
-            _TXT_phone.userInteractionEnabled = NO;
-            _TXT_phone.backgroundColor = [UIColor lightGrayColor];
-        }
+        
+        
+        
+        
         str_phone = [str_phone stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
         _TXT_phone.text =  str_phone;
         
         //Phone_Country_code
         str_cntry_code = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"phonecode"];
-        str_cntry_code = [str_cntry_code stringByReplacingOccurrencesOfString:@"<null>" withString:@"974"];
+        //str_cntry_code = [str_cntry_code stringByReplacingOccurrencesOfString:@"<null>" withString:@"974"];
         
-        if ([str_cntry_code isEqualToString:@"<null>"] ||[str_cntry_code isEqualToString:@"<nil>"]||[str_cntry_code isEqualToString:@""] ) {
+        if ([str_cntry_code isKindOfClass:[NSNull class]] ||[str_cntry_code isEqualToString:@"<null>"] ||[str_cntry_code isEqualToString:@"<nil>"]||[str_cntry_code isEqualToString:@""] ) {
             str_cntry_code = @"974";
             _TXT_Cntry_code.userInteractionEnabled = YES;
            // _TXT_Cntry_code.backgroundColor = [UIColor clearColor];
@@ -605,65 +620,78 @@
         //Address1
         str_addr1 = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"address1"];
         
+        if ([str_addr1 isKindOfClass:[NSNull class]]||[str_addr1 isEqualToString:@"<null>"] ||[str_addr1 isEqualToString:@"<nil>"]||[str_addr1 isEqualToString:@"null"] ) {
+            str_addr1 = @"";
+        }
+        _TXT_addr1.text =  str_addr1;
+
+
+        //address2
         str_addr2 = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"address2"];
+        if ([str_addr2 isKindOfClass:[NSNull class]]||[str_addr2 isEqualToString:@"<null>"] ||[str_addr2 isEqualToString:@"<nil>"]||[str_addr2 isEqualToString:@"null"] ) {
+            str_addr2 = @"";
+        }
+        _TXT_addr2.text =  str_addr2;
+
+        
+  //  City
         str_city = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"city"];
+        
+        if ([str_city isKindOfClass:[NSNull class]]||[str_city isEqualToString:@"<null>"] ||[str_city isEqualToString:@"<nil>"]||[str_city isEqualToString:@"null"] ) {
+            str_city = @"";
+        }
+        _TXT_city.text =  str_city;
+        
+   // Zipcode
         str_zip_code = [[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"zip_code"];
+        if ([str_zip_code isKindOfClass:[NSNull class]]||[str_zip_code isEqualToString:@"<null>"] ||[str_zip_code isEqualToString:@"<nil>"]||[str_zip_code isEqualToString:@"null"] ) {
+            str_zip_code = @"";
+        }
+        
+        
+        _TXT_zip.text =  str_zip_code;
+        
+
         
         str_country = country;
         str_state =state;
         
         // Country
-        if ([str_country isEqualToString:@"<null>"] ||[str_country isEqualToString:@"<nil>"]||[str_country isEqualToString:@"null"] ||[str_country isEqualToString:@""]) {
+        if ([str_country isKindOfClass:[NSNull class]]||[str_country isEqualToString:@"<null>"] ||[str_country isEqualToString:@"<nil>"]||[str_country isEqualToString:@"null"] ||[str_country isEqualToString:@""]) {
             str_country = @"";
             _TXT_country.placeholder = @"Select Country";
         }
+        _TXT_country.text =  str_country;
+
         
         //State
         if ([str_state isKindOfClass:[NSNull class]]||[str_state isEqualToString:@"<null>"] ||[str_state isEqualToString:@"<nil>"]||[str_state isEqualToString:@"null"] ||[str_state isEqualToString:@""]) {
             str_state = @"";
            // _TXT_state.placeholder = @"Select State*";
         }
-        
-        
-        //str_email = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"user_email"]];
-        
-        //cell.Btn_save.hidden = YES;
-        
-        
-        // Getting State_id and Cntry_Id for Payment
-        blng_cntry_ID = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"country_id"]];
-        blng_state_ID = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"state_id"]];
-        
-        
-        
-        str_fname = [str_fname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-        
-        str_lname = [str_lname stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-        str_addr1 = [str_addr1 stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-        str_addr2 = [str_addr2 stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-        str_city = [str_city stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-        str_zip_code = [str_zip_code stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-        str_phone = [str_phone stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-        
-        
-        if ([str_zip_code isEqualToString:@"<null>"] ||[str_zip_code isEqualToString:@"<nil>"]||[str_zip_code isEqualToString:@"null"] ) {
-            str_zip_code = @"";
-        }
-        
-        _TXT_addr1.text =  str_addr1;
-        _TXT_addr2.text =  str_addr2;
-        _TXT_city.text =  str_city;
-        _TXT_zip.text =  str_zip_code;
-        _TXT_email.text =  str_email;
-        
-        
-        
-        str_state = [str_state stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
-        
-        _TXT_country.text =  str_country;
         _TXT_state.text =  str_state;
         
+       // str_phone = [str_phone stringByReplacingOccurrencesOfString:@"<null>" withString:@"
        
+// Getting State_id and Cntry_Id for Payment
+        
+blng_cntry_ID = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"country_id"]];
+        
+        if ([blng_cntry_ID isKindOfClass:[NSNull class]]||[blng_cntry_ID isEqualToString:@"<null>"] ||[blng_cntry_ID isEqualToString:@"<nil>"]||[blng_cntry_ID isEqualToString:@"null"] ||[blng_cntry_ID isEqualToString:@""]) {
+            
+            
+            blng_cntry_ID = @"";
+            
+        }
+        
+blng_state_ID = [NSString stringWithFormat:@"%@",[[[jsonresponse_dic_address valueForKey:@"billaddress"] valueForKey:@"billingaddress"] valueForKey:@"state_id"]];
+        
+        if ([blng_state_ID isKindOfClass:[NSNull class]]||[blng_state_ID isEqualToString:@"<null>"] ||[blng_state_ID isEqualToString:@"<nil>"]||[blng_state_ID isEqualToString:@"null"] ||[blng_state_ID isEqualToString:@""]) {
+            
+            blng_state_ID = @"";
+            
+        }
+        
 // Shipping Country  ID Must Be  Related Country        
         
         
@@ -682,10 +710,7 @@
         }
        
         
-        //
-        //         ship_cntry_ID = @"173";
-        //         cntry_ID = 173;
-        //        _TXT_ship_country.text = @"Qatar";
+      
         
         
     }
@@ -2491,13 +2516,14 @@
                 self.VW_otp_vw.frame = self.VW_otp_vw.frame;
                 self.VW_otp_vw.center = VW_overlay.center;
                 [self->VW_overlay addSubview:self.VW_otp_vw];
-                timer=[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerFired) userInfo:nil repeats:YES];
+               // timer=[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerFired) userInfo:nil repeats:YES];
                 
-                _LBL_next.hidden = YES;
+                [_BTN_validate_otp setEnabled:YES];
+            
                 
             }
             else{
-                _LBL_next.hidden = NO;
+               // _LBL_next.hidden = NO;
                 self.VW_otp_vw.hidden = YES;
                [self performSelector:@selector(place_oredr_API) withObject:nil afterDelay:0.01];
             }
@@ -2542,7 +2568,9 @@
     {
         [timer invalidate];
         
-        if (isResendSelected == YES) {
+        [_BTN_validate_otp setEnabled:NO];
+    
+        if (isResendSelected) {
             
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
@@ -2572,24 +2600,27 @@
         }
     }
    }
+
 // Validate_OTP Action
 -(void)validate_OTP{
     
     [Helper_activity animating_images:self];
     
-    if ([_TXT_message_field.text isEqualToString:otp_str]) {
-       NSLog(@"VAlidate");
-        [self place_oredr_API];
+    
+        if ([_TXT_message_field.text isEqualToString:otp_str]) {
+            NSLog(@"Validate");
+            [self place_oredr_API];
+        }
+        else{
+            
+            [Helper_activity stop_activity_animation:self];
+            _TXT_message_field.text = @"";
+            [HttpClient createaAlertWithMsg:@"Please Enter Valid OTP" andTitle:@""];
+            [_TXT_message_field becomeFirstResponder];
+        }
     }
-    else{
-        
-        [Helper_activity stop_activity_animation:self];
-        _TXT_message_field.text = @"";
-        [HttpClient createaAlertWithMsg:@"Please Enter Valid OTP" andTitle:@""];
-        NSLog(@"Please Enter Valid OTP");
-        [_TXT_message_field becomeFirstResponder];
-    }
-   }
+
+
 //resend_action
 -(void)resend_action{
     
@@ -2599,9 +2630,10 @@
     [_LBL_timer_lbl setText:@"05:00"];
     currMinute=05;
     currSeconds=00;
-    timer=[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerFired) userInfo:nil repeats:YES];
-    _LBL_next.hidden = YES;
-    isResendSelected = YES;
+//    timer=[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerFired) userInfo:nil repeats:YES];
+        isResendSelected = YES;
+    [_BTN_validate_otp setEnabled:YES];
+    
     _BTN_resend_otp.hidden = YES;
     
     
@@ -4173,85 +4205,6 @@
     }
     
 }
-#pragma mark  cart_count_api
-
--(void)cart_count{
-   
-    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-    NSString *str_id = @"user_id";
-    NSString *user_id;
-    for(int h = 0;h<[[dict allKeys] count];h++)
-    {
-        if([[[dict allKeys] objectAtIndex:h] isEqualToString:str_id])
-        {
-            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
-            break;
-        }
-        else
-        {
-            
-            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
-        }
-        
-    }
-    [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-        if (error) {
-            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""
-             ];
-            
-                   }
-        if (data) {
-            
-         
-            NSLog(@"%@",data);
-            NSDictionary *dict = data;
-            @try {
-                NSString *badge_value = [NSString stringWithFormat:@"%@",[dict valueForKey:@"cartcount"]];
-                NSString *wishlist = [NSString stringWithFormat:@"%@",[dict valueForKey:@"wishlistcount"]];
-                
-                
-                //NSString *badge_value = @"11";
-                if([wishlist intValue] > 0)
-                {
-                    
-                    @try
-                    {
-                        [_BTN_fav setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
-                        [_BTN_fav setBadgeString:[NSString stringWithFormat:@"%@",wishlist]];
-                    }
-                    @catch(NSException *Exception)
-                    {
-                        
-                    }
-                    
-                }
-                
-                if([badge_value intValue] > 0 )
-                {
-                    @try
-                    {
-                        
-                        [_BTN_cart setBadgeEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 4)];
-                    }
-                    @catch(NSException *Exception)
-                    {
-                        
-                    }
-                    
-                    [_BTN_cart setBadgeString:[NSString stringWithFormat:@"%@",badge_value]];
-                    
-                    
-                }
-                
-            } @catch (NSException *exception) {
-                NSLog(@"%@",exception);
-                
-               
-            }
-            
-        }
-    }];
-}
 #pragma mark Delivary_slot_API
 
 -(void)delivary_slot_API{
@@ -4946,52 +4899,64 @@
     if ([_TXT_fname.text isEqualToString:@""])
     {
         [_TXT_fname becomeFirstResponder];
-        msg = @"Please Enter First Name field";
+      
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يرجى تعبئة حقل الاسم الأول";
+        }
+        else{
+              msg = @"Please Enter First Name field";
         }
         
     }
     else if(_TXT_fname.text.length < 3 )
     {
         [_TXT_fname becomeFirstResponder];
-        msg = @"First Name should not be less than 3 characters";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب ألا يقل الاسم الأول عن 3 حروف";
         }
-        
+        else{
+            msg = @"First Name should not be less than 3 characters";
+
+        }
     }
     else if(_TXT_fname.text.length >30)
     {
         [_TXT_fname becomeFirstResponder];
-        msg = @"First name should not be more than 30 characters";
+      
         
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب ألا يزيد الاسم الأول عن 30 حرفاً";
+        }
+        else{
+              msg = @"First name should not be more than 30 characters";
         }
         
     }
     else if ([_TXT_lname.text isEqualToString:@""])
     {
         [_TXT_lname becomeFirstResponder];
-        msg = @"Please Enter Last Name field";
+      
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يرجى تعبئة حقل الاسم الأخير ";
         }
-        
+        else{
+              msg = @"Please Enter Last Name field";
+        }
         
     }
     else if(_TXT_lname.text.length < 1)
     {
         [_TXT_lname becomeFirstResponder];
-        msg = @"Last Name should not be less than 1 character";
+       
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"الكنية ألا يقل الاسم الأول عن 1 حروف";
+        }else{
+             msg = @"Last Name should not be less than 1 character";
         }
         
         
@@ -4999,10 +4964,12 @@
     else if(_TXT_lname.text.length >30)
     {
         [_TXT_lname becomeFirstResponder];
-        msg = @"Last name should not be more than 30 characters";
+       
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"ألا يزيد اسم العائلة عن 30 حرفا";
+        }else{
+             msg = @"Last name should not be more than 30 characters";
         }
         
         
@@ -5011,20 +4978,24 @@
     else if([_TXT_addr1.text isEqualToString:@""])
     {
         [_TXT_addr1 becomeFirstResponder];
-        msg = @"Address1 Should Not be Empty";
+       
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب  1 عدم ترك حقل العنوان فارغا";
+        }else{
+             msg = @"Address1 Should Not be Empty";
         }
         
     }
     else if(_TXT_addr1.text.length > 200)
     {
         [_TXT_addr1 becomeFirstResponder];
-        msg = @"Address should not be more than 200 characters";
+      
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب ألا يزيد العنوان عن 200 رمز";
+        }else{
+              msg = @"Address should not be more than 200 characters";
         }
         
         
@@ -5032,10 +5003,13 @@
     else if([_TXT_city.text isEqualToString:@""])
     {
         [_TXT_city becomeFirstResponder];
-        msg = @"City Should Not be Empty";
+       
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب عدم إبقاء خانة المدينة خالية ";
+        }
+        else{
+             msg = @"City Should Not be Empty";
         }
         
         
@@ -5043,56 +5017,94 @@
     else if (_TXT_city.text.length < 3)
     {
         [_TXT_city becomeFirstResponder];
-        msg = @"City should not be less than 3 characters";
-        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+              if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب ألا يقل حقل المدينة عن 3 أحرف";
+        }else{
+            msg = @"City should not be less than 3 characters";
+
         }
         
     }
     else if (_TXT_city.text.length > 30)
     {
         [_TXT_city becomeFirstResponder];
-        msg = @"City should not be more than 30 characters";
+      
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"يجب ألا يزيد حقل المدينة عن 30 حرفاً";
         }
+        else{
+              msg = @"City should not be more than 30 characters";
+        }
         
     }
-    
-    
+   
+    else if([_TXT_country.text isEqualToString:@""])
+    {
+        [_TXT_country becomeFirstResponder];
+               if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى تحديد البلد";
+        } else{
+                   msg = @"Please Select Country";
+
+               }
+        
+    }
+    else if([_TXT_state.text isEqualToString:@""])
+    {
+        [_TXT_state becomeFirstResponder];
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+            msg = @"يرجى تحديد الدولة";
+        }
+        else{
+            msg = @"Please Select State";//يرجى تحديد البلد
+
+        }
+        
+    }
     else if ([_TXT_phone.text isEqualToString:@""])
     {
         [_TXT_phone becomeFirstResponder];
-        msg = @"Please Enter Phone Number";
-        
+        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+        {
+        msg = @"رقم الهاتف ترك حقل المدينة فارغاً";
+        }else{
+             msg = @"Please Enter Phone Number";
+        }
         
         
     }
-    if([_TXT_Cntry_code.text  isEqualToString:@"+974"])
+    else if([_TXT_Cntry_code.text  isEqualToString:@"+974"])
     {
         if (_TXT_phone.text.length < 8)
         {
             [_TXT_phone becomeFirstResponder];
-            msg = @"Phone Number cannot be less than 8 digits";
-            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+           if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg =@"رقم الهاتف لا يمكن أن يكون أقل من 8 أرقام ";
                 
             }
-            
-            
+        else{
+                  msg = @"Phone Number cannot be less than 8 digits";
+
+            }
+        
         }
         else if(_TXT_phone.text.length > 8)
         {
             [self.TXT_phone becomeFirstResponder];
             
-            msg = @"Phone Number cannot be more than 8 digits";
+           
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"رقم الهاتف لا يمكن أن يكون أكثر من 8 أرقام";
                 ;
+            }
+            else{
+                 msg = @"Phone Number cannot be more than 8 digits";
             }
         }
         
@@ -5103,10 +5115,13 @@
         if (_TXT_phone.text.length < 5)
         {
             [_TXT_phone becomeFirstResponder];
-            msg = @"Phone Number cannot be less than 5 digits";
+          
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg =@"رقم الهاتف لا يمكن أن يكون أقل من 5 أرقام ";
+            }
+            else{
+                  msg = @"Phone Number cannot be less than 5 digits";
             }
             
             
@@ -5114,10 +5129,13 @@
         else if(_TXT_phone.text.length>15)
         {
             [_TXT_phone becomeFirstResponder];
-            msg = @"Phone Number cannot be more than 15 digits";
+           
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"لا يجب أن يتجاوز رقم الهاتف 15 أرقام";
+            }
+            else{
+                 msg = @"Phone Number cannot be more than 15 digits";
             }
             
         }
@@ -5125,11 +5143,14 @@
         if([_TXT_phone.text isEqualToString:@" "])
         {
             [_TXT_phone becomeFirstResponder];
-            msg = @"Phone Number  Should Not be Empty";
-            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"رقم الهاتف ترك حقل المدينة فارغاً";
             }
+             else{
+                 msg = @"Phone Number  Should Not be Empty";
+
+             }
             
             
         }
@@ -5137,49 +5158,19 @@
     if ([_TXT_Cntry_code.text isEqualToString:@""])
     {
         [_TXT_Cntry_code becomeFirstResponder];
-        msg = @"Country Code and Phone Number is required";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
         {
             msg = @"رمز البلد ورقم الهاتف مطلوبين";
         }
-        
-        
-    }
-    
-    else if([_TXT_state.text isEqualToString:@""])
-    {
-        [_TXT_state becomeFirstResponder];
-        msg = @"Please Select State";//يرجى تحديد البلد
-        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-        {
-            msg = @"يرجى تحديد الدولة";
+        else{
+            msg = @"Country Code and Phone Number is required";
+
         }
         
     }
+
     
-    else if([_TXT_country.text isEqualToString:@""])
-    {
-        [_TXT_country becomeFirstResponder];
-        msg = @"Please Select Country";
-        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-        {
-            msg = @"يرجى تحديد البلد";
-        }
-        
-        
-    }
-    //       else if(![blng_cntry_ID isEqualToString:@"173"])
-    //       {
-    //         NSString *mesagesg = @"Sorry we cannot ship products out side Qatar, Please enter different shipping address to proceed";
-    //
-    //           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:mesagesg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-    //           alert.tag = 2;
-    //           [alert show];
-    //
-    //
-    //
-    //       }
-    // Validating Shipping Address
+// Validating Shipping Address
     
     if (_VW_SHIIPING_ADDRESS.hidden == NO )
     {
@@ -5189,59 +5180,77 @@
         if ([_TXT_ship_fname.text isEqualToString:@""])
         {
             [_TXT_ship_fname becomeFirstResponder];
-            msg = @"Please Enter First Name field";
+          
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"يرجى تعبئة حقل الاسم الأول";
+            }
+            else{
+                  msg = @"Please Enter First Name field";
             }
             
         }
         else if(_TXT_ship_fname.text.length < 3)
         {
             [_TXT_ship_fname becomeFirstResponder];
-            msg = @"First Name should not be less than 3 characters";
-            if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+              if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"يجب ألا يقل الاسم الأول عن 3 حروف";
             }
+              else{
+                  msg = @"First Name should not be less than 3 characters";
+
+              }
             
         }
         else if(_TXT_ship_fname.text.length > 30)
         {
             [_TXT_ship_fname becomeFirstResponder];
-            msg = @"First name should not be more than 30 characters";
             
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"يجب ألا يزيد الاسم الأول عن 30 حرفاً";
+            }
+            else{
+                msg = @"First name should not be more than 30 characters";
+
             }
             
         }
         else if ([_TXT_ship_lname.text isEqualToString:@""])
         {
             [_TXT_ship_lname becomeFirstResponder];
-            msg = @"Please Enter Last Name field";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"يرجى تعبئة حقل الاسم الأخير ";
+            }
+            else{
+                msg = @"Please Enter Last Name field";
+
             }
         }
         else if(_TXT_ship_lname.text.length < 1)
         {
             [_TXT_ship_lname becomeFirstResponder];
-            msg = @"Last name should not be less than 1 characters";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"الكنية ألا يقل الاسم الأول عن 1 حروف";
+            }
+            else{
+                msg = @"Last name should not be less than 1 characters";
+
             }
         }
         else if(_TXT_ship_lname.text.length>30)
         {
             [_TXT_ship_lname becomeFirstResponder];
-            msg = @"Last name should not be more than 30 characters";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"ألا يزيد اسم العائلة عن 30 حرفا";
+            }
+            else{
+                msg = @"Last name should not be more than 30 characters";
+
             }
             
             
@@ -5249,19 +5258,25 @@
         else if([_TXT_ship_addr1.text isEqualToString:@""])
         {
             [_TXT_ship_addr1 becomeFirstResponder];
-            msg = @"Address1 Should Not be Empty";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"يجب  1 عدم ترك حقل العنوان فارغا";
+            }
+            else{
+                msg = @"Address1 Should Not be Empty";
+
             }
         }
         else if(_TXT_ship_addr1.text.length < 3)
         {
             [_TXT_ship_addr1 becomeFirstResponder];
-            msg = @"Address1 should not be less than 3characters";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"يجب1 ألا يقل العنوان عن 10 رموز";
+            }
+            else{
+                msg = @"Address1 should not be less than 3characters";
+
             }
             
         }
@@ -5269,40 +5284,51 @@
         else if(_TXT_ship_addr1.text.length > 200)
         {
             [_TXT_ship_addr1 becomeFirstResponder];
-            msg = @"Address should not be more than 200 characters";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"يجب ألا يزيد العنوان عن 200 رمز";
+            }
+            else{
+                msg = @"Address should not be more than 200 characters";
+
             }
             
         }
         else if([_TXT_ship_city.text isEqualToString:@""])
         {
             [_TXT_ship_city becomeFirstResponder];
-            msg = @"City Should Not be Empty";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"يجب عدم ترك حقل المدينة فارغاً";
+            }
+            else{
+                msg = @"City Should Not be Empty";
+
             }
             
         }
         else if (_TXT_ship_city.text.length < 3)
         {
             [_TXT_ship_city becomeFirstResponder];
-            msg = @"City should not be less than 3 characters";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"يجب ألا يقل حقل المدينة عن 3 أحرف";
+            }else{
+                msg = @"City should not be less than 3 characters";
+
             }
             
         }
         else if (_TXT_ship_city.text.length > 30)
         {
             [_TXT_ship_city becomeFirstResponder];
-            msg = @"City should not be more than 30 characters";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"يجب ألا يزيد حقل المدينة عن 30 حرفاً";
+            }
+            else{
+                msg = @"City should not be more than 30 characters";
+
             }
             
         }
@@ -5310,10 +5336,13 @@
         else if([_TXT_ship_state.text isEqualToString:@""])
         {
             [_TXT_ship_state becomeFirstResponder];
-            msg = @"Please Select State";//يرجى تحديد البلد
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"يرجى تحديد الدولة";
+            }
+            else{
+                msg = @"Please Select State";//يرجى تحديد البلد
+
             }
             
             
@@ -5321,10 +5350,13 @@
         else if([_TXT_ship_country.text isEqualToString:@""])
         {
             [_TXT_ship_country becomeFirstResponder];
-            msg = @"Please Select Country";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"يرجى تحديد البلد";
+            }
+            else{
+                msg = @"Please Select Country";
+
             }
             
             
@@ -5332,11 +5364,14 @@
         else if(![_TXT_ship_country.text isEqualToString:@"Qatar"])
         {
             [_TXT_ship_country becomeFirstResponder];
-            msg = @"Sorry We cannot ship products Outside of Qatar ";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"عذراً، لا يمكننا شحن هذه المنتجات خارج قطر";
                 
+            }
+            else{
+                msg = @"Sorry We cannot ship products Outside of Qatar ";
+
             }
             
             
@@ -5363,10 +5398,13 @@
         else if ([_TXT_ship_phone.text isEqualToString:@""])
         {
             [_TXT_ship_phone becomeFirstResponder];
-            msg = @"Phone Number  Should Not be Empty";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"رقم الهاتف ترك حقل المدينة فارغاً";
+            }
+            else{
+                msg = @"Phone Number  Should Not be Empty";
+
             }
         }
         else if([_TXT_ship_cntry_code.text  isEqualToString:@"+974"])
@@ -5374,10 +5412,13 @@
             if  (_TXT_ship_phone.text.length < 8)
             {
                 [_TXT_ship_phone becomeFirstResponder];
-                msg = @"Phone Number cannot be less than 8 digits";
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
                     msg = @"لا يجب ألا يقلّ رقم الجوال عن 8 أرقام ";
+                }
+                else{
+                    msg = @"Phone Number cannot be less than 8 digits";
+
                 }
                 
                 
@@ -5387,10 +5428,13 @@
             {
                 [self.TXT_phone becomeFirstResponder];
                 
-                msg = @"Phone Number cannot be more than 8 digits";
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
                     msg = @"رقم الهاتف لا يمكن أن يكون أكثر من 8 أرقام";
+                }
+                else{
+                    msg = @"Phone Number cannot be more than 8 digits";
+
                 }
             }
         }
@@ -5401,22 +5445,26 @@
             {
                 
                 [_TXT_ship_phone becomeFirstResponder];
-                msg = @"Phone Number cannot be less than 5 digits";
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
                     msg = @"لا يجب ألا يقلّ رقم الجوال عن 5 أرقام ";
                 }
-                
-                
-                
+                else{
+                    msg = @"Phone Number cannot be less than 5 digits";
+
+                }
+               
             }
             else if(_TXT_ship_phone.text.length > 15)
             {
                 [_TXT_ship_phone becomeFirstResponder];
-                msg = @"Phone Number cannot be more than 15 digits";
                 if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
                 {
                     msg = @"لا يجب أن يتجاوز رقم الهاتف 15 أرقام";
+                }
+                else{
+                    msg = @"Phone Number cannot be more than 15 digits";
+
                 }
                 
             }
@@ -5425,10 +5473,13 @@
         if ([_TXT_ship_cntry_code.text isEqualToString:@""])
         {
             [_TXT_ship_cntry_code becomeFirstResponder];
-            msg = @"Country Code and Phone Number is required";
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
                 msg = @"رمز البلد ورقم الهاتف مطلوبين";
+            }
+            else{
+                msg = @"Country Code and Phone Number is required";
+
             }
             
             
@@ -5446,12 +5497,15 @@
     else{
         if(![blng_cntry_ID isEqualToString:ship_cntry_ID] && [billcheck_clicked isEqualToString:@"0"])
         {
-            NSString *mesagesg = @"Sorry we cannot ship products out side Qatar, Please enter different shipping address to proceed";
+            NSString *mesagesg ;
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                msg = @"عذراً، لا يمكننا شحن هذه المنتجات خارج قطر,للاستمرار، يرجى إدخال عنوان آخر للتسليم ";
+                mesagesg = @"عذراً، لا يمكننا شحن هذه المنتجات خارج قطر,للاستمرار، يرجى إدخال عنوان آخر للتسليم ";
                 
                 
+            }
+            else{
+                mesagesg = @"Sorry we cannot ship products out side Qatar, Please enter different shipping address to proceed";
             }
             
             
@@ -6162,6 +6216,14 @@
         [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
         
         
+        //mobilenumber
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"mobilenumber\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@-%@",_TXT_Cntry_code.text,_TXT_phone.text]dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        NSLog(@"................%@",[NSString stringWithFormat:@"%@-%@",_TXT_Cntry_code.text,_TXT_phone.text]);
+        
         NSError *er;
         
         
@@ -6176,18 +6238,36 @@
         if (returnData) {
             
             [Helper_activity stop_activity_animation:self];
-            //NSLog(@"returnData :: %@",returnData);
-            // json_DATA = [[NSMutableDictionary alloc]init];
+            
             NSMutableDictionary   *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:returnData options:NSASCIIStringEncoding error:&er];
             
             if (er) {
-                [Helper_activity stop_activity_animation:self];
-                NSLog(@"er:%@",[er localizedDescription]);
+               
+                 [Helper_activity stop_activity_animation:self];
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"رقم الجوال غير صالح" delegate:self cancelButtonTitle:@"حسنا" otherButtonTitles:nil, nil];
+                    alert.tag = 1;
+                    [alert show];
+                    
+                }
+                else
+                {
+                    
+                    
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Invalid Mobile Number" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                    alert.tag = 1;
+                    [alert show];
+                    
+                }
+            }
+           else{
+               timer=[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerFired) userInfo:nil repeats:YES];
+                otp_str = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"otp"]];
             }
 
-            
-            otp_str = [NSString stringWithFormat:@"%@",[json_DATA valueForKey:@"otp"]];
-            NSLog(@"%@", [NSString stringWithFormat:@"OneTimePWD %@", json_DATA]);
+                       NSLog(@"%@", [NSString stringWithFormat:@"OneTimePWD %@", json_DATA]);
             
         }
 

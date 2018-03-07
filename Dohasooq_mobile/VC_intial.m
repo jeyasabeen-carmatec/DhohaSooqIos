@@ -8,7 +8,7 @@
 
 #import "VC_intial.h"
 #import "HttpClient.h"
-//#import "Helper_activity.h"
+#import "Helper_activity.h"
 #import "ViewController.h"
 #import "Home_page_Qtickets.h"
 #import "Reachability.h"
@@ -239,7 +239,7 @@
     @try
     {
         
-       // [Helper_activity animating_images:self];
+        [Helper_activity animating_images:self];
         
         NSString *urlGetuser =[NSString stringWithFormat:@"%@countries/index.json",SERVER_URL];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
@@ -247,6 +247,8 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
                     VW_overlay.hidden = YES;
+                    [Helper_activity stop_activity_animation:self];
+
                   
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please check Your Internet Connection" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                     [alert show];
@@ -257,7 +259,9 @@
                     NSMutableDictionary *json_DATA = data;
                     if(json_DATA)
                     {
-                    
+                        [Helper_activity stop_activity_animation:self];
+
+                        
                     country_arr = [[NSMutableArray alloc]init];
                     NSMutableArray *temp_arr = [json_DATA valueForKey:@"countries"];
                         
@@ -298,6 +302,8 @@
                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                         [alert show];
                         VW_overlay.hidden = YES;
+                        [Helper_activity stop_activity_animation:self];
+
                       //  [activityIndicatorView stopAnimating];
 
 
@@ -315,6 +321,8 @@
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Please check Your Internet Connection" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
         VW_overlay.hidden = YES;
+        [Helper_activity stop_activity_animation:self];
+
         //[activityIndicatorView stopAnimating];
 
     }
@@ -421,16 +429,23 @@
     @try
     {
         
+        
+        [Helper_activity animating_images:self];
+        
         NSString *urlGetuser =[NSString stringWithFormat:@"%@Languages/getLangByCountry/%@.json",SERVER_URL,country_id];
         urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error) {
+                    [Helper_activity stop_activity_animation:self];
                     [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
                 }
                 if (data) {
                     VW_overlay.hidden = YES;
                   //  [activityIndicatorView stopAnimating];
+                    
+                    [Helper_activity stop_activity_animation:self];
+
 
                     NSMutableDictionary *json_DATA = data;
                     //                        lang_arr = [NSMutableArray array];
@@ -471,6 +486,8 @@
                     [[NSUserDefaults standardUserDefaults] synchronize];
                 }
                 else{
+                    [Helper_activity stop_activity_animation:self];
+
                     VW_overlay.hidden = YES;
                    // [activityIndicatorView stopAnimating];
 
@@ -483,6 +500,8 @@
         NSLog(@"The error is:%@",exception);
         [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
         VW_overlay.hidden = YES;
+        [Helper_activity stop_activity_animation:self];
+
         //[activityIndicatorView stopAnimating];
 
         
@@ -491,53 +510,15 @@
     
 }
 
-/*
--(void)language_api_call{
-    @try
-    {
-        NSError *error;
-        // NSError *err;
-        NSHTTPURLResponse *response = nil;
-        //   Languages/getLangByCountry/"+countryid+".json
-        NSString *urlGetuser =[NSString stringWithFormat:@"%@Languages/getLangByCountry/%@.json",SERVER_URL,country_ID];
-        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
-        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-        [request setURL:urlProducts];
-        [request setHTTPMethod:@"POST"];
-        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-        // [request setHTTPBody:postData];
-        //[request setAllHTTPHeaderFields:headers];
-        [request setHTTPShouldHandleCookies:NO];
-        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-        if(aData)
-        {
-            NSMutableDictionary *json_DATA = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
-            //NSLog(@"The response Api post sighn up API %@",json_DATA);
-            
-            lang_arr = [json_DATA valueForKey:@"languages"];
-            
-                      //NSLog(@"%@",lang_arr);
-          
-            
-            
-            
-        }
-    }
-    
-    @catch(NSException *exception)
-    {
-        NSLog(@"The error is:%@",exception);
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Error" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
-    }
-}
 
-*/
 -(void)MENU_api_call
 {
     
     @try
     {
+        [Helper_activity animating_images:self];
+
+        
         NSError *error;
         
         NSHTTPURLResponse *response = nil;
@@ -562,6 +543,8 @@
         
         if (error) {
             [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+            [Helper_activity stop_activity_animation:self];
+
         }
         
         
@@ -571,7 +554,8 @@
             
             NSDictionary *json_DATA = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             
-            
+            [Helper_activity stop_activity_animation:self];
+
             if (![json_DATA count]) {
                 
                 [HttpClient createaAlertWithMsg:@"Something went to wrong ." andTitle:@""];
@@ -612,6 +596,8 @@
     }
     @catch(NSException *exception)
     {
+        [Helper_activity stop_activity_animation:self];
+
         NSLog(@"%@",exception);
        //  activityIndicatorView.hidden = YES;
         VW_overlay.hidden = YES;
@@ -734,6 +720,9 @@
 {
     @try
     {
+        
+        [Helper_activity animating_images:self];
+    
     NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/allImagePaths",SERVER_URL];
     
     
@@ -744,13 +733,14 @@
             if (error) {
                 [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
                 
-                //   [Helper_activity stop_activity_animation:self];
+                  [Helper_activity stop_activity_animation:self];
             }
             @try
             {
             if (data) {
                 
-                
+                [Helper_activity stop_activity_animation:self];
+
                 [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Images_path"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 
@@ -792,7 +782,8 @@
 #pragma mark Cart Count
 
 -(void)cart_count{
-    
+    [Helper_activity animating_images:self];
+
     NSString *user_id;
     @try
     {
@@ -824,6 +815,8 @@
     @catch(NSException *exception)
     {
         user_id = @"(null)";
+        [Helper_activity stop_activity_animation:self];
+
         
     }
     [HttpClient cart_count:user_id completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
@@ -832,10 +825,14 @@
              ];
             //            VW_overlay.hidden = YES;
             //            [activityIndicatorView stopAnimating];
+            [Helper_activity stop_activity_animation:self];
+
             
             
         }
         if (data) {
+            [Helper_activity stop_activity_animation:self];
+
             NSLog(@"cart count sadas %@",data);
             NSDictionary *dict = data;
             @try {
@@ -851,7 +848,8 @@
                 //                 VW_overlay.hidden = YES;
                 //                [activityIndicatorView stopAnimating];
                 
-                
+                [Helper_activity stop_activity_animation:self];
+
                 NSLog(@"asjdas dasjbd asdas iccxv %@",exception);
             }
             

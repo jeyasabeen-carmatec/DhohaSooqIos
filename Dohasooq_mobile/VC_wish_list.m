@@ -340,7 +340,8 @@
         cell.BTN_close.image = newImage;
         
         cell.BTN_close .userInteractionEnabled = YES;
-        tapGesture1 = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tapGesture_close:)];
+        
+    tapGesture1 = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tapGesture_close:)];
         
         tapGesture1.numberOfTapsRequired = 1;
         
@@ -618,21 +619,27 @@
             [Helper_activity stop_activity_animation:self];
             NSMutableDictionary *dict = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
             
-            if ([[dict valueForKey:@"success"] isEqualToString:@"1"]) {
+            if (![dict count]) {
                 
-                //[self set_Data_to_badge_value:[NSString stringWithFormat:@"%@",[dict valueForKey:@"count"]]];
-                 [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
-                [self delete_from_wishLis:@"added"];
-               // [self performSegueWithIdentifier:@"wish_to_cart" sender:self];
+                if (error) {
+                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                }
                 
             }
             else{
-                 [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
+                if ([[dict valueForKey:@"success"] isEqualToString:@"1"]) {
+                    
+                    //[self set_Data_to_badge_value:[NSString stringWithFormat:@"%@",[dict valueForKey:@"count"]]];
+                    [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
+                    [self delete_from_wishLis:@"added"];
+                    // [self performSegueWithIdentifier:@"wish_to_cart" sender:self];
+                    
+                }
+                else{
+                    [HttpClient createaAlertWithMsg:[dict valueForKey:@"message"] andTitle:@""];
+                }
             }
             
-            
-            NSLog(@"  Error %@ Response %@",error,dict);
-           
         }
     } @catch (NSException *exception) {
         NSLog(@"%@",exception);

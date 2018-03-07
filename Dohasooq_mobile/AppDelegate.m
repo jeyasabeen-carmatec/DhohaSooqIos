@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
-//#import <NewRelicAgent/NewRelic.h>
+#import <NewRelicAgent/NewRelic.h>
 
 
 @interface AppDelegate ()
@@ -20,7 +20,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-//    [NewRelicAgent startWithApplicationToken:@"AA3123e6889a5328f34d97da9b465121cd5dff47f7"];
+    [NewRelicAgent startWithApplicationToken:@"AA45d4f2aa2c0c4766f3f8eea2f9c1d571c0098172"];
   //  self.window.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Log in"]];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
