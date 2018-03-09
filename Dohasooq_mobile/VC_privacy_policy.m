@@ -21,6 +21,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.screenName = @"Privacy Policy screen";
+
     // Do any additional setup after loading the view.
     
     //loadingView = [[UIView alloc]init];

@@ -21,6 +21,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.screenName = @"Helpdesk screen";
+
     // Do any additional setup after loading the view.
 //    loadingView = [[UIView alloc]init];
 //    CGRect loadframe = loadingView.frame;

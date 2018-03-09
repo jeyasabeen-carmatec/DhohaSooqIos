@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_my_bookings : UIViewController
+@interface VC_my_bookings : GAITrackedViewController
 
 @property(nonatomic,weak) IBOutlet UITableView *TBL_bookings;
 @property(nonatomic,weak) IBOutlet UIView *VW_segment;

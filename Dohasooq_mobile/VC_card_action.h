@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_card_action : UIViewController
+@interface VC_card_action : GAITrackedViewController
 @property(nonatomic,weak) IBOutlet UICollectionView *collection_pay_options;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_pay;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_cancel;

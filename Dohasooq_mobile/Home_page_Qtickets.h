@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "MIBadgeButton.h"
 #import "GIBadgeView.h"
-@interface Home_page_Qtickets : UIViewController
+#import <GoogleAnalytics/GAITrackedViewController.h>
+
+@interface Home_page_Qtickets : GAITrackedViewController
 {
     NSTimer *TIMER_countdown;
     NSTimer *best_deals_Timer;

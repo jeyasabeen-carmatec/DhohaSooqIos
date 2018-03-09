@@ -22,7 +22,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self picker_set_UP];
-    
+    self.screenName = @"Event Filter screen";
+
     self.navigationController.navigationBar.hidden = NO;
 
     self.LBL_slider.minValue = 1;

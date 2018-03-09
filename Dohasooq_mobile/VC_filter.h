@@ -8,13 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import <TTRangeSlider.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
 @protocol callldelegate <NSObject>
 -(void)get_url;
 @end
 
 
-@interface VC_filter : UIViewController<UITextFieldDelegate,UIGestureRecognizerDelegate>
+@interface VC_filter : GAITrackedViewController<UITextFieldDelegate,UIGestureRecognizerDelegate>
 @property(nonatomic,weak) IBOutlet UITextField *TXT_start_date;
 @property(nonatomic,weak) IBOutlet UITextField *TXT_end_date;
 @property (nonatomic, strong) UIDatePicker *start_picker;

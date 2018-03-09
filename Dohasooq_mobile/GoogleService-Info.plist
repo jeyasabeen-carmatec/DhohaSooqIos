@@ -13,16 +13,18 @@
 	<key>PROJECT_ID</key>
 	<string>firebase-dohasooq</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_GCM_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:866387762496:ios:f7105ebc7cac5a8b</string>
+	<key>TRACKING_ID</key>
+	<string>UA-115389608-1</string>
 </dict>
 </plist>

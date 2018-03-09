@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "HoshiTextField.h"
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_forgot_PWD : UIViewController
+@interface VC_forgot_PWD : GAITrackedViewController
 @property(nonatomic,weak) IBOutlet UILabel *lbl_forgot_pwd;
 @property(nonatomic,weak) IBOutlet HoshiTextField *TXT_forgot_pwd;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_reset_PWD;

@@ -67,7 +67,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.screenName = @"Product List screen";
+
     self.badge_view = [GIBadgeView new];
     [_BTN_cart addSubview:self.badge_view];
       [self set_appear];

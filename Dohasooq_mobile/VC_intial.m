@@ -31,7 +31,65 @@
 @implementation VC_intial
 
 - (void)viewDidLoad {
+    
+    
     [super viewDidLoad];
+    self.screenName = @"Splash Screen";
+    /*BOOL showCutomAlert = false;
+    
+    if (showCutomAlert) {
+        // Custom
+        ATAppUpdater *updater = [ATAppUpdater sharedUpdater];
+        [updater setAlertTitle:NSLocalizedString(@"Nuwe Weergawe", @"Alert Title")];
+        [updater setAlertMessage:NSLocalizedString(@"Weergawe %@ is beskikbaar op die AppStore.", @"Alert Message")];
+        [updater setAlertUpdateButtonTitle:@"Opgradeer"];
+        [updater setAlertCancelButtonTitle:@"Nie nou nie"];
+        [updater setDelegate:self]; // Optional
+        [updater showUpdateWithConfirmation];
+        
+    } else {
+        // Simple
+        [[ATAppUpdater sharedUpdater] setDelegate:self]; // Optional
+        [[ATAppUpdater sharedUpdater] showUpdateWithConfirmation]; // OR [[ATAppUpdater sharedUpdater] showUpdateWithForce];
+    }*/
+    
+    NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://itunes.apple.com/lookup?id=1352963798"]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               if (!error) {
+                                   NSError* parseError;
+                                   NSDictionary *appMetadataDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&parseError];
+                                   NSArray *resultsArray = (appMetadataDictionary)?[appMetadataDictionary objectForKey:@"results"]:nil;
+                                   NSDictionary *resultsDic = [resultsArray firstObject];
+                                   if (resultsDic) {
+                                       // compare version with your apps local version
+                                       NSString *iTunesVersion = [resultsDic objectForKey:@"version"];
+                                       
+                                       NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)@"CFBundleShortVersionString"];
+                                       if (iTunesVersion && [appVersion compare:iTunesVersion] != NSOrderedSame) {
+                                           
+//                                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:<#(nullable NSString *)#> message:<#(nullable NSString *)#> delegate:<#(nullable id)#> cancelButtonTitle:<#(nullable NSString *)#> otherButtonTitles:<#(nullable NSString *), ...#>, nil]
+                                           
+//                                           UIAlertView *alert = [UIAlertView bk_showAlertViewWithTitle:@"Doha Sooq Online Shopping" message:[NSString stringWithFormat:@"New version available. Update required."] cancelButtonTitle:@"update" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                           
+                                               
+                                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"New version available" message:@"A new version available in iTunes" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Update",@"Cancel", nil];
+                                           alert.tag = 123456;
+                                           [alert show];
+//                                           }];
+//                                           [alert show];
+                                       }
+                                   }
+                               } else {
+                                   // error occurred with http(s) request
+                                   NSLog(@"error occurred communicating with iTunes");
+                               }
+                           }];
+    
+    
     self.view.hidden = NO;
     self.VW_ceter.hidden =NO;
     self.IMG_logo.hidden = NO;
@@ -873,5 +931,30 @@
  }
  */
 
+
+#pragma mark - Alertview deligate
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == 123456) {
+        switch (buttonIndex) {
+            case 0:
+            {
+                NSString *iTunesLink = [NSString stringWithFormat:@"itms://itunes.apple.com/us/app/apple-store/id1352963798?mt=8"];
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:iTunesLink]];
+            }
+                break;
+                
+            case 1:
+            
+                NSLog(@"1");
+                break;
+            
+                
+                
+            default:
+                break;
+        }
+    }
+}
 
 @end

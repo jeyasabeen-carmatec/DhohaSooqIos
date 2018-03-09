@@ -52,6 +52,7 @@
     // Uncomment to automatically sign in the user.
     //[[GIDSignIn sharedInstance] signInSilently];
     // Region end
+    self.screenName = @"Login screen";
     [self set_UP_View];
     
 }

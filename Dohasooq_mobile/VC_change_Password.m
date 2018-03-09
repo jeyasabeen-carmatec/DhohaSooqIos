@@ -24,7 +24,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.screenName = @"Change password screen";
+
     _TXT_old_pwd.delegate= self;
     _TXT_new_pwd.delegate = self;
     _TXT_confirm_pwd.delegate = self;

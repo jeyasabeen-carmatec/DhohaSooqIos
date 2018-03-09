@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_payment_web : UIViewController
+@interface VC_payment_web : GAITrackedViewController
 @property(nonatomic,weak) IBOutlet UIWebView *web_pay;
 
 @end

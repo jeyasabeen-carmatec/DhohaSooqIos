@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "Hoshi_Billing_ADDR.h"
+#import <GoogleAnalytics/GAITrackedViewController.h>
+//#import "ATAppUpdater.h"
 
-@interface VC_intial : UIViewController<UIGestureRecognizerDelegate>
+@interface VC_intial : GAITrackedViewController<UIGestureRecognizerDelegate> //ATAppUpdaterDelegate
 
 @property(nonatomic,weak) IBOutlet UITextField *TXT_country;
 @property(nonatomic,weak) IBOutlet UITextField *TXT_language;

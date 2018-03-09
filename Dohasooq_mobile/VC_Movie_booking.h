@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "MZDayPicker.h"
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_Movie_booking : UIViewController
+
+@interface VC_Movie_booking : GAITrackedViewController
 @property(nonatomic,weak) IBOutlet UIScrollView *Scroll_contents;
 
 // Movie Detail

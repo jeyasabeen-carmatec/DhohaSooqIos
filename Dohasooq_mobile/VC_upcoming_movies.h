@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_upcoming_movies : UIViewController
+@interface VC_upcoming_movies : GAITrackedViewController
 @property(nonatomic,weak) IBOutlet UIScrollView *Scroll_contents;
 
 // Movie Detail

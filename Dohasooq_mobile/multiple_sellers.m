@@ -26,6 +26,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.screenName = @"Multiple sellers screen";
+
     seller_arr = [[NSMutableArray alloc]init];
     
 @try

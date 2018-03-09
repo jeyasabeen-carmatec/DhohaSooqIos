@@ -23,7 +23,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    
+    self.screenName = @"Forgot password screen";
+
     //_lbl_forgot_pwd.text = @"We just need your registered merchant\nemail address to send you password reset";
     //[_lbl_forgot_pwd sizeToFit];
     _vw_align.center = self.view.center;

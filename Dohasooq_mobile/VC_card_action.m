@@ -29,6 +29,7 @@
     country_arr = [[NSMutableArray alloc]init];
     _TXT_countries.inputView = [[UIView alloc]init];
     self.navigationController.navigationBar.hidden = YES;
+    self.screenName = @"Movie card Action screen";
 
     [_LBL_timer setText:@"Time :10:00"];
     currMinute=10;

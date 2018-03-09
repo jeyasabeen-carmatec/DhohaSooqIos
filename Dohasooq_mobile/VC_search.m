@@ -26,6 +26,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.screenName = @"QTickets Search screen";
+
     // Do any additional setup after loading the view.
     arr_events = [[NSMutableArray alloc]init];
 //    _TXT_search.layer.borderWidth = 0.5f;

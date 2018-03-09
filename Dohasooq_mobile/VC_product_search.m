@@ -28,6 +28,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.screenName = @"Global search page";
 
     CGRect frame_nav = _VW_navMenu.frame;
     frame_nav.origin.x = 0.0f;

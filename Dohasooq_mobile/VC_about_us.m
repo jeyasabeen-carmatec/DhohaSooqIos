@@ -21,7 +21,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.screenName = @"Aboutus screen";
+
 //    loadingView = [[UIView alloc]init];
 //    CGRect loadframe = loadingView.frame;
 //    loadframe.size.width = 100;

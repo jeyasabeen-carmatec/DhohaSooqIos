@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_ub_table_view : UIViewController
+@interface VC_ub_table_view : GAITrackedViewController
 @property(nonatomic,weak) IBOutlet UITableView *TBL_sub_brnds;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_title;
 

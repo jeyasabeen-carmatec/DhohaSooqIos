@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "HMSegmentedControl.h"
 #import "XMLDictionary.h"
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
 
-@interface Home_detail : UIViewController
+@interface Home_detail : GAITrackedViewController
 @property(nonatomic,weak)IBOutlet UIButton *Header_name;
 @property(nonatomic,weak)IBOutlet UIButton *logo_home;
 

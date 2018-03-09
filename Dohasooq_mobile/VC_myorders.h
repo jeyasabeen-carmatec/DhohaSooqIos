@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_myorders : UIViewController
+@interface VC_myorders : GAITrackedViewController
 @property(nonatomic,weak) IBOutlet UITableView *TBL_orders;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_order_ID;
 

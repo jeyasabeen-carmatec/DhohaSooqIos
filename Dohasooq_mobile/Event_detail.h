@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface Event_detail : UIViewController
+
+@interface Event_detail : GAITrackedViewController
 @property(nonatomic,weak) IBOutlet UIScrollView *Scroll_contents;
 
 //Event VIew

@@ -31,7 +31,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.screenName = @"Seat layout screen";
+
 //    VW_overlay.hidden = NO;
 //    [activityIndicatorView startAnimating];
 //    [self performSelector:@selector(API_call_movie_detail) withObject:activityIndicatorView afterDelay:0.01];

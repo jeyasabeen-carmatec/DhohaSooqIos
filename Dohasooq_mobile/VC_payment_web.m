@@ -21,6 +21,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.screenName = @"Payment Screen";
+
     // Do any additional setup after loading the view.
     self.navigationController.navigationBar.hidden = NO;
 

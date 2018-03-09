@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "profile_Hoshi_Billing_ADDR.h"
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_My_profile : UIViewController <UIGestureRecognizerDelegate>
+@interface VC_My_profile : GAITrackedViewController <UIGestureRecognizerDelegate>
 
 @property(nonatomic,weak) IBOutlet UIScrollView *scroll_contents;
 

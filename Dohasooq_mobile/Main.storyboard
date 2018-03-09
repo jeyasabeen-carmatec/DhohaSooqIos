@@ -4360,7 +4360,7 @@
                             </collectionViewFlowLayout>
                             <cells>
                                 <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="cell" id="1gc-L7-a1P" customClass="collection_variants_cell">
-                                    <rect key="frame" x="32.5" y="0.0" width="229" height="64"/>
+                                    <rect key="frame" x="32" y="0.0" width="229" height="64"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                         <rect key="frame" x="0.0" y="0.0" width="229" height="64"/>
@@ -5213,7 +5213,7 @@
                                     </collectionViewFlowLayout>
                                     <cells>
                                         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="brands_cell" id="UTf-td-uZA" customClass="cell_brands">
-                                            <rect key="frame" x="0.0" y="3.5" width="81" height="46"/>
+                                            <rect key="frame" x="0.0" y="4" width="81" height="46"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                                 <rect key="frame" x="0.0" y="0.0" width="81" height="46"/>
@@ -9264,26 +9264,26 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="U1I-tg-KmK"/>
-        <segue reference="X8l-5I-aGL"/>
-        <segue reference="thM-tK-ujK"/>
-        <segue reference="pDU-cD-KDi"/>
-        <segue reference="hYs-TP-0oE"/>
+        <segue reference="PIq-gb-2yd"/>
         <segue reference="yWr-Gw-exm"/>
-        <segue reference="1fc-cP-jfH"/>
+        <segue reference="X8l-5I-aGL"/>
         <segue reference="Cw8-vV-nPW"/>
+        <segue reference="pDU-cD-KDi"/>
+        <segue reference="thM-tK-ujK"/>
+        <segue reference="U1I-tg-KmK"/>
+        <segue reference="1fc-cP-jfH"/>
+        <segue reference="hYs-TP-0oE"/>
         <segue reference="TQh-po-CZq"/>
         <segue reference="pRw-18-HAL"/>
-        <segue reference="6gT-Rb-aGG"/>
-        <segue reference="PIq-gb-2yd"/>
-        <segue reference="7ng-B9-MHt"/>
-        <segue reference="pFf-RS-Wli"/>
-        <segue reference="Fb4-74-wUL"/>
+        <segue reference="sNV-nt-3bv"/>
+        <segue reference="Gbu-bd-OSk"/>
         <segue reference="zHZ-8L-dXg"/>
-        <segue reference="9v6-ul-yqt"/>
-        <segue reference="n8v-Km-OHF"/>
-        <segue reference="Eh1-NH-Qoz"/>
-        <segue reference="CGA-QG-v2I"/>
+        <segue reference="Fb4-74-wUL"/>
+        <segue reference="pFf-RS-Wli"/>
         <segue reference="Zyf-Jf-hDH"/>
+        <segue reference="Eh1-NH-Qoz"/>
+        <segue reference="n8v-Km-OHF"/>
+        <segue reference="CGA-QG-v2I"/>
+        <segue reference="9v6-ul-yqt"/>
     </inferredMetricsTieBreakers>
 </document>

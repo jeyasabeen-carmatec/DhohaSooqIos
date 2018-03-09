@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "HoshiTextField.h"
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_change_Password : UIViewController
+@interface VC_change_Password : GAITrackedViewController
 
 @property(nonatomic,weak) IBOutlet HoshiTextField *TXT_old_pwd;
 @property(nonatomic,weak) IBOutlet HoshiTextField *TXT_new_pwd;

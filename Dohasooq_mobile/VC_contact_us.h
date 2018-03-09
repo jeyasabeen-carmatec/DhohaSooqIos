@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "Hoshi_Billing_ADDR.h"
 #import "TXT_Placeholder.h"
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_contact_us : UIViewController
+@interface VC_contact_us : GAITrackedViewController
 @property(nonatomic,weak) IBOutlet UIScrollView *Scroll_contents;
 @property(nonatomic,weak) IBOutlet UIView *VW_contents;
 @property(nonatomic,weak) IBOutlet UIView *VW_contact;

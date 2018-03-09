@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_movie_user_detail : UIViewController<UIGestureRecognizerDelegate>
+@interface VC_movie_user_detail : GAITrackedViewController<UIGestureRecognizerDelegate>
 
 @property(nonatomic,weak) IBOutlet UIView *VW_contents;
 @property(nonatomic,weak) IBOutlet UIScrollView *scroll_contents;

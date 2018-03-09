@@ -40,7 +40,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.screenName = @"Movie Booking page";
+
  
     [_BTN_trailer_watch addTarget:self action:@selector(BTN_trailer_watch) forControlEvents:UIControlEventTouchUpInside];
     
@@ -70,6 +71,8 @@
     dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateFormat:@"MM/dd/yyyy"];
     dateString = [dateFormat stringFromDate:[NSDate date]];
+    
+    
     [Helper_activity animating_images:self];
     [self dateVIEW];
     [self performSelector:@selector(movie_detil_api) withObject:nil afterDelay:0.01];
@@ -142,7 +145,13 @@
     
     NSLog(@"Date Array is :::%@",date_Arr);
     
+    
+     NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    
+    [dateFormat setTimeZone:timeZone];
+    
     NSCalendar *cal = [NSCalendar currentCalendar];
+      [cal setTimeZone:timeZone];
     
     for (int i=0; i<date_Arr.count; i++) {
         
@@ -495,8 +504,8 @@
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Trailer video is not available" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
         [alert show];
-
-        
+        alert.tag = 10;
+       
     }
     else
     {
@@ -520,6 +529,18 @@
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateFormat:@"EE"];
+    
+    NSString *str_zone =   [[NSUserDefaults standardUserDefaults]  valueForKey:@"time_zone"];
+    
+    if([str_zone isEqualToString:@"(null)"]||[str_zone isEqualToString:@"<null>"]||[str_zone isEqualToString:@""])
+        
+    {
+        
+        str_zone = [[NSTimeZone localTimeZone] abbreviation];
+        
+    }
+    
+    [dateFormat setTimeZone:[NSTimeZone timeZoneWithName:str_zone]];
     
     
     

@@ -20,13 +20,13 @@
     NSMutableArray *cart_array;
     NSDictionary *json_dict;
     NSInteger product_count;
-    //UIView *VW_overlay;
-//    UIActivityIndicatorView *activityIndicatorView;
+    
     UITapGestureRecognizer *tapGesture1;
     NSString *currency_code,*product_id,*item_count;
     UIImageView *image_empty;
     BOOL status;
-   // NSInteger doha_miles_value, qr_dm_value;
+  
+    NSString *variantCombinationID,*cartCustomOptionId;
     
 
 }
@@ -37,6 +37,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.screenName = @"Cart list screen";
+
     // Do any additional setup after loading the view.
     _TBL_cart_items.hidden = YES;
        [self set_UP_VIEW];
@@ -48,29 +50,9 @@
     
     self.navigationItem.hidesBackButton = YES;
     status = NO;
-  //    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-//    VW_overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-//    VW_overlay.clipsToBounds = YES;
-//    //    VW_overlay.layer.cornerRadius = 10.0;
-//    
-//    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-//    activityIndicatorView.frame = CGRectMake(0, 0, activityIndicatorView.bounds.size.width, activityIndicatorView.bounds.size.height);
-//    activityIndicatorView.center = VW_overlay.center;
-//    [VW_overlay addSubview:activityIndicatorView];
-//    VW_overlay.center = self.view.center;
-//    [self.view addSubview:VW_overlay];
-//    VW_overlay.hidden = YES;
-//    
-//    VW_overlay.hidden = NO;
-//    [activityIndicatorView startAnimating];
     
     [Helper_activity animating_images:self];
     [self performSelector:@selector(cartList_api_calling) withObject:nil afterDelay:0.01];
-    
-    
-    
-   // [self  cartList_api_calling];
-
 }
 -(void)set_UP_VIEW
 {
@@ -680,7 +662,7 @@
                 
                cell.LBL_dohamiles.text = str_miles;
                 //cell.LBL_dohamiles.attributedText = attributedText;
-                NSLog(@"%@",attributedText);
+               
             }
             else
             {
@@ -788,17 +770,43 @@
      NSLog(@"cart_clicked");
 }
 
+#pragma mark Delete Item From Cart
 
 -(void)tapGesture_close:(UITapGestureRecognizer *)tapgstr{
     CGPoint location = [tapGesture1 locationInView:_TBL_cart_items];
     NSIndexPath *indexPath = [_TBL_cart_items indexPathForRowAtPoint:location];
 
-    //Cart_cell *cell = (Cart_cell *)[_TBL_cart_items cellForRowAtIndexPath:indexPath];
    product_id = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"productid"]];
+    
+    @try {
+        
+        cartCustomOptionId = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"cartCustomOptionId"]];
+        
+        
+        if ([cartCustomOptionId isKindOfClass:[NSNull class]] || [cartCustomOptionId isEqualToString:@""] || [cartCustomOptionId isEqualToString:@"<null>"]) {
+            cartCustomOptionId = @"0";
+        }
+        
+        
+        
+        variantCombinationID = [NSString stringWithFormat:@"%@",[[[cart_array objectAtIndex:indexPath.row] valueForKey:@"productDetails"] valueForKey:@"variantCombinationID"]];
+
+        if ([variantCombinationID isKindOfClass:[NSNull class]] || [variantCombinationID isEqualToString:@""] || [variantCombinationID isEqualToString:@"<null>"]) {
+            variantCombinationID = @"0";
+        }
+        
+        
+        NSLog(@"cartCustomOptionId :: %@  variantCombinationID :: %@ ",cartCustomOptionId,variantCombinationID);
+        
+        
+    } @catch (NSException *exception) {
+        
+    }
+    
     
     
     [Helper_activity animating_images:self];
-   // [self performSelector:@selector(delete_from_cart) withObject:activityIndicatorView afterDelay:0.01];
+  
     [self delete_from_cart];
     
     
@@ -1310,7 +1318,7 @@ params.put("customerId",customerid);
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
     NSString *custmr_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"customer_id"]];
     
-    NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/deletepdtcartapi/%@/%@.json",SERVER_URL,product_id,custmr_id];
+    NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/deletepdtcartapi/%@/%@/%@/%@.json",SERVER_URL,product_id,custmr_id,variantCombinationID,cartCustomOptionId];
     urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
     @try {
         [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {

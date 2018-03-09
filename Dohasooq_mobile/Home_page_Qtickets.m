@@ -33,6 +33,9 @@
 #import "ViewController.h"
 #import "language_cellTableViewCell.h"
 #import "Helper_activity.h"
+//#import <GoogleAnalytics/GAI.h>
+//#import <GoogleAnalytics/GAIDictionaryBuilder.h>
+//#import <Google/Analytics.h>
 
 
 @interface Home_page_Qtickets ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource,UITabBarDelegate,UIPickerViewDelegate, UIPickerViewDataSource,UIAlertViewDelegate,UITextFieldDelegate>
@@ -80,15 +83,23 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.screenName = @"HOme page Q ticket";
+    
     [self API_call];
     
     
-   
-
+//    id<GAITracker> tracker = [GAI sharedInstance].defaultTracker;
+//    [tracker set:@"Home page q ticket" value:@"com.carmatec.dohasooq"];
+//    [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
     
 }
 -(void)view_appear
 {
+    
+//    id<GAITracker> tracker = [GAI sharedInstance].defaultTracker;
+//    [tracker set:@"Home" value:@"Ecommerce"];
+//    [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+    
     CGRect frameset = _VW_nav.frame;
     frameset.size.width = self.navigationController.navigationBar.frame.size.width;
     _VW_nav.frame = frameset;

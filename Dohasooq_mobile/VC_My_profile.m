@@ -42,6 +42,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     phone_code_arr = [[NSMutableArray alloc]init];
+    self.screenName = @"MyProfile screen";
+
     // Do any additional setup after loading the view.
     
 //    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];

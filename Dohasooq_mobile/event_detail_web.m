@@ -20,6 +20,9 @@
 @implementation event_detail_web
 
 - (void)viewDidLoad {
+    
+    self.screenName = @"Event Detail web screen";
+
     self.navigationController.navigationBar.hidden = NO;
 
     loadingView = [[UIView alloc]init];

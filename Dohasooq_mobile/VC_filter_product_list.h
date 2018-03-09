@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <TTRangeSlider.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
 @protocol filter_protocol <NSObject>
 
@@ -15,7 +16,7 @@
 
 @end
 
-@interface VC_filter_product_list : UIViewController
+@interface VC_filter_product_list : GAITrackedViewController
 
 @property(nonatomic,weak) IBOutlet UIView *VW_contents;
 @property(nonatomic,weak) IBOutlet UIScrollView *scroll_contents;

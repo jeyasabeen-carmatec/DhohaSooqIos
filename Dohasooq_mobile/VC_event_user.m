@@ -28,7 +28,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.screenName = @"Event user detail screen";
+
     _TXT_name.delegate = self;
     _TXT_code.delegate = self;
     _TXT_mail.delegate = self;

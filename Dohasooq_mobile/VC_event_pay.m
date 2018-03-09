@@ -20,7 +20,8 @@
     // Do any additional setup after loading the view.
     self.navigationController.navigationBar.hidden = NO;
 
-   
+    self.screenName = @"Event pay screen";
+
     NSMutableArray  *dtl = [[NSUserDefaults standardUserDefaults] valueForKey:@"Amount_dict"];
  
     NSMutableDictionary  *event_dtl_dict = [[NSMutableDictionary alloc]init];

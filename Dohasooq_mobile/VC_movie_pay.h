@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_movie_pay : UIViewController
+@interface VC_movie_pay : GAITrackedViewController
 @property(nonatomic,weak) IBOutlet UIView *VW_contents;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_pay;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_service_charges;

@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "MIBadgeButton.h"
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_cart_list : UIViewController
+@interface VC_cart_list : GAITrackedViewController
 
 @property(nonatomic,strong) IBOutlet UIBarButtonItem *BTN_cart;
 @property(nonatomic,strong) IBOutlet MIBadgeButton *BTN_fav;

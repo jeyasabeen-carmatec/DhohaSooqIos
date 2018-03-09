@@ -10,7 +10,9 @@
 #import "ZSeatSelector.h"
 #import "ZSeat.h"
 #import "STRING_seat.h"
-@interface VC_seat_book : UIViewController<ZSeatSelectorDelegate>
+#import <GoogleAnalytics/GAITrackedViewController.h>
+
+@interface VC_seat_book : GAITrackedViewController<ZSeatSelectorDelegate>
 
 @property(nonatomic,weak) IBOutlet UIView *VW_seat;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_book;

@@ -10,11 +10,12 @@
 #import "HoshiTextField.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
 
 
 
-@interface ViewController : UIViewController
+@interface ViewController : GAITrackedViewController
 
 
 @property(nonatomic,weak) IBOutlet HoshiTextField *TXT_username;

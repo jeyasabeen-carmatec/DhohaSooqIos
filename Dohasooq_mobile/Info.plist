@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.2</string>
+	<string>1.2.5</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -49,6 +49,8 @@
 	<string>299541817232387</string>
 	<key>FacebookDisplayName</key>
 	<string>dohssooqIOS</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>

@@ -10,7 +10,9 @@
 #import "VC_filter_product_list.h"
 #import "MIBadgeButton.h"
 #import "GIBadgeView.h"
-@interface VC_product_List : UIViewController <filter_protocol>
+#import <GoogleAnalytics/GAITrackedViewController.h>
+
+@interface VC_product_List : GAITrackedViewController <filter_protocol>
 {
     NSTimer *TIMER_countdown;
 }

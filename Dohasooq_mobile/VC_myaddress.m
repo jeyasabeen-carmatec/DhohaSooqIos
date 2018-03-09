@@ -44,6 +44,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    self.screenName = @"MyAddress screen";
+
     self.navigationItem.hidesBackButton = YES;
     
     self.navigationController.navigationBar.hidden = NO;

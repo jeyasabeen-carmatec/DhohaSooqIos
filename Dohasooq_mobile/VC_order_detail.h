@@ -10,9 +10,10 @@
 #import "Hoshi_Billing_ADDR.h"
 #import "billing_address.h"
 #import "MIBadgeButton.h"
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
 
-@interface VC_order_detail : UIViewController
+@interface VC_order_detail : GAITrackedViewController
 
 @property(nonatomic,weak) IBOutlet UILabel *LBL_order_detail;
 @property(nonatomic,weak) IBOutlet UILabel *LBL_shipping;

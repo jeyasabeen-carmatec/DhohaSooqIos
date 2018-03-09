@@ -58,8 +58,9 @@
     // Do any additional setup after loading the view.
     
     [self set_appear];
+//   NSString *str_name = [NSString stringWithFormat:@"%@",[[[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_descriptions"] objectAtIndex:0] valueForKey:@"title"]];
+    self.screenName = [NSString stringWithFormat:@"Product details screen"];
 
-  
     [_BTN_cart addTarget:self action:@selector(product_detail_cart_page) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_wish addTarget:self action:@selector(add_to_wish_list) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_buy_now addTarget:self action:@selector(buy_action) forControlEvents:UIControlEventTouchUpInside];
@@ -207,9 +208,13 @@
     
         frame_set = _LBL_prices.frame;
         frame_set.origin.y = starRatingView.frame.origin.y + starRatingView.frame.size.height;
-//        frame_set.size.width= self.view.frame.size.width-50;
-          frame_set.size.width= _LBL_item_name.frame.size.width;
+        frame_set.size.width= _LBL_item_name.frame.size.width;
+    
         _LBL_prices.frame = frame_set;
+    NSLog(@"%f",self.view.frame.size.width);
+    
+    
+    //_LBL_prices.backgroundColor = [UIColor orangeColor];
     
     
     
@@ -487,7 +492,9 @@
               [_LBL_prices sizeToFit];
         }
         
-        
+        frame_set = _LBL_prices.frame;
+        frame_set.size.width = self.navigationController.navigationBar.frame.size.width;
+        _LBL_prices.frame = frame_set;
 
         frame_set = _LBL_discount.frame;
         frame_set.origin.y = _LBL_prices.frame.origin.y + _LBL_prices.contentSize.height - 5;
@@ -3926,7 +3933,7 @@
 //
 //    }];
 //}
-#pragma picket_actions
+#pragma mark picket_actions
 //-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
 //    return picker_arr.count;
 //
@@ -4568,6 +4575,8 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
    // }
 }
 
+#pragma mark Update Price when Custom Selection
+
 -(void)update_product_custom:(NSMutableDictionary *)update_dic
 {
     @try
@@ -4583,19 +4592,18 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         special_price = [special_price stringByReplacingOccurrencesOfString:@"," withString:@""];
         
 
-
-
-        
-        
         
         NSString *doha_miles = [NSString stringWithFormat:@"%f",[mileValue floatValue]];
         //  doha_miles = [HttpClient doha_currency_seperator:doha_miles];
         NSString *mils  = @"Doha Miles";
         
+         actuel_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
         
-        
+          special_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"special_price"]];
         
         if ([special_price isEqualToString:@""]|| [special_price isEqualToString:@"<null>"]||[special_price isEqualToString:@"<null>"]) {
+            
+             actuel_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
             
             NSString *str = [NSString stringWithFormat:@"%@",[[update_dic valueForKey:@"custom"] valueForKey:@"price"]];
             NSString *str_custom;int VAL;
@@ -4616,7 +4624,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                 VAL = [[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"] intValue];
             }
             
-            NSLog(@"THE UPDATED PRICE%d",VAL);
+            NSLog(@"THE UPDATED PRICE %d",VAL);
             actuel_price = [NSString stringWithFormat:@"%d",VAL];
             doha_miles = [NSString stringWithFormat:@"%d",[actuel_price intValue]*[[[update_dic valueForKey:@"custom"] valueForKey:@"oneQARtoDM"]intValue]];
             
@@ -4678,6 +4686,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         else if([actuel_price isEqualToString:special_price])
         {
             NSString *str = [NSString stringWithFormat:@"%@",[[update_dic valueForKey:@"custom"] valueForKey:@"price"]];
+             actuel_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
             NSString *str_custom;int VAL;
             if([str containsString:@"+"])
             {
@@ -4696,7 +4705,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                 VAL = [[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"] intValue];
             }
             
-            NSLog(@"THE UPDATED PRICE%d",VAL);
+            NSLog(@"THE UPDATED PRICE %d",VAL);
             actuel_price = [NSString stringWithFormat:@"%d",VAL];
             doha_miles = [NSString stringWithFormat:@"%d",[actuel_price intValue]*[[[update_dic valueForKey:@"custom"] valueForKey:@"oneQARtoDM"]intValue]];
             
@@ -4751,31 +4760,54 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         }
         
         else{
+            //////////////////////
+            NSString *str = [NSString stringWithFormat:@"%@",[[update_dic valueForKey:@"custom"] valueForKey:@"price"]];
+            
+             actuel_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
+            special_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"special_price"]];
+            
+            NSString *str_custom;
+            int VAL,val2;
             
             
-            
-            NSString *str = [[update_dic valueForKey:@"custom"] valueForKey:@"price"];
-            NSString *str_custom;int VAL;
             if([str containsString:@"+"])
             {
                 str_custom = [str stringByReplacingOccurrencesOfString:@"+" withString:@""];
                 
                 VAL = [special_price intValue] + [str_custom intValue];
+                val2= [actuel_price intValue] + [str_custom intValue];
+                special_price = [NSString stringWithFormat:@"%d",VAL];
+                actuel_price = [NSString stringWithFormat:@"%d",val2];
                 
             }
             else if([str containsString:@"-"])
             {
                 str_custom = [str stringByReplacingOccurrencesOfString:@"-" withString:@""];
                 VAL = [special_price intValue] - [str_custom intValue];
+                 val2= [actuel_price intValue] - [str_custom intValue];
+                special_price = [NSString stringWithFormat:@"%d",VAL];
+                actuel_price = [NSString stringWithFormat:@"%d",val2];
             }
             else
             {
-                str_custom = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"special_price"]];
+               // str_custom = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"special_price"]];
+                actuel_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"product_price"]];
+                special_price = [NSString stringWithFormat:@"%@",[[[json_Response_Dic valueForKey:@"products"] valueForKey:@"0"] valueForKey:@"special_price"]];
+                
             }
             
-            
             NSLog(@"THE UPDATED PRICE%d",VAL);
-            special_price = [NSString stringWithFormat:@"%d",VAL];
+            
+            
+            // Discount
+            float disc = [actuel_price integerValue]-[special_price integerValue];
+            float digits = disc/[actuel_price integerValue];
+            float discount = digits *100;
+            NSString *of = @"% off";
+            _LBL_discount.text = [NSString stringWithFormat:@"%.2f%@",discount,of];
+            
+            
+            
             doha_miles = [NSString stringWithFormat:@"%d",[special_price intValue]*[[[update_dic valueForKey:@"custom"] valueForKey:@"oneQARtoDM"]intValue]];
             //actuel_price = [currency stringByAppendingString:actuel_price];
             
@@ -4786,6 +4818,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             actuel_price = [NSString stringWithFormat:@"%@ %@",currency,actuel_price];
 
             doha_miles = [HttpClient doha_currency_seperator:doha_miles];
+            
             
             NSString *text;
             
@@ -4825,7 +4858,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                 
                 NSRange cmp = [text rangeOfString:actuel_price];
                 //        NSRange range_event_desc = [text rangeOfString:<#(nonnull NSString *)#>];
-                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:15.0],NSForegroundColorAttributeName:[UIColor lightGrayColor]}
+                [attributedText setAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Poppins-Light" size:15.0],NSForegroundColorAttributeName:[UIColor grayColor]}
                                         range:cmp];
                 
                 
@@ -4917,17 +4950,28 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
         special_price = [special_price stringByReplacingOccurrencesOfString:@"QR" withString:@""];
         special_price = [special_price stringByReplacingOccurrencesOfString:@"," withString:@""];
        
+        
+        
+        
+        NSString *doha_miles;
+        
          if ([special_price isEqualToString:@""]|| [special_price isEqualToString:@"<null>"]||[special_price isEqualToString:@"<null>"])
          {
-             actuel_price = [NSString stringWithFormat:@"%@",[[update_dic valueForKey:@"variant"] valueForKey:@"newPrice"]]; // @"newPrice"]];
+             actuel_price = [NSString stringWithFormat:@"%@",[[update_dic valueForKey:@"variant"] valueForKey:@"newProductPrice"]]; // @"newPrice"]];
+            doha_miles = [NSString stringWithFormat:@"%f",[[[update_dic valueForKey:@"variant"] valueForKey:@"dohamilesPP"] floatValue]];
+             
          }
          else{
-             special_price = [NSString stringWithFormat:@"%@",[[update_dic valueForKey:@"variant"] valueForKey:@"newPrice"]];
+             special_price = [NSString stringWithFormat:@"%@",[[update_dic valueForKey:@"variant"] valueForKey:@"newSpecialPrice"]];
+             doha_miles = [NSString stringWithFormat:@"%f",[[[update_dic valueForKey:@"variant"] valueForKey:@"dohamilesSP"] floatValue]];
 
+             NSString *str = @"% off";
+             
+             _LBL_discount.text = [NSString stringWithFormat:@"%@%@",[[update_dic valueForKey:@"variant"] valueForKey:@"discount"],str];
+             
          }
         
-        NSString *doha_miles = [NSString stringWithFormat:@"%f",[[[update_dic valueForKey:@"variant"] valueForKey:@"dohamiles"] floatValue]];
-        // doha_miles = [HttpClient currency_seperator:doha_miles];
+        //NSString *doha_miles = [NSString stringWithFormat:@"%f",[[[update_dic valueForKey:@"variant"] valueForKey:@"dohamiles"] floatValue]];
         
         NSString *mils  = @"Doha Miles";
         if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
@@ -5027,6 +5071,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
             
             
             // NSString *doha_miles = @"QR 6758";
+              actuel_price = [NSString stringWithFormat:@"%@",[[update_dic valueForKey:@"variant"] valueForKey:@"newProductPrice"]];
             
             actuel_price = [NSString stringWithFormat:@"%.2f",[actuel_price floatValue]];
             actuel_price = [HttpClient currency_seperator:actuel_price];
@@ -5118,6 +5163,8 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                 
                 
                 _LBL_prices.attributedText = attributedText;
+                //_LBL_prices.backgroundColor = [UIColor yellowColor];
+                
             }
             else
             {

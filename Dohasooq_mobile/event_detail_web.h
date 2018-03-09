@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface event_detail_web : UIViewController
+@interface event_detail_web : GAITrackedViewController
 @property(nonatomic,weak) IBOutlet UIWebView *Event_detail_web;
 
 @end

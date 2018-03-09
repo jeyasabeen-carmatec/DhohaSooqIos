@@ -87,27 +87,6 @@ static const CGFloat kLabelsFontSize = 12.0f;
     self.rightHandle.borderWidth = self.handleBorderWidth;
     self.rightHandle.borderColor = self.handleBorderColor.CGColor;
     [self.layer addSublayer:self.rightHandle];
-    
-    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
-    {
-        self.rightHandle = [CALayer layer];
-        self.rightHandle.cornerRadius = self.handleDiameter / 2;
-        self.rightHandle.backgroundColor = self.tintColor.CGColor;
-        self.rightHandle.borderWidth = self.handleBorderWidth;
-        self.rightHandle.borderColor = self.handleBorderColor.CGColor;
-        [self.layer addSublayer:self.rightHandle];
-        
-        //draw the maximum slider handle
-        self.leftHandle = [CALayer layer];
-        self.leftHandle.cornerRadius = self.handleDiameter / 2;
-        self.leftHandle.backgroundColor = self.tintColor.CGColor;
-        self.leftHandle.borderWidth = self.handleBorderWidth;
-        self.leftHandle.borderColor = self.handleBorderColor.CGColor;
-        [self.layer addSublayer:self.leftHandle];
-        
-
-        
-    }
 
     self.leftHandle.frame = CGRectMake(0, 0, self.handleDiameter, self.handleDiameter);
     self.rightHandle.frame = CGRectMake(0, 0, self.handleDiameter, self.handleDiameter);

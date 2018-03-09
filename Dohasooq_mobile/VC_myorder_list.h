@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "MIBadgeButton.h"
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_myorder_list : UIViewController
+@interface VC_myorder_list : GAITrackedViewController
 @property(nonatomic,weak) IBOutlet UITableView *TBL_orders;
 @property(nonatomic,weak) IBOutlet UITextField *TXT_search;
 @property(nonatomic,weak) IBOutlet MIBadgeButton *BTN_cart;

@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <NewRelicAgent/NewRelic.h>
+#import <Google/Analytics.h>
 
 
 @interface AppDelegate ()
@@ -20,8 +21,21 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    
     [NewRelicAgent startWithApplicationToken:@"AA45d4f2aa2c0c4766f3f8eea2f9c1d571c0098172"];
   //  self.window.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Log in"]];
+    
+   // GAI *gai = [GAI sharedInstance];
+  //  [gai trackerWithTrackingId:@"UA-115389608-1"];
+    
+  //  gai.trackUncaughtExceptions = YES;
+//    gai.logger.logLevel = kGAILogLevelVerbose;
+    
+    [[GAI sharedInstance] setTrackUncaughtExceptions:YES];
+    [GAI sharedInstance].dispatchInterval = 20;
+//    [GAI sharedInstance].debugDescription = YES;
+    [[GAI sharedInstance] trackerWithTrackingId:@"UA-115389608-1"];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -29,21 +43,24 @@
     view.backgroundColor = [UIColor colorWithRed:0.98 green:0.69 blue:0.19 alpha:1.0];
     [self.window.rootViewController.view addSubview:view];
     
+    self.window.backgroundColor = [UIColor whiteColor];
+    
     @try
     {
-     [[FBSDKApplicationDelegate sharedInstance] application:application
-                             didFinishLaunchingWithOptions:launchOptions];
-    /***************** Google Sign In ******************/
-    NSError* configureError;
-    [[GGLContext sharedInstance] configureWithError: &configureError];
-    NSAssert(!configureError, @"Error configuring Google services: %@", configureError);
-    
-    [GIDSignIn sharedInstance].delegate = self;
+        [[FBSDKApplicationDelegate sharedInstance] application:application
+                                 didFinishLaunchingWithOptions:launchOptions];
+        
+        /***************** Google Sign In ******************/
+        NSError* configureError;
+        [[GGLContext sharedInstance] configureWithError: &configureError];
+        NSAssert(!configureError, @"Error configuring Google services: %@", configureError);
+        [GIDSignIn sharedInstance].delegate = self;
+        /***************** Google Sign In ******************/
     }
     @catch(NSException *exception)
     {
     }
-    /***************** Google Sign In ******************/
+    
     return YES;
 }
 - (BOOL)application:(UIApplication *)app
@@ -88,13 +105,12 @@ sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     @try
     {
-    [FBSDKAppEvents activateApp];
+        [FBSDKAppEvents activateApp];
     }
     @catch(NSException *exception)
     {
         
     }
-
 }
 
 

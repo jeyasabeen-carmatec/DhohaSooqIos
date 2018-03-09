@@ -10,11 +10,12 @@
 #import "HMSegmentedControl.h"
 #import "MIBadgeButton.h"
 #import "GIBadgeView.h"
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
 #import "multiple_sellers.h"
 
 
-@interface VC_product_detail : UIViewController<sellersprotocol>
+@interface VC_product_detail : GAITrackedViewController<sellersprotocol>
 {
     NSTimer *TIMER_countdown;
 }

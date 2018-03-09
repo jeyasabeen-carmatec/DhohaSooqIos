@@ -42,7 +42,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    
+    self.screenName = @"QTickets Home page";
+
     
     [self.Collection_movies registerNib:[UINib nibWithNibName:@"Movies_cell" bundle:nil]  forCellWithReuseIdentifier:@"movie_cell"];
 

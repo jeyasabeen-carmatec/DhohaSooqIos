@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_about_us : UIViewController
+@interface VC_about_us : GAITrackedViewController
 @property(nonatomic,weak) IBOutlet UIWebView *about_us_VW;
 @end

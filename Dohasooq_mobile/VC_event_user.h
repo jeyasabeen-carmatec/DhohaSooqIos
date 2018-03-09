@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "ACFloatingTextField.h"
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_event_user : UIViewController<UIGestureRecognizerDelegate>
+@interface VC_event_user : GAITrackedViewController<UIGestureRecognizerDelegate>
 @property(nonatomic,weak) IBOutlet UIView *VW_contents;
 @property(nonatomic,weak) IBOutlet UIScrollView *scroll_contents;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_pay;

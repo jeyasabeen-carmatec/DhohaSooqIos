@@ -25,6 +25,7 @@
     _TXT_countries.inputView = [[UIView alloc]init];
     country_arr = [[NSMutableArray alloc]init];
     self.navigationController.navigationBar.hidden = YES;
+    self.screenName = @"Event card selection screen";
 
    
     [self picker_set_UP];

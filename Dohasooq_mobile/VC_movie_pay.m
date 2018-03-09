@@ -28,7 +28,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.screenName = @"Movie pay screen";
+
     k = 0;
     NSMutableDictionary  *movie_dtl_dict = [[NSMutableDictionary alloc]init];
     

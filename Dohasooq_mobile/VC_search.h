@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GoogleAnalytics/GAITrackedViewController.h>
 
-@interface VC_search : UIViewController
+@interface VC_search : GAITrackedViewController
 @property(nonatomic,weak) IBOutlet UITextField *TXT_search;
 @property(nonatomic,weak) IBOutlet UIButton *BTN_search;
 @property(nonatomic,weak) IBOutlet UITableView *TBL_results;

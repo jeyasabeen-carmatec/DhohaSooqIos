@@ -27,6 +27,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.screenName = @"Contactus screen";
+
     // Do any additional setup after loading the view.
    
 }
@@ -137,7 +139,7 @@
 {
     [super viewDidLayoutSubviews];
     [_Scroll_contents layoutIfNeeded];
-    _Scroll_contents.contentSize = CGSizeMake(_Scroll_contents.frame.size.width,scroll_ht);
+    _Scroll_contents.contentSize = CGSizeMake(_Scroll_contents.frame.size.width,scroll_ht + 10);
 }
 #pragma text field delgates
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -150,22 +152,25 @@
     
     if(textField == _TXT_phone || textField == _TXT_organisation || textField == _TXT_organisation || textField == _TXT_message)
     {
-        scroll_ht = scroll_ht + 200;
-        [self viewDidLayoutSubviews];
+        [self animatingViewWhileEditingTextField:-200 andTextField:textField];
     }
-  
+    if (textField == _TXT_email || textField == _TXT_F_name) {
+         [self animatingViewWhileEditingTextField:-190 andTextField:textField];
+    }
+
 }
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
-     if(textField == _TXT_phone ||textField == _TXT_organisation || textField == _TXT_organisation || textField == _TXT_message)
-    {
-        scroll_ht = scroll_ht - 200;
-        [self viewDidLayoutSubviews];
-    }
-
-    
-    
+    [self animatingViewWhileEditingTextField:0 andTextField:textField];
 }
+-(void)animatingViewWhileEditingTextField:(float)YAxis andTextField:(UITextField *)textField{
+    
+    [textField setTintColor:[UIColor colorWithRed:0.00 green:0.18 blue:0.35 alpha:1.0]];
+    [UIView beginAnimations:nil context:NULL];
+    self.navigationController.view.frame = CGRectMake(0,YAxis,self.view.frame.size.width,self.view.frame.size.height);
+    [UIView commitAnimations];
+}
+
 - (IBAction)back_action:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }

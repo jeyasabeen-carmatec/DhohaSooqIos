@@ -27,7 +27,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.screenName = @"Myorders screen";
+
     CGRect frameset = _VW_empty.frame;
     frameset.size.width = 200;
     frameset.size.height = 200;

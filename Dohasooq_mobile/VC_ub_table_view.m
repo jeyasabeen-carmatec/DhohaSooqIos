@@ -26,6 +26,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.screenName = @"Sub category screen";
+
     sub_arr = [[NSMutableArray alloc]init];
     isTableExpanded=NO;
     

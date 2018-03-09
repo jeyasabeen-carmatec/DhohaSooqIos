@@ -38,6 +38,8 @@ int j ,i;
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.screenName = @"Myorder Detail screen";
+
     
     self.navigationController.navigationBar.hidden = NO;
 //    VW_overlay = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];

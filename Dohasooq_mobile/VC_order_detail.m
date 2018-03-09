@@ -79,7 +79,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.screenName = @"Order Checkout screen";
+
     _TXT_message_field.delegate= self;
     [_BTN_logo addTarget:self action:@selector(go_To_Home) forControlEvents:UIControlEventTouchUpInside];
     

@@ -27,7 +27,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.screenName = @"Up coming movie page";
+
     [_BTN_trailer_watch addTarget:self action:@selector(BTN_trailer_watch) forControlEvents:UIControlEventTouchUpInside];
 }
 -(void)viewWillAppear:(BOOL)animated

@@ -35,6 +35,7 @@
 -(void)set_UP_VIEW
 {
     self.navigationController.navigationBar.hidden = NO;
+    self.screenName = @"Event detail Screen";
 
     cost_arr = [[NSMutableArray alloc]init];
     dates_arr = [[NSMutableArray alloc]init];

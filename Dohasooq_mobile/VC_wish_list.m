@@ -36,6 +36,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     _TBL_wish_list_items.hidden = YES;
+    self.screenName = @"Wishlist screen";
+
 //    UINib *nib = [UINib nibWithNibName:@"wish_list_cell" bundle:nil];
 //    [_TBL_wish_list_items registerNib:nib forCellReuseIdentifier:@"wish_list_cell"];
 //    [_TBL_wish_list_items registerNib:nib forCellReuseIdentifier:@"Qwish_list_cell"];
