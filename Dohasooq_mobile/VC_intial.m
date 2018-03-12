@@ -68,7 +68,10 @@
                                        // compare version with your apps local version
                                        NSString *iTunesVersion = [resultsDic objectForKey:@"version"];
                                        
-                                       NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)@"CFBundleShortVersionString"];
+                                       NSString *appVersion = @"1.2";
+                                       
+                                       NSLog(@"itunes version = %@\nAppversion = %@",iTunesVersion,appVersion);
+                                       
                                        if (iTunesVersion && [appVersion compare:iTunesVersion] != NSOrderedSame) {
                                            
 //                                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:<#(nullable NSString *)#> message:<#(nullable NSString *)#> delegate:<#(nullable id)#> cancelButtonTitle:<#(nullable NSString *)#> otherButtonTitles:<#(nullable NSString *), ...#>, nil]
@@ -97,7 +100,7 @@
    
 
 
-      }
+}
 
 - (void)testInternetConnection
 {

@@ -64,7 +64,7 @@
     [_BTN_cart addTarget:self action:@selector(product_detail_cart_page) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_wish addTarget:self action:@selector(add_to_wish_list) forControlEvents:UIControlEventTouchUpInside];
     [_BTN_buy_now addTarget:self action:@selector(buy_action) forControlEvents:UIControlEventTouchUpInside];
-
+    _LBL_prices.userInteractionEnabled = NO;
     
     
 }
@@ -2083,8 +2083,7 @@
 }
 -(void)Reviews_ACtion
 {
-    [_TBL_reviews reloadData];
-    [_TBL_reviews reloadData];
+       [_TBL_reviews reloadData];
     
     _TBL_reviews.hidden = NO;
     _TXTVW_description.hidden = YES;
@@ -4097,7 +4096,7 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 1000;
+    return 100;
 }
 
 #pragma Button ACIONS
