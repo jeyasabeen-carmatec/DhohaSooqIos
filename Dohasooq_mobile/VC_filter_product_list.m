@@ -112,8 +112,8 @@
             upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
             if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
             {
-                upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMinimum];
-                lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
+                upper = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMaximum];
+                lower = [NSString stringWithFormat:@"%d",(int)self.LBL_slider.selectedMinimum];
 
             }
 
@@ -281,10 +281,6 @@
     [self.delegate filetr_URL:url_str];
 
     [self.navigationController popViewControllerAnimated:NO];
-
-  
-    
-    
     
     NSLog(@"the filter_ticked");
 }

@@ -328,7 +328,16 @@ int j ,i;
             if ([shipping_method containsString:@"Pickup from Merchant Location"]) {
                 
               //  order_cell.LBL_shipping_type.text = [NSString stringWithFormat:@"Delivery Slot: %@",shipping_method];
-                   shipping_text = [NSString stringWithFormat:@"Delivery Slot: %@",shipping_method];
+                if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                {
+                    
+                    shipping_text = [NSString stringWithFormat:@"فتحة التسليم : %@",shipping_method];
+                }
+                else{
+                    
+                    shipping_text = [NSString stringWithFormat:@"Delivery Slot: %@",shipping_method];
+                }
+                
             }
             else{
                
@@ -342,12 +351,31 @@ int j ,i;
                     
                     shipping_method = Delivery_time;
                     
-                    //order_cell.LBL_shipping_type.text = [NSString stringWithFormat:@"Expected Delivery on: %@",Delivery_time];
-                    shipping_text =[NSString stringWithFormat:@"Expected Delivery on: %@",shipping_method];
+                    order_cell.LBL_shipping_type.text = [NSString stringWithFormat:@"الموعد المتوقع للتسليم: %@",Delivery_time];
+                    
+                    
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+                     shipping_text = [NSString stringWithFormat:@" الموعد المتوقع للتسليم: %@",shipping_method];
+                    }
+                    else{
+                        shipping_text =[NSString stringWithFormat:@"Expected Delivery on: %@",shipping_method];
+ 
+                   
+                    }
                     
                 }else{
                       //order_cell.LBL_shipping_type.text = [NSString stringWithFormat:@"Delivery Slot: %@",shipping_method];
+                    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                    {
+
+                    shipping_text = [NSString stringWithFormat:@"فتحة التسليم : %@",shipping_method];
+                    }
+                    else{
+              
                     shipping_text = [NSString stringWithFormat:@"Delivery Slot: %@",shipping_method];
+                    }
+
                     
                 }
                 

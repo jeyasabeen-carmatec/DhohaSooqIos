@@ -6006,55 +6006,8 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                                 [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Home_data"];
                                 [[NSUserDefaults standardUserDefaults] synchronize];
                                 
+                                [self MENU_api_call];
                                 
-                                _Scroll_contents.delegate =self;
-                                
-                                // TIMER_new = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:nil repeats:YES];
-                                //  [self popUpZoomIn:_BTN_fashion];
-                                [self.collection_images registerNib:[UINib nibWithNibName:@"cell_image" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
-                                [self.collection_features registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"features_cell"];
-                                [self.collection_showing_movies registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"showing_movies_cell"];
-                                [self.collection_hot_deals registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
-                                [self.collection_best_deals registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
-                                [self.collection_fashion_categirie registerNib:[UINib nibWithNibName:@"Fashion_categorie_cell" bundle:nil]  forCellWithReuseIdentifier:@"fashion_categorie"];
-                                
-                                
-                                [self.Collection_movies registerNib:[UINib nibWithNibName:@"Movies_cell" bundle:nil]  forCellWithReuseIdentifier:@"movie_cell"];
-                                
-                                [self.Collection_movies registerNib:[UINib nibWithNibName:@"Image_qtickets" bundle:nil]  forCellWithReuseIdentifier:@"Image_qtickets"];
-                                [self.Collection_movies registerNib:[UINib nibWithNibName:@"upcoming_cell" bundle:nil]  forCellWithReuseIdentifier:@"upcoming_cell"];
-                                
-                                
-                                tag =0;
-                                leng_text = @"LANGUAGES";
-                                halls_text =@"THEATERS";
-                                
-                                collection_tag = 0;
-                                _BTN_leisure_venues.text = _BTN_venues.text;
-                                _BTN_sports_venues.text = _BTN_venues.text;
-                                brands_arr = [[NSMutableArray alloc]init];
-                                _TXT_search.delegate =self;
-                                
-                                
-                                _TXT_search.layer.borderColor = [UIColor lightGrayColor].CGColor;
-                                _TXT_search.layer.borderWidth = 0.2f;
-                                
-                                
-                                _hot_deals_more.layer.cornerRadius = 2.0f;
-                                _hot_deals_more.layer.masksToBounds = YES;
-                                
-                                _best_deals_more.layer.cornerRadius = 2.0f;
-                                _best_deals_more.layer.masksToBounds = YES;
-                                
-                                [_BTN_brand_right addTarget:self action:@selector(brand_right_action) forControlEvents:UIControlEventTouchUpInside];
-                                [_BTN_brand_left addTarget:self action:@selector(BTN_left_brand_action) forControlEvents:UIControlEventTouchUpInside];
-                                
-                                [_BTN_TOP addTarget:self action:@selector(TOP_action) forControlEvents:UIControlEventTouchUpInside];
-                                [_BTN_search addTarget:self action:@selector(seacrh_ACTION) forControlEvents:UIControlEventTouchUpInside];
-                                [_logo addTarget:self action:@selector(logo_api_call) forControlEvents:UIControlEventTouchUpInside];
-                                [self view_appear];
-
-                             
                                 
                             } @catch (NSException *exception)
                             {
@@ -6095,12 +6048,130 @@ clickedButtonAtIndex:(NSInteger)buttonIndex{
                [Helper_activity stop_activity_animation:self];
                 
             }
-            
-            
-        
     
 }
-
+-(void)MENU_api_call
+{
+    
+    @try
+    {
+        [Helper_activity animating_images:self];
+        
+        
+        NSError *error;
+        
+        NSHTTPURLResponse *response = nil;
+        NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
+        //    NSString *urlGetuser =[NSString stringWithFormat:@"%@menuList/%ld/%ld.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]];
+        NSString *country = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"country_id"]];
+        NSString *lang = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"language_id"]];
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/getCategoryList/%@/%@.json",SERVER_URL,country,lang];
+        
+        NSLog(@"%ld,%ld",(long)[user_defaults integerForKey:@"country_id"],(long)[user_defaults integerForKey:@"language_id"]);
+        
+        NSURL *urlProducts=[NSURL URLWithString:urlGetuser];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:urlProducts];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        
+        [request setHTTPShouldHandleCookies:NO];
+        NSData *aData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        
+        
+        if (error) {
+            [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+            [Helper_activity stop_activity_animation:self];
+            
+        }
+        
+        
+        if(aData)
+        {
+            
+            
+            NSDictionary *json_DATA = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:aData options:NSASCIIStringEncoding error:&error];
+            
+            [Helper_activity stop_activity_animation:self];
+            
+            if (![json_DATA count]) {
+                
+                [HttpClient createaAlertWithMsg:@"Something went to wrong ." andTitle:@""];
+                
+            }
+            else{
+                
+                
+                NSLog(@"the api_collection_product%@",json_DATA);
+                [[NSUserDefaults standardUserDefaults] setObject:json_DATA  forKey:@"pho"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                _Scroll_contents.delegate =self;
+                
+                // TIMER_new = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(runUpdateDisplayLoop:)userInfo:nil repeats:YES];
+                //  [self popUpZoomIn:_BTN_fashion];
+                [self.collection_images registerNib:[UINib nibWithNibName:@"cell_image" bundle:nil]  forCellWithReuseIdentifier:@"collection_image"];
+                [self.collection_features registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"features_cell"];
+                [self.collection_showing_movies registerNib:[UINib nibWithNibName:@"cell_features" bundle:nil]  forCellWithReuseIdentifier:@"showing_movies_cell"];
+                [self.collection_hot_deals registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
+                [self.collection_best_deals registerNib:[UINib nibWithNibName:@"product_cell" bundle:nil]  forCellWithReuseIdentifier:@"collection_product"];
+                [self.collection_fashion_categirie registerNib:[UINib nibWithNibName:@"Fashion_categorie_cell" bundle:nil]  forCellWithReuseIdentifier:@"fashion_categorie"];
+                
+                
+                [self.Collection_movies registerNib:[UINib nibWithNibName:@"Movies_cell" bundle:nil]  forCellWithReuseIdentifier:@"movie_cell"];
+                
+                [self.Collection_movies registerNib:[UINib nibWithNibName:@"Image_qtickets" bundle:nil]  forCellWithReuseIdentifier:@"Image_qtickets"];
+                [self.Collection_movies registerNib:[UINib nibWithNibName:@"upcoming_cell" bundle:nil]  forCellWithReuseIdentifier:@"upcoming_cell"];
+                
+                
+                tag =0;
+                leng_text = @"LANGUAGES";
+                halls_text =@"THEATERS";
+                
+                collection_tag = 0;
+                _BTN_leisure_venues.text = _BTN_venues.text;
+                _BTN_sports_venues.text = _BTN_venues.text;
+                brands_arr = [[NSMutableArray alloc]init];
+                _TXT_search.delegate =self;
+                
+                
+                _TXT_search.layer.borderColor = [UIColor lightGrayColor].CGColor;
+                _TXT_search.layer.borderWidth = 0.2f;
+                
+                
+                _hot_deals_more.layer.cornerRadius = 2.0f;
+                _hot_deals_more.layer.masksToBounds = YES;
+                
+                _best_deals_more.layer.cornerRadius = 2.0f;
+                _best_deals_more.layer.masksToBounds = YES;
+                
+                [_BTN_brand_right addTarget:self action:@selector(brand_right_action) forControlEvents:UIControlEventTouchUpInside];
+                [_BTN_brand_left addTarget:self action:@selector(BTN_left_brand_action) forControlEvents:UIControlEventTouchUpInside];
+                
+                [_BTN_TOP addTarget:self action:@selector(TOP_action) forControlEvents:UIControlEventTouchUpInside];
+                [_BTN_search addTarget:self action:@selector(seacrh_ACTION) forControlEvents:UIControlEventTouchUpInside];
+                [_logo addTarget:self action:@selector(logo_api_call) forControlEvents:UIControlEventTouchUpInside];
+                [self view_appear];
+                
+            }
+            
+        }
+        
+        
+        
+        
+    }
+    @catch(NSException *exception)
+    {
+        [Helper_activity stop_activity_animation:self];
+        
+        NSLog(@"%@",exception);
+      
+        
+        
+    }
+    
+}
 
 
 

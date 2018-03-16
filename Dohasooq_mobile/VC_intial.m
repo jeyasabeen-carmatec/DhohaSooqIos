@@ -53,7 +53,8 @@
         [[ATAppUpdater sharedUpdater] showUpdateWithConfirmation]; // OR [[ATAppUpdater sharedUpdater] showUpdateWithForce];
     }*/
     
-    NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://itunes.apple.com/lookup?id=1352963798"]];
+    NSString *str_code = [[NSLocale autoupdatingCurrentLocale] objectForKey:NSLocaleCountryCode];
+    NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://itunes.apple.com/%@/lookup?id=1352963798",str_code]];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
     [NSURLConnection sendAsynchronousRequest:request
@@ -72,6 +73,14 @@
                                        
                                        NSLog(@"itunes version = %@\nAppversion = %@",iTunesVersion,appVersion);
                                        
+//                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"New version available" message:[NSString stringWithFormat:@"%@",appMetadataDictionary] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+//                                       [alert show];
+//                                       
+//                                       float itnVer = [iTunesVersion floatValue];
+//                                       float apver = [appVersion floatValue];
+//                                       
+//                                       NSLog(@"The val floet itune %f\nThe val float appver%f",itnVer,apver);
+                                       
                                        if (iTunesVersion && [appVersion compare:iTunesVersion] != NSOrderedSame) {
                                            
 //                                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:<#(nullable NSString *)#> message:<#(nullable NSString *)#> delegate:<#(nullable id)#> cancelButtonTitle:<#(nullable NSString *)#> otherButtonTitles:<#(nullable NSString *), ...#>, nil]
@@ -79,7 +88,7 @@
 //                                           UIAlertView *alert = [UIAlertView bk_showAlertViewWithTitle:@"Doha Sooq Online Shopping" message:[NSString stringWithFormat:@"New version available. Update required."] cancelButtonTitle:@"update" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
                                            
                                                
-                                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"New version available" message:@"A new version available in iTunes" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Update",@"Cancel", nil];
+                                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Version Updated %@",iTunesVersion] message:[resultsDic valueForKey:@"releaseNotes"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Update",@"Cancel", nil];
                                            alert.tag = 123456;
                                            [alert show];
 //                                           }];
@@ -179,7 +188,7 @@
     VW_overlay.hidden = NO;
   //  [activityIndicatorView startAnimating];
     [self cart_count];
-    [self performSelector:@selector(API_call) withObject:activityIndicatorView afterDelay:0.01];
+    [self performSelector:@selector(IMAGE_PATH_API) withObject:activityIndicatorView afterDelay:0.01];
 
 
     
@@ -538,7 +547,7 @@
                             [[NSUserDefaults standardUserDefaults] setInteger:[[[lang_arr objectAtIndex:j]valueForKey:@"id"] integerValue] forKey:@"language_id"];
                             [[NSUserDefaults standardUserDefaults] setValue: [[lang_arr  objectAtIndex:j]valueForKey:@"language_name"] forKey:@"language"];
                             [[NSUserDefaults standardUserDefaults] synchronize];
-                            [self performSelector:@selector(API_call) withObject:activityIndicatorView afterDelay:0.01];
+                            [self performSelector:@selector(IMAGE_PATH_API) withObject:activityIndicatorView afterDelay:0.01];
                         }
                     }
 
@@ -572,7 +581,7 @@
 }
 
 
--(void)MENU_api_call
+/*-(void)MENU_api_call
 {
     
     @try
@@ -668,177 +677,82 @@
     }
        
 }
--(void)API_call
-{
-    
-//        @try
-//        {
-//          //  [Helper_activity animating_images:self];
-//            
-//            /**********   After passing Language Id and Country ID ************/
-//            NSUserDefaults *user_defaults = [NSUserDefaults standardUserDefaults];
-//           
-//            NSString *user_id;
-//            @try
-//            {
-//                NSDictionary *dict = [[NSUserDefaults standardUserDefaults] valueForKey:@"userdata"];
-//                if(dict.count == 0)
-//                {
-//                    user_id = @"(null)";
-//                }
-//                else
-//                {
-//                    NSString *str_id = @"user_id";
-//                    // NSString *user_id;
-//                    for(int i = 0;i<[[dict allKeys] count];i++)
-//                    {
-//                        if([[[dict allKeys] objectAtIndex:i] isEqualToString:str_id])
-//                        {
-//                            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:str_id]];
-//                            break;
-//                        }
-//                        else
-//                        {
-//                            
-//                            user_id = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
-//                        }
-//                        
-//                    }
-//                }
-//            }
-//            @catch(NSException *exception)
-//            {
-//                user_id = @"(null)";
-//                
-//            }
-//            
-//            NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/home/%ld/%ld/%@/Customer.json",SERVER_URL,(long)[user_defaults   integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"],user_id];
-//            //NSLog(@"country id %ld ,language id %ld",[user_defaults integerForKey:@"country_id"],[user_defaults integerForKey:@"language_id"]);
-//            
-//            
-//            
-//            urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-//            [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    if (error) {
-//                        [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
-//                        
-//                     //   [Helper_activity stop_activity_animation:self];
-//                    }
-//                    if (data) {
-    
-                        [self IMAGE_PATH_API];
-//                        @try {
-//                            [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Home_data"];
-//                            [[NSUserDefaults standardUserDefaults] synchronize];
-//                               [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
-//                         
-//                        } @catch (NSException *exception)
-//                        {
-//                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-//                            [alert show];
-//
-//                            
-//                        }
-//                      
-//                  
-//                        
-//                    }
-//                    else
-//                    {
-//                      //  [Helper_activity stop_activity_animation:self];
-//                        //                        VW_overlay.hidden = YES;
-//                        //                        [activityIndicatorView stopAnimating];
-//                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-//                        [alert show];
-//                        // [self viewWillAppear:NO];
-//                        
-//                        
-//                        
-//                    }
-//                    
-//                   // [Helper_activity stop_activity_animation:self];
-//                    
-//                });
-//            }];
-//        }
-//        @catch(NSException *exception)
-//        {
-//            NSLog(@"The error is:%@",exception);
-//            [HttpClient createaAlertWithMsg:[NSString stringWithFormat:@"%@",exception] andTitle:@"Exception"];
-//            //        VW_overlay.hidden = YES;
-//            //        [activityIndicatorView stopAnimating];
-//            // [self viewWillAppear:NO];
-//           // [Helper_activity stop_activity_animation:self];
-//            
-//        }
-//        
-//        
-//    
-
-}
+ */
 -(void)IMAGE_PATH_API
 {
     @try
     {
         
         [Helper_activity animating_images:self];
-    
-    NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/allImagePaths",SERVER_URL];
-    
-    
-    
-    urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-    [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (error) {
-                [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+        
+        NSString *urlGetuser =[NSString stringWithFormat:@"%@apis/allImagePaths",SERVER_URL];
+        
+        
+        
+        urlGetuser = [urlGetuser stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        [HttpClient postServiceCall:urlGetuser andParams:nil completionHandler:^(id  _Nullable data, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    [HttpClient createaAlertWithMsg:[error localizedDescription] andTitle:@""];
+                    
+                    [Helper_activity stop_activity_animation:self];
+                }
+                @try
+                {
+                    if (data) {
+                        
+                        [Helper_activity stop_activity_animation:self];
+                        
+                        [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Images_path"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                        
+                        //  [self MENU_api_call];
+                        if([[[NSUserDefaults standardUserDefaults] valueForKey:@"story_board_language"] isEqualToString:@"Arabic"])
+                        {
+                            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Arabic" bundle:nil];
+                            
+                            Home_page_Qtickets *controller = [storyboard instantiateViewControllerWithIdentifier:@"Home_page_Qtickets"];
+                            UINavigationController *navigationController =
+                            [[UINavigationController alloc] initWithRootViewController:controller];
+                            navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+                            navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+                            [self  presentViewController:navigationController animated:NO completion:nil];
+                            
+                        }
+                        
+                        else{
+                            [self performSegueWithIdentifier:@"home_page_identifier" sender:self];
+                        }
+                        
+                        
+                        
+                    }
+                    else
+                    {
+                        
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        [alert show];
+                        
+                        
+                        
+                    }
+                }
+                @catch(NSException *exception)
+                {
+                    
+                }
                 
-                  [Helper_activity stop_activity_animation:self];
-            }
-            @try
-            {
-            if (data) {
                 
-                [Helper_activity stop_activity_animation:self];
-
-                [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"Images_path"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                
-                [self MENU_api_call];
-
-                
-                
-            }
-            else
-            {
-                //  [Helper_activity stop_activity_animation:self];
-                //                        VW_overlay.hidden = YES;
-                //                        [activityIndicatorView stopAnimating];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Connection Failed" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-                [alert show];
-                // [self viewWillAppear:NO];
-                
-                
-                
-            }
-            }
-            @catch(NSException *exception)
-            {
-                
-            }
-            
-            // [Helper_activity stop_activity_animation:self];
-            
-        });
-    }];
+            });
+        }];
     }
-        @catch(NSException *exception)
-        {
-            
-        }
-
+    @catch(NSException *exception)
+    {
+        
+    }
+    
 }
+
 
 #pragma mark Cart Count
 

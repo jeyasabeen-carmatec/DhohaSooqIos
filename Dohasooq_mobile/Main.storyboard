@@ -5213,7 +5213,7 @@
                                     </collectionViewFlowLayout>
                                     <cells>
                                         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="brands_cell" id="UTf-td-uZA" customClass="cell_brands">
-                                            <rect key="frame" x="0.0" y="4" width="81" height="46"/>
+                                            <rect key="frame" x="0.0" y="3" width="81" height="46"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                                 <rect key="frame" x="0.0" y="0.0" width="81" height="46"/>
